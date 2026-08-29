@@ -30,7 +30,7 @@ function extractFunction(name) {
 new Function(script);
 ok(!html.includes('버림패 5장 제한'), 'discard pile has no five-card cap logic');
 ok(!html.includes('공용 버림패 <b id="discardCount">0</b>/5'), 'discard UI has no /5 cap');
-ok(html.includes('function canRetireStaleRun(){return false}'), 'free RUN retirement is disabled');
+ok(!html.includes('function canRetireStaleRun(') && !html.includes('data-stale-retire'), 'free RUN retirement path is absent');
 ok(html.includes("if(meldsOf(w).length>=2)return'full'"), 'full public board blocks new meld creation');
 ok(html.includes('function bestNewMeldForTurn(w,hand=sideObj(w).hand)'), 'turn-aware new-meld legality helper exists');
 ok(html.includes("s.melds.length<2&&bestNewMeldForTurn(w)"), 'maintenance/legal-action check respects board cap and current-turn card restrictions');
