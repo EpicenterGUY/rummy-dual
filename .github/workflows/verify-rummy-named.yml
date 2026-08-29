@@ -1,0 +1,19 @@
+name: Verify RUMMY named audit
+
+on:
+  push:
+    branches:
+      - test/rummy-named-audit-20260830
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/rules-smoke.mjs
+      - run: node tests/core-behavior.mjs
+      - run: node tests/rummy-grace-joker.mjs
+      - run: git diff --check
