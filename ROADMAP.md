@@ -45,9 +45,10 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] RUMMY / grace / Joker King tests
 
 ## M4 — Hand circulation
-- [ ] Recheck maintenance stuck-state definition
-- [ ] Verify deck exhaustion/recycling under long games
-- [ ] Audit duplicate turn-end paths around RUMMY
+- [x] Recheck maintenance stuck-state definition against actual playable cards and return restrictions
+- [x] Verify deck exhaustion/recycling under long games; recycle personal spent only and preserve shared discard
+- [x] Audit player/AI RUMMY turn-end paths; AI now settles contracts before the single turn-end resolution even on RUMMY turns
+- [x] Reset transient discard-contract state whenever a card is freshly acquired from deck/discard before source-specific effects are applied
 
 ## M5 — Multi-attach UX
 - [ ] Preserve explicit selection/attach order
@@ -99,6 +100,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. Move into M4 hand circulation: formalize and test the maintenance stuck-state definition.
-2. Verify deck exhaustion and personal spent-pile recycling without touching the shared discard pile.
-3. Audit player/AI RUMMY turn-end paths for duplicate or skipped end-of-turn resolution.
+1. Finish the remaining M1 code-only base-rule audit and explicitly document or remove any surviving prototype-only rule.
+2. Move into M5 multi-attach UX: preserve explicit selection order and show per-card CHAIN preview plus total.
+3. Follow with M6 combat readability once the multi-attach interaction is stable.
