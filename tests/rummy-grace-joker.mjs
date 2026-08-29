@@ -212,6 +212,7 @@ function basicSide() {
   player.melds = [meld];
   ctx.meldType = cards => cards.length >= 3 ? 'RUN' : null;
   ctx.markSetCompletion = () => {};
+  ctx.cardText = c => c.uid;
   install(ctx, 'freeRecoverFromMeld');
   ctx.freeRecoverFromMeld('player', meld, []);
   ok(!player.rummyRecoveryPending, 'first successful recovery consumes the independent post-RUMMY recovery window');
