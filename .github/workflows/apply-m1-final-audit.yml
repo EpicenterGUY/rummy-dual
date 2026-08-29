@@ -107,8 +107,12 @@ jobs:
               '',
               'remove legacy retire click handlers',
           )
-          repl("closeDrawChoice();document.getElementById('overlay').classList.remove('show');newGame()", "document.getElementById('overlay').classList.remove('show');newGame()", 'remove empty reset close hook')
-          repl("closeDrawChoice();document.getElementById('overlay').classList.remove('show');newGame()", "document.getElementById('overlay').classList.remove('show');newGame()", 'remove empty replay close hook')
+          repl(
+              "closeDrawChoice();document.getElementById('overlay').classList.remove('show');newGame()",
+              "document.getElementById('overlay').classList.remove('show');newGame()",
+              'remove empty reset/replay close hooks',
+              count=2,
+          )
 
           p.write_text(text, encoding='utf-8')
           print('M1 final rule audit cleanup applied')
