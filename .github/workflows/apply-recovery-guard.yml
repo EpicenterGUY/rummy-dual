@@ -1,0 +1,155 @@
+name: Apply recovery return guard
+
+on:
+  push:
+    branches:
+      - fix/recover-return-guard-20260830
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Patch recovery return rule
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+
+          def replace_once(old, new, label):
+              global text
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{label}: expected 1 match, found {count}')
+              text = text.replace(old, new, 1)
+
+          def transform_line(prefix, fn, label):
+              global text
+              lines = text.splitlines()
+              hits = [i for i, line in enumerate(lines) if line.startswith(prefix)]
+              if len(hits) != 1:
+                  raise SystemExit(f'{label}: expected 1 line, found {len(hits)}')
+              i = hits[0]
+              lines[i] = fn(lines[i])
+              text = '\n'.join(lines) + '\n'
+
+          replace_once(
+              '<li><b>회수:</b> 턴당 1회, 공개 조합의 내가 제어하는 카드 1장을 손으로. 빼도 조합이 유지되어야 하며 이번 턴 공개한 카드는 회수 불가.</li>',
+              '<li><b>회수:</b> 턴당 1회, 공개 조합의 내가 제어하는 카드 1장을 손으로. 빼도 조합이 유지되어야 하며 이번 턴 공개한 카드는 회수 불가. <b>회수한 카드는 같은 턴 BURST/CHAIN 반환 재료로 다시 사용할 수 없습니다.</b> 단, 카드 효과가 명시적으로 허용하면 예외입니다.</li>',
+              'rules recovery text',
+          )
+
+          replace_once(
+              "recoveredToken:null,fuseArmed:false",
+              "recoveredToken:null,recoverReturnOverrideToken:null,fuseArmed:false",
+              'runtime recovery override field',
+          )
+
+          replace_once(
+              "'CJ':{n:'갈아끼우기',t:'freeSwapRecover',d:'내 공개 조합에 붙일 때 그 조합의 내 카드 1장을 무료 회수. 회수한 카드가 다른 공개 조합에 붙을 수 있으면 즉시 이어붙일 수 있다.'}",
+              "'CJ':{n:'갈아끼우기',t:'freeSwapRecover',d:'내 공개 조합에 붙일 때 그 조합의 내 카드 1장을 무료 회수. 회수한 카드가 다른 공개 조합에 붙을 수 있으면 즉시 이어붙일 수 있다. 이 효과로 회수한 카드는 이번 턴 회수 재사용 제한을 무시한다.'}",
+              'free swap recovery exception text',
+          )
+
+          replace_once(
+              "function markSetCompletion(m,owner){if(!m)return;if(m.type==='RUN')m.chain=Math.max(0,Math.min(4,m.chain??Math.max(0,m.cards.length-3)))}",
+              "function recoveredCardCanReturn(c,turnToken){return c.recoveredToken!==turnToken||c.recoverReturnOverrideToken===turnToken}\nfunction recoveredCardsCanReturn(cards,turnToken){return cards.every(c=>recoveredCardCanReturn(c,turnToken))}\nfunction markSetCompletion(m,owner){if(!m)return;if(m.type==='RUN')m.chain=Math.max(0,Math.min(4,m.chain??Math.max(0,m.cards.length-3)))}",
+              'recovery return helpers',
+          )
+
+          def patch_free_recover(line):
+              old = line
+              line = line.replace('function freeRecoverFromMeld(w,m,exclude=[]){', 'function freeRecoverFromMeld(w,m,exclude=[],opts={}){', 1)
+              line = line.replace('c.suppressEffectToken=state.turnToken;c.recoveredToken=state.turnToken;c.age=0;', 'c.suppressEffectToken=state.turnToken;c.recoveredToken=state.turnToken;c.recoverReturnOverrideToken=opts.allowReturnReuse?state.turnToken:null;c.age=0;', 1)
+              if line == old:
+                  raise SystemExit('freeRecoverFromMeld patch made no change')
+              return line
+          transform_line('function freeRecoverFromMeld(', patch_free_recover, 'free recovery helper')
+
+          def patch_attach(line):
+              needle = "const willBaseReturn=(type==='SET'&&beforeLen===3&&combined.length===4)||type==='RUN';"
+              insert = needle + "if(willBaseReturn&&!recoveredCardsCanReturn(cards,state.turnToken)){if(w==='player')log('회수한 카드는 같은 턴 BURST/CHAIN으로 SWITCH를 반환하는 데 다시 사용할 수 없습니다.','hit');return false}"
+              if needle not in line:
+                  raise SystemExit('attachCards return boundary missing')
+              return line.replace(needle, insert, 1)
+          transform_line('function attachCards(', patch_attach, 'attach recovery guard')
+
+          def patch_player_recover(line):
+              needle = 'c.suppressEffectToken=state.turnToken;c.recoveredToken=state.turnToken;c.age=0;'
+              if needle not in line:
+                  raise SystemExit('playerRecover token assignment missing')
+              return line.replace(needle, 'c.suppressEffectToken=state.turnToken;c.recoveredToken=state.turnToken;c.recoverReturnOverrideToken=null;c.age=0;', 1)
+          transform_line('function playerRecover(', patch_player_recover, 'player recovery token reset')
+
+          def patch_ai_recover(line):
+              needle = 'c.suppressEffectToken=state.turnToken;c.recoveredToken=state.turnToken;c.age=0;'
+              if needle not in line:
+                  raise SystemExit('executeRecoverAI token assignment missing')
+              return line.replace(needle, 'c.suppressEffectToken=state.turnToken;c.recoveredToken=state.turnToken;c.recoverReturnOverrideToken=null;c.age=0;', 1)
+          transform_line('function executeRecoverAI(', patch_ai_recover, 'AI recovery token reset')
+
+          def patch_can_attach(line):
+              needle = "const wouldReturn=m.type==='RUN'||(m.type==='SET'&&m.cards.length===3&&m.cards.length+cards.length===4);"
+              if needle not in line:
+                  raise SystemExit('canAttachTo return boundary missing')
+              return line.replace(needle, needle + "if(wouldReturn&&!recoveredCardsCanReturn(cards,state.turnToken))return false;", 1)
+          transform_line('function canAttachTo(', patch_can_attach, 'UI attach recovery guard')
+
+          def patch_attach_reason(line):
+              needle = "const wouldReturn=m.type==='RUN'||(m.type==='SET'&&m.cards.length===3&&m.cards.length+cards.length===4);"
+              if needle not in line:
+                  raise SystemExit('attachReason return boundary missing')
+              return line.replace(needle, needle + "if(wouldReturn&&!recoveredCardsCanReturn(cards,state.turnToken))return'이번 턴 회수한 카드는 BURST/CHAIN 반환에 재사용 불가';", 1)
+          transform_line('function attachReason(', patch_attach_reason, 'attach reason recovery guard')
+
+          def patch_best_extension(line):
+              needle = "for(const cs of combinations(hand,k)){if(mustUid!=null&&!cs.some(c=>c.uid===mustUid))continue;"
+              if needle not in line:
+                  raise SystemExit('bestExtensionFromHand combination boundary missing')
+              return line.replace(needle, needle + "if(!recoveredCardsCanReturn(cs,state.turnToken))continue;", 1)
+          transform_line('function bestExtensionFromHand(', patch_best_extension, 'AI extension recovery guard')
+
+          def patch_best_recover(line):
+              needle = "const ex=bestExtensionFromHand(w,hyp,c.uid);if(ex)sc=Math.max(sc,ex.score+0.5);"
+              if needle not in line:
+                  raise SystemExit('bestRecoverAI immediate extension scoring missing')
+              return line.replace(needle, '', 1)
+          transform_line('function bestRecoverAI(', patch_best_recover, 'AI recovery planning')
+
+          def patch_effects(line):
+              old1 = "else if(prior&&prior.tag==='freeSwapRecover')freeRecoverFromMeld(w,ctx.meld,cards);"
+              new1 = "else if(prior&&prior.tag==='freeSwapRecover')freeRecoverFromMeld(w,ctx.meld,cards,{allowReturnReuse:true});"
+              old2 = "case'freeSwapRecover':if(ctx.isAttach&&ctx.targetOwner===w)freeRecoverFromMeld(w,ctx.meld,cards);"
+              new2 = "case'freeSwapRecover':if(ctx.isAttach&&ctx.targetOwner===w)freeRecoverFromMeld(w,ctx.meld,cards,{allowReturnReuse:true});"
+              if old1 not in line or old2 not in line:
+                  raise SystemExit('resolveEffects freeSwapRecover paths missing')
+              return line.replace(old1, new1, 1).replace(old2, new2, 1)
+          transform_line('function resolveEffects(', patch_effects, 'named recovery exception')
+
+          p.write_text(text, encoding='utf-8')
+          print('recovery return guard patch applied')
+          PY
+      - name: Run rules regression tests
+        run: node tests/rules-smoke.mjs
+      - name: Review diff
+        run: git diff --check && git diff --stat && git status --short
+      - name: Remove one-shot workflow
+        run: rm -f .github/workflows/apply-recovery-guard.yml
+      - name: Commit implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: prevent same-turn recovery SWITCH reuse"
+          git push origin HEAD:fix/recover-return-guard-20260830
