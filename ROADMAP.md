@@ -35,10 +35,11 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 
 ## M3 — Regression tests
 - [x] Buildless JS syntax/invariant smoke test
-- [ ] Recovery → same-turn SWITCH-return guard behavior tests
+- [x] Recovery → same-turn SWITCH-return guard behavior tests
 - [ ] SET validity and BURST retirement tests
-- [ ] RUN A-2-3 / Q-K-A / K-A-2 tests
-- [ ] Multi-attach CHAIN total tests
+- [x] RUN numeric edge checks: A-2-3 / Q-K-A / K-A-2
+- [x] CHAIN progression executable check: 10 / 15 / 20 / 25+
+- [ ] Multi-attach CHAIN state/total tests
 - [ ] SWITCH ownership / one-return / DETONATE tests
 - [ ] CORE BREAK / shield / no-pierce tests
 - [ ] RUMMY / grace / Joker King tests
@@ -75,7 +76,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [ ] Stabilize 10–15 behavior-changing shared fields
 
 ## M10 — AI 2.0
-- [ ] Respect recovery same-turn return restriction in planning
+- [x] Respect recovery same-turn return restriction in planning
 - [ ] Search 5+ card multi-attach cases where practical
 - [ ] Improve opponent-meld and future-BURST risk evaluation
 - [ ] Improve intentional small-bomb acceptance decisions
@@ -98,6 +99,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. Enforce the recovered-card same-turn SWITCH-return guard while preserving non-return reuse.
-2. Preserve the explicit named-card exception for immediate recovered-card reuse where intended (e.g. `갈아끼우기`).
-3. Extend M3 tests beyond string invariants with executable pure-rule checks.
+1. Add executable SET/BURST behavior tests, including exact 3SET construction and 4SET retirement conditions.
+2. Add multi-attach CHAIN state/total tests rather than only the pure damage progression check.
+3. Add SWITCH/DETONATE/CORE BREAK state-transition regression tests before broader UI or AI work.
