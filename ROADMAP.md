@@ -36,12 +36,12 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 ## M3 — Regression tests
 - [x] Buildless JS syntax/invariant smoke test
 - [x] Recovery → same-turn SWITCH-return guard behavior tests
-- [ ] SET validity and BURST retirement tests
+- [x] SET validity and BURST retirement tests
 - [x] RUN numeric edge checks: A-2-3 / Q-K-A / K-A-2
 - [x] CHAIN progression executable check: 10 / 15 / 20 / 25+
-- [ ] Multi-attach CHAIN state/total tests
-- [ ] SWITCH ownership / one-return / DETONATE tests
-- [ ] CORE BREAK / shield / no-pierce tests
+- [x] Multi-attach CHAIN state/total tests
+- [x] SWITCH ownership / one-return / DETONATE tests
+- [x] CORE BREAK / shield / no-pierce tests
 - [ ] RUMMY / grace / Joker King tests
 
 ## M4 — Hand circulation
@@ -99,6 +99,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. Add executable SET/BURST behavior tests, including exact 3SET construction and 4SET retirement conditions.
-2. Add multi-attach CHAIN state/total tests rather than only the pure damage progression check.
-3. Add SWITCH/DETONATE/CORE BREAK state-transition regression tests before broader UI or AI work.
+1. Add RUMMY / grace / Joker King state-transition regression tests to finish the first M3 core suite.
+2. Audit RUMMY-linked named cards and grace interactions against those tests.
+3. Move into M4 hand circulation: maintenance stuck-state, deck exhaustion/recycling, and duplicate turn-end paths.
