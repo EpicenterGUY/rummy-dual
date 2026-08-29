@@ -17,6 +17,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Fix function extractor body boundary
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('tests/core-behavior.mjs')
+          s = p.read_text(encoding='utf-8')
+          old = "  let brace = script.indexOf('{', start);\n  if (brace < 0) throw new Error(`missing body for ${name}`);"
+          new = "  const bodyMarker = script.indexOf('){', start);\n  if (bodyMarker < 0) throw new Error(`missing body for ${name}`);\n  const brace = bodyMarker + 1;"
+          if s.count(old) != 1:
+              raise SystemExit(f'function extractor anchor count={s.count(old)}')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
       - name: Run smoke tests
         run: node tests/rules-smoke.mjs
       - name: Run core behavior tests
