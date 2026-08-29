@@ -77,6 +77,18 @@ jobs:
           p.write_text(text, encoding='utf-8')
           print('RUMMY event windows patched')
           PY
+      - name: Fix isolated recovery test display stub
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('tests/rummy-grace-joker.mjs')
+          s = p.read_text(encoding='utf-8')
+          old = "  ctx.meldType = cards => cards.length >= 3 ? 'RUN' : null;\n  ctx.markSetCompletion = () => {};\n  install(ctx, 'freeRecoverFromMeld');"
+          new = "  ctx.meldType = cards => cards.length >= 3 ? 'RUN' : null;\n  ctx.markSetCompletion = () => {};\n  ctx.cardText = c => c.uid;\n  install(ctx, 'freeRecoverFromMeld');"
+          if s.count(old) != 1:
+              raise SystemExit(f'recovery test stub anchor count={s.count(old)}')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
       - name: Run smoke tests
         run: node tests/rules-smoke.mjs
       - name: Run core behavior tests
