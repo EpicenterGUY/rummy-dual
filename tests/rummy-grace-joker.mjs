@@ -218,4 +218,70 @@ function basicSide() {
   ok(!player.rummyRecoveryPending, 'first successful recovery consumes the independent post-RUMMY recovery window');
 }
 
+// Second Heart: RUMMY refills seven and grants 16 shield when SWITCH points at the user.
+{
+  const player = basicSide(), enemy = basicSide();
+  const state = {
+    player, enemy, rummy: 0,
+    switchTarget: 'player', switchPower: 20,
+    playerJustRummied: false, enemyJustRummied: false,
+    selected: new Set(), boardSelected: new Set(), target: null,
+  };
+  let seq = 0, shieldUnits = 0;
+  const ctx = context({ state, RECOVERY_UNIT: 4 });
+  ctx.sideObj = w => w === 'player' ? player : enemy;
+  ctx.drawMany = (w, n) => { for (let i = 0; i < n; i++) ctx.sideObj(w).hand.push({ uid: `ha${++seq}`, age: 0, tag: null }); return n; };
+  ctx.heal = () => 0; ctx.applyStatus = () => {};
+  ctx.addShield = (w, n) => { shieldUnits += n; return n * 4; };
+  ctx.removeFromHand = () => {}; ctx.switchName = () => 'YOU'; ctx.combatBanner = () => {}; ctx.log = () => {}; ctx.endPlayerTurn = () => {};
+  install(ctx, 'triggerRummy');
+  ctx.triggerRummy('player', [{ uid: 'HA', tag: 'rummyPlus1' }], { returned: false });
+  ok(player.hand.length === 7, 'Second Heart RUMMY refills seven cards');
+  ok(shieldUnits === 4, 'Second Heart grants four shield units = 16 shield while SWITCH points at user');
+}
+
+// Life Support: RUMMY heals 16, grants regen 1, and at power 60+ grants 16 shield.
+{
+  const player = basicSide(), enemy = basicSide();
+  const state = {
+    player, enemy, rummy: 0,
+    switchTarget: 'enemy', switchPower: 60,
+    playerJustRummied: false, enemyJustRummied: false,
+    selected: new Set(), boardSelected: new Set(), target: null,
+  };
+  let seq = 0, healUnits = 0, shieldUnits = 0, regen = 0;
+  const ctx = context({ state, RECOVERY_UNIT: 4 });
+  ctx.sideObj = w => w === 'player' ? player : enemy;
+  ctx.drawMany = (w, n) => { for (let i = 0; i < n; i++) ctx.sideObj(w).hand.push({ uid: `h10${++seq}`, age: 0, tag: null }); return n; };
+  ctx.heal = (w, n) => { healUnits += n; return n * 4; };
+  ctx.applyStatus = (w, key, n) => { if (key === 'regen') regen += n; };
+  ctx.addShield = (w, n) => { shieldUnits += n; return n * 4; };
+  ctx.removeFromHand = () => {}; ctx.switchName = () => 'YOU'; ctx.combatBanner = () => {}; ctx.log = () => {}; ctx.endPlayerTurn = () => {};
+  install(ctx, 'triggerRummy');
+  ctx.triggerRummy('player', [{ uid: 'H10', tag: 'rummyHeal4' }], { returned: false });
+  ok(player.hand.length === 6, 'Life Support keeps normal six-card RUMMY refill');
+  ok(healUnits === 4, 'Life Support heals four recovery units = 16 CORE');
+  ok(regen === 1, 'Life Support applies regen 1');
+  ok(shieldUnits === 4, 'Life Support grants four shield units = 16 shield at accumulated power 60+');
+}
+
+// Returner: only an unconsumed first-recovery window can arm its free recovery.
+{
+  const player = basicSide(), enemy = basicSide();
+  const state = { player, enemy, turnToken: 22, lastPlayerReturnType: null, lastEnemyReturnType: null };
+  const ctx = context({ state });
+  ctx.sideObj = w => w === 'player' ? player : enemy;
+  ctx.other = w => w === 'player' ? 'enemy' : 'player';
+  ctx.log = () => {};
+  const returner = { uid: 'H2', named: true, tag: 'afterRummyDraw', suppressEffectToken: null, name: '귀환자' };
+  install(ctx, 'resolveEffects');
+  player.rummyRecoveryPending = true;
+  ctx.resolveEffects('player', [returner], 'SET', { isNew: true, isAttach: false, willReturn: false, totalLength: 3, effectSeen: new Set(), meld: { status: {} }, targetOwner: 'player' });
+  ok(player.freeRecoverAfterRummy, 'Returner arms a free recovery while the first post-RUMMY recovery is still pending');
+  player.freeRecoverAfterRummy = false;
+  player.rummyRecoveryPending = false;
+  ctx.resolveEffects('player', [returner], 'SET', { isNew: true, isAttach: false, willReturn: false, totalLength: 3, effectSeen: new Set(), meld: { status: {} }, targetOwner: 'player' });
+  ok(!player.freeRecoverAfterRummy, 'Returner cannot retroactively make a later recovery free after the first recovery window was consumed');
+}
+
 console.log('RUMMY//DUEL RUMMY/grace/Joker regression tests passed.');

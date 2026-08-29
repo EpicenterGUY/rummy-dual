@@ -31,7 +31,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Fix CORE LETHAL targeting feedback
 - [x] Synchronize Chain Reaction text/implementation
 - [x] Implement Last Laugh returning-RUMMY / DETONATE reduction behavior
-- [ ] Finish full audit of all RUMMY-linked named cards; Encore/H2 event-window coupling and grace interactions are now corrected/tested
+- [x] Audit RUMMY-linked named cards: Second Heart, Returner, Life Support, Encore, Last Laugh, and grace interactions
 
 ## M3 — Regression tests
 - [x] Buildless JS syntax/invariant smoke test
@@ -99,6 +99,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. Finish the RUMMY-linked named-card audit (Second Heart, Returner, Life Support, Encore, Last Laugh) against the new independent event windows.
-2. Move into M4 hand circulation: maintenance stuck-state definition and deck exhaustion/recycling tests.
+1. Move into M4 hand circulation: formalize and test the maintenance stuck-state definition.
+2. Verify deck exhaustion and personal spent-pile recycling without touching the shared discard pile.
 3. Audit player/AI RUMMY turn-end paths for duplicate or skipped end-of-turn resolution.
