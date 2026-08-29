@@ -1,0 +1,96 @@
+name: Apply RUMMY event windows
+
+on:
+  push:
+    branches:
+      - test/rummy-grace-joker-20260830
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Patch RUMMY first-return and first-recovery windows
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+
+          def repl(old, new, label):
+              global text
+              n = text.count(old)
+              if n != 1:
+                  raise SystemExit(f'{label}: expected 1 match, found {n}')
+              text = text.replace(old, new, 1)
+
+          repl(
+              'turnStarts:0,graceArmed:false,deck:makeDeck(owner,charId)',
+              'turnStarts:0,graceArmed:false,rummyReturnPending:false,rummyRecoveryPending:false,deck:makeDeck(owner,charId)',
+              'side RUMMY pending state',
+          )
+          repl(
+              "function triggerRummy(w,lastCards,opts={}){let reload=6;const s=sideObj(w),jokerLast=lastCards.some(c=>c.tag==='jokerLast');",
+              "function triggerRummy(w,lastCards,opts={}){let reload=6;const s=sideObj(w),jokerLast=lastCards.some(c=>c.tag==='jokerLast');s.rummyReturnPending=true;s.rummyRecoveryPending=true;",
+              'arm RUMMY windows',
+          )
+          repl(
+              "case'afterRummyDraw':if(w==='player'?state.playerJustRummied:state.enemyJustRummied)side.freeRecoverAfterRummy=true;",
+              "case'afterRummyDraw':if(side.rummyRecoveryPending)side.freeRecoverAfterRummy=true;",
+              'first recovery named gate',
+          )
+          repl(
+              "case'afterRummyBonus':if(w==='player'?state.playerJustRummied:state.enemyJustRummied){flatReturn=true;forceReturn=true}break;",
+              "case'afterRummyBonus':if(isReturning&&side.rummyReturnPending){flatReturn=true;forceReturn=true}break;",
+              'Encore first actual return gate',
+          )
+          repl(
+              'setSwitchTarget(other(w),label);sw.returnedSwitchThisTurn=true;',
+              'setSwitchTarget(other(w),label);sw.returnedSwitchThisTurn=true;sw.rummyReturnPending=false;',
+              'consume first return window',
+          )
+          repl(
+              'sideObj(w).hand.push(c);c.suppressEffectToken=state.turnToken;c.recoveredToken=state.turnToken;',
+              'sideObj(w).hand.push(c);sideObj(w).rummyRecoveryPending=false;c.suppressEffectToken=state.turnToken;c.recoveredToken=state.turnToken;',
+              'consume free recovery window',
+          )
+          repl(
+              'const s=state.player,m=meldsOf(plan.side)[plan.mi],[c]=m.cards.splice(plan.ci,1);s.hand.push(c);const free=',
+              'const s=state.player,m=meldsOf(plan.side)[plan.mi],[c]=m.cards.splice(plan.ci,1);s.hand.push(c);s.rummyRecoveryPending=false;const free=',
+              'consume player recovery window',
+          )
+          repl(
+              'const s=sideObj(w),m=meldsOf(plan.side)[plan.mi],[c]=m.cards.splice(plan.ci,1);s.hand.push(c);const free=',
+              'const s=sideObj(w),m=meldsOf(plan.side)[plan.mi],[c]=m.cards.splice(plan.ci,1);s.hand.push(c);s.rummyRecoveryPending=false;const free=',
+              'consume AI recovery window',
+          )
+
+          p.write_text(text, encoding='utf-8')
+          print('RUMMY event windows patched')
+          PY
+      - name: Run smoke tests
+        run: node tests/rules-smoke.mjs
+      - name: Run core behavior tests
+        run: node tests/core-behavior.mjs
+      - name: Run RUMMY grace Joker tests
+        run: node tests/rummy-grace-joker.mjs
+      - name: Check diff
+        run: git diff --check && git diff --stat
+      - name: Remove one-shot workflow
+        run: rm -f .github/workflows/apply-rummy-windows.yml
+      - name: Commit verified patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: separate post-RUMMY return and recovery windows"
+          git push origin HEAD:test/rummy-grace-joker-20260830
