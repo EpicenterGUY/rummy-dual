@@ -22,7 +22,7 @@ Single-file mobile-first prototype for GitHub Pages.
 - When a personal deck is empty, only that player's spent pile is shuffled into a new deck. The shared discard pile stays public.
 - Normal maintenance cycles 1 card; when completely stuck, up to 2 cards.
 - RUMMY refills 6 cards.
-- Shield is temporary defense and normally expires at the start of its owner's next turn.
+- Shield is temporary defense with no base hard cap; it normally expires at the start of its owner's next turn.
 
 See `ROADMAP.md` for current implementation milestones.
 
