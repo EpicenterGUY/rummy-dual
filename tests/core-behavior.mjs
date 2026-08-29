@@ -13,8 +13,9 @@ function functionSource(name) {
   const marker = `function ${name}(`;
   const start = script.indexOf(marker);
   if (start < 0) throw new Error(`missing function ${name}`);
-  let brace = script.indexOf('{', start);
-  if (brace < 0) throw new Error(`missing body for ${name}`);
+  const bodyMarker = script.indexOf('){', start);
+  if (bodyMarker < 0) throw new Error(`missing body for ${name}`);
+  const brace = bodyMarker + 1;
   let depth = 0;
   let end = -1;
   for (let i = brace; i < script.length; i++) {
