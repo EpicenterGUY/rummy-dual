@@ -57,9 +57,12 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Preview the resulting `SWITCH → CPU` before committing the attach
 
 ## M6 — Combat readability
-- [ ] Improve SWITCH / DETONATE warning hierarchy
-- [ ] Improve BURST READY / RUN next-CHAIN display
-- [ ] Show CORE BREAK overkill as lost, never piercing
+- [x] Give the central SWITCH a dedicated alert line for neutral, incoming, imminent DETONATE, and enemy DETONATE states
+- [x] Show current CORE + shield, CORE-lethal state, and remaining `CORE까지 N` margin directly under the SWITCH
+- [x] Make the player phase strip visually enter DETONATE danger state when the SWITCH points to YOU on the player's turn
+- [x] Promote SET to `BURST READY · 4번째 카드 +24 · SWITCH 반환` and RUN to `CHAIN N · NEXT +X · SWITCH 반환`
+- [x] Make CORE BREAK explicitly show `OVERKILL N LOST · NO PIERCE`, with persistent CORE notes stating next-CORE penetration is zero
+- [x] Add executable combat-readability regressions while preserving all M1–M5 tests
 
 ## M7 — Status/effect engine
 - [ ] Normalize official statuses: vulnerable, seal, fixed, protect, regen
@@ -100,6 +103,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. M6: strengthen SWITCH ownership / DETONATE danger hierarchy so the current bomb state is readable at a glance on mobile.
-2. M6: make BURST READY and RUN next-CHAIN information more prominent without adding new rules.
-3. M6: make CORE BREAK explicitly show discarded overkill / NO PIERCE, then add readability regressions.
+1. M7: normalize the five official statuses without turning one-off card markers into global status rules.
+2. M7: define player / public-meld / individual-card attachment scopes and lifecycle timing.
+3. M7: introduce reusable effect events/actions gradually, keeping the prototype buildless and current cards behavior-compatible.
