@@ -31,7 +31,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Fix CORE LETHAL targeting feedback
 - [x] Synchronize Chain Reaction text/implementation
 - [x] Implement Last Laugh returning-RUMMY / DETONATE reduction behavior
-- [ ] Audit RUMMY-linked named cards and grace interactions
+- [ ] Finish full audit of all RUMMY-linked named cards; Encore/H2 event-window coupling and grace interactions are now corrected/tested
 
 ## M3 — Regression tests
 - [x] Buildless JS syntax/invariant smoke test
@@ -42,7 +42,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Multi-attach CHAIN state/total tests
 - [x] SWITCH ownership / one-return / DETONATE tests
 - [x] CORE BREAK / shield / no-pierce tests
-- [ ] RUMMY / grace / Joker King tests
+- [x] RUMMY / grace / Joker King tests
 
 ## M4 — Hand circulation
 - [ ] Recheck maintenance stuck-state definition
@@ -99,6 +99,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. Add RUMMY / grace / Joker King state-transition regression tests to finish the first M3 core suite.
-2. Audit RUMMY-linked named cards and grace interactions against those tests.
-3. Move into M4 hand circulation: maintenance stuck-state, deck exhaustion/recycling, and duplicate turn-end paths.
+1. Finish the RUMMY-linked named-card audit (Second Heart, Returner, Life Support, Encore, Last Laugh) against the new independent event windows.
+2. Move into M4 hand circulation: maintenance stuck-state definition and deck exhaustion/recycling tests.
+3. Audit player/AI RUMMY turn-end paths for duplicate or skipped end-of-turn resolution.
