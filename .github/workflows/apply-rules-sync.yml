@@ -19,6 +19,27 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Fix ordered duplicate patch call
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/apply_rules_sync.py')
+          s = p.read_text(encoding='utf-8')
+          anchor = "\n\n# Battlefield/discard rules shown to the player."
+          helper = '''\n\ndef replace_first_of_two(old: str, new: str, label: str) -> None:\n    global text\n    count = text.count(old)\n    if count != 2:\n        raise SystemExit(f'{label}: expected exactly 2 matches, found {count}')\n    text = text.replace(old, new, 1)\n'''
+          if anchor not in s:
+              raise SystemExit('helper insertion anchor missing')
+          s = s.replace(anchor, helper + anchor, 1)
+          lines = s.splitlines()
+          changed = 0
+          for i, line in enumerate(lines):
+              if "'new meld RUMMY context'" in line and line.lstrip().startswith('replace_once('):
+                  lines[i] = line.replace('replace_once(', 'replace_first_of_two(', 1)
+                  changed += 1
+          if changed != 1:
+              raise SystemExit(f'expected to rewrite one ordered RUMMY patch call, got {changed}')
+          p.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          PY
       - name: Apply deterministic patch
         run: python3 scripts/apply_rules_sync.py
       - name: Run rules smoke tests
