@@ -32,7 +32,8 @@ ok(!html.includes('버림패 5장 제한'), 'discard pile has no five-card cap l
 ok(!html.includes('공용 버림패 <b id="discardCount">0</b>/5'), 'discard UI has no /5 cap');
 ok(html.includes('function canRetireStaleRun(){return false}'), 'free RUN retirement is disabled');
 ok(html.includes("if(meldsOf(w).length>=2)return'full'"), 'full public board blocks new meld creation');
-ok(html.includes("s.melds.length<2&&bestNewMeld(s.hand)"), 'maintenance/legal-action check respects the two-meld cap');
+ok(html.includes('function bestNewMeldForTurn(w,hand=sideObj(w).hand)'), 'turn-aware new-meld legality helper exists');
+ok(html.includes("s.melds.length<2&&bestNewMeldForTurn(w)"), 'maintenance/legal-action check respects board cap and current-turn card restrictions');
 ok(html.includes('function acquireDiscardCard(w,indexFromTop=0)'), 'discard acquisition uses a shared helper');
 ok(html.includes("c=acquireDiscardCard('player',0)"), 'player Black Market second-card path uses shared acquisition');
 ok(html.includes("c=acquireDiscardCard('enemy',0)"), 'AI Black Market second-card path uses shared acquisition');
