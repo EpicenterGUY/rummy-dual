@@ -15,7 +15,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Shared discard has no size cap; base take is top only
 - [x] Personal spent pile only is recycled when a deck is empty
 - [x] RUMMY refills 6
-- [x] Shield normally expires at the owner's next turn start
+- [x] Shield has no base hard cap and normally expires at the owner's next turn start
 - [x] Recovery rule refinement: a card recovered this turn may still be used for a new 3-card meld, maintenance, discard, or non-return effects, but cannot be reused that same turn as material for a BURST/CHAIN/SWITCH-returning attach unless a named effect explicitly grants that exception.
 
 ## M1 — Final rules ↔ live code sync
@@ -23,7 +23,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Remove free public-meld disposal
 - [x] Remove discard five-card cap
 - [x] Make AI respect the two-meld cap
-- [ ] Audit all remaining code-only base rules and document or remove them
+- [x] Audit remaining code-only base rules: remove the hidden shield-40 cap, obsolete retire/draw-preview routes, and superseded generic RUMMY flags; clarify Roundabout against the recovery-return guard
 
 ## M2 — Confirmed bug fixes
 - [x] Harden invalid/legacy selected character progress data
@@ -52,7 +52,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 
 ## M5 — Multi-attach UX
 - [ ] Preserve explicit selection/attach order
-- [ ] Highlight legal cards
+- [ ] Highlight legal cards for the selected target meld
 - [ ] Show per-card +10/+15/+20/+25 preview and total
 - [ ] Preview resulting SWITCH direction
 
@@ -100,6 +100,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. Finish the remaining M1 code-only base-rule audit and explicitly document or remove any surviving prototype-only rule.
-2. Move into M5 multi-attach UX: preserve explicit selection order and show per-card CHAIN preview plus total.
-3. Follow with M6 combat readability once the multi-attach interaction is stable.
+1. M5: preserve explicit hand-card selection order and target a public meld before extending it.
+2. M5: highlight legal next cards for that target and show ordered CHAIN steps plus TOTAL and resulting SWITCH direction.
+3. Add executable M5 interaction regressions, then move into M6 combat readability.
