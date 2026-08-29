@@ -1,0 +1,91 @@
+name: Apply M4 hand circulation
+
+on:
+  push:
+    branches:
+      - fix/hand-circulation-m4-20260830
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Patch hand-circulation legality and end paths
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+
+          def repl(old, new, label):
+              global text
+              n = text.count(old)
+              if n != 1:
+                  raise SystemExit(f'{label}: expected 1 match, found {n}')
+              text = text.replace(old, new, 1)
+
+          repl(
+              "function acquireDiscardCard(w,indexFromTop=0){const s=sideObj(w),idx=state.discard.length-1-indexFromTop;if(idx<0)return null;const[c]=state.discard.splice(idx,1),oldOwner=c.owner;c.owner=w;if(c.tag==='returnIfIgnored'&&oldOwner!==w)c.blockedUntilTurn=state.turnNo;c.fromDiscard=true;c.age=0;s.hand.push(c);return c}",
+              "function acquireDiscardCard(w,indexFromTop=0){const s=sideObj(w),idx=state.discard.length-1-indexFromTop;if(idx<0)return null;const[c]=state.discard.splice(idx,1),oldOwner=c.owner;c.owner=w;c.contractActive=false;if(c.tag==='returnIfIgnored'&&oldOwner!==w)c.blockedUntilTurn=state.turnNo;c.fromDiscard=true;c.age=0;s.hand.push(c);return c}",
+              'discard acquisition transient reset',
+          )
+          repl(
+              "function drawOne(w,fromDiscard=false){const s=sideObj(w);if(fromDiscard)return acquireDiscardCard(w,0);recycleIfNeeded(w);const c=s.deck.pop();if(!c)return null;c.fromDiscard=false;c.age=0;s.hand.push(c);return c}",
+              "function drawOne(w,fromDiscard=false){const s=sideObj(w);if(fromDiscard)return acquireDiscardCard(w,0);recycleIfNeeded(w);const c=s.deck.pop();if(!c)return null;c.fromDiscard=false;c.contractActive=false;c.age=0;s.hand.push(c);return c}",
+              'personal draw transient reset',
+          )
+          repl(
+              "function bestNewMeld(hand){let best=null;if(hand.length<3)return null;for(const cs of combinations(hand,3)){const t=meldType(cs);if(t){let sc=12+cs.filter(c=>c.named).length*2+(t==='SET'?3:2);if(!best||sc>best.score)best={cards:cs,type:t,score:sc}}}return best}\nfunction anyAttachOption(w){const s=sideObj(w);if(s.returnedSwitchThisTurn||!canSideReturn(w))return false;const hand=s.hand;for(let k=1;k<=Math.min(4,hand.length);k++)for(const cs of combinations(hand,k))for(const targetSide of [w,other(w)])for(const m of meldsOf(targetSide))if(m.lastAttachToken!==state.turnToken&&!(m.createdToken===state.turnToken&&targetSide===w)&&meldType(m.cards.concat(cs))===m.type)return true;return false}\nfunction hasAnyLegalAction(w){const s=sideObj(w);if(!s.newMeldUsed&&s.melds.length<2&&bestNewMeld(s.hand))return true;return anyAttachOption(w)}",
+              "function bestNewMeld(hand){let best=null;if(hand.length<3)return null;for(const cs of combinations(hand,3)){const t=meldType(cs);if(t){let sc=12+cs.filter(c=>c.named).length*2+(t==='SET'?3:2);if(!best||sc>best.score)best={cards:cs,type:t,score:sc}}}return best}\nfunction bestNewMeldForTurn(w,hand=sideObj(w).hand){return bestNewMeld(hand.filter(c=>c.blockedUntilTurn!==state.turnNo))}\nfunction anyAttachOption(w){const s=sideObj(w);if(s.returnedSwitchThisTurn||!canSideReturn(w))return false;const hand=s.hand.filter(c=>c.blockedUntilTurn!==state.turnNo);for(let k=1;k<=Math.min(4,hand.length);k++)for(const cs of combinations(hand,k)){if(!recoveredCardsCanReturn(cs,state.turnToken))continue;for(const targetSide of [w,other(w)])for(const m of meldsOf(targetSide)){if(m.lastAttachToken===state.turnToken||(m.createdToken===state.turnToken&&targetSide===w))continue;const combined=m.cards.concat(cs),type=meldType(combined),wouldReturn=type===m.type&&(m.type==='RUN'||(m.type==='SET'&&m.cards.length===3&&combined.length===4));if(wouldReturn)return true}}return false}\nfunction hasAnyLegalAction(w){const s=sideObj(w);if(!s.newMeldUsed&&s.melds.length<2&&bestNewMeldForTurn(w))return true;return anyAttachOption(w)}",
+              'basic legality helpers',
+          )
+          repl(
+              "for(const cs of combinations(hand,k)){if(mustUid!=null&&!cs.some(c=>c.uid===mustUid))continue;if(!recoveredCardsCanReturn(cs,state.turnToken))continue;",
+              "for(const cs of combinations(hand,k)){if(mustUid!=null&&!cs.some(c=>c.uid===mustUid))continue;if(cs.some(c=>c.blockedUntilTurn===state.turnNo))continue;if(!recoveredCardsCanReturn(cs,state.turnToken))continue;",
+              'AI attach blocked-card guard',
+          )
+          repl(
+              "if(!s.newMeldUsed){const nm=bestNewMeld(hyp);if(nm&&nm.cards.some(x=>x.uid===c.uid))sc=Math.max(sc,nm.score)}",
+              "if(!s.newMeldUsed){const nm=bestNewMeldForTurn(w,hyp);if(nm&&nm.cards.some(x=>x.uid===c.uid))sc=Math.max(sc,nm.score)}",
+              'AI recovery new meld legality',
+          )
+          repl(
+              "const ex=bestExtension('enemy'),nm=!state.enemy.newMeldUsed&&state.enemy.melds.length<2?bestNewMeld(state.enemy.hand):null,rc=bestRecoverAI('enemy');",
+              "const ex=bestExtension('enemy'),nm=!state.enemy.newMeldUsed&&state.enemy.melds.length<2?bestNewMeldForTurn('enemy'):null,rc=bestRecoverAI('enemy');",
+              'AI normal new meld legality',
+          )
+          repl(
+              "if(!state.gameOver&&!rummied&&state.enemy.hand.length===0){triggerRummy('enemy',lastDiscarded?[lastDiscarded]:[],{returned:false});rummied=true}if(!rummied)settleContracts('enemy');turnEnd('enemy');",
+              "if(!state.gameOver&&!rummied&&state.enemy.hand.length===0){triggerRummy('enemy',lastDiscarded?[lastDiscarded]:[],{returned:false});rummied=true}settleContracts('enemy');turnEnd('enemy');",
+              'AI RUMMY end symmetry',
+          )
+
+          p.write_text(text, encoding='utf-8')
+          print('M4 hand-circulation patch applied')
+          PY
+      - name: Run all regression suites
+        run: |
+          node tests/rules-smoke.mjs
+          node tests/core-behavior.mjs
+          node tests/rummy-grace-joker.mjs
+          node tests/hand-circulation.mjs
+      - name: Check diff
+        run: git diff --check && git diff --stat
+      - name: Remove one-shot workflow
+        run: rm -f .github/workflows/apply-m4-hand-circulation.yml
+      - name: Commit verified patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: align stuck maintenance and deck circulation"
+          git push origin HEAD:fix/hand-circulation-m4-20260830
