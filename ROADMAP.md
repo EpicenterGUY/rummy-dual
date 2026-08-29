@@ -51,10 +51,10 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Reset transient discard-contract state whenever a card is freshly acquired from deck/discard before source-specific effects are applied
 
 ## M5 — Multi-attach UX
-- [ ] Preserve explicit selection/attach order
-- [ ] Highlight legal cards for the selected target meld
-- [ ] Show per-card +10/+15/+20/+25 preview and total
-- [ ] Preview resulting SWITCH direction
+- [x] Preserve explicit hand-card selection order and pass that order into attach resolution
+- [x] Allow a public meld to be targeted first and highlight only legal next cards for that target
+- [x] Show per-card +10/+15/+20/+25 CHAIN steps and aggregate TOTAL; SET completion previews BURST +24
+- [x] Preview the resulting `SWITCH → CPU` before committing the attach
 
 ## M6 — Combat readability
 - [ ] Improve SWITCH / DETONATE warning hierarchy
@@ -100,6 +100,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. M5: preserve explicit hand-card selection order and target a public meld before extending it.
-2. M5: highlight legal next cards for that target and show ordered CHAIN steps plus TOTAL and resulting SWITCH direction.
-3. Add executable M5 interaction regressions, then move into M6 combat readability.
+1. M6: strengthen SWITCH ownership / DETONATE danger hierarchy so the current bomb state is readable at a glance on mobile.
+2. M6: make BURST READY and RUN next-CHAIN information more prominent without adding new rules.
+3. M6: make CORE BREAK explicitly show discarded overkill / NO PIERCE, then add readability regressions.
