@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Fix ordered duplicate patch call
+      - name: Fix deterministic patch guards
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -31,13 +31,19 @@ jobs:
               raise SystemExit('helper insertion anchor missing')
           s = s.replace(anchor, helper + anchor, 1)
           lines = s.splitlines()
-          changed = 0
+          ordered_fix = 0
+          boundary_fix = 0
           for i, line in enumerate(lines):
               if "'new meld RUMMY context'" in line and line.lstrip().startswith('replace_once('):
                   lines[i] = line.replace('replace_once(', 'replace_first_of_two(', 1)
-                  changed += 1
-          if changed != 1:
-              raise SystemExit(f'expected to rewrite one ordered RUMMY patch call, got {changed}')
+                  ordered_fix += 1
+              if "if(meldsOf(w).length>=2)return'full'" in line and "block new meld on full board" not in line:
+                  lines[i] = line.replace("return'full'\"", "return'full';\"")
+                  boundary_fix += 1
+          if ordered_fix != 1:
+              raise SystemExit(f'expected one ordered RUMMY patch fix, got {ordered_fix}')
+          if boundary_fix != 1:
+              raise SystemExit(f'expected one full-board statement boundary fix, got {boundary_fix}')
           p.write_text('\n'.join(lines) + '\n', encoding='utf-8')
           PY
       - name: Apply deterministic patch
