@@ -1,0 +1,133 @@
+name: Apply M1 final rule audit
+
+on:
+  push:
+    branches:
+      - fix/m1-final-rule-audit-20260830
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Remove code-only base rules and legacy paths
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+
+          def repl(old, new, label, count=1):
+              global text
+              n = text.count(old)
+              if n != count:
+                  raise SystemExit(f'{label}: expected {count} match(es), found {n}')
+              text = text.replace(old, new, count)
+
+          repl(
+              'const CORE_HP=60,CORE_COUNT=3,MAX_HP=CORE_HP,MAX_SHIELD=40,OVERLOAD=100,DAMAGE_UNIT=5,RECOVERY_UNIT=4;',
+              'const CORE_HP=60,CORE_COUNT=3,OVERLOAD=100,RECOVERY_UNIT=4;',
+              'remove dead constants and shield cap',
+          )
+          repl(
+              "F6:{name:'회전교차로',desc:'턴당 첫 회수는 회수 횟수를 소모하지 않음. 회수한 카드는 같은 턴 다른 조합에 붙일 수 있음.',tag:'roundabout'},",
+              "F6:{name:'회전교차로',desc:'턴당 첫 회수는 회수 횟수를 소모하지 않음. 회수한 카드는 같은 턴 새 조합·비반환 행동에 다시 쓸 수 있지만, BURST/CHAIN 반환 재사용 제한은 그대로 적용.',tag:'roundabout'},",
+              'clarify roundabout recovery guard',
+          )
+
+          repl(',pendingDrawChoices:[],pendingDrawLook:0', '', 'remove legacy draw-choice state')
+          repl(',playerJustRummied:false,enemyJustRummied:false', '', 'remove obsolete generic RUMMY flags from state')
+          repl('runRetireAvailable:true,', '', 'remove legacy RUN retire side state')
+          repl('state.pendingDrawChoices=[];state.pendingDrawLook=0;', '', 'remove legacy draw-choice reset')
+          repl('state.playerJustRummied=false;state.enemyJustRummied=false;', '', 'remove obsolete RUMMY reset')
+          repl('s.runRetireAvailable=true;', '', 'remove legacy RUN-retire turn reset')
+
+          for old, label in [
+              ("function basicDrawLook(w){return 1}\n", 'basicDrawLook'),
+              ("function takeDeckChoices(w,n){const c=drawOne(w,false);return c?[c]:[]}\n", 'takeDeckChoices'),
+              ("function commitDeckChoice(w,choices,index){return choices[index]||null}\n", 'commitDeckChoice'),
+              ("function closeDrawChoice(){}\n", 'closeDrawChoice'),
+              ("function choosePlayerDeckCard(index){}\n", 'choosePlayerDeckCard'),
+              ("function renderDrawChoice(){}\n", 'renderDrawChoice'),
+              ("function startPlayerDeckChoice(){playerDraw(false)}\n", 'startPlayerDeckChoice'),
+              ("function aiBasicDeckDraw(){return{card:drawOne('enemy',false),look:1}}\n", 'aiBasicDeckDraw'),
+              ("function staleRunAge(owner,m){return 0}\n", 'staleRunAge'),
+              ("function canRetireStaleRun(){return false}\n", 'canRetireStaleRun'),
+              ("function playerRetireStaleRun(){return false}\n", 'playerRetireStaleRun'),
+              ("function retireStaleRunAI(){return false}\n", 'retireStaleRunAI'),
+              ("function playerRetireMeld(){return false}\n", 'playerRetireMeld'),
+          ]:
+              repl(old, '', f'remove legacy helper {label}')
+
+          repl(
+              "if(w==='player'){state.lastPlayerMeldType=type;state.playerJustRummied=false}else{state.lastEnemyMeldType=type;state.enemyJustRummied=false}",
+              "if(w==='player')state.lastPlayerMeldType=type;else state.lastEnemyMeldType=type",
+              'remove obsolete RUMMY flag reset from new meld',
+          )
+          repl(
+              "if(w==='player')state.playerJustRummied=true;else state.enemyJustRummied=true;",
+              '',
+              'remove obsolete RUMMY flag assignment',
+          )
+
+          old_add_shield = "function addShield(w,n){const s=sideObj(w),raw=Math.max(0,Math.round(n*RECOVERY_UNIT)),extra=(s.healedThisTurn&&s.hand.some(c=>c.tag==='healAttack'))?Math.floor(s.healedThisTurn/2):0,before=s.shield;s.shield=Math.min(MAX_SHIELD,s.shield+raw+extra);const got=s.shield-before;if(got){log(`${w==='player'?'YOU':'CPU'} 보호막 +${got}${extra?` (수혈 +${extra})`:''}${s.shield===MAX_SHIELD?' (최대)':''}`,'good');fxNode(`🛡 +${got}`,'shield',w,20);pulsePanel(w,'shield',20)}return got}"
+          new_add_shield = "function addShield(w,n){const s=sideObj(w),raw=Math.max(0,Math.round(n*RECOVERY_UNIT)),extra=(s.healedThisTurn&&s.hand.some(c=>c.tag==='healAttack'))?Math.floor(s.healedThisTurn/2):0,before=s.shield;s.shield+=raw+extra;const got=s.shield-before;if(got){log(`${w==='player'?'YOU':'CPU'} 보호막 +${got}${extra?` (수혈 +${extra})`:''}`,'good');fxNode(`🛡 +${got}`,'shield',w,20);pulsePanel(w,'shield',20)}return got}"
+          repl(old_add_shield, new_add_shield, 'remove shield hard cap')
+
+          old_status = "function statusHTML(w){const s=sideObj(w),a=[];if(s.shield){const pct=Math.max(0,Math.min(100,s.shield/MAX_SHIELD*100));a.push(`<span class=\"statChip shieldChip\"><span class=\"shieldGauge\"><i style=\"width:${pct}%\"></i></span><b>${s.shield}</b></span>`)}if(s.graceArmed)a.push('<span class=\"statChip fuseChip\">유예 준비</span>');for(const [k,n]of Object.entries(s.status))if(n){const nm={vulnerable:'취약',seal:'봉인',regen:'재생'}[k]||k;a.push(`<span class=\"statChip statusChip\">${nm} ${n}</span>`)}return a.join('')||'<span class=\"statChip\">상태 없음</span>'}"
+          new_status = "function statusHTML(w){const s=sideObj(w),a=[];if(s.shield)a.push(`<span class=\"statChip shieldChip\">🛡 <b>${s.shield}</b></span>`);if(s.graceArmed)a.push('<span class=\"statChip fuseChip\">유예 준비</span>');for(const [k,n]of Object.entries(s.status))if(n){const nm={vulnerable:'취약',seal:'봉인',regen:'재생'}[k]||k;a.push(`<span class=\"statChip statusChip\">${nm} ${n}</span>`)}return a.join('')||'<span class=\"statChip\">상태 없음</span>'}"
+          repl(old_status, new_status, 'remove capped shield gauge')
+
+          repl(
+              "function renderMelds(){const cs=selectedCards(),t=cs.length===3?meldType(cs):null,canRetireForNew=false;",
+              "function renderMelds(){const cs=selectedCards();",
+              'remove retire-only render state',
+          )
+          repl(
+              "const ok=canAttachTo(side,i,cs),note=attachReason(side,i,cs),earlyRetire=side==='player'&&canRetireStaleRun('player',i);",
+              "const ok=canAttachTo(side,i,cs),note=attachReason(side,i,cs);",
+              'remove stale RUN retire render check',
+          )
+          repl(
+              "${earlyRetire?`<button type=\"button\" class=\"pixelBtn runRetireBtn\" data-stale-retire=\"${i}\">턴 초반 · 이 RUN 정리</button>`:''}${side==='player'&&canRetireForNew?`<button type=\"button\" class=\"pixelBtn retireBtn\" data-retire-index=\"${i}\">이 조합 정리 → 새 조합 자리 만들기</button>`:''}",
+              '',
+              'remove legacy retire buttons',
+          )
+          repl(
+              "document.querySelectorAll(`#${id} [data-retire-index]`).forEach(b=>{b.onclick=e=>{e.stopPropagation();playerRetireMeld(+b.dataset.retireIndex)}});document.querySelectorAll(`#${id} [data-stale-retire]`).forEach(b=>{b.onclick=e=>{e.stopPropagation();playerRetireStaleRun(+b.dataset.staleRetire)}})",
+              '',
+              'remove legacy retire click handlers',
+          )
+          repl("closeDrawChoice();document.getElementById('overlay').classList.remove('show');newGame()", "document.getElementById('overlay').classList.remove('show');newGame()", 'remove empty reset close hook')
+          repl("closeDrawChoice();document.getElementById('overlay').classList.remove('show');newGame()", "document.getElementById('overlay').classList.remove('show');newGame()", 'remove empty replay close hook')
+
+          p.write_text(text, encoding='utf-8')
+          print('M1 final rule audit cleanup applied')
+          PY
+      - name: Run all regression suites
+        run: |
+          node tests/rules-smoke.mjs
+          node tests/core-behavior.mjs
+          node tests/rummy-grace-joker.mjs
+          node tests/hand-circulation.mjs
+          node tests/final-rule-audit.mjs
+      - name: Check diff
+        run: git diff --check && git diff --stat
+      - name: Remove one-shot workflow
+        run: rm -f .github/workflows/apply-m1-final-audit.yml
+      - name: Commit verified cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: finish final base-rule audit cleanup"
+          git push origin HEAD:fix/m1-final-rule-audit-20260830
