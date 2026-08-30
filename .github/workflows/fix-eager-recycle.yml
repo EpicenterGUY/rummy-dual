@@ -1,0 +1,33 @@
+name: Verify eager spent recycle
+on:
+  push:
+    branches: [fix/eager-spent-recycle-20260830]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/eager-spent-recycle-20260830
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply eager recycle patch
+        run: python tools/fix_eager_recycle.py
+      - name: Run regressions
+        run: |
+          node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
+          node --check /tmp/game.js
+          for f in tests/*.mjs; do node "$f"; done
+          git diff --check
+      - name: Commit verified changes
+        run: |
+          rm tools/fix_eager_recycle.py .github/workflows/fix-eager-recycle.yml
+          rmdir tools 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Recycle spent pile immediately on deck exhaustion"
+          git push origin HEAD:fix/eager-spent-recycle-20260830
