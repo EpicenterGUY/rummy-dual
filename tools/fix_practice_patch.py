@@ -17,3 +17,10 @@ for a,b in repls.items():
     if a not in ts: raise SystemExit(f'start-screen expectation missing: {a}')
     ts=ts.replace(a,b)
 t.write_text(ts)
+
+f=Path('tests/tutorial-framework.mjs')
+fs=f.read_text()
+old_mode="ok(script.includes(\"state.sessionMode='tutorial'\"), 'tutorial has its own session mode');"
+new_mode="ok(script.includes(\"newGame('tutorial')\"), 'tutorial enters through the explicit tutorial session mode');"
+if old_mode not in fs: raise SystemExit('tutorial mode expectation missing')
+f.write_text(fs.replace(old_mode,new_mode))
