@@ -1,0 +1,38 @@
+name: Verify UX1 basic SET RUN tutorial
+
+on:
+  push:
+    branches:
+      - feat/ux1-basic-set-run-tutorial-20260830
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/ux1-basic-set-run-tutorial-20260830
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Apply deterministic tutorial patch
+        run: python tools/ux1_basic_set_run_patch.py
+      - name: Run regressions
+        run: |
+          node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
+          node --check /tmp/game.js
+          for f in tests/*.mjs; do node "$f"; done
+          git diff --check
+      - name: Commit verified changes
+        run: |
+          rm tools/ux1_basic_set_run_patch.py
+          rm .github/workflows/ux1-basic-set-run.yml
+          git add -A
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Add deterministic basic SET RUN tutorial"
+          git push origin HEAD:feat/ux1-basic-set-run-tutorial-20260830
