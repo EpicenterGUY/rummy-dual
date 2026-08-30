@@ -17,5 +17,5 @@ ok(script.includes("beforeVulnerable:tutorialBefore.vulnerable")&&script.include
 ok(script.includes("expectDamage!=null&&context.dealt!==step.expectDamage")&&script.includes('expectVulnerableConsumed'),'tutorial completion checks actual status damage and lifecycle consumption');
 ok(script.includes("function tutorialSegmentInfo")&&script.includes("label:'고급 튜토리얼'"),'tutorial badge counts basic and advanced segments independently');
 ok(script.includes("recoverBtn.disabled=!rp||!tutorialAllows('recover',{plan:rp})")&&script.includes("!tutorialAllows('maintenance',{cards:cs})"),'tutorial UI only enables recover and maintenance in their lessons');
-ok(road.includes('- [x] 회수 / 정비 / 공식 상태 고급 튜토리얼')&&road.includes('- [ ] 조커 고급 튜토리얼'),'roadmap closes advanced basics while leaving Joker tutorial open');
+ok(road.includes('- [x] 회수 / 정비 / 공식 상태 고급 튜토리얼')&&road.includes('- [x] 조커 고급 튜토리얼'),'roadmap keeps advanced basics complete and now closes Joker tutorial');
 console.log('RUMMY//DUEL advanced tutorial basics regressions passed.');
