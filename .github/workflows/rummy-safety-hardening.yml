@@ -16,7 +16,16 @@ jobs:
         with:
           fetch-depth: 0
       - name: Apply safety patch
-        run: python3 .github/scripts/rummy_safety_hardening.py
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('.github/scripts/rummy_safety_hardening.py')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("    brace = src.find('{', start)\n    if brace < 0:\n", "    body_marker = src.find('){', start)\n    brace = body_marker + 1\n    if body_marker < 0:\n", 1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          python3 .github/scripts/rummy_safety_hardening.py
       - name: Run buildless regressions
         shell: bash
         run: |
