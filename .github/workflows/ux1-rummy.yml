@@ -20,12 +20,18 @@ jobs:
           python tools/ux1_rummy_patch.py
           python - <<'PY'
           from pathlib import Path
+
           p=Path('index.html')
           s=p.read_text()
           old="if(w==='player'){tutorialCheckProgress('rummy',{beforeHand:beforeReloadHand,reload,afterHand:s.hand.length});state.selected.clear();"
           new="if(w==='player'){if(typeof tutorialCheckProgress==='function')tutorialCheckProgress('rummy',{beforeHand:beforeReloadHand,reload,afterHand:s.hand.length});state.selected.clear();"
           if old not in s: raise SystemExit('missing RUMMY hook for guard refinement')
-          p.write_text(s.replace(old,new,1))
+          s=s.replace(old,new,1)
+
+          old_menu='<button id="tutorialStartBtn" class="pixelBtn startMenuBtn" type="button"><span>튜토리얼<small>전투 화면과 핵심 목표부터 익힙니다. 고정 패 실습은 순차 추가 중입니다.</small></span><span class="menuState">베타</span></button>'
+          new_menu='<button id="tutorialStartBtn" class="pixelBtn startMenuBtn" type="button"><span>튜토리얼<small>기본 조작부터 러미까지 고정 패로 직접 익힙니다.</small></span><span class="menuState">시작</span></button>'
+          if old_menu not in s: raise SystemExit('missing static tutorial menu copy')
+          p.write_text(s.replace(old_menu,new_menu,1))
 
           t=Path('tests/tutorial-attach-switch.mjs')
           ts=t.read_text()
@@ -33,6 +39,13 @@ jobs:
           new_test="ok(script.includes(\"step.id==='rummy'?'기본 튜토리얼 완료!\") && !script.includes('다음 묶음에서는 붙이기와 상대 공개 조합 이용'), 'completion coach now distinguishes final RUMMY completion from stale attach work');"
           if old_test not in ts: raise SystemExit('missing old attach tutorial completion-copy regression')
           t.write_text(ts.replace(old_test,new_test,1))
+
+          st=Path('tests/start-screen.mjs')
+          ss=st.read_text()
+          old_start="ok(html.includes('id=\"tutorialStartBtn\"') && html.includes('튜토리얼') && html.includes('준비 중'), 'tutorial is visible but honestly marked as not implemented');"
+          new_start="ok(html.includes('id=\"tutorialStartBtn\"') && html.includes('기본 조작부터 러미까지 고정 패로 직접 익힙니다.') && !html.includes('고정 패 실습은 순차 추가 중입니다.'), 'tutorial entry advertises the completed core hands-on flow');"
+          if old_start not in ss: raise SystemExit('missing outdated start-screen tutorial assertion')
+          st.write_text(ss.replace(old_start,new_start,1))
           PY
       - name: Run regressions
         run: |
