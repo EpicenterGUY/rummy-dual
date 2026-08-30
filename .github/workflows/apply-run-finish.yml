@@ -1,0 +1,49 @@
+name: Apply conditional RUN completion
+
+on:
+  push:
+    branches:
+      - fix/conditional-run-finish-20260830
+    paths:
+      - scripts/apply_run_finish.py
+      - tests/run-finish.mjs
+      - .github/workflows/apply-run-finish.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/conditional-run-finish-20260830
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply rule patch
+        run: python scripts/apply_run_finish.py
+      - name: Check JavaScript syntax
+        run: node -e "const fs=require('fs'); const h=fs.readFileSync('index.html','utf8'); const s=[...h.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)].map(m=>m[1]).join('\\n'); new Function(s); console.log('PASS: index JavaScript syntax')"
+      - name: Run regressions
+        run: |
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+      - name: Check diff
+        run: git diff --check
+      - name: Commit verified patch
+        run: |
+          rm -f scripts/apply_run_finish.py .github/workflows/apply-run-finish.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "feat: add conditional RUN completion"
+          git push origin HEAD:fix/conditional-run-finish-20260830
