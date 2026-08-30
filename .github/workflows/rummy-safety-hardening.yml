@@ -47,6 +47,11 @@ jobs:
           q=t.read_text(encoding='utf-8')
           q=q.replace("ok(html.includes('recoveredCardsCanReturn(cards,state.turnToken)'), 'attach path checks recovered-card return eligibility');", "ok(html.includes('recoveredCardsCanReturn(cards,state.turnToken,m)'), 'attach path checks destination-aware recovered-card return eligibility');", 1)
           t.write_text(q,encoding='utf-8')
+
+          t=Path('tests/safety-hardening.mjs')
+          q=t.read_text(encoding='utf-8')
+          q=q.replace("const brace=script.indexOf('{',start);let d=0;for(let i=brace;i<script.length;i++){", "const body=script.indexOf('){',start),brace=body+1;if(body<0)throw new Error(`missing body ${name}`);let d=0;for(let i=brace;i<script.length;i++){", 1)
+          t.write_text(q,encoding='utf-8')
           PY
       - name: Run buildless regressions
         shell: bash
