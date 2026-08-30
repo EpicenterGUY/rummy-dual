@@ -138,12 +138,12 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] reduced-motion 대응 및 UI2 시각 회귀 테스트 추가
 
 ### P2 — 정보 위계 / 공간 정리
-- [ ] 상단 상태/캐릭터/메뉴 밀도 축소 및 모바일 우선 재배치
-- [ ] 스위치 핵심 정보와 보조 문구를 1차/2차 정보로 분리
-- [ ] 공개 조합과 손패 사이 여백·높이·스크롤 밀도 재조정
-- [ ] 전투 기록 기본 접힘/요약 방식 검토
-- [ ] 선택 가능 카드·붙이기 가능 조합 강조를 발광보다 테두리/위치 변화 중심으로 통일
-- [ ] 360~480px 실제 모바일 폭에서 버튼/상태 문구 잘림 회귀 점검
+- [x] 상단 상태/캐릭터/메뉴 밀도 축소 및 모바일 우선 재배치 — 캐릭터 배지 + 단일 `메뉴` 드롭다운
+- [x] 스위치 핵심 정보와 보조 문구를 1차/2차 정보로 분리 — 상태/경고/코어 여유만 상시 노출, 중복 라벨/비활성 버튼 제거
+- [x] 공개 조합과 손패 사이 여백·높이·스크롤 밀도 재조정
+- [x] 전투 기록 기본 접힘/요약 방식 적용 — 기본 접힘 + 짧은 disclosure 헤더 + 펼쳤을 때만 제한 높이 스크롤
+- [x] 선택 가능 카드·붙이기 가능 조합 강조를 발광보다 테두리/위치 변화 중심으로 통일
+- [ ] 360~480px 실제 모바일 폭에서 버튼/상태 문구 잘림 회귀 점검 — 370/390px 정적 fallback과 회귀 테스트 추가, 실기기 시각 검수 남음
 
 ### P3 — 아트/브랜드 마감
 - [ ] 카드 아이콘/네임드 프레임과 새 UI 팔레트 통일
@@ -214,6 +214,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. UI2 P2: after the first casino-tone reset, reduce HUD density and clarify information hierarchy without weakening combat readability.
+1. UI2 P2: hierarchy/density pass is live; finish the 360–480px real-device visual check, then defer P3 art/brand polish until gameplay/tutorial UX is steadier.
 2. UX1 P1: connect deterministic basic controls → 세트 → 런 → 붙이기 → 상대 조합 → 스위치 → 러미 scenarios to the real engine.
 3. L10N1 + M8: continue remaining text cleanup and named-card choice/copy/timing audit in parallel; do not begin large M9/content expansion until the first ~50 named-card behaviors and UX1 P1 are both stable.
