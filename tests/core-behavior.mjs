@@ -210,7 +210,7 @@ function makeAttachContext({ type, baseCards, handCards, chain = 0, token = 7 })
   ok(capture.attacks.length === 1, 'BURST produces exactly one attack event');
   ok(capture.attacks[0].hits[0].amount === 24, 'BURST attack contributes +24 power');
   ok(enemy.melds.length === 0, 'completed 4SET retires immediately after BURST');
-  ok(capture.retired[0]?.reason.includes('BURST'), '4SET retirement is explicitly caused by BURST resolution');
+  ok(capture.retired[0]?.reason.includes('버스트'), '4SET retirement is explicitly caused by BURST resolution');
 }
 
 // RUN multi-attach: 8-9-10 onto 5-6-7 is +10 +15 +20 = 45, one return, CHAIN 3.
