@@ -13,7 +13,7 @@ new Function(script);
 ok(html.includes('id="startScreen"'), 'dedicated start screen shell exists');
 ok(html.includes('세트와 런으로 폭탄을 키워 스위치를 넘기는 1:1 러미 배틀'), 'start screen uses the locked Korean one-line pitch');
 ok(html.includes('id="battleStartBtn"'), 'start screen exposes battle start');
-ok(html.includes('id="tutorialStartBtn"') && html.includes('기본 조작부터 러미까지 고정 패로 직접 익힙니다.') && !html.includes('고정 패 실습은 순차 추가 중입니다.'), 'tutorial entry advertises the completed core hands-on flow');
+ok(html.includes('id="tutorialStartBtn"') && html.includes('기본 조작부터 폭발·러미까지 고정 패로 직접 익힙니다.') && !html.includes('고정 패 실습은 순차 추가 중입니다.'), 'tutorial entry advertises the completed core hands-on flow');
 ok(html.includes('id="startCodexBtn"'), 'start screen reuses the card codex entry');
 ok(html.includes('id="settingsBtn"') && html.includes('disabled'), 'settings entry is explicitly disabled until implemented');
 ok(html.includes('id="startProgressBtn"') && html.includes('id="startRulesBtn"'), 'existing progress and rules overlays remain reachable from the start screen');
@@ -24,13 +24,13 @@ ok(html.includes('<span class="menuState">시작</span>') && html.includes('<spa
 ok(script.includes("sessionMode:'menu'"), 'global state starts in menu session mode');
 ok(script.includes('battleId:0'), 'global state tracks a monotonic battle session id');
 ok(script.includes('state.battleId++'), 'each new battle invalidates delayed work from older battles');
-ok(script.includes("state.sessionMode==='battle'&&state.battleId===battleId"), 'delayed battle callbacks are guarded by mode and battle id');
+ok(script.includes("isLiveCombatSession()&&state.battleId===battleId"), 'delayed battle callbacks are guarded by mode and battle id');
 ok(script.includes('tutorialPromptSeen:false') && script.includes('tutorialCompleted:false'), 'progress schema carries tutorial flags');
 ok(script.includes("tutorialPromptSeen:typeof x.tutorialPromptSeen==='boolean'?x.tutorialPromptSeen:false"), 'legacy progress normalizes missing tutorial prompt flag');
 ok(script.includes("tutorialCompleted:typeof x.tutorialCompleted==='boolean'?x.tutorialCompleted:false"), 'legacy progress normalizes missing tutorial completion flag');
 ok(script.includes("function showStartScreen()"), 'shared menu routing helper exists');
 ok(script.includes("function startBattle()"), 'battle entry is routed through an explicit helper');
-ok(script.includes("state.sessionMode='battle'"), 'battle entry switches session mode');
+ok(script.includes("newGame('battle')"), 'battle entry switches session mode');
 ok(!script.includes('renderProgress();newGame();'), 'page load no longer jumps directly into a random battle');
 ok(script.includes('renderProgress();showStartScreen();'), 'page load lands on the start screen');
 
