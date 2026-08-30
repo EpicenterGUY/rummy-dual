@@ -77,7 +77,8 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] First correctness pass: fix CPU new-meld crash, duplicate CJ recovery, Phoenix one-time return, and revive Gap Run / Middle Manager placeholder behavior
 - [x] Synchronize deterministic card text for Revenge Blade, Ambulance, Fence, Golden Hand, Money Changer, Recursive Function, Connection Link, Branch Link and Copier
 - [x] Keep direct SWITCH manipulation to a minority of the audited pool with an executable ratio guard
-- [ ] Finish dead/partial-effect audit for choice-heavy and timing-heavy cards such as Death Sentence, Doppelganger support interactions, Tuner, and role-sensitive understudy behavior
+- [x] Second correctness pass: activate Death Sentence discard targeting, Tuner cross-meld recovery, role-sensitive Understudy retirement, and executable Doppelganger SET support coverage
+- [ ] Finish remaining choice/copy/timing audit and per-card regressions before declaring the first ~50 behavior-stable
 - [ ] Favor meld mutation, recovery, movement, discard, defense, RUMMY and timing interactions
 
 ## M9 — Jokers and fields
@@ -109,6 +110,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. M8: finish the remaining dead/partial named effects, especially Death Sentence (`seal1`) and Tuner (`alternateBonus`), before adding more cards.
-2. M8: audit copy/choice-heavy cards and role-sensitive return behavior with executable per-card regressions instead of text-only promises.
-3. After the first ~50 are behavior-stable, rebalance frequency/strength and only then expand content or move to M9 Jokers/fields.
+1. M8: finish the remaining choice/copy/timing-heavy named-card audit and add executable regressions for each behavior that still depends on implicit ordering.
+2. M8: review first-50 strength/frequency outliers only after behavior contracts are stable; keep direct SWITCH manipulation a minority.
+3. When the first ~50 pass the behavior audit, mark M8 stabilization complete and move to M9 Joker/field identity cleanup before larger content expansion.
