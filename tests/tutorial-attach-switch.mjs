@@ -18,5 +18,6 @@ ok(script.includes("const beforePower=state.switchPower,beforeTarget=state.switc
 ok(script.includes("tutorialCheckProgress('attach',{cards:cs,targetSide:target.side") && script.includes("afterPower:state.switchPower,afterTarget:state.switchTarget"), 'tutorial completion checks the actual resulting SWITCH state and power');
 ok(script.includes("entry.classList.add('tutorialTarget')") && script.includes(".attachHereBtn[data-attach-side=\"${side}\"]"), 'tutorial highlights the intended meld and real attach button');
 ok(roadmap.includes('- [x] 붙이기 튜토리얼') && roadmap.includes('- [x] 상대 공개 조합 붙이기 체험') && roadmap.includes('- [x] 스위치 튜토리얼'), 'UX1 roadmap records attach/opponent/SWITCH lessons complete');
+ok(script.includes('여기까지 완료했습니다. 다음 실습은 러미입니다.') && !script.includes('다음 묶음에서는 붙이기와 상대 공개 조합 이용'), 'completion coach points to RUMMY instead of stale attach work');
 
 console.log('RUMMY//DUEL deterministic attach/opponent/SWITCH tutorial regressions passed.');
