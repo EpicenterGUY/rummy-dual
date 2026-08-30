@@ -1,0 +1,21 @@
+import fs from 'node:fs';
+const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
+const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
+new Function(script);
+ok(html.includes('id="advancedTutorialBtn"')&&html.includes('고급 튜토리얼 · 기본 완료 후'),'start screen exposes a locked advanced tutorial entry');
+ok(script.includes("function startAdvancedTutorial(){if(!progress.tutorialCompleted")&&script.includes("startTutorial('recover')"),'advanced tutorial is gated by basic completion and starts at recover');
+ok(script.includes("{id:'rummy'")&&script.includes("completeOn:'rummy',stopAfter:true"),'basic tutorial still stops after RUMMY');
+for(const id of ['recover','maintenance','status'])ok(script.includes(`{id:'${id}'`),`advanced tutorial registers ${id}`);
+ok(script.includes("scenario:'recover'")&&script.includes("makeTutorialMeld('player','RUN'")&&script.includes("makeTutorialCard('C','7','recoverCard','player')"),'recover scenario uses a real four-card RUN with a designated recoverable end');
+ok(script.includes("scenario:'maintenance'")&&script.includes("makeTutorialCard('C','Q','maintenanceSwap')")&&script.includes("makeTutorialCard('S','A','maintenanceDraw')"),'maintenance scenario deterministically swaps Q clubs into A spades');
+ok(script.includes("applyOfficialStatus('player',p,'vulnerable',1,{silent:true})")&&script.includes("state.switchPower=8"),'status scenario uses the official vulnerable engine with a fixed bomb');
+ok(script.includes("tutorialAllows('boardSelect',{card:c,targetSide})")&&script.includes("tutorialCheckProgress('recover',{card:c,targetSide:plan.side,beforeChain,afterChain:m.chain||0})"),'recover action is gated and completed through the real playerRecover path');
+ok(script.includes("tutorialAllows('maintenance',{cards:cs})")&&script.includes("tutorialCheckProgress('maintenance',{sent:cs,got})"),'maintenance action is gated and completed through the real playerMaintenance path');
+ok(script.includes("beforeVulnerable:tutorialBefore.vulnerable")&&script.includes("afterVulnerable:officialStatusValue('player',s,'vulnerable')"),'DETONATE tutorial context observes vulnerable consumption');
+ok(script.includes("expectDamage!=null&&context.dealt!==step.expectDamage")&&script.includes('expectVulnerableConsumed'),'tutorial completion checks actual status damage and lifecycle consumption');
+ok(script.includes("function tutorialSegmentInfo")&&script.includes("label:'고급 튜토리얼'"),'tutorial badge counts basic and advanced segments independently');
+ok(script.includes("recoverBtn.disabled=!rp||!tutorialAllows('recover',{plan:rp})")&&script.includes("!tutorialAllows('maintenance',{cards:cs})"),'tutorial UI only enables recover and maintenance in their lessons');
+ok(road.includes('- [x] 회수 / 정비 / 공식 상태 고급 튜토리얼')&&road.includes('- [ ] 조커 고급 튜토리얼'),'roadmap closes advanced basics while leaving Joker tutorial open');
+console.log('RUMMY//DUEL advanced tutorial basics regressions passed.');
