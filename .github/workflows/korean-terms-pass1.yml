@@ -27,6 +27,7 @@ jobs:
           sed -i "/selection strip meld/d" scripts/apply_korean_terms_pass1.py
           sed -i 's/        raise SystemExit(f"{label}: expected at least {minimum} match(es), got {count}")/        print(f"WARN: {label}: expected at least {minimum} match(es), got {count}"); return text/' scripts/apply_korean_terms_pass1.py
           python scripts/apply_korean_terms_pass1.py
+          python scripts/patch_korean_tests_extra.py
       - name: Run regressions
         run: |
           for f in tests/*.mjs; do
@@ -37,6 +38,7 @@ jobs:
       - name: Commit verified changes
         run: |
           rm -f scripts/apply_korean_terms_pass1.py
+          rm -f scripts/patch_korean_tests_extra.py
           rm -f .github/workflows/korean-terms-pass1.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
