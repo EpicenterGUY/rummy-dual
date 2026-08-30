@@ -74,7 +74,10 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 
 ## M8 — Named cards
 - [ ] Stabilize first ~50 named cards
-- [ ] Keep direct SWITCH manipulation to a minority of the pool
+- [x] First correctness pass: fix CPU new-meld crash, duplicate CJ recovery, Phoenix one-time return, and revive Gap Run / Middle Manager placeholder behavior
+- [x] Synchronize deterministic card text for Revenge Blade, Ambulance, Fence, Golden Hand, Money Changer, Recursive Function, Connection Link, Branch Link and Copier
+- [x] Keep direct SWITCH manipulation to a minority of the audited pool with an executable ratio guard
+- [ ] Finish dead/partial-effect audit for choice-heavy and timing-heavy cards such as Death Sentence, Doppelganger support interactions, Tuner, and role-sensitive understudy behavior
 - [ ] Favor meld mutation, recovery, movement, discard, defense, RUMMY and timing interactions
 
 ## M9 — Jokers and fields
@@ -106,6 +109,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. M8: audit the first ~50 named cards against the locked rules, normalized statuses and current effect timings; fix text/implementation mismatches before adding more content.
-2. M8: rebalance the pool so direct SWITCH/power manipulation remains a minority and meld/recovery/discard/defense/RUMMY interactions carry most variety.
-3. Gradually migrate repeated named-card effect patterns onto the M7 action/event vocabulary only where it reduces duplication without changing behavior.
+1. M8: finish the remaining dead/partial named effects, especially Death Sentence (`seal1`) and Tuner (`alternateBonus`), before adding more cards.
+2. M8: audit copy/choice-heavy cards and role-sensitive return behavior with executable per-card regressions instead of text-only promises.
+3. After the first ~50 are behavior-stable, rebalance frequency/strength and only then expand content or move to M9 Jokers/fields.
