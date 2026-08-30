@@ -20,7 +20,9 @@ jobs:
         with:
           node-version: 22
       - name: Apply UX1 feedback patch
-        run: python3 scripts/ux1_feedback_patch.py
+        run: |
+          python3 scripts/ux1_feedback_patch.py
+          python3 scripts/ux1_feedback_compat.py
       - name: Run regressions
         run: |
           node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
@@ -29,7 +31,7 @@ jobs:
           git diff --check
       - name: Commit verified changes
         run: |
-          rm scripts/ux1_feedback_patch.py
+          rm scripts/ux1_feedback_patch.py scripts/ux1_feedback_compat.py
           rm .github/workflows/ux1-feedback.yml
           git config user.name "EpicenterGUY"
           git config user.email "mintbamtol7@gmail.com"
