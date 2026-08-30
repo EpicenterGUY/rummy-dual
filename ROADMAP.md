@@ -8,7 +8,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 ## M0 — Rule lock
 - [x] 3 CORE × 60, no overkill pierce
 - [x] SET 3 → BURST READY; fourth suit → +24 and retire
-- [x] RUN CHAIN +10 / +15 / +20 / +25
+- [x] RUN CHAIN +10 / +15 / +20 / +25; CHAIN 4+ RUN may be voluntarily `런 완주`ed by its controller on their own turn to free the slot, while keeping it allows continued +25 extensions
 - [x] One central uncapped SWITCH; 100+ is display-only OVERLOAD
 - [x] One normal SWITCH return per turn
 - [x] Public meld cap 2 per player; no free base meld/RUN disposal
@@ -24,6 +24,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Remove discard five-card cap
 - [x] Make AI respect the two-meld cap
 - [x] Audit remaining code-only base rules: remove the hidden shield-40 cap, obsolete retire/draw-preview routes, and superseded generic RUMMY flags; clarify Roundabout against the recovery-return guard
+- [x] Add conditional RUN completion: controller-only at CHAIN 4+, no bonus power/SWITCH movement, slot opens immediately, continuation remains +25 if not completed; AI and stuck-state logic respect it
 
 ## M2 — Confirmed bug fixes
 - [x] Harden invalid/legacy selected character progress data
