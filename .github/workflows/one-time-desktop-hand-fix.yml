@@ -1,0 +1,83 @@
+name: One-time desktop hand controls visibility fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-desktop-hand-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-desktop-hand:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch desktop hand layout
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          marker = '/* UI2 P2 regression · desktop hand controls visibility */'
+          if marker in text:
+              print('Patch already present; nothing to do.')
+              raise SystemExit(0)
+
+          patch = r'''
+
+          /* UI2 P2 regression · desktop hand controls visibility */
+          @media (min-width:1200px){
+          .main{grid-template-rows:64px minmax(112px,19vh) minmax(128px,1fr) minmax(240px,29vh) 32px}
+          .handZone{overflow:hidden}
+          .hand{min-height:0}
+          .mulliganBar{margin-top:2px;padding:5px 7px}
+          .mulliganText{margin-bottom:4px}
+          .mulliganActions .pixelBtn{min-height:32px;padding:5px 7px}
+          .mulliganBar.show + .controls{display:none}
+          .controls .pixelBtn{min-height:32px;padding:5px 7px}
+          }
+          @media (min-width:1200px) and (max-height:760px){
+          .main{grid-template-rows:52px minmax(92px,15vh) minmax(96px,1fr) 220px 28px}
+          .mulliganBar{margin-top:1px;padding:4px 6px}
+          .mulliganText{margin-bottom:3px;font-size:9px}
+          .mulliganActions .pixelBtn{min-height:29px;padding:4px 6px;font-size:10px}
+          }
+          '''
+
+          needle = '\n</style>'
+          if needle not in text:
+              raise SystemExit('Could not find </style> insertion point')
+          text = text.replace(needle, patch + needle, 1)
+          path.write_text(text, encoding='utf-8')
+
+          checks = [
+              marker,
+              '.mulliganBar.show + .controls{display:none}',
+              'minmax(240px,29vh)',
+              '220px 28px',
+          ]
+          for check in checks:
+              assert check in text, check
+          print('Desktop hand control visibility patch applied.')
+          PY
+
+      - name: Commit fix
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo 'No index.html changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'fix: keep desktop hand controls visible'
+          git push origin HEAD:main
