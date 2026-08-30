@@ -1,4 +1,4 @@
-name: One-time unfolded foldable viewport layout
+name: One-time foldable card readability refinement
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  patch-fold-layout:
+  patch-fold-readability:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Patch unfolded foldable layout
+      - name: Patch foldable readability
         shell: bash
         run: |
           python - <<'PY'
@@ -26,36 +26,54 @@ jobs:
 
           path = Path('index.html')
           text = path.read_text(encoding='utf-8')
-          marker = '/* UI2 P2.5 · unfolded foldable viewport fit */'
+          marker = '/* UI2 P2.5 · foldable card readability refinement */'
           if marker in text:
-              print('Foldable viewport patch already present; nothing to do.')
+              print('Foldable readability patch already present; nothing to do.')
               raise SystemExit(0)
 
           patch = r'''
 
-          /* UI2 P2.5 · unfolded foldable viewport fit */
+          /* UI2 P2.5 · foldable card readability refinement */
           @media (min-width:600px) and (max-width:899px){
-          html,body{width:100%;height:100dvh;min-width:0;overflow:hidden;font-family:"Pretendard Variable","Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif}
-          body{display:block;letter-spacing:-.012em}
-          #app{width:100vw!important;max-width:none;height:100dvh;min-height:0;overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr)}
-          #app:before{max-width:none}
-          .topbar{padding:6px 10px 4px}.logo{font-size:18px}.sub{font-size:8px}.topActions{gap:4px}.topActions .pixelBtn{padding:4px 6px;font-size:8px}.badge{padding:3px 5px;font-size:8px}
-          .main{height:100%;min-height:0;overflow:hidden;padding:0 7px 7px;display:grid;grid-template-columns:minmax(190px,.78fr) minmax(0,1.32fr) minmax(150px,.58fr);grid-template-rows:46px 64px 92px minmax(0,1fr) 196px 28px;grid-template-areas:"status status status" "switch switch switch" "enemy meld detail" "arena meld detail" "hand hand hand" "log log log";gap:5px;align-items:stretch}
-          .main>*{min-width:0;min-height:0}.status{grid-area:status;height:100%;grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);gap:5px}.initiativeBoard{grid-area:switch}.enemyZone{grid-area:enemy}.arena{grid-area:arena}.meldZone{grid-area:meld}.handZone{grid-area:hand}.detail{grid-area:detail}.log{grid-area:log}
-          .hpPanel{padding:4px 7px}.hpHead{font-size:9px}.hpBar{height:8px;margin-top:3px}.mid{padding:4px 3px;font-size:8px}.mid b{font-size:14px;margin-top:1px}.combatMeta{gap:3px;margin-top:2px}.statChip{font-size:6px;padding:1px 3px}
-          .initiativeBoard{height:100%;min-height:0;padding:5px 8px;overflow:hidden}.initiativeLabel{font-size:8px}.initiativeState{font-size:15px;line-height:1.05}.switchAlert{font-size:8px;line-height:1.2}.initiativeRule{font-size:7px;line-height:1.2}.strongAttackBtn{font-size:7px;padding:3px 6px}
-          .enemyZone{height:100%;min-height:0;padding:5px 7px;overflow:hidden}.zoneTitle{font-size:8px;margin-bottom:3px}.backRow{min-height:0;height:calc(100% - 18px);justify-content:center;align-items:center;padding-left:0}.backRow .cardBack{width:26px;height:38px;margin-left:-8px}.backRow .cardBack:nth-child(n+7){display:block}
-          .arena{height:100%;min-height:0;padding:4px 6px;overflow:hidden;display:flex;align-items:center}.arenaGrid{width:100%;gap:3px}.pileVisual{width:56px;height:82px}.deckStackLayer{width:48px;height:72px;left:4px;top:4px}.deckFace{inset:6px 4px 4px 6px}.discardFace{inset:4px}.discardFace>div{width:48px!important;height:73px!important}.discardEmpty{width:48px;height:73px;font-size:6px;padding:3px}.spentPile{width:56px;height:82px}.spentPile:before,.spentPile:after{width:42px;height:62px}.spentMark{font-size:7px}.pileMeta{min-height:20px;font-size:7px}.pileMeta b{font-size:10px}.pileRule,.drawPath{font-size:6px}.phaseText,.fieldStrip{font-size:7px;padding:3px 5px}.centerActions{gap:3px}.centerActions .pixelBtn{font-size:7px;padding:4px 6px}
-          .meldZone{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:5px 6px}.meldZone>.zoneTitle{flex:0 0 auto}.meldRows{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.meldSide{height:100%;min-height:0;overflow:auto;padding:4px}.meldSideTitle{font-size:8px;margin-bottom:3px}.meldEntry{padding:4px;margin-bottom:4px}.meldEntryHead{font-size:8px;margin-bottom:3px}.meldNote,.needLine,.targetHint,.attackReadout{font-size:7px;line-height:1.25}.meldCardRow{min-height:0;gap:3px;padding:2px 0 3px}.meldMiniCard{flex:0 0 40px;width:40px;height:60px}.meldMiniCard .corner{font-size:8px}.meldMiniCard .centerSuit{font-size:22px}.meldMiniCard .namedMark{font-size:5px}.attachHereBtn,.retireBtn{font-size:7px!important;padding:4px 5px!important}
-          .detail{height:100%;min-height:0;overflow:auto;display:block;padding:6px 7px}.detailCard{display:none}.detailTitle{font-size:9px}.detailMeta{font-size:7px;margin-top:2px}.detailText{font-size:8px;line-height:1.35;margin-top:3px}.detailTip{display:none}.tendencyLine{font-size:7px;margin-top:2px}
-          .handZone{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:5px 7px}.handTop{flex:0 0 auto;align-items:center}.handTitle{font-size:10px}.handSub{font-size:8px;line-height:1.2}.hand{flex:1 1 auto;min-height:0;height:auto;gap:5px;padding:4px 5px 2px;align-items:center;justify-content:safe center;overflow-x:auto;overflow-y:hidden}.cardBtn{flex:0 0 70px;width:70px;height:105px}.cardBtn .corner{font-size:11px}.cardBtn .centerSuit{font-size:32px}.cardBtn .namedMark{font-size:6px}.selectionStrip{flex:0 0 auto;margin:2px 0;padding:3px 5px;font-size:7px;line-height:1.2}.controls{flex:0 0 auto;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}.controls .pixelBtn{min-width:0;min-height:29px;padding:4px 5px;font-size:8px}.mulliganBar{flex:0 0 auto;margin-top:2px;padding:4px 5px}.mulliganText{font-size:7px;margin-bottom:3px}.mulliganActions{gap:4px}.mulliganActions .pixelBtn{min-height:29px;padding:4px 5px;font-size:8px}.mulliganBar.show + .controls{display:none}
-          details.log{height:100%;min-height:0;overflow:hidden;padding:0 7px}details.log>summary{height:28px;min-height:28px;padding:5px 0;font-size:8px}details.log[open]{position:fixed;z-index:1460;left:8px;right:8px;bottom:8px;width:auto;height:auto;max-height:38dvh;padding:6px 9px;background:#20292ef5;box-shadow:0 12px 32px #0008}details.log[open] #log{max-height:calc(38dvh - 42px);overflow:auto}.logLine{font-size:8px;line-height:1.35}
-          .tutorialCoach,.practiceCoach{position:fixed;z-index:1450;top:46px;left:8px;right:8px;max-height:calc(100dvh - 56px);overflow:auto}
-          .startScreen{width:100vw;min-height:100dvh;padding:18px}.startShell{width:min(100%,540px)}
+          /* The unfolded screen is wide enough for the full hand, but not tall enough for desktop-sized cards. */
+          .main{grid-template-rows:46px 60px 88px minmax(0,1fr) 204px 26px}
+          .handZone{padding:4px 7px 5px}
+          .handTop{min-height:20px}
+          .hand{gap:5px;padding:2px 5px 1px;overflow-x:auto;overflow-y:hidden;align-items:center}
+          .cardBtn{flex:0 0 64px;width:64px;height:96px}
+          .cardBtn.selected{transform:translateY(-4px)}
+          .cardBtn .corner{font-size:10px;left:5px;top:5px}.cardBtn .corner.bottom{right:5px;bottom:5px;left:auto;top:auto}
+          .cardBtn .centerSuit{font-size:29px}.cardBtn .namedMark{font-size:5.5px;bottom:10px;padding:2px 1px}.cardBtn .named:after{font-size:5px;right:3px;top:3px;padding:0 2px}
+          .selectionStrip{margin:1px 0;padding:2px 5px;font-size:6.5px;line-height:1.15}
+          .mulliganBar{margin-top:1px;padding:3px 5px}.mulliganText{font-size:6.5px;line-height:1.2;margin-bottom:2px}.mulliganActions .pixelBtn{min-height:27px;padding:3px 5px;font-size:7.5px}
+          .handZone:has(.mulliganBar.show) .hand{flex:0 0 101px;min-height:101px;height:101px}
+
+          /* Pile labels should stay secondary to the actual cards. */
+          .deckGlyph{font-size:9px;line-height:1.02}
+          .spentMark{font-size:6px;line-height:1.12}
+          .pileMeta{min-height:17px;font-size:6px;line-height:1.12}
+          .pileMeta b{font-size:8px;margin-left:1px}
+          .pileRule,.drawPath{font-size:5.5px;line-height:1.1}
+
+          /* Long RUNs/SETs progressively use smaller board cards before falling back to local horizontal scroll. */
+          .meldCardRow{overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scroll-snap-type:x proximity}
+          .meldMiniCard{scroll-snap-align:start}
+          .meldCardRow:has(.meldMiniCard:nth-child(7)){gap:2px}
+          .meldCardRow:has(.meldMiniCard:nth-child(7)) .meldMiniCard{flex-basis:36px;width:36px;height:54px}
+          .meldCardRow:has(.meldMiniCard:nth-child(7)) .meldMiniCard .corner{font-size:7px}
+          .meldCardRow:has(.meldMiniCard:nth-child(7)) .meldMiniCard .centerSuit{font-size:19px}
+          .meldCardRow:has(.meldMiniCard:nth-child(9)){gap:1px}
+          .meldCardRow:has(.meldMiniCard:nth-child(9)) .meldMiniCard{flex-basis:29px;width:29px;height:44px}
+          .meldCardRow:has(.meldMiniCard:nth-child(9)) .meldMiniCard .corner{font-size:6px;left:3px;top:3px}
+          .meldCardRow:has(.meldMiniCard:nth-child(9)) .meldMiniCard .corner.bottom{right:3px;bottom:3px;left:auto;top:auto}
+          .meldCardRow:has(.meldMiniCard:nth-child(9)) .meldMiniCard .centerSuit{font-size:16px}
+          .meldCardRow:has(.meldMiniCard:nth-child(9)) .meldMiniCard .namedMark{display:none}
           }
           @media (min-width:600px) and (max-width:899px) and (max-height:680px){
-          .main{grid-template-rows:42px 56px 80px minmax(0,1fr) 178px 26px;gap:4px;padding-bottom:5px}
-          .topbar{padding-top:4px;padding-bottom:3px}.initiativeBoard{padding:4px 7px}.initiativeRule{display:none}.enemyZone{padding:4px 6px}.pileVisual{width:50px;height:73px}.deckStackLayer{width:43px;height:64px}.discardFace>div{width:43px!important;height:65px!important}.discardEmpty{width:43px;height:65px}.spentPile{width:50px;height:73px}.spentPile:before,.spentPile:after{width:38px;height:56px}.cardBtn{flex-basis:64px;width:64px;height:96px}.controls .pixelBtn,.mulliganActions .pixelBtn{min-height:27px;padding:3px 4px;font-size:7px}.selectionStrip{font-size:6px}.meldMiniCard{flex-basis:36px;width:36px;height:54px}
+          .main{grid-template-rows:42px 54px 76px minmax(0,1fr) 188px 24px}
+          .cardBtn{flex-basis:59px;width:59px;height:88px}.cardBtn .centerSuit{font-size:27px}
+          .handZone:has(.mulliganBar.show) .hand{flex-basis:93px;min-height:93px;height:93px}
+          .deckGlyph{font-size:8px}.pileMeta{font-size:5.5px}.pileMeta b{font-size:7px}.pileRule,.drawPath{font-size:5px}
           }
           '''
 
@@ -65,24 +83,22 @@ jobs:
           text = text.replace(needle, patch + needle, 1)
           path.write_text(text, encoding='utf-8')
 
-          checks = [
+          for check in [
               marker,
-              '@media (min-width:600px) and (max-width:899px)',
-              'height:100dvh;min-height:0;overflow:hidden;display:grid',
-              'grid-template-areas:"status status status" "switch switch switch" "enemy meld detail" "arena meld detail" "hand hand hand" "log log log"',
-              'grid-template-columns:repeat(6,minmax(0,1fr))',
-              '.mulliganBar.show + .controls{display:none}',
-          ]
-          for check in checks:
+              '.handZone:has(.mulliganBar.show) .hand',
+              '.meldCardRow:has(.meldMiniCard:nth-child(9))',
+              '.deckGlyph{font-size:9px',
+              'grid-template-rows:46px 60px 88px minmax(0,1fr) 204px 26px',
+          ]:
               assert check in text, check
-          print('Unfolded foldable viewport patch applied.')
+          print('Foldable card readability patch applied.')
           PY
 
       - name: Run core regression test
         shell: bash
         run: node tests/core-behavior.mjs
 
-      - name: Commit foldable layout
+      - name: Commit foldable readability
         shell: bash
         run: |
           if git diff --quiet -- index.html; then
@@ -92,5 +108,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'fix: fit unfolded foldable battle into viewport'
+          git commit -m 'fix: refine foldable cards and long melds'
           git push origin HEAD:main
