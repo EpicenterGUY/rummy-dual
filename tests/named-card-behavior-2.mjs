@@ -36,6 +36,8 @@ function card(suit,rank,extra={}){return{uid:`${suit}${rank}-${Math.random()}`,s
   ctx.recordFlexibleSuitRoles({type:'RUN',cards:[card('C',10),card('C','J'),off]});
   ok(natural.flexSuitOffSuit===false,'Understudy stays spent when it served as natural hearts');
   ok(off.flexSuitOffSuit===true,'Understudy records an off-heart suit role');
+  const fallback=card('H','Q',{tag:'flexSuit'});ctx.recordFlexibleSuitRoles({type:'RUN',cards:[card('C',10,{tag:'smugglerBridge'}),fallback,card('D','J',{tag:'smuggledSuit'})]});
+  ok(fallback.flexSuitOffSuit===true,'Understudy mirrors RUN target-suit fallback when every real card is suit-flexible');
 }
 
 // Understudy retirement follows the recorded role even if the meld is controlled by the opponent.
