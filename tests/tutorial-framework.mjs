@@ -32,7 +32,7 @@ ok(script.includes('function exitTutorial()'), 'tutorial exit helper exists');
 ok(script.includes('progress.tutorialPromptSeen=true;saveProgress()'), 'entering tutorial records that the first-run prompt was handled');
 ok(script.includes("document.getElementById('firstRunBattleBtn').onclick=()=>{progress.tutorialPromptSeen=true;saveProgress();"), 'direct battle dismisses only the prompt');
 ok(!/startTutorial[\s\S]{0,500}tutorialCompleted\s*=\s*true/.test(script), 'intro framework does not falsely mark the full tutorial complete');
-ok(script.includes("state.sessionMode='tutorial'"), 'tutorial has its own session mode');
+ok(script.includes("newGame('tutorial')"), 'tutorial enters through the explicit tutorial session mode');
 ok(script.includes("state.phase='tutorial'"), 'onboarding intro blocks normal battle actions until a scenario is active');
 ok(html.includes('.tutorialCoach') && !html.includes('.tutorialCoach{position:fixed'), 'coach stays in document flow instead of covering cards');
 ok(html.includes('@media(max-width:390px)') && html.includes('.tutorialCoachActions'), 'tutorial controls have mobile layout handling');
