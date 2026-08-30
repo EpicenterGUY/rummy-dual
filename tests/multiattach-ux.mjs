@@ -68,7 +68,7 @@ ok(html.includes('selectionOrder:[]'), 'game state stores explicit hand selectio
 ok(html.includes("targeted?'target':''"), 'selected public meld receives the existing target visual state');
 ok(html.includes('canContinueTargetSelection'), 'targeted meld drives legal-next-card highlighting');
 ok(html.includes('blockedUntilTurn===state.turnNo'), 'player attach UI respects current-turn blocked cards');
-ok(html.includes('SWITCH → CPU'), 'multi-attach preview explicitly shows the resulting SWITCH direction');
-ok(html.includes('TOTAL +${p.total}'), 'multi-attach preview renders an aggregate total');
+ok(html.includes('스위치 → 상대'), 'multi-attach preview explicitly shows the resulting SWITCH direction');
+ok(html.includes('합계 +${p.total}'), 'multi-attach preview renders an aggregate total');
 
 console.log('RUMMY//DUEL multi-attach UX regression tests passed.');

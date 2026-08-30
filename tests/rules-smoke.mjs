@@ -42,7 +42,7 @@ ok(html.includes('같은 종류면 보호막 12.'), 'Chain Reaction text matches
 ok(html.includes('jokerLastDetonateReduction=15'), 'Last Laugh DETONATE reduction is implemented');
 ok(html.includes('if(jokerLast&&opts.returned)'), 'Last Laugh bonus cycle requires a returning RUMMY');
 ok(html.includes("addSwitchPower(w,amount,label,other(w))"), 'SWITCH returns evaluate CORE LETHAL against the post-return target');
-ok(html.includes('회수한 카드는 같은 턴 BURST/CHAIN 반환 재료로 다시 사용할 수 없습니다'), 'rules UI documents the recovery return guard');
+ok(html.includes('회수한 카드는 같은 턴 버스트/체인 반환 재료로 다시 사용할 수 없습니다'), 'rules UI documents the recovery return guard');
 ok(html.includes('recoverReturnOverrideToken'), 'named recovery return exception has an explicit runtime token');
 ok(html.includes('recoveredCardsCanReturn(cards,state.turnToken)'), 'attach path checks recovered-card return eligibility');
 ok(!html.includes('const ex=bestExtensionFromHand(w,hyp,c.uid);if(ex)sc=Math.max(sc,ex.score+0.5)'), 'AI no longer values base recovery by illegal same-turn return reuse');

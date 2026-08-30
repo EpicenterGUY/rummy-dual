@@ -139,17 +139,17 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] CORE / CORE BREAK / CORE LETHAL: `코어 / 코어 파괴 / 코어 파괴 가능`
 
 ### 실제 텍스트 적용
-- [ ] 일반 UI 용어 한국어화 (`YOU/PLAYER/CPU/NEXT/TOTAL` 등)
-- [ ] 전투 배너/경고 문구 한국어화 (`CORE BREAK`, `DETONATE`, `OVERLOAD`, `NO PIERCE` 등)
+- [x] 일반 UI 용어 한국어화 1차 (`YOU/PLAYER/CPU/NEXT/TOTAL` 등 전투 핵심 노출 제거)
+- [x] 전투 배너/경고 문구 한국어화 1차 (`코어 파괴`, `폭발`, `과부하`, `관통 없음`)
 - [ ] 카드 효과문의 한영 혼용 제거
 - [ ] 카드 효과 문체 통일
 - [ ] 튜토리얼 용어 반영
-- [ ] 도움말 / 규칙 설명 용어 반영
+- [x] 도움말 / 규칙 설명 핵심 용어 반영 + `런 완주` 규칙 동기화
 - [ ] 시작창 메뉴 한국어화
-- [ ] 기존 규칙 오버레이의 공식 용어집 갱신
+- [x] 기존 규칙 오버레이의 공식 용어집 갱신
 - [ ] 중복 / 폐기된 옛 용어 제거
 - [ ] 모바일 UI에서 긴 한국어 표현 잘림 점검
-- [ ] 사용자 노출 문자열 회귀 테스트 추가
+- [x] 사용자 노출 문자열 회귀 테스트 추가
 
 ### 유지할 고유명
 - [x] `RUMMY//DUEL` 브랜드 유지

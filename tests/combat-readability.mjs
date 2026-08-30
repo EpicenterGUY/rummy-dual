@@ -10,14 +10,14 @@ function ok(condition, message) {
 new Function([...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]).join('\n'));
 
 ok(html.includes('id="switchAlert"'), 'central SWITCH board has a dedicated alert line');
-ok(html.includes('내 턴 종료 시 DETONATE'), 'player-facing imminent DETONATE warning is explicit');
-ok(html.includes('CPU 턴 종료 시 DETONATE'), 'enemy-facing imminent DETONATE warning is explicit');
-ok(html.includes('CORE까지'), 'SWITCH board reports remaining CORE lethal margin');
+ok(html.includes('내 턴 종료 시 폭발'), 'player-facing imminent DETONATE warning is explicit');
+ok(html.includes('상대 턴 종료 시 폭발'), 'enemy-facing imminent DETONATE warning is explicit');
+ok(html.includes('코어까지'), 'SWITCH board reports remaining CORE lethal margin');
 ok(html.includes("phaseEl.classList.toggle('detonateRisk'"), 'main phase strip receives imminent DETONATE danger state');
-ok(html.includes('BURST READY · 4번째 카드 +24 · SWITCH 반환'), 'SET readout states BURST power and SWITCH return');
-ok(html.includes(' · NEXT +${chainDamage((m.chain||0)+1)} · SWITCH 반환'), 'RUN readout prominently states next CHAIN power and SWITCH return');
-ok(html.includes('OVERKILL ${overkill} LOST · NO PIERCE'), 'CORE BREAK explicitly labels overkill as lost and non-piercing');
-ok(html.includes('초과 피해 LOST · 다음 CORE 관통 0'), 'persistent CORE note communicates no-pierce loss');
+ok(html.includes('버스트 준비 · 4번째 카드 +24 · 스위치 반환'), 'SET readout states BURST power and SWITCH return');
+ok(html.includes(' · 다음 +${chainDamage((m.chain||0)+1)} · 스위치 반환'), 'RUN readout prominently states next CHAIN power and SWITCH return');
+ok(html.includes('초과 피해 ${overkill} 소멸 · 관통 없음'), 'CORE BREAK explicitly labels overkill as lost and non-piercing');
+ok(html.includes('초과 피해 소멸 · 다음 코어 관통 없음'), 'persistent CORE note communicates no-pierce loss');
 ok(html.includes('.switchAlert.imminent'), 'imminent DETONATE alert has dedicated visual hierarchy');
 ok(html.includes('.phaseText.detonateRisk'), 'phase strip has dedicated danger styling');
 
