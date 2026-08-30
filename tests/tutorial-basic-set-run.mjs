@@ -20,7 +20,7 @@ ok(script.includes("makeTutorialCard('C','4','runCard')") && script.includes("ma
 ok(script.includes("function resetTutorialSide") && script.includes("state.switchTarget='neutral';state.switchPower=0"), 'tutorial scenario rebuilds combat state deterministically instead of creating a separate rules engine');
 ok(script.includes("if(!tutorialAllows(tutorialAction,{fromDiscard}))") && script.includes("if(!tutorialAllows('select',{card:c}))") && script.includes("if(!tutorialAllows('discard',{card:c}))"), 'draw, selection and discard mutation paths obey the tutorial action gate');
 ok(script.includes("const result=submitNewMeld('player',cs);if(result&&tutorialCheckProgress('meld',{type:t,cards:cs}))"), 'SET/RUN success is confirmed only after submitNewMeld succeeds');
-ok(script.includes("setTimeout(()=>{if(state.sessionMode==='tutorial'&&state.battleId===battleId&&state.tutorialStep===stepId)setTutorialStep(next.id)},650)"), 'successful lessons auto-advance with stale-session protection');
+ok(script.includes("stepToken=state.tutorialStepToken") && script.includes("state.tutorialStepToken===stepToken"), 'successful lessons auto-advance with stale-session and stale-step protection');
 ok(script.includes("function renderTutorialHighlights") && html.includes('.cardBtn.tutorialLocked') && html.includes('.pixelBtn.tutorialTarget'), 'tutorial target and locked affordances are visible without a separate game screen');
 ok(script.includes("document.getElementById('resetBtn').hidden=true"), 'random new-game reset is hidden during deterministic tutorial lessons');
 ok(roadmap.includes('- [x] 카드 기본 조작 튜토리얼') && roadmap.includes('- [x] 세트 튜토리얼') && roadmap.includes('- [x] 런 튜토리얼'), 'UX1 roadmap records the completed first hands-on tranche');
