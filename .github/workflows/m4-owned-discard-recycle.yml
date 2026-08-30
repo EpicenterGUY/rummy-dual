@@ -1,0 +1,33 @@
+name: Verify owned-discard recycle
+on:
+  push:
+    branches: [fix/m4-owned-discard-recycle-20260831]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/m4-owned-discard-recycle-20260831
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply recycle patch
+        run: python tmp_patch_owned_discard_recycle.py
+      - name: Verify syntax and regressions
+        run: |
+          node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
+          node --check /tmp/game.js
+          for f in tests/*.mjs; do node "$f"; done
+          git diff --check
+      - name: Commit verified changes and remove temporary CI files
+        run: |
+          rm tmp_patch_owned_discard_recycle.py .github/workflows/m4-owned-discard-recycle.yml
+          git config user.name EpicenterGUY
+          git config user.email mintbamtol7@gmail.com
+          git add -A
+          git commit -m "Recycle owned shared-discard cards with spent pile"
+          git push origin HEAD:fix/m4-owned-discard-recycle-20260831
