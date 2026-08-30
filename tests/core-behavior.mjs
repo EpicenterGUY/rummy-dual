@@ -142,11 +142,13 @@ function makeAttachContext({ type, baseCards, handCards, chain = 0, token = 7 })
     turnNo: 1,
     turnToken: token,
     gameOver: false,
+    switchTarget: 'neutral',
+    switchPower: 0,
     pendingTrapReduction: 0,
     lastPlayerReturnType: null,
     lastEnemyReturnType: null,
   };
-  const capture = { attacks: [], retired: [] };
+  const capture = { attacks: [], retired: [], powerAdds: [] };
   const ctx = makeContext({ state });
   ctx.sideObj = w => w === 'player' ? player : enemy;
   ctx.other = w => w === 'player' ? 'enemy' : 'player';
@@ -165,9 +167,19 @@ function makeAttachContext({ type, baseCards, handCards, chain = 0, token = 7 })
   ctx.triggerOpponentHandTraps = () => {};
   ctx.attackEvent = (w, hits, opts) => {
     capture.attacks.push({ w, hits, opts });
+    const total = hits.reduce((n, h) => n + h.amount, 0) + (opts.bonus || 0);
+    state.switchPower += total;
+    state.switchTarget = ctx.other(w);
     ctx.sideObj(w).returnedSwitchThisTurn = true;
-    return { total: hits.reduce((n, h) => n + h.amount, 0) + (opts.bonus || 0) };
+    return { total };
   };
+  ctx.addSwitchPower = (w, amount, label, targetOverride) => {
+    state.switchPower += amount;
+    capture.powerAdds.push({ w, amount, label, targetOverride });
+    return amount;
+  };
+  ctx.combatBanner = () => {};
+  ctx.fxNode = () => {};
   ctx.drawOne = () => null;
   ctx.pushDiscard = () => {};
   ctx.log = () => {};
@@ -194,7 +206,7 @@ function makeAttachContext({ type, baseCards, handCards, chain = 0, token = 7 })
     for (let i = 1; i < vals.length; i++) if (vals[i] !== vals[i - 1] + 1) return null;
     return 'RUN';
   };
-  install(ctx, 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'chainDamage', 'attachCards');
+  install(ctx, 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'chainDamage', 'canContinueReturnedRun', 'attachCards');
   return { ctx, state, player, enemy, capture };
 }
 
@@ -227,6 +239,25 @@ function makeAttachContext({ type, baseCards, handCards, chain = 0, token = 7 })
   ok(capture.attacks[0].hits[0].amount === 45, 'RUN multi-attach total is 10+15+20 = 45');
   ok(enemy.melds[0].chain === 3, 'three-card RUN multi-attach advances CHAIN to 3');
   ok(enemy.melds[0].cards.length === 6, 'multi-attach adds all three cards to the RUN');
+}
+
+
+// Sequential same-RUN extension: split 8 then 9 is equivalent to one multi-attach for SWITCH movement.
+{
+  const c8 = card('H',8);
+  const c9 = card('H',9);
+  const setup = makeAttachContext({
+    type: 'RUN',
+    baseCards: [card('H',5), card('H',6), card('H',7)],
+    handCards: [c8, c9],
+    chain: 0,
+  });
+  ok(setup.ctx.attachCards('player', [c8], 'enemy', 0) === true, 'first RUN extension returns SWITCH normally');
+  ok(setup.ctx.attachCards('player', [c9], 'enemy', 0) === true, 'same RUN can be extended again later in the same turn');
+  ok(setup.capture.attacks.length === 1, 'split same-RUN extension moves SWITCH only once');
+  ok(setup.capture.powerAdds.length === 1 && setup.capture.powerAdds[0].amount === 15, 'second split extension adds next CHAIN power without another return');
+  ok(setup.state.switchPower === 25, 'split 8 then 9 produces total +10 +15 power');
+  ok(setup.enemy.melds[0].chain === 2 && setup.enemy.melds[0].cards.length === 5, 'split extension advances the same RUN to CHAIN 2');
 }
 
 // Recovery guard in the actual attach path, with named override token exception.
