@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+
+const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const roadmap = fs.readFileSync(new URL('../ROADMAP.md', import.meta.url), 'utf8');
+const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]).join('\n');
+
+function ok(condition, message) { if (!condition) throw new Error(message); console.log(`PASS: ${message}`); }
+new Function(script);
+
+ok(script.includes("id:'attachOwn'") && script.includes("scenario:'attachOwn'") && script.includes("attachSide:'player'") && script.includes("expectAttach:'RUN'"), 'own-attach lesson is implemented as a real RUN attach scenario');
+ok(script.includes("makeTutorialCard('C','7','attachOwnCard')") && script.includes("makeTutorialMeld('player','RUN'"), 'own-attach lesson fixes a 4-5-6 club RUN plus 7 club');
+ok(script.includes("id:'attachEnemy'") && script.includes("attachSide:'enemy'") && script.includes("makeTutorialCard('H','8','attachEnemyCard')") && script.includes("makeTutorialMeld('enemy','RUN'"), 'opponent-attach lesson uses a fixed enemy heart RUN');
+ok(script.includes("state.switchTarget='player';state.switchPower=12"), 'opponent-attach lesson begins with SWITCH on the player so a legal return can be experienced');
+ok(script.includes("id:'switch'") && script.includes("expectAttach:'SET'") && script.includes("expectSwitchTarget:'enemy'") && script.includes("minPowerGain:24"), 'SWITCH lesson requires a real SET BURST return and minimum +24 gain');
+ok(script.includes("state.switchTarget='player';state.switchPower=36") && script.includes("makeTutorialCard('C','8','switchCard')") && script.includes("makeTutorialMeld('player','SET'"), 'SWITCH lesson fixes a threatened 3SET and fourth-suit completion card');
+ok(script.includes("if(!tutorialAllows('attach',{cards:cs,targetSide:target.side,targetIndex:target.index,type}))"), 'playerAttach is mutation-gated by the tutorial contract');
+ok(script.includes("const beforePower=state.switchPower,beforeTarget=state.switchTarget;const ok=attachCards('player',cs,target.side,target.index)"), 'tutorial attach success still runs through the real attachCards path');
+ok(script.includes("tutorialCheckProgress('attach',{cards:cs,targetSide:target.side") && script.includes("afterPower:state.switchPower,afterTarget:state.switchTarget"), 'tutorial completion checks the actual resulting SWITCH state and power');
+ok(script.includes("entry.classList.add('tutorialTarget')") && script.includes(".attachHereBtn[data-attach-side=\"${side}\"]"), 'tutorial highlights the intended meld and real attach button');
+ok(roadmap.includes('- [x] 붙이기 튜토리얼') && roadmap.includes('- [x] 상대 공개 조합 붙이기 체험') && roadmap.includes('- [x] 스위치 튜토리얼'), 'UX1 roadmap records attach/opponent/SWITCH lessons complete');
+
+console.log('RUMMY//DUEL deterministic attach/opponent/SWITCH tutorial regressions passed.');
