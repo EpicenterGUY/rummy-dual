@@ -80,3 +80,19 @@ s = replace_once(
     'roadmap implementation'
 )
 p.write_text(s, encoding='utf-8')
+
+p = Path('tests/hand-circulation.mjs')
+s = p.read_text(encoding='utf-8')
+s = replace_once(
+    s,
+    "  const state = { player, enemy, turnNo: 9, turnToken: 21, switchTarget: 'neutral' };",
+    "  const state = { player, enemy, turnNo: 9, turnToken: 21, switchTarget: 'neutral', gameOver: false, turn: 'player', phase: 'action' };",
+    'hand circulation state harness'
+)
+s = replace_once(
+    s,
+    "  ctx.canSideReturn = w => state.switchTarget === 'neutral' || state.switchTarget === w;\n  ctx.meldType = meldType;\n  install(ctx, 'combinations', 'bestNewMeld', 'bestNewMeldForTurn', 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'anyAttachOption', 'hasAnyLegalAction', 'maintenanceLimit');",
+    "  ctx.canSideReturn = w => state.switchTarget === 'neutral' || state.switchTarget === w;\n  ctx.meldType = meldType;\n  ctx.meldFixedActive = () => false;\n  ctx.cardFixedActive = () => false;\n  install(ctx, 'combinations', 'bestNewMeld', 'bestNewMeldForTurn', 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'anyAttachOption', 'canFinishRun', 'hasAnyLegalAction', 'maintenanceLimit');",
+    'hand circulation legality harness'
+)
+p.write_text(s, encoding='utf-8')
