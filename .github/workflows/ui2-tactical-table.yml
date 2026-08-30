@@ -14,59 +14,16 @@ jobs:
         with:
           node-version: 22
       - name: Apply visual reset
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('index.html')
-          text=p.read_text()
-          text=text.replace('<meta name="theme-color" content="#11131b">','<meta name="theme-color" content="#20282d">',1)
-          marker='/* UI2 · tactical tabletop visual reset */'
-          if marker in text:
-              raise SystemExit('UI2 marker already present')
-          css=r'''
-
-/* UI2 · tactical tabletop visual reset */
-:root{--ui2-bg:#182126;--ui2-surface:#273238;--ui2-surface-2:#303b41;--ui2-edge:#4b5a5f;--ui2-paper:#eee8dc;--ui2-ink:#263038;--ui2-accent:#6f9690;--ui2-warm:#a58d63;--ui2-danger:#b86469;--ui2-soft:#aeb9b7;--bg:var(--ui2-bg);--panel:var(--ui2-surface);--line:var(--ui2-edge);--text:#edf0ea;--soft:var(--ui2-soft);--gold:#c6ad7b;--cyan:#78aaa4;--red:#c77b7e;--green:#86aa8d;--violet:#9690ad;--paper:var(--ui2-paper);--ink:var(--ui2-ink)}
-html,body{background:#12181c;color:var(--text)}
-#app{background:linear-gradient(180deg,#202a2f,#182126 58%,#141b1f)}
-#app:before{background:linear-gradient(180deg,#ffffff05,transparent 24%);opacity:1}
-.pixel{border:1px solid var(--ui2-edge);border-radius:10px;background:var(--ui2-surface);box-shadow:0 1px 0 #ffffff08 inset,0 5px 14px #0003}
-.pixelBtn{border:1px solid #283239;border-radius:8px;background:#344047;box-shadow:0 1px 0 #ffffff0d inset,0 2px 7px #0002;padding:8px 9px}
-.pixelBtn:hover{filter:brightness(1.05)}
-.pixelBtn:active{transform:translateY(1px)}
-.pixelBtn.primary{background:#3d6663;border-color:#557d79;box-shadow:0 1px 0 #ffffff10 inset,0 2px 7px #0002}
-.pixelBtn.goldBtn{background:#3b4042;border-color:#8b7d63;color:#eadcc1;box-shadow:0 1px 0 #ffffff0d inset,0 2px 7px #0002}
-.pixelBtn.redBtn{background:#4d3438;border-color:#775158;color:#f0d9db;box-shadow:0 1px 0 #ffffff0d inset,0 2px 7px #0002}
-.topbar{background:#20282dcc;border-bottom:1px solid #3c484d;backdrop-filter:blur(8px);padding:9px 10px 7px}
-.badge{border:1px solid #46545a;border-radius:999px;background:#242e33;box-shadow:none}
-.status{gap:7px}.hpPanel{background:#29343a}.mid{background:#313b3f}.mid b{color:#d4c5a5}
-.hpBar{border:1px solid #3d494e;border-radius:999px;background:#171f23;box-shadow:none;overflow:hidden}.playerFill{background:#74aaa4}.enemyFill{background:#b96e73}
-.enemyZone{background:#2b3034}.arena{background:#263337}.meldZone{background:#222c31}.handZone{background:#222b30}.detail{background:#273137}.log{background:#20292e}
-.phaseText{background:#202b30;border:1px solid #46555a;border-radius:8px;box-shadow:none;color:#dce4e1}.fieldStrip{background:#252f34;border:1px solid #445358;border-radius:8px;box-shadow:none}
-.meldSide{background:#222c31;border:1px solid #445258;border-radius:8px;box-shadow:none}.meldEntry{background:#29343a;border:1px solid #3d4a4f;border-radius:7px}.meldEntry.target{background:#303b3f;box-shadow:0 0 0 2px #81765f inset}.attackReadout{border:1px solid #46545a;border-radius:6px;background:#202a2f;box-shadow:none}.attackReadout.burst{background:#342f25;color:#d4bd8e}.attackReadout.chain{background:#233236;color:#89bbb4}
-.card{box-shadow:0 0 0 1px #b2a58d inset,0 3px 7px #0003;background:linear-gradient(180deg,#f3eee4,#e7dece)}.card:before{border-color:#baad95}.namedMark{border-color:#b5a78e}.named:after{background:#3c4143;color:#ead7aa;border-color:#5b5a50}
-.deckStackLayer,.deckFace{background:#35444a;box-shadow:0 0 0 1px #607176 inset}.deckFace:before{border-color:#8ea09f}.discardEmpty,.spentPile{background:#202a2f;border-color:#46555a;box-shadow:none}.spentPile:before,.spentPile:after{background:#2b353a;box-shadow:0 0 0 1px #4b595e inset}
-.initiativeBoard{background:#222d32;border-color:#526268;box-shadow:0 4px 14px #0002}.initiativeSide{border:1px solid #46565b;border-radius:7px;background:#2a353a;opacity:.55}.initiativeBoard.playerLead .playerSide,.initiativeBoard.enemyLead .enemySide{opacity:1;box-shadow:0 0 0 1px currentColor inset}.switchBoard.playerLead .playerSide,.switchBoard.enemyLead .enemySide{animation:none}.initiativeState{letter-spacing:.1px}.switchGauge{height:6px;border:0;border-radius:999px;background:#151e22;box-shadow:0 0 0 1px #405055 inset;overflow:hidden}.switchGauge i{background:#6f9690}.switchBoard.danger .switchGauge i{background:#aa9164}.switchBoard.critical .switchGauge i,.switchBoard.overload .switchGauge i,.switchBoard.lethal .switchGauge i{background:#b86469}.switchBoard.overload{box-shadow:0 4px 14px #0002;border-color:#7a5055}.switchBoard.overload .initiativeState{text-shadow:none}.switchBoard.lethal{animation:none;border-color:#a25e64;box-shadow:0 0 0 1px #a25e64 inset,0 4px 14px #0002}.initiativeBoard.selfThreat{box-shadow:0 0 0 1px #8d555b inset,0 4px 14px #0002}.switchAlert{border:1px solid #46545a;border-radius:6px;background:#20292e}.switchAlert.safe{background:#23322f;color:#b7d8cc}.switchAlert.incoming{background:#373328;color:#e0cfa6}.switchAlert.enemyImminent,.switchAlert.imminent{background:#432e32;color:#f0d9dc;box-shadow:none;animation:none}.phaseText.detonateRisk{background:#432e32;color:#f0d9dc;box-shadow:0 0 0 1px #8c575d inset}
-.strongAttackBtn.armed{background:#47504f;border-color:#6b7773;box-shadow:none;animation:none}.runFinishBtn{background:#35464c;border-color:#586c73;box-shadow:none}.meldEntry.burstReady{box-shadow:0 0 0 1px #857456 inset}.meldEntry.chainHot{box-shadow:0 0 0 1px #517670 inset}
-.startScreen{background:linear-gradient(180deg,#1f292e,#172025 70%)}.startHero{background:var(--ui2-paper);color:#263038;border:1px solid #b9ae9b;border-radius:14px;box-shadow:0 7px 20px #0002}.startLogo b{color:#4d817c}.startPitch{color:#49565a}.startMeta{color:#6f7775}.startMenuBtn{background:#303b40}.startMenuBtn.primary{background:#3d6663}.startResumeNote,.firstRunPrompt{background:#242f34;border-color:#46565b;border-radius:9px}.tutorialCoach{background:#27343a;box-shadow:0 0 0 1px #53656b inset,0 4px 12px #0002}.tutorialCoachHint{background:#202b30;border-color:#46565b;color:#b8d3cf}
-.combatBanner{border:1px solid #59686e;border-radius:8px;background:#252f34ee;box-shadow:0 5px 18px #0004}.combatFloat{text-shadow:0 1px 2px #000}.combatBanner.break{color:#e08d92}.combatBanner.burst{color:#d7bd8b}.combatBanner.chain{color:#8dbab4}
-@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
-'''
-          text=text.replace('\n</style>',css+'\n</style>',1)
-          p.write_text(text)
-          PY
+        run: python tools/ui2_patch.py
       - name: Run regressions
-        shell: bash
         run: |
           for f in tests/*.mjs; do node "$f"; done
           git diff --check
       - name: Commit verified changes
-        shell: bash
         run: |
-          rm -f .github/workflows/ui2-tactical-table.yml
+          rm -f tools/ui2_patch.py .github/workflows/ui2-tactical-table.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html .github/workflows/ui2-tactical-table.yml
+          git add index.html tools/ui2_patch.py .github/workflows/ui2-tactical-table.yml
           git commit -m "feat: shift UI toward tactical tabletop"
           git push
