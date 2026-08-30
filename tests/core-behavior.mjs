@@ -173,6 +173,8 @@ function makeAttachContext({ type, baseCards, handCards, chain = 0, token = 7 })
   ctx.log = () => {};
   ctx.freeRecoverFromMeld = () => null;
   ctx.cutOppositeEnd = () => false;
+  ctx.recoverRedundantGapRun = () => null;
+  ctx.middleManagerReturnPlaceholder = () => null;
   ctx.replaceRedundantJokers = () => {};
   ctx.retireMeld = (owner, index, reason) => {
     const [m] = ctx.meldsOf(owner).splice(index, 1);
