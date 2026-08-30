@@ -1,0 +1,116 @@
+name: Verify UX1 tutorial framework
+
+on:
+  push:
+    branches:
+      - feat/ux1-tutorial-framework-20260830
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/ux1-tutorial-framework-20260830
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply tutorial framework
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          text=p.read_text(encoding='utf-8')
+          def rep(old,new,label):
+              global text
+              n=text.count(old)
+              if n!=1: raise SystemExit(f'{label}: expected 1, got {n}')
+              text=text.replace(old,new,1)
+
+          rep('''   <button id="tutorialStartBtn" class="pixelBtn startMenuBtn" type="button" disabled aria-disabled="true"><span>튜토리얼<small>기본 조작부터 스위치와 러미까지 연습합니다.</small></span><span class="menuState">준비 중</span></button>''','''   <button id="tutorialStartBtn" class="pixelBtn startMenuBtn" type="button"><span>튜토리얼<small>전투 화면과 핵심 목표부터 익힙니다. 고정 패 실습은 순차 추가 중입니다.</small></span><span class="menuState">베타</span></button>''','tutorial menu')
+          rep('''  <nav class="startMenu" aria-label="주 메뉴">''','''  <section id="firstRunPrompt" class="firstRunPrompt pixel" hidden aria-label="첫 실행 튜토리얼 안내"><div><b>RUMMY//DUEL이 처음인가요?</b><span>강제하지 않습니다. 짧은 안내를 먼저 보거나 바로 대전할 수 있습니다.</span></div><div class="firstRunActions"><button id="firstRunTutorialBtn" class="pixelBtn primary" type="button">튜토리얼 안내</button><button id="firstRunBattleBtn" class="pixelBtn" type="button">바로 대전</button></div></section>
+          <nav class="startMenu" aria-label="주 메뉴">''','first run prompt')
+          rep('''<main class="main">''','''<main class="main">
+          <section id="tutorialCoach" class="tutorialCoach pixel" hidden aria-live="polite"><div class="tutorialCoachHead"><span id="tutorialStepBadge" class="badge">튜토리얼</span><b id="tutorialCoachTitle">시작</b></div><div id="tutorialCoachGoal" class="tutorialCoachGoal"></div><div id="tutorialCoachHint" class="tutorialCoachHint" hidden></div><div class="tutorialCoachActions"><button id="tutorialHintBtn" class="pixelBtn" type="button">힌트 다시 보기</button><button id="tutorialNextBtn" class="pixelBtn primary" type="button">다음</button><button id="tutorialRestartBtn" class="pixelBtn" type="button">이 단계 다시 보기</button><button id="tutorialExitBtn" class="pixelBtn redBtn" type="button">튜토리얼 종료</button></div></section>''','coach markup')
+
+          css_marker='.startResumeNote{padding:7px 8px;border:1px solid #31415a;background:#0e1520;font-size:7px;line-height:1.45;color:#aebbd0;text-align:center}'
+          css_add='''.firstRunPrompt{padding:10px;background:#121b28;display:grid;gap:8px}.firstRunPrompt[hidden]{display:none}.firstRunPrompt b{display:block;font-size:10px;color:var(--gold)}.firstRunPrompt span{display:block;margin-top:4px;font-size:7px;line-height:1.45;color:#b8c4d7}.firstRunActions{display:grid;grid-template-columns:1fr 1fr;gap:6px}.firstRunActions .pixelBtn{font-size:8px;padding:8px 5px}.tutorialCoach{padding:9px;background:linear-gradient(180deg,#172334,#101824);box-shadow:0 0 0 2px #4b6084 inset,4px 4px 0 #0006}.tutorialCoach[hidden]{display:none}.tutorialCoachHead{display:flex;align-items:center;gap:7px;margin-bottom:6px}.tutorialCoachHead b{font-size:10px;color:var(--gold)}.tutorialCoachGoal{font-size:8px;line-height:1.5;color:#d7e0ef}.tutorialCoachHint{margin-top:6px;padding:6px;border:1px solid #435371;background:#0d1521;font-size:7px;line-height:1.45;color:#a9d9d8}.tutorialCoachHint[hidden]{display:none}.tutorialCoachActions{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.tutorialCoachActions .pixelBtn{font-size:7px;padding:6px;flex:1 1 auto}'''
+          if text.count(css_marker)!=1: raise SystemExit('css marker')
+          text=text.replace(css_marker,css_marker+'\n'+css_add,1)
+          mobile='''@media(max-width:390px){.startScreen{padding:12px 10px}.startShell{gap:9px}.startHero{padding:18px 10px 14px}.startLogo{font-size:25px}.startPitch{font-size:9px}.startMenuBtn{min-height:52px;padding:8px 10px}.startMenuBtn>span:first-child{font-size:11px}.startAux .pixelBtn{font-size:7px;padding:7px 5px}}'''
+          rep(mobile,mobile[:-1]+'.firstRunActions{grid-template-columns:1fr}.tutorialCoachActions .pixelBtn{flex:1 1 46%}}','mobile tutorial css')
+
+          old="const EFFECT_ACTIONS=Object.freeze(['draw','heal','addShield','addPower','returnSwitch','applyStatus','retireMeld']);"
+          steps="""const EFFECT_ACTIONS=Object.freeze(['draw','heal','addShield','addPower','returnSwitch','applyStatus','retireMeld']);
+          const TUTORIAL_STEPS=Object.freeze([
+           {id:'intro',title:'폭탄을 떠넘기는 게임',goal:'세트와 런을 만들고 붙여 누적 위력을 키운 뒤, 스위치를 상대에게 넘기는 것이 기본 목표입니다.',hint:'스위치가 나를 가리킨 채 내 턴을 끝내면 누적 위력이 폭발합니다.',manualNext:true,implemented:true},
+           {id:'board',title:'전투 화면 읽기',goal:'위쪽은 코어와 스위치, 가운데는 덱·버림패·공개 조합, 아래쪽은 내 손패와 행동 버튼입니다.',hint:'안내 패널은 카드나 공개 조합을 덮지 않고 화면 흐름 안에 표시됩니다.',manualNext:true,implemented:true},
+           {id:'basic',title:'기본 조작',goal:'카드 획득·선택·버리기를 실제 고정 상태로 연습합니다.',hint:'고정 실습 준비 중',implemented:false},
+           {id:'set',title:'세트',goal:'같은 값의 서로 다른 무늬 3장으로 세트를 만듭니다.',hint:'3♠ · 3♥ · 3♦ 고정 손패 예정',implemented:false},
+           {id:'run',title:'런',goal:'같은 무늬의 연속 카드 3장으로 런을 만듭니다.',hint:'4♣ · 5♣ · 6♣ 고정 손패 예정',implemented:false},
+           {id:'attachOwn',title:'붙이기',goal:'이미 공개된 내 조합에 조건이 맞는 카드를 붙입니다.',hint:'실제 attachCards 경로를 사용합니다.',implemented:false},
+           {id:'attachEnemy',title:'상대 조합 이용',goal:'조건이 맞으면 상대 공개 조합에도 카드를 붙일 수 있습니다.',hint:'상대 공개 조합 이용은 핵심 규칙입니다.',implemented:false},
+           {id:'switch',title:'스위치',goal:'버스트·체인으로 스위치를 상대에게 넘기는 과정을 체험합니다.',hint:'한 턴 기본 반환은 1회입니다.',implemented:false},
+           {id:'rummy',title:'러미',goal:'손패를 모두 사용해 러미 6장 리필을 직접 발생시킵니다.',hint:'실제 triggerRummy 경로를 사용합니다.',implemented:false}
+          ]);"""
+          rep(old,steps,'tutorial data')
+          rep("const state={sessionMode:'menu',battleId:0,player:null", "const state={sessionMode:'menu',battleId:0,tutorialStep:null,tutorialHintOpen:false,player:null", 'tutorial state')
+
+          old="""function renderStartScreen(){const el=document.getElementById('startMeta');if(!el)return;const id=charUnlocked(progress.selectedChar)?progress.selectedChar:'wanderer',ch=CHARACTERS[id]||CHARACTERS.wanderer;el.textContent=`${ch.name} Lv.${charLevel(progress,id)} · 전체 ${progress.totalClears}클리어`}
+          function showStartScreen(){state.sessionMode='menu';for(const id of['overlay','rulesOverlay','progressOverlay','codexOverlay'])document.getElementById(id)?.classList.remove('show');document.getElementById('startScreen')?.classList.remove('hidden');document.body.classList.add('menu-open');renderStartScreen()}
+          function hideStartScreen(){document.getElementById('startScreen')?.classList.add('hidden');document.body.classList.remove('menu-open')}
+          function startBattle(){state.sessionMode='battle';hideStartScreen();document.getElementById('overlay')?.classList.remove('show');newGame()}"""
+          new="""function renderStartScreen(){const el=document.getElementById('startMeta');if(!el)return;const id=charUnlocked(progress.selectedChar)?progress.selectedChar:'wanderer',ch=CHARACTERS[id]||CHARACTERS.wanderer;el.textContent=`${ch.name} Lv.${charLevel(progress,id)} · 전체 ${progress.totalClears}클리어`;const prompt=document.getElementById('firstRunPrompt'),note=document.getElementById('startResumeNote');if(prompt)prompt.hidden=!!progress.tutorialPromptSeen;if(note)note.textContent=progress.tutorialCompleted?'기본 튜토리얼 완료 · 필요할 때 언제든 다시 볼 수 있습니다.':progress.tutorialPromptSeen?'튜토리얼 안내를 언제든 다시 볼 수 있습니다. 고정 패 실습은 순차 추가 중입니다.':'처음이라면 짧은 튜토리얼 안내를 권장합니다. 강제 진행은 없습니다.'}
+          function hideTutorialCoach(){const coach=document.getElementById('tutorialCoach');if(coach)coach.hidden=true}
+          function showStartScreen(){state.battleId++;state.sessionMode='menu';state.tutorialStep=null;state.tutorialHintOpen=false;hideTutorialCoach();for(const id of['overlay','rulesOverlay','progressOverlay','codexOverlay'])document.getElementById(id)?.classList.remove('show');document.getElementById('startScreen')?.classList.remove('hidden');document.body.classList.add('menu-open');renderStartScreen()}
+          function hideStartScreen(){document.getElementById('startScreen')?.classList.add('hidden');document.body.classList.remove('menu-open')}
+          function startBattle(){state.tutorialStep=null;state.tutorialHintOpen=false;hideTutorialCoach();state.sessionMode='battle';hideStartScreen();document.getElementById('overlay')?.classList.remove('show');newGame()}
+          function currentTutorialStep(){return TUTORIAL_STEPS.find(x=>x.id===state.tutorialStep)||null}
+          function tutorialStepIndex(id=state.tutorialStep){return TUTORIAL_STEPS.findIndex(x=>x.id===id)}
+          function tutorialAllows(action,context={}){if(state.sessionMode!=='tutorial')return true;const step=currentTutorialStep();if(!step||!step.implemented)return false;return Array.isArray(step.allow)&&step.allow.includes(action)}
+          function applyTutorialScenario(step){if(!step)return false;state.phase='tutorial';state.turn='player';state.selected.clear();state.selectionOrder=[];state.boardSelected.clear();state.target=null;return true}
+          function renderTutorialCoach(){const coach=document.getElementById('tutorialCoach'),step=currentTutorialStep();if(!coach)return;if(state.sessionMode!=='tutorial'||!step){coach.hidden=true;return}coach.hidden=false;document.getElementById('tutorialStepBadge').textContent=`튜토리얼 ${Math.max(1,tutorialStepIndex()+1)} / ${TUTORIAL_STEPS.length}`;document.getElementById('tutorialCoachTitle').textContent=step.title;document.getElementById('tutorialCoachGoal').textContent=step.goal;const hint=document.getElementById('tutorialCoachHint');hint.textContent=step.hint||'';hint.hidden=!state.tutorialHintOpen;const next=document.getElementById('tutorialNextBtn');next.hidden=false;next.disabled=false;next.textContent=step.id==='intro'?'화면 보기':'실습 준비 상태 확인'}
+          function setTutorialStep(id){const step=TUTORIAL_STEPS.find(x=>x.id===id);if(!step)return false;state.tutorialStep=id;state.tutorialHintOpen=false;applyTutorialScenario(step);render();renderTutorialCoach();return true}
+          function startTutorial(stepId='intro'){progress.tutorialPromptSeen=true;saveProgress();hideStartScreen();document.getElementById('overlay')?.classList.remove('show');newGame();state.sessionMode='tutorial';setTutorialStep(stepId);renderStartScreen()}
+          function tutorialCheckProgress(event,context={}){if(state.sessionMode!=='tutorial')return false;const step=currentTutorialStep();if(!step?.completeOn||step.completeOn!==event)return false;const next=TUTORIAL_STEPS[tutorialStepIndex()+1];return next?setTutorialStep(next.id):false}
+          function advanceTutorial(){const step=currentTutorialStep();if(!step)return;if(step.id==='intro'){setTutorialStep('board');return}if(step.id==='board'){state.tutorialHintOpen=true;renderTutorialCoach();const hint=document.getElementById('tutorialCoachHint');hint.textContent='고정 손패 기반 기본 조작·세트·런·붙이기 실습은 다음 작업에서 이 컨트롤러에 연결됩니다.';hint.hidden=false;document.getElementById('tutorialNextBtn').hidden=true}}
+          function restartTutorialStep(){if(state.sessionMode==='tutorial'&&state.tutorialStep)setTutorialStep(state.tutorialStep)}
+          function exitTutorial(){showStartScreen()}"""
+          rep(old,new,'tutorial controller')
+
+          old="document.getElementById('battleStartBtn').onclick=startBattle;document.getElementById('startCodexBtn').onclick=()=>{renderCodex();document.getElementById('codexOverlay').classList.add('show')}"
+          new="document.getElementById('battleStartBtn').onclick=startBattle;document.getElementById('tutorialStartBtn').onclick=()=>startTutorial('intro');document.getElementById('firstRunTutorialBtn').onclick=()=>startTutorial('intro');document.getElementById('firstRunBattleBtn').onclick=()=>{progress.tutorialPromptSeen=true;saveProgress();renderStartScreen();startBattle()};document.getElementById('tutorialHintBtn').onclick=()=>{state.tutorialHintOpen=!state.tutorialHintOpen;renderTutorialCoach()};document.getElementById('tutorialNextBtn').onclick=advanceTutorial;document.getElementById('tutorialRestartBtn').onclick=restartTutorialStep;document.getElementById('tutorialExitBtn').onclick=exitTutorial;document.getElementById('startCodexBtn').onclick=()=>{renderCodex();document.getElementById('codexOverlay').classList.add('show')}"
+          rep(old,new,'tutorial handlers')
+          p.write_text(text,encoding='utf-8')
+
+          rp=Path('ROADMAP.md'); r=rp.read_text(encoding='utf-8')
+          pairs=[
+           ('- [ ] 첫 실행 튜토리얼 안내','- [x] 첫 실행 튜토리얼 안내'),
+           ('- [ ] 일반 게임 로직과 튜토리얼 로직 중복 최소화 구조 확정 (`sessionMode` + 단계 데이터 + 실제 엔진 재사용)','- [x] 일반 게임 로직과 튜토리얼 로직 중복 최소화 구조 확정 (`sessionMode` + `TUTORIAL_STEPS` + 공통 컨트롤러 + 실제 엔진 재사용)'),
+           ('- [ ] 튜토리얼 하이라이트 / 가이드 UI 기본 프레임워크','- [x] 튜토리얼 하이라이트 / 가이드 UI 기본 프레임워크 — 화면 흐름 안 coach + 힌트/다음/재시작/종료'),
+           ('2. UX1 P1: start-screen shell/menu/tutorial save flags are live; next build the first-run prompt + shared tutorial controller, then basic controls → 세트 → 런 → 붙이기 → 스위치 → 러미 with fixed states.','2. UX1 P1: start screen + first-run prompt + shared tutorial controller are live; next connect deterministic basic controls → 세트 → 런 → 붙이기 → 상대 조합 → 스위치 → 러미 scenarios to the real engine.')]
+          for a,b in pairs:
+              if r.count(a)!=1: raise SystemExit('roadmap match failed: '+a)
+              r=r.replace(a,b,1)
+          rp.write_text(r,encoding='utf-8')
+          PY
+      - name: Run regressions
+        run: |
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+          git diff --check
+      - name: Commit verified changes
+        run: |
+          rm -f .github/workflows/ux1-tutorial-framework.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: add tutorial onboarding framework"
+          git push origin HEAD:feat/ux1-tutorial-framework-20260830
