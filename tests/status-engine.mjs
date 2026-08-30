@@ -38,6 +38,10 @@ ok(ctx.meldFixedActive(meld),'fixed is active during target owner next turn wind
 ctx.state.player.turnStarts=3;
 ctx.expireOwnerFixedStatuses('player');
 ok(!ctx.meldFixedActive(meld),'fixed expires at target owner next turn end');
+const foreignCard={officialStatus:{seal:0,fixed:1,protect:0,fixedOwner:'player',fixedThroughStart:3},status:{marked:1}};
+ctx.state.enemy.melds=[{cards:[foreignCard],status:ctx.blankMeldStatus()}];
+ctx.expireOwnerFixedStatuses('player');
+ok(!ctx.cardFixedActive(foreignCard),'card fixed expires even while that controlled card sits in opponent public meld');
 
 const card={officialStatus:{seal:0,fixed:1,protect:0,fixedOwner:null,fixedThroughStart:null},status:{charged:2}};
 ok(ctx.cardFixedActive(card),'card fixed uses separate officialStatus bag');
