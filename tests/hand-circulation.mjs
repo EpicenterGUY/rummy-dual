@@ -187,6 +187,27 @@ function makeLegalityContext() {
   ok(state.discard.length === 1 && state.discard[0] === publicDiscard, 'shared discard pile remains untouched by personal deck recycling');
 }
 
+// Drawing the final personal-deck card immediately rebuilds the deck from any existing personal spent pile.
+{
+  const player = { hand: [], deck: [], spent: [], melds: [] };
+  const enemy = { hand: [], deck: [], spent: [], melds: [] };
+  const last = card('C', 4), s1 = card('S', 10), s2 = card('H', 11);
+  const publicDiscard = card('D', 5, { owner: 'enemy' });
+  player.deck = [last];
+  player.spent = [s1, s2];
+  const state = { player, enemy, discard: [publicDiscard], turnNo: 1 };
+  const ctx = context({ state });
+  ctx.sideObj = w => w === 'player' ? player : enemy;
+  ctx.shuffle = xs => xs;
+  ctx.log = () => {};
+  install(ctx, 'recycleIfNeeded', 'acquireDiscardCard', 'drawOne');
+  const drawn = ctx.drawOne('player', false);
+  ok(drawn === last && player.hand.includes(last), 'the final original deck card is still the card actually drawn');
+  ok(player.spent.length === 0 && player.deck.length === 2, 'drawing the final deck card immediately rebuilds the personal deck from spent cards');
+  ok(player.deck[0] === s1 && player.deck[1] === s2, 'immediate rebuild preserves the shuffled spent-card deck contents');
+  ok(state.discard.length === 1 && state.discard[0] === publicDiscard, 'immediate personal recycle still leaves the shared discard untouched');
+}
+
 // Drawing from a personal deck clears stale discard-contract state; discard acquisition starts clean before onDiscardDraw re-arms it.
 {
   const player = { hand: [], deck: [], spent: [], melds: [] };
