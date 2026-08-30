@@ -1,0 +1,114 @@
+name: Verify UX1 Joker tutorial
+
+on:
+  push:
+    branches:
+      - feat/ux1-joker-tutorial-20260830
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/ux1-joker-tutorial-20260830
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply Joker tutorial patch
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          index=Path('index.html')
+          roadp=Path('ROADMAP.md')
+          advtest=Path('tests/tutorial-advanced-basics.mjs')
+          text=index.read_text(encoding='utf-8')
+          road=roadp.read_text(encoding='utf-8')
+          adv=advtest.read_text(encoding='utf-8')
+          def rep(src,old,new,label):
+              if old not in src:
+                  raise SystemExit(f'missing anchor: {label}')
+              return src.replace(old,new,1)
+
+          text=rep(text,
+          "expectVulnerableConsumed:true,expectReset:true,completeOn:'detonate',stopAfter:true}\n]);",
+          """expectVulnerableConsumed:true,expectReset:true,completeOn:'detonate'},
+           {id:'jokerKing',title:'광대왕 조커',goal:'완전 와일드 조커가 세트/런의 필요한 자리를 대신하고, 광대왕 조커는 조합 정리 뒤 소모되지 않고 원주인 덱 아래로 돌아가는 것을 확인합니다.',hint:'광대왕 조커를 선택해 내 9♠-9♥-9♦ 세트에 붙이세요. 빠진 9♣ 자리를 대신해 버스트 +24가 일어나고, 정리 뒤 조커는 덱으로 돌아갑니다.',implemented:true,scenario:'jokerKing',allow:['select','attach','clear'],selectRoles:['jokerKingCard'],attachSide:'player',expectAttach:'SET',expectAttachTag:'jokerKing',expectSwitchTarget:'enemy',minPowerGain:24,expectJokerDeckReturn:true,completeOn:'attach'},
+           {id:'jokerDual',title:'쌍면 조커',goal:'조커는 와일드 판정 외에도 각자 고유 효과를 가질 수 있습니다. 쌍면 조커의 세트 효과를 직접 발동합니다.',hint:'쌍면 조커를 내 6♠-6♥-6♦ 세트에 붙이세요. 버스트 +24와 함께 보호막 20을 얻습니다.',implemented:true,scenario:'jokerDual',allow:['select','attach','clear'],selectRoles:['jokerDualCard'],attachSide:'player',expectAttach:'SET',expectAttachTag:'jokerDual',expectSwitchTarget:'enemy',minPowerGain:24,expectShieldGain:20,completeOn:'attach',stopAfter:true}
+          ]);""",
+          'append Joker tutorial steps')
+
+          text=rep(text,
+          "advanced.textContent=progress.tutorialCompleted?'고급 튜토리얼 · 회수/정비/상태':'고급 튜토리얼 · 기본 완료 후'",
+          "advanced.textContent=progress.tutorialCompleted?'고급 튜토리얼 · 회수/정비/상태/조커':'고급 튜토리얼 · 기본 완료 후'",
+          'advanced button copy')
+
+          text=rep(text,
+          "function makeTutorialCard(suit,rank,role,owner='player'){const c=makeCard(suit,rank,false,owner);c.tutorialRole=role;return c}\nfunction makeTutorialMeld",
+          "function makeTutorialCard(suit,rank,role,owner='player'){const c=makeCard(suit,rank,false,owner);c.tutorialRole=role;return c}\nfunction makeTutorialJoker(id,role,owner='player'){const c=makeCard('J',id,true,owner,id);c.tutorialRole=role;return c}\nfunction makeTutorialMeld",
+          'real tutorial Joker helper')
+
+          status_tail="else if(step.scenario==='status'){p.hand=[makeTutorialCard('S','5','statusEnd'),makeTutorialCard('D','9','hold')];applyOfficialStatus('player',p,'vulnerable',1,{silent:true});state.switchTarget='player';state.switchPower=8;state.phase='action';log('공식 상태 실습 · 취약 1은 다음 폭발 피해를 25% 늘리고 소모됩니다. 5♠를 버려 8 → 10 피해를 확인하세요.','important')}return true}"
+          joker_tail="""else if(step.scenario==='status'){p.hand=[makeTutorialCard('S','5','statusEnd'),makeTutorialCard('D','9','hold')];applyOfficialStatus('player',p,'vulnerable',1,{silent:true});state.switchTarget='player';state.switchPower=8;state.phase='action';log('공식 상태 실습 · 취약 1은 다음 폭발 피해를 25% 늘리고 소모됩니다. 5♠를 버려 8 → 10 피해를 확인하세요.','important')}else if(step.scenario==='jokerKing'){p.hand=[makeTutorialJoker('J1','jokerKingCard'),makeTutorialCard('D','2','hold')];p.melds=[makeTutorialMeld('player','SET',[makeTutorialCard('S','9','board','player'),makeTutorialCard('H','9','board','player'),makeTutorialCard('D','9','board','player')])];state.phase='action';log('조커 실습 · 광대왕 조커를 9 세트에 붙여 빠진 무늬를 대신하고, 버스트 뒤 덱 아래로 귀환하는지 확인하세요.','important')}else if(step.scenario==='jokerDual'){p.hand=[makeTutorialJoker('J3','jokerDualCard'),makeTutorialCard('D','2','hold')];p.melds=[makeTutorialMeld('player','SET',[makeTutorialCard('S','6','board','player'),makeTutorialCard('H','6','board','player'),makeTutorialCard('D','6','board','player')])];state.phase='action';log('조커 고유 효과 실습 · 쌍면 조커를 6 세트에 붙여 버스트와 보호막 20을 함께 확인하세요.','important')}return true}"""
+          text=rep(text,status_tail,joker_tail,'deterministic Joker scenarios')
+
+          text=rep(text,
+          ":step.id==='status'?'고급 튜토리얼 1차 완료! 회수·정비·공식 상태의 핵심을 확인했습니다.':'다음 실습은 잠시 후 자동으로 시작됩니다.'",
+          ":step.id==='jokerDual'?'고급 튜토리얼 완료! 조커의 와일드 판정·정리 시 귀환·조커별 고유 효과까지 확인했습니다.':'다음 실습은 잠시 후 자동으로 시작됩니다.'",
+          'advanced completion coach')
+
+          text=rep(text,
+          "if(step.expectAttach&&context.type!==step.expectAttach)return false;if(step.expectSwitchTarget&&context.afterTarget!==step.expectSwitchTarget)return false;",
+          "if(step.expectAttach&&context.type!==step.expectAttach)return false;if(step.expectAttachTag&&!context.cards?.some(c=>c.tag===step.expectAttachTag))return false;if(step.expectSwitchTarget&&context.afterTarget!==step.expectSwitchTarget)return false;",
+          'Joker attach tag validation')
+
+          text=rep(text,
+          "if(step.minPowerGain&&((context.afterPower||0)-(context.beforePower||0)<step.minPowerGain))return false;if(step.expectReload&&context.afterHand!==step.expectReload)return false;",
+          "if(step.minPowerGain&&((context.afterPower||0)-(context.beforePower||0)<step.minPowerGain))return false;if(step.expectShieldGain!=null&&context.afterShield-context.beforeShield!==step.expectShieldGain)return false;if(step.expectJokerDeckReturn&&!(context.jokerReturnedToDeck&&!context.jokerSpent))return false;if(step.expectReload&&context.afterHand!==step.expectReload)return false;",
+          'Joker outcome validation')
+
+          old_attach="const beforePower=state.switchPower,beforeTarget=state.switchTarget;const ok=attachCards('player',cs,target.side,target.index);"
+          new_attach="const beforePower=state.switchPower,beforeTarget=state.switchTarget,beforeShield=state.player.shield,jokerUids=new Set(cs.filter(isJoker).map(c=>c.uid));const ok=attachCards('player',cs,target.side,target.index);"
+          text=rep(text,old_attach,new_attach,'capture Joker attach before-state')
+          text=rep(text,
+          "tutorialCheckProgress('attach',{cards:cs,targetSide:target.side,targetIndex:target.index,type,beforePower,beforeTarget,afterPower:state.switchPower,afterTarget:state.switchTarget})",
+          "tutorialCheckProgress('attach',{cards:cs,targetSide:target.side,targetIndex:target.index,type,beforePower,beforeTarget,beforeShield,afterShield:state.player.shield,afterPower:state.switchPower,afterTarget:state.switchTarget,jokerReturnedToDeck:state.player.deck.some(c=>jokerUids.has(c.uid)),jokerSpent:state.player.spent.some(c=>jokerUids.has(c.uid))})",
+          'report Joker attach outcome')
+
+          old_success=":event==='attach'?step.id==='attachEnemy'?'상대 공개 조합도 내 공격 경로로 사용할 수 있습니다.':step.id==='switch'?`버스트 성공! 누적 위력 ${context.beforePower} → ${context.afterPower}, 스위치가 상대에게 넘어갔습니다.`:`붙이기 성공! 실제 체인 처리로 누적 위력 ${context.afterPower}이 만들어졌습니다.`:"
+          new_success=":event==='attach'?step.id==='attachEnemy'?'상대 공개 조합도 내 공격 경로로 사용할 수 있습니다.':step.id==='switch'?`버스트 성공! 누적 위력 ${context.beforePower} → ${context.afterPower}, 스위치가 상대에게 넘어갔습니다.`:step.id==='jokerKing'?`광대왕 조커 성공! 와일드로 빠진 세트 자리를 대신해 버스트했고, 조합 정리 뒤 소모되지 않고 내 덱 아래로 돌아갔습니다.`:step.id==='jokerDual'?`쌍면 조커 성공! 와일드 버스트 +24와 고유 효과 보호막 ${context.afterShield-context.beforeShield}을 함께 얻었습니다.`:`붙이기 성공! 실제 체인 처리로 누적 위력 ${context.afterPower}이 만들어졌습니다.`:"
+          text=rep(text,old_success,new_success,'Joker success copy')
+
+          road=rep(road,
+          '- [ ] 조커 고급 튜토리얼',
+          '- [x] 조커 고급 튜토리얼 — 광대왕 조커로 완전 와일드 버스트와 조합 정리 후 덱 아래 귀환을 체험하고, 쌍면 조커로 버스트 +24와 고유 보호막 20 효과를 실제 엔진 경로에서 확인',
+          'roadmap Joker tutorial')
+
+          adv=rep(adv,
+          "ok(road.includes('- [x] 회수 / 정비 / 공식 상태 고급 튜토리얼')&&road.includes('- [ ] 조커 고급 튜토리얼'),'roadmap closes advanced basics while leaving Joker tutorial open');",
+          "ok(road.includes('- [x] 회수 / 정비 / 공식 상태 고급 튜토리얼')&&road.includes('- [x] 조커 고급 튜토리얼'),'roadmap keeps advanced basics complete and now closes Joker tutorial');",
+          'advanced basics roadmap regression')
+
+          index.write_text(text,encoding='utf-8')
+          roadp.write_text(road,encoding='utf-8')
+          advtest.write_text(adv,encoding='utf-8')
+          print('patched Joker advanced tutorial')
+          PY
+      - name: Run regressions
+        run: |
+          node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
+          node --check /tmp/game.js
+          for f in tests/*.mjs; do echo "== $f =="; node "$f"; done
+          git diff --check
+      - name: Commit verified changes
+        run: |
+          rm .github/workflows/ux1-joker-tutorial.yml
+          git config user.name "EpicenterGUY"
+          git config user.email "mintbamtol7@gmail.com"
+          git add -A
+          git commit -m "Add advanced Joker tutorials"
+          git push origin HEAD:feat/ux1-joker-tutorial-20260830
