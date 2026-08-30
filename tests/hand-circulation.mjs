@@ -208,6 +208,69 @@ function makeLegalityContext() {
   ok(state.discard.length === 1 && state.discard[0] === publicDiscard, 'immediate personal recycle still leaves the shared discard untouched');
 }
 
+// PURE-safe recycle: an empty personal deck reclaims both personal spent and currently-owned cards from the shared discard.
+{
+  const player = { hand: [], deck: [], spent: [], melds: [] };
+  const enemy = { hand: [], deck: [], spent: [], melds: [] };
+  const spentCard = card('S', 10, { owner: 'player' });
+  const ownDiscard = card('D', 5, { owner: 'player' });
+  const enemyDiscard = card('C', 9, { owner: 'enemy' });
+  const transferredAway = card('H', 4, { owner: 'enemy', originOwner: 'player' });
+  const boardCard = card('S', 7, { owner: 'player' });
+  player.spent = [spentCard];
+  player.melds = [{ type: 'SET', cards: [boardCard, card('H', 7), card('D', 7)] }];
+  const state = { player, enemy, discard: [enemyDiscard, ownDiscard, transferredAway], turnNo: 1 };
+  const ctx = context({ state });
+  ctx.sideObj = w => w === 'player' ? player : enemy;
+  ctx.shuffle = xs => xs;
+  ctx.log = () => {};
+  install(ctx, 'recycleIfNeeded', 'acquireDiscardCard', 'drawOne');
+  const drawn = ctx.drawOne('player', false);
+  const recycled = new Set([...player.hand, ...player.deck].map(c => c.uid));
+  ok(recycled.has(spentCard.uid) && recycled.has(ownDiscard.uid), 'empty deck recycles personal spent plus currently-owned shared-discard cards');
+  ok(drawn && player.spent.length === 0, 'recycle can immediately supply the next draw even when PURE has no named-card circulation effect');
+  ok(state.discard.length === 2 && state.discard.includes(enemyDiscard) && state.discard.includes(transferredAway), 'opponent-owned discard remains public even when originOwner was the recycling player');
+  ok(!state.discard.includes(ownDiscard), 'currently-owned player card is removed from shared discard during recycle');
+  ok(player.melds[0].cards.includes(boardCard) && !recycled.has(boardCard.uid), 'public meld cards are never reclaimed by deck recycling');
+}
+
+// Recycle must also work when spent is empty and the only available personal cards are in shared discard.
+{
+  const player = { hand: [], deck: [], spent: [], melds: [] };
+  const enemy = { hand: [], deck: [], spent: [], melds: [] };
+  const ownDiscard = card('C', 6, { owner: 'player' });
+  const enemyDiscard = card('D', 8, { owner: 'enemy' });
+  const state = { player, enemy, discard: [enemyDiscard, ownDiscard], turnNo: 1 };
+  const ctx = context({ state });
+  ctx.sideObj = w => w === 'player' ? player : enemy;
+  ctx.shuffle = xs => xs;
+  ctx.log = () => {};
+  install(ctx, 'recycleIfNeeded', 'acquireDiscardCard', 'drawOne');
+  const drawn = ctx.drawOne('player', false);
+  ok(drawn === ownDiscard && player.hand.includes(ownDiscard), 'owned shared-discard card alone can rebuild an empty personal deck');
+  ok(state.discard.length === 1 && state.discard[0] === enemyDiscard, 'rebuilding from owned discard leaves opponent card in the shared pile');
+}
+
+// Drawing the final card eagerly rebuilds from both spent and owned shared-discard cards.
+{
+  const player = { hand: [], deck: [], spent: [], melds: [] };
+  const enemy = { hand: [], deck: [], spent: [], melds: [] };
+  const last = card('C', 4), spentCard = card('S', 10), ownDiscard = card('H', 11, { owner: 'player' });
+  const enemyDiscard = card('D', 5, { owner: 'enemy' });
+  player.deck = [last];
+  player.spent = [spentCard];
+  const state = { player, enemy, discard: [enemyDiscard, ownDiscard], turnNo: 1 };
+  const ctx = context({ state });
+  ctx.sideObj = w => w === 'player' ? player : enemy;
+  ctx.shuffle = xs => xs;
+  ctx.log = () => {};
+  install(ctx, 'recycleIfNeeded', 'acquireDiscardCard', 'drawOne');
+  const drawn = ctx.drawOne('player', false);
+  ok(drawn === last, 'final original deck card is still drawn before eager owned-card recycling');
+  ok(player.deck.length === 2 && player.spent.length === 0, 'final draw eagerly rebuilds deck from spent plus owned shared discard');
+  ok(!state.discard.includes(ownDiscard) && state.discard.length === 1 && state.discard[0] === enemyDiscard, 'eager rebuild removes only the current owner’s discard cards');
+}
+
 // Drawing from a personal deck clears stale discard-contract state; discard acquisition starts clean before onDiscardDraw re-arms it.
 {
   const player = { hand: [], deck: [], spent: [], melds: [] };
