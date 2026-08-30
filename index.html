@@ -233,6 +233,50 @@ details.log{height:100%;min-height:0;overflow:hidden;padding:0 7px}details.log>s
 .topbar{padding-top:4px;padding-bottom:3px}.initiativeBoard{padding:4px 7px}.initiativeRule{display:none}.enemyZone{padding:4px 6px}.pileVisual{width:50px;height:73px}.deckStackLayer{width:43px;height:64px}.discardFace>div{width:43px!important;height:65px!important}.discardEmpty{width:43px;height:65px}.spentPile{width:50px;height:73px}.spentPile:before,.spentPile:after{width:38px;height:56px}.cardBtn{flex-basis:64px;width:64px;height:96px}.controls .pixelBtn,.mulliganActions .pixelBtn{min-height:27px;padding:3px 4px;font-size:7px}.selectionStrip{font-size:6px}.meldMiniCard{flex-basis:36px;width:36px;height:54px}
 }
 
+
+/* UI2 P2.5 · foldable card readability refinement */
+@media (min-width:600px) and (max-width:899px){
+/* The unfolded screen is wide enough for the full hand, but not tall enough for desktop-sized cards. */
+.main{grid-template-rows:46px 60px 88px minmax(0,1fr) 204px 26px}
+.handZone{padding:4px 7px 5px}
+.handTop{min-height:20px}
+.hand{gap:5px;padding:2px 5px 1px;overflow-x:auto;overflow-y:hidden;align-items:center}
+.cardBtn{flex:0 0 64px;width:64px;height:96px}
+.cardBtn.selected{transform:translateY(-4px)}
+.cardBtn .corner{font-size:10px;left:5px;top:5px}.cardBtn .corner.bottom{right:5px;bottom:5px;left:auto;top:auto}
+.cardBtn .centerSuit{font-size:29px}.cardBtn .namedMark{font-size:5.5px;bottom:10px;padding:2px 1px}.cardBtn .named:after{font-size:5px;right:3px;top:3px;padding:0 2px}
+.selectionStrip{margin:1px 0;padding:2px 5px;font-size:6.5px;line-height:1.15}
+.mulliganBar{margin-top:1px;padding:3px 5px}.mulliganText{font-size:6.5px;line-height:1.2;margin-bottom:2px}.mulliganActions .pixelBtn{min-height:27px;padding:3px 5px;font-size:7.5px}
+.handZone:has(.mulliganBar.show) .hand{flex:0 0 101px;min-height:101px;height:101px}
+
+/* Pile labels should stay secondary to the actual cards. */
+.deckGlyph{font-size:9px;line-height:1.02}
+.spentMark{font-size:6px;line-height:1.12}
+.pileMeta{min-height:17px;font-size:6px;line-height:1.12}
+.pileMeta b{font-size:8px;margin-left:1px}
+.pileRule,.drawPath{font-size:5.5px;line-height:1.1}
+
+/* Long RUNs/SETs progressively use smaller board cards before falling back to local horizontal scroll. */
+.meldCardRow{overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scroll-snap-type:x proximity}
+.meldMiniCard{scroll-snap-align:start}
+.meldCardRow:has(.meldMiniCard:nth-child(7)){gap:2px}
+.meldCardRow:has(.meldMiniCard:nth-child(7)) .meldMiniCard{flex-basis:36px;width:36px;height:54px}
+.meldCardRow:has(.meldMiniCard:nth-child(7)) .meldMiniCard .corner{font-size:7px}
+.meldCardRow:has(.meldMiniCard:nth-child(7)) .meldMiniCard .centerSuit{font-size:19px}
+.meldCardRow:has(.meldMiniCard:nth-child(9)){gap:1px}
+.meldCardRow:has(.meldMiniCard:nth-child(9)) .meldMiniCard{flex-basis:29px;width:29px;height:44px}
+.meldCardRow:has(.meldMiniCard:nth-child(9)) .meldMiniCard .corner{font-size:6px;left:3px;top:3px}
+.meldCardRow:has(.meldMiniCard:nth-child(9)) .meldMiniCard .corner.bottom{right:3px;bottom:3px;left:auto;top:auto}
+.meldCardRow:has(.meldMiniCard:nth-child(9)) .meldMiniCard .centerSuit{font-size:16px}
+.meldCardRow:has(.meldMiniCard:nth-child(9)) .meldMiniCard .namedMark{display:none}
+}
+@media (min-width:600px) and (max-width:899px) and (max-height:680px){
+.main{grid-template-rows:42px 54px 76px minmax(0,1fr) 188px 24px}
+.cardBtn{flex-basis:59px;width:59px;height:88px}.cardBtn .centerSuit{font-size:27px}
+.handZone:has(.mulliganBar.show) .hand{flex-basis:93px;min-height:93px;height:93px}
+.deckGlyph{font-size:8px}.pileMeta{font-size:5.5px}.pileMeta b{font-size:7px}.pileRule,.drawPath{font-size:5px}
+}
+
 </style>
 </head>
 <body>
