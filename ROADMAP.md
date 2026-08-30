@@ -65,9 +65,12 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Add executable combat-readability regressions while preserving all M1–M5 tests
 
 ## M7 — Status/effect engine
-- [ ] Normalize official statuses: vulnerable, seal, fixed, protect, regen
-- [ ] Support player / meld / card attachment scopes
-- [ ] Define reusable effect events/actions without introducing new base resources
+- [x] Normalize the five shared statuses: vulnerable, seal, fixed, protect, regen; keep shield and one-off card markers separate
+- [x] Define status scopes and lifecycle for player / public meld / individual card targets
+- [x] Make fixed consistently block recovery, extortion, cutting and other movement paths, including cards controlled inside the opponent's public meld
+- [x] Route shared seal/protect behavior through the normalized status helpers while preserving existing named-card behavior
+- [x] Introduce reusable effect event/action vocabulary and a gradual action dispatcher without adding a new base resource
+- [x] Add executable status-engine regressions and keep every M1–M6 suite passing
 
 ## M8 — Named cards
 - [ ] Stabilize first ~50 named cards
@@ -103,6 +106,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. M7: normalize the five official statuses without turning one-off card markers into global status rules.
-2. M7: define player / public-meld / individual-card attachment scopes and lifecycle timing.
-3. M7: introduce reusable effect events/actions gradually, keeping the prototype buildless and current cards behavior-compatible.
+1. M8: audit the first ~50 named cards against the locked rules, normalized statuses and current effect timings; fix text/implementation mismatches before adding more content.
+2. M8: rebalance the pool so direct SWITCH/power manipulation remains a minority and meld/recovery/discard/defense/RUMMY interactions carry most variety.
+3. Gradually migrate repeated named-card effect patterns onto the M7 action/event vocabulary only where it reduces duplication without changing behavior.

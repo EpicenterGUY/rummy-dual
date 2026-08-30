@@ -99,6 +99,7 @@ function card(suit, rank, extra = {}) {
   ctx.triggerOpponentHandTraps = () => {};
   ctx.log = () => {};
   ctx.triggerRummy = () => {};
+  ctx.blankMeldStatus = () => ({ seal: 0, fixed: 0, protect: 0, fixedOwner: null, fixedThroughStart: null });
   install(ctx, 'submitNewMeld');
 
   const four = [card('S',7), card('H',7), card('D',7), card('C',7)];
@@ -277,6 +278,8 @@ function makeDamageContext({ hp = 60, shield = 0, cores = 3, power = 0, target =
   ctx.combatBanner = () => {};
   ctx.pulsePanel = () => {};
   ctx.checkGameOver = () => {};
+  ctx.officialStatusValue = (scope, target, key) => target?.status?.[key] || 0;
+  ctx.clearOfficialStatus = (scope, target, key) => { const n = target?.status?.[key] || 0; if (target?.status) target.status[key] = 0; return n; };
   install(ctx, 'resetAllChains', 'resetBombCycle', 'coreBreak', 'damage', 'detonate');
   return { ctx, state, player, enemy };
 }

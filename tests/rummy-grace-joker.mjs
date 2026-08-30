@@ -143,6 +143,7 @@ function basicSide() {
   const ctx = context({ state });
   ctx.sideObj = w => w === 'player' ? player : enemy;
   ctx.switchName = () => 'YOU'; ctx.log = () => {}; ctx.combatBanner = () => {};
+  ctx.expireOwnerFixedStatuses = () => {};
   ctx.detonate = () => { detonations++; state.switchPower = 0; state.switchTarget = 'neutral'; return 48; };
   install(ctx, 'armSafetyPin', 'turnEnd');
   const pin = { tag: 'safetyPin', name: '안전핀' };
@@ -182,6 +183,7 @@ function basicSide() {
   ctx.sideObj = w => w === 'player' ? player : enemy;
   ctx.other = w => w === 'player' ? 'enemy' : 'player';
   ctx.log = () => {};
+  ctx.consumeOfficialStatus = () => 0;
   const encore = { uid: 'HJ', named: true, tag: 'afterRummyBonus', suppressEffectToken: null, name: '앙코르' };
   install(ctx, 'resolveEffects');
   let fx = ctx.resolveEffects('player', [encore], 'SET', { isNew: true, isAttach: false, willReturn: false, totalLength: 3, effectSeen: new Set(), meld: { status: {} }, targetOwner: 'player' });
@@ -213,6 +215,7 @@ function basicSide() {
   ctx.meldType = cards => cards.length >= 3 ? 'RUN' : null;
   ctx.markSetCompletion = () => {};
   ctx.cardText = c => c.uid;
+  ctx.meldFixedActive = () => false; ctx.cardFixedActive = () => false;
   install(ctx, 'freeRecoverFromMeld');
   ctx.freeRecoverFromMeld('player', meld, []);
   ok(!player.rummyRecoveryPending, 'first successful recovery consumes the independent post-RUMMY recovery window');
@@ -273,6 +276,7 @@ function basicSide() {
   ctx.sideObj = w => w === 'player' ? player : enemy;
   ctx.other = w => w === 'player' ? 'enemy' : 'player';
   ctx.log = () => {};
+  ctx.consumeOfficialStatus = () => 0;
   const returner = { uid: 'H2', named: true, tag: 'afterRummyDraw', suppressEffectToken: null, name: '귀환자' };
   install(ctx, 'resolveEffects');
   player.rummyRecoveryPending = true;
