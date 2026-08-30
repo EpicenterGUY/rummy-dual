@@ -14,6 +14,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Public meld cap 2 per player; no free base meld/RUN disposal
 - [x] Shared discard has no size cap; base take is top only
 - [x] When a personal deck empties, recycle that player’s spent pile plus cards in the shared discard currently owned by that player; opponent-owned discard and public meld cards stay in place
+- [x] Zero-source circulation safety: if deck/spent/usable shared discard are all empty, skip acquisition; if the player also has no hand and no legal recovery, retire one public meld containing their card as a last-resort circulation release, without duplicating cards
 - [x] RUMMY refills 6
 - [x] Shield has no base hard cap and normally expires at the owner's next turn start
 - [x] Recovery rule refinement: a card recovered this turn may still be used for a new 3-card meld, maintenance, discard, or non-return effects, but cannot be reused that same turn as material for a BURST/CHAIN/SWITCH-returning attach unless a named effect explicitly grants that exception.
@@ -48,6 +49,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 ## M4 — Hand circulation
 - [x] Recheck maintenance stuck-state definition against actual playable cards and return restrictions
 - [x] Verify deck exhaustion/recycling under long games; recycle personal spent + currently-owned cards from shared discard, while preserving opponent-owned discard and all public meld cards
+- [x] Close zero-source deadlocks for player/AI/RUMMY and make maintenance recognize currently-owned shared-discard cards as a valid personal recycle source
 - [x] Audit player/AI RUMMY turn-end paths; AI now settles contracts before the single turn-end resolution even on RUMMY turns
 - [x] Reset transient discard-contract state whenever a card is freshly acquired from deck/discard before source-specific effects are applied
 
