@@ -42,6 +42,11 @@ jobs:
           q=t.read_text(encoding='utf-8')
           q=q.replace("ok(script.includes(\"c.recoverReturnOverrideToken=freeReason==='tuner'?state.turnToken:null\"),'Tuner grants same-turn attach override only to its transfer recovery');", "ok(script.includes(\"grantRecoveryReturnOverride('player',c,m,{requiredType:m.type==='SET'?'RUN':'SET',ownOnly:true})\")&&script.includes(\"grantRecoveryReturnOverride(w,c,m,{requiredType:m.type==='SET'?'RUN':'SET',ownOnly:true})\"),'Tuner grants same-turn return only to authorized own opposite-type destination melds');", 1)
           t.write_text(q,encoding='utf-8')
+
+          t=Path('tests/rules-smoke.mjs')
+          q=t.read_text(encoding='utf-8')
+          q=q.replace("ok(html.includes('recoveredCardsCanReturn(cards,state.turnToken)'), 'attach path checks recovered-card return eligibility');", "ok(html.includes('recoveredCardsCanReturn(cards,state.turnToken,m)'), 'attach path checks destination-aware recovered-card return eligibility');", 1)
+          t.write_text(q,encoding='utf-8')
           PY
       - name: Run buildless regressions
         shell: bash
