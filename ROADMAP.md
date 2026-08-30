@@ -98,9 +98,9 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 카드 기본 조작 튜토리얼 — 고정 Q♦ 덱 드로우 → 지정 카드 선택 → 버리기 성공 시 자동 진행
 - [x] 세트 튜토리얼 — 3♠ / 3♥ / 3♦ 고정 손패 + 실제 `meldType` / `submitNewMeld` 경로
 - [x] 런 튜토리얼 — 4♣ / 5♣ / 6♣ 고정 손패 + 실제 `meldType` / `submitNewMeld` 경로
-- [ ] 붙이기 튜토리얼
-- [ ] 상대 공개 조합 붙이기 체험
-- [ ] 스위치 튜토리얼
+- [x] 붙이기 튜토리얼 — 고정 내 RUN에 실제 `attachCards` 체인 붙이기
+- [x] 상대 공개 조합 붙이기 체험 — 고정 상대 RUN에 내 카드 붙이기 + 실제 스위치 반환
+- [x] 스위치 튜토리얼 — 나를 향한 누적 36에서 4번째 8로 버스트 +24, 상대에게 스위치 반환 확인
 - [ ] 러미 튜토리얼
 - [x] 튜토리얼 하이라이트 / 가이드 UI 기본 프레임워크 — 화면 흐름 안 coach + 힌트/다음/재시작/종료
 
@@ -214,6 +214,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. UX1 P1: deterministic 기본 조작 → 세트 → 런 lessons are live; next connect 붙이기 → 상대 공개 조합 → 스위치 → 러미 to the same real-engine tutorial controller.
+1. UX1 P1: deterministic 기본 조작 → 세트 → 런 → 붙이기 → 상대 공개 조합 → 스위치 lessons are live; next connect 러미, then move into P2 누적 위력 / 폭발 tutorial.
 2. UI2 P2: finish the 360–480px real-device visual check, then defer P3 art/brand polish until gameplay/tutorial UX is steadier.
 3. L10N1 + M8: continue remaining text cleanup and named-card choice/copy/timing audit in parallel; do not begin large M9/content expansion until the first ~50 named-card behaviors and UX1 P1 are both stable.
