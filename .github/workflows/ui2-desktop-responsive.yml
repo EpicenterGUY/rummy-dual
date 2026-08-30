@@ -1,0 +1,80 @@
+name: Verify UI2 desktop responsive layout
+on:
+  push:
+    branches: [feat/ux1-joker-tutorial-rebased-20260830, feat/ui2-desktop-responsive-20260831]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/ui2-desktop-responsive-20260831
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply desktop responsive patch
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          r=Path('ROADMAP.md')
+          text=p.read_text(encoding='utf-8')
+          road=r.read_text(encoding='utf-8')
+          marker='@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}'
+          if marker not in text:
+              raise SystemExit('missing reduced motion anchor')
+          css=r'''/* UI2 · desktop / tablet responsive battlefield */
+          @media (max-width:899px){#app{width:min(100vw,480px)}}
+          @media (min-width:900px){
+          html,body{min-width:900px}body{align-items:flex-start;background:radial-gradient(circle at 50% 0%,#26343a 0,#12181c 48%,#0e1418 100%)}
+          #app{width:min(100vw,1440px);min-height:100vh;overflow:visible;border-left:1px solid #303c41;border-right:1px solid #303c41;box-shadow:0 0 42px #0006}
+          #app:before{max-width:1440px}
+          .topbar{padding:12px 16px 9px}.logo{font-size:23px}.sub{font-size:10px}.topActions .pixelBtn{font-size:9px}.badge{font-size:9px}
+          .main{padding:0 14px 18px;display:grid;grid-template-columns:minmax(270px,.75fr) minmax(430px,1.35fr);grid-template-areas:"tutorial tutorial" "practice practice" "status status" "switch switch" "enemy arena" "meld meld" "hand hand" "detail log";gap:10px;align-items:start}
+          .main>*{min-width:0}.tutorialCoach{grid-area:tutorial}.practiceCoach{grid-area:practice}.status{grid-area:status}.initiativeBoard{grid-area:switch}.enemyZone{grid-area:enemy}.arena{grid-area:arena}.meldZone{grid-area:meld}.handZone{grid-area:hand}.detail{grid-area:detail}.log{grid-area:log}
+          .status{grid-template-columns:minmax(0,1fr) 84px minmax(0,1fr);gap:10px}.hpPanel{padding:9px 11px}.hpHead{font-size:11px}.mid{padding:9px 6px}.mid b{font-size:18px}.combatMeta{gap:5px}.statChip{font-size:8px}
+          .enemyZone{min-height:176px;padding:10px}.backRow{min-height:54px;justify-content:center;padding-left:0;align-items:center}.backRow .cardBack{width:34px;height:49px;margin-left:-10px;display:block}.backRow .cardBack:nth-child(n+7){display:block}
+          .arena{padding:10px}.arenaGrid{gap:9px}.pileVisual{width:82px;height:118px}.pileMeta{font-size:8px}.phaseText,.fieldStrip{font-size:9px;padding:7px 9px}
+          .meldZone{padding:10px}.meldRows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.meldSide{min-height:150px}.meldCardRow{min-height:80px}.meldMiniCard{flex-basis:50px;width:50px;height:75px}
+          .handZone{padding:10px 12px}.handTop{align-items:center}.handTitle{font-size:11px}.handSub{font-size:9px}.hand{min-height:154px;gap:7px;padding:12px max(10px,calc((100% - 920px)/2)) 9px}.cardBtn{flex-basis:92px;width:92px;height:138px}.controls{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.controls .pixelBtn{font-size:9px;min-height:38px}
+          .detail{min-height:164px;padding:10px 12px}.detailTitle{font-size:10px}.detailText{font-size:9px}.log{max-height:none;min-height:164px}.log summary{min-height:38px}.log[open] #log{max-height:180px;overflow:auto}
+          .tutorialCoachActions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}.tutorialCoachActions .pixelBtn{min-height:40px}.practiceCoachText,.tutorialCoachGoal{font-size:9px}
+          .startScreen{width:100vw;padding:32px 20px}.startShell{width:min(100%,520px)}.startHero{padding:26px 18px 22px}.startLogo{font-size:34px}.startPitch{font-size:11px;max-width:380px}.startMenuBtn{min-height:64px}
+          }
+          @media (min-width:1200px){
+          .main{grid-template-columns:minmax(280px,.72fr) minmax(560px,1.5fr) minmax(280px,.76fr);grid-template-areas:"tutorial tutorial tutorial" "practice practice practice" "status status status" "enemy switch detail" "arena meld detail" "hand hand hand" "log log log";gap:11px;padding:0 16px 20px}
+          .status{grid-template-columns:minmax(0,1fr) 92px minmax(0,1fr)}
+          .initiativeBoard{min-height:176px;align-self:stretch}.enemyZone,.arena{min-height:220px}.arena{display:flex;align-items:center}.arenaGrid{width:100%}
+          .detail{position:sticky;top:68px;min-height:407px;align-self:start}.detailCard{display:block;width:78px;height:116px;margin:0 auto 10px}.detail{display:block}.detailTitle{font-size:11px}.detailMeta{font-size:8px}.detailText{font-size:9px;line-height:1.55}.detailTip{display:block;font-size:8px}
+          .meldSide{min-height:205px}.meldMiniCard{flex-basis:52px;width:52px;height:78px}.meldEntry{padding:7px}.meldEntryHead{font-size:9px}.meldNote{font-size:8px}
+          .hand{min-height:166px;padding-top:14px;padding-bottom:10px}.cardBtn{flex-basis:98px;width:98px;height:147px}.controls{grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.controls .pixelBtn{min-height:40px}
+          .log{min-height:0}.log[open] #log{max-height:210px}.startShell{width:min(100%,560px)}
+          }
+          @media (min-width:1600px){#app{border-radius:0 0 14px 14px}.main{padding-left:20px;padding-right:20px}.hand{padding-left:max(16px,calc((100% - 1040px)/2));padding-right:max(16px,calc((100% - 1040px)/2))}}
+          '''
+          text=text.replace(marker,css+'\n'+marker,1)
+          anchor='### P3 — 아트/브랜드 마감'
+          if anchor not in road:
+              raise SystemExit('missing UI2 P3 roadmap anchor')
+          block='''### P2.5 — 데스크톱 / 태블릿 반응형\n- [x] 기존 480px 모바일 전장을 899px 이하에서 그대로 유지\n- [x] 900~1199px에서 상태/스위치를 상단에 두고 상대 손패·드로우 구역을 2열로 사용하는 태블릿/소형 PC 레이아웃\n- [x] 1200px 이상 3열 전술 테이블 — 좌측 상대/드로우, 중앙 스위치·공개 조합, 우측 카드 상세, 하단 전체 폭 손패/행동\n- [x] 데스크톱에서 상대 손패 카드백·공개 조합·손패 카드를 모바일보다 크게 복원하고 행동 버튼을 3열→6열로 확장\n- [x] 시작 화면도 데스크톱에서 480px 고정 셸을 해제하되 메뉴 본문은 읽기 좋은 520~560px로 제한\n- [x] 1440px 최대 전장 폭으로 1366×768 / 1920×1080 / 2560×1440 계열의 과도한 가로 늘어짐 방지\n- [ ] 실제 PC 브라우저에서 1366×768 / 1920×1080 시각 검수 및 필요 시 미세 간격 조정\n\n'''
+          road=road.replace(anchor,block+anchor,1)
+          p.write_text(text,encoding='utf-8')
+          r.write_text(road,encoding='utf-8')
+          PY
+      - name: Run regressions
+        run: |
+          node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
+          node --check /tmp/game.js
+          for f in tests/*.mjs; do echo "== $f =="; node "$f"; done
+          git diff --check
+      - name: Commit verified changes
+        run: |
+          rm -f .github/workflows/ui2-desktop-responsive.yml
+          git config user.name "EpicenterGUY"
+          git config user.email "mintbamtol7@gmail.com"
+          git add -A
+          git commit -m "Add responsive desktop battlefield layout"
+          git push origin HEAD:feat/ui2-desktop-responsive-20260831
