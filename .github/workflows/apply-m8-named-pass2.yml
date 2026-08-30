@@ -1,0 +1,39 @@
+name: Apply M8 named stabilization pass 2
+on:
+  push:
+    branches: [fix/m8-named-stabilization-2-20260830]
+permissions:
+  contents: write
+jobs:
+  patch-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/m8-named-stabilization-2-20260830
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply named-card pass 2
+        run: python3 scripts/m8_named_pass2.py
+      - name: Check JavaScript syntax
+        run: |
+          node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
+          node --check /tmp/game.js
+      - name: Run regression suites
+        run: |
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+      - name: Check diff
+        run: git diff --check
+      - name: Remove temporary patch files
+        run: rm scripts/m8_named_pass2.py .github/workflows/apply-m8-named-pass2.yml
+      - name: Commit verified pass
+        run: |
+          git config user.name "EpicenterGUY"
+          git config user.email "mintbamtol7@gmail.com"
+          git add -A
+          git commit -m "Stabilize second M8 named-card tranche"
+          git push origin HEAD:fix/m8-named-stabilization-2-20260830
