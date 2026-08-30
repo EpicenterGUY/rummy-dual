@@ -16,7 +16,17 @@ jobs:
         with:
           node-version: 22
       - name: Apply RUMMY tutorial patch
-        run: python tools/ux1_rummy_patch.py
+        run: |
+          python tools/ux1_rummy_patch.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old="if(w==='player'){tutorialCheckProgress('rummy',{beforeHand:beforeReloadHand,reload,afterHand:s.hand.length});state.selected.clear();"
+          new="if(w==='player'){if(typeof tutorialCheckProgress==='function')tutorialCheckProgress('rummy',{beforeHand:beforeReloadHand,reload,afterHand:s.hand.length});state.selected.clear();"
+          if old not in s: raise SystemExit('missing RUMMY hook for guard refinement')
+          p.write_text(s.replace(old,new,1))
+          PY
       - name: Run regressions
         run: |
           node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
