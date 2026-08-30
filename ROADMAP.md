@@ -87,12 +87,12 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 
 ### P1 — 시작창 + 기본 플레이 튜토리얼
 - [x] 기존 시작 화면 구조 점검 — 현재는 별도 시작창 없이 로드 즉시 `newGame()` 실행
-- [ ] 신규 시작창 UI 설계
-- [ ] `대전 시작 / 튜토리얼 / 카드 도감 / 설정` 구조 정리
-- [ ] 미구현 메뉴를 비활성/`준비 중` 상태로 구분
-- [ ] 모바일 시작창 대응
+- [x] 신규 시작창 UI 설계
+- [x] `대전 시작 / 튜토리얼 / 카드 도감 / 설정` 구조 정리
+- [x] 미구현 메뉴를 비활성/`준비 중` 상태로 구분
+- [x] 모바일 시작창 대응
 - [ ] 첫 실행 튜토리얼 안내
-- [ ] 기존 progress 저장 스키마에 튜토리얼 상태 저장
+- [x] 기존 progress 저장 스키마에 튜토리얼 상태 저장
 - [ ] 일반 게임 로직과 튜토리얼 로직 중복 최소화 구조 확정 (`sessionMode` + 단계 데이터 + 실제 엔진 재사용)
 - [ ] 튜토리얼 전용 고정 게임 상태/손패/드로우 설계
 - [ ] 카드 기본 조작 튜토리얼 — 획득/선택/버리기 및 실제 행동 UI 이해
@@ -145,7 +145,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [ ] 카드 효과 문체 통일
 - [ ] 튜토리얼 용어 반영
 - [x] 도움말 / 규칙 설명 핵심 용어 반영 + `런 완주` 규칙 동기화
-- [ ] 시작창 메뉴 한국어화
+- [x] 시작창 메뉴 한국어화
 - [x] 기존 규칙 오버레이의 공식 용어집 갱신
 - [ ] 중복 / 폐기된 옛 용어 제거
 - [ ] 모바일 UI에서 긴 한국어 표현 잘림 점검
@@ -186,5 +186,5 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 
 ## Current next work
 1. L10N1: lock and apply the Korean user-facing terminology before tutorial copy proliferates; keep code-internal English identifiers stable.
-2. UX1 P1: build the start-screen shell, first-run prompt, tutorial save flags and shared tutorial controller, then implement basic controls → 세트 → 런 → 붙이기 → 스위치 → 러미 with fixed states.
+2. UX1 P1: start-screen shell/menu/tutorial save flags are live; next build the first-run prompt + shared tutorial controller, then basic controls → 세트 → 런 → 붙이기 → 스위치 → 러미 with fixed states.
 3. Continue the remaining M8 choice/copy/timing audit in parallel; do not begin large M9/content expansion until the first ~50 named-card behaviors and UX1 P1 are both stable.
