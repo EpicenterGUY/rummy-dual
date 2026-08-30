@@ -1,0 +1,33 @@
+name: Verify spent pile clarity
+on:
+  push:
+    branches: [feat/ui2-spent-pile-clarity-20260831]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/ui2-spent-pile-clarity-20260831
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply patch
+        run: python tmp_patch_spent.py
+      - name: Verify syntax and regressions
+        run: |
+          node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
+          node --check /tmp/game.js
+          for f in tests/*.mjs; do node "$f"; done
+          git diff --check
+      - name: Commit verified changes and remove temporary CI files
+        run: |
+          rm tmp_patch_spent.py .github/workflows/ui2-spent-pile-clarity.yml
+          git config user.name EpicenterGUY
+          git config user.email mintbamtol7@gmail.com
+          git add -A
+          git commit -m "Clarify spent pile recycling role"
+          git push origin HEAD:feat/ui2-spent-pile-clarity-20260831
