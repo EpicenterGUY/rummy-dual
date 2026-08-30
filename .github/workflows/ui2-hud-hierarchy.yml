@@ -1,0 +1,31 @@
+name: Verify UI2 HUD hierarchy
+on:
+  push:
+    branches: [feat/ui2-hud-hierarchy-20260830]
+jobs:
+  verify:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply UI2 P2 hierarchy patch
+        run: python tools/ui2_p2_patch.py
+      - name: Run regressions
+        shell: bash
+        run: |
+          for f in tests/*.mjs; do node "$f"; done
+          git diff --check
+      - name: Commit verified changes
+        shell: bash
+        run: |
+          rm -f .github/workflows/ui2-hud-hierarchy.yml tools/ui2_p2_patch.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ROADMAP.md index.html tests/ui2-hud-hierarchy.mjs .github/workflows/ui2-hud-hierarchy.yml tools/ui2_p2_patch.py
+          git commit -m "feat: simplify battle HUD hierarchy"
+          git push
