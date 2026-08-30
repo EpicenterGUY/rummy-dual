@@ -19,8 +19,12 @@ ok(html.includes('id="settingsBtn"') && html.includes('disabled'), 'settings ent
 ok(html.includes('id="startProgressBtn"') && html.includes('id="startRulesBtn"'), 'existing progress and rules overlays remain reachable from the start screen');
 ok(html.includes('id="homeBtn"'), 'battle HUD can return to the start screen');
 ok(html.includes('id="resultHomeBtn"'), 'result screen can return to the start screen');
+ok(html.includes('<span class="menuState">시작</span>') && html.includes('<span class="menuState">열기</span>'), 'active start-menu states are Korean');
 
 ok(script.includes("sessionMode:'menu'"), 'global state starts in menu session mode');
+ok(script.includes('battleId:0'), 'global state tracks a monotonic battle session id');
+ok(script.includes('state.battleId++'), 'each new battle invalidates delayed work from older battles');
+ok(script.includes("state.sessionMode==='battle'&&state.battleId===battleId"), 'delayed battle callbacks are guarded by mode and battle id');
 ok(script.includes('tutorialPromptSeen:false') && script.includes('tutorialCompleted:false'), 'progress schema carries tutorial flags');
 ok(script.includes("tutorialPromptSeen:typeof x.tutorialPromptSeen==='boolean'?x.tutorialPromptSeen:false"), 'legacy progress normalizes missing tutorial prompt flag');
 ok(script.includes("tutorialCompleted:typeof x.tutorialCompleted==='boolean'?x.tutorialCompleted:false"), 'legacy progress normalizes missing tutorial completion flag');
