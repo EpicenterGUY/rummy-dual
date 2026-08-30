@@ -15,7 +15,9 @@ jobs:
         with:
           node-version: 22
       - name: Apply deadlock patch
-        run: python .tmp/m4_zero_source_patch.py
+        run: |
+          python .tmp/m4_zero_source_patch.py
+          python .tmp/m4_zero_source_testfix.py
       - name: Verify syntax and regressions
         run: |
           node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
@@ -24,7 +26,7 @@ jobs:
           git diff --check
       - name: Commit verified changes and remove temporary CI files
         run: |
-          rm -f .tmp/m4_zero_source_patch.py .github/workflows/m4-zero-source-deadlock.yml
+          rm -f .tmp/m4_zero_source_patch.py .tmp/m4_zero_source_testfix.py .github/workflows/m4-zero-source-deadlock.yml
           rmdir .tmp 2>/dev/null || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
