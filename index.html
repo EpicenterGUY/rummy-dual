@@ -123,6 +123,12 @@ html,body{min-width:900px}body{align-items:flex-start;background:radial-gradient
 @media (min-width:1600px){#app{border-radius:0 0 14px 14px}.main{padding-left:20px;padding-right:20px}.hand{padding-left:max(16px,calc((100% - 1040px)/2));padding-right:max(16px,calc((100% - 1040px)/2))}}
 
 
+
+/* UI2 · spent pile clarity */
+.spentMark small{display:block;margin-top:3px;font-size:7px;font-weight:700;color:#7f8c91}.spentAutoLabel{color:#d2c39d;font-weight:800}.spentStation .spentPile{cursor:default}.spentStation .pileMeta{line-height:1.35}
+@media (min-width:900px){.spentStation{opacity:.86}.spentStation .spentPile{width:60px;height:86px}.spentStation .spentPile:before,.spentStation .spentPile:after{width:45px;height:66px}.spentStation .spentMark{font-size:9px}.spentStation .spentMark b{font-size:13px}.spentStation .pileMeta{max-width:150px;margin-inline:auto}}
+@media (min-width:1200px){.spentStation .spentPile{width:54px;height:76px}.spentStation .spentPile:before,.spentStation .spentPile:after{width:40px;height:58px}.spentStation .spentMark{font-size:9px}.spentStation .pileMeta{font-size:9px}.spentStation .pileRule{font-size:8px}}
+
 /* UI2 · desktop fullscreen / Korean readability / no page scroll */
 @media (min-width:900px){
 html,body{font-family:"Pretendard Variable","Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;font-synthesis:none}
@@ -314,7 +320,7 @@ details.log{height:100%;min-height:0;overflow:hidden;padding:0 7px}details.log>s
 <section class="arena pixel"><div class="arenaGrid">
  <div class="pileStation"><button id="deckPile" class="pileVisual" type="button" aria-label="내 덱 맨 위 카드 1장 뽑기"><span class="deckStackLayer l1"></span><span class="deckStackLayer l2"></span><span class="deckFace"><span class="deckGlyph">RUMMY<br>//<br>DUEL</span></span></button><div class="pileMeta"><span class="drawPath deckPath">덱 → 손패</span><br>내 덱 <b id="playerDeckCount">22</b><div class="pileRule" id="deckRuleText">맨 위 1장 뽑기</div></div></div>
  <div class="pileStation"><button id="discardPile" class="pileVisual" type="button" aria-label="공용 버림패 맨 위 카드 가져오기"><span class="discardFace" id="discardCard"></span></button><div class="pileMeta"><span class="drawPath discardPath">버림패 → 손패</span><br>공용 버림패 <b id="discardCount">0</b><div class="pileRule" id="discardRuleText">장수 제한 없음 · 맨 위만 가져오기</div></div></div>
- <div class="pileStation"><div class="spentPile" aria-label="내 소모패"><span class="spentMark">소모패<br><b id="playerSpentCount">0</b></span></div><div class="pileMeta"><span class="drawPath spentPath">정리 → 소모패</span><div class="pileRule">덱 0장 → 소모패 즉시 섞음</div></div></div>
+ <div class="pileStation spentStation"><div class="spentPile" aria-label="내 소모패 · 직접 조작하지 않음 · 덱이 비면 자동 재순환"><span class="spentMark">재순환 대기<br><b id="playerSpentCount">0</b><small>소모패</small></span></div><div class="pileMeta"><span class="drawPath spentPath">사용·정리 → 소모패</span><div class="pileRule"><b class="spentAutoLabel">직접 사용 불가</b> · 덱 0장 시 자동 셔플</div></div></div>
  <div class="fieldStrip"><span><b>필드</b> · 공용 규칙 1칸</span><span><span id="fieldName" class="fieldName">없음</span><span id="fieldEffect" class="fieldEffect"></span></span></div>
  <div class="phaseText" id="phaseText">시작 손패를 확인하세요.</div>
  <div class="centerActions"><button id="drawDeckBtn" class="pixelBtn primary">덱 1장 뽑기</button><button id="drawDiscardBtn" class="pixelBtn goldBtn">버림패 맨 위 가져오기</button><button id="resetBtn" class="pixelBtn">새 게임</button></div>
@@ -330,6 +336,7 @@ details.log{height:100%;min-height:0;overflow:hidden;padding:0 7px}details.log>s
 <div id="rulesOverlay" class="overlay"><div class="modal rulesModal pixel"><div class="rulesHead"><h2>규칙 · 용어집</h2><button id="closeRulesBtn" class="pixelBtn closeBtn">닫기</button></div>
  <div class="ruleBlock"><h3>게임 한 문장</h3><p><b>럼미로 하나의 폭탄을 같이 키우고 서로 떠넘기는 1:1 카드게임.</b> 개인 덱을 쓰지만 공용 버림패와 서로의 공개 조합을 함께 이용합니다.</p></div>
  <div class="ruleBlock"><h3>생존 · 코어</h3><p>각 플레이어는 <b>코어 3개 × 60</b>을 가집니다. 폭발과 직접 피해는 현재 코어에 들어가며, 코어를 파괴하고 남은 <b>초과 피해는 다음 코어로 관통하지 않습니다.</b> 마지막 코어가 깨지면 패배합니다.</p></div>
+ <div class="ruleBlock"><h3>덱 · 버림패 · 소모패</h3><p><b>공용 버림패</b>는 양쪽이 맨 위 카드를 가져올 수 있는 공용 공간입니다. <b>소모패</b>는 각자의 자동 재순환 대기 더미라서 기본적으로 직접 사용할 수 없습니다. 개인 덱의 마지막 카드를 뽑으면 그 플레이어의 소모패만 즉시 섞여 새 덱이 되며, 공용 버림패는 섞이지 않습니다.</p></div>
  <div class="ruleBlock"><h3>코어 파괴</h3><p>코어가 깨지면 다음 코어가 60/60으로 활성화됩니다. <b>누적 위력 0 · 스위치 중립 · 모든 런 체인 0 · 보호막 0</b>으로 폭탄 사이클만 초기화하며 공개 세트/런은 그대로 남습니다.</p></div>
  <div class="ruleBlock"><h3>기본 턴</h3><p><b>개인 덱 약 30장 · 시작 손패 8장 · 최대 3장 멀리건.</b> 턴은 <b>1장 획득 → 행동 → 1장 버리기</b>. 획득은 내 덱 맨 위 또는 공용 버림패 맨 위 중 하나입니다. <b>공용 버림패에는 장수 제한이 없고</b>, 기본 획득은 맨 위 카드만 가져옵니다.</p></div>
  <div class="ruleBlock"><h3>세트 · 버스트</h3><p>새 세트는 같은 숫자·서로 다른 무늬 <b>정확히 3장</b>으로 시작해 버스트 준비 상태가 됩니다. 이미 공개된 3장 세트에 마지막 무늬가 들어오면 <b>버스트 +24</b>, 스위치를 상대에게 넘기고 <b>완성된 4장 세트는 즉시 정리</b>됩니다.</p></div>
