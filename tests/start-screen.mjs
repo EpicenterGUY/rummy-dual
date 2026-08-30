@@ -13,7 +13,7 @@ new Function(script);
 ok(html.includes('id="startScreen"'), 'dedicated start screen shell exists');
 ok(html.includes('세트와 런으로 폭탄을 키워 스위치를 넘기는 1:1 러미 배틀'), 'start screen uses the locked Korean one-line pitch');
 ok(html.includes('id="battleStartBtn"'), 'start screen exposes battle start');
-ok(html.includes('id="tutorialStartBtn"') && html.includes('튜토리얼') && html.includes('준비 중'), 'tutorial is visible but honestly marked as not implemented');
+ok(html.includes('id="tutorialStartBtn"') && html.includes('기본 조작부터 러미까지 고정 패로 직접 익힙니다.') && !html.includes('고정 패 실습은 순차 추가 중입니다.'), 'tutorial entry advertises the completed core hands-on flow');
 ok(html.includes('id="startCodexBtn"'), 'start screen reuses the card codex entry');
 ok(html.includes('id="settingsBtn"') && html.includes('disabled'), 'settings entry is explicitly disabled until implemented');
 ok(html.includes('id="startProgressBtn"') && html.includes('id="startRulesBtn"'), 'existing progress and rules overlays remain reachable from the start screen');
