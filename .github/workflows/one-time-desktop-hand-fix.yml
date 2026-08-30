@@ -1,4 +1,4 @@
-name: One-time sequential same-run extension rule
+name: One-time unfolded foldable viewport layout
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  patch-sequential-run:
+  patch-fold-layout:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,270 +18,79 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Patch sequential RUN extension rule
+      - name: Patch unfolded foldable layout
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          def replace_function(text, name, new_source):
-              marker = f'function {name}('
-              start = text.find(marker)
-              if start < 0:
-                  raise SystemExit(f'missing function: {name}')
-              brace = text.find('{', start)
-              if brace < 0:
-                  raise SystemExit(f'missing function body: {name}')
-              depth = 0
-              end = None
-              for i in range(brace, len(text)):
-                  ch = text[i]
-                  if ch == '{':
-                      depth += 1
-                  elif ch == '}':
-                      depth -= 1
-                      if depth == 0:
-                          end = i + 1
-                          break
-              if end is None:
-                  raise SystemExit(f'unterminated function: {name}')
-              return text[:start] + new_source.strip() + text[end:]
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          marker = '/* UI2 P2.5 · unfolded foldable viewport fit */'
+          if marker in text:
+              print('Foldable viewport patch already present; nothing to do.')
+              raise SystemExit(0)
 
-          index = Path('index.html')
-          text = index.read_text(encoding='utf-8')
+          patch = r'''
 
-          helper = "function canContinueReturnedRun(w,m){return !!m&&m.type==='RUN'&&m.returnAttachToken===state.turnToken&&sideObj(w).returnedSwitchThisTurn&&state.switchTarget===other(w)}"
-          if 'function canContinueReturnedRun(' not in text:
-              needle = 'function canTargetAttachMeld('
-              if needle not in text:
-                  raise SystemExit('missing canTargetAttachMeld insertion point')
-              text = text.replace(needle, helper + '\n' + needle, 1)
-
-          text = replace_function(text, 'canTargetAttachMeld', r'''
-          function canTargetAttachMeld(side,index){
-            if(state.turn!=='player'||state.phase!=='action')return false;
-            const m=meldsOf(side)[index];
-            if(!m||(m.createdToken===state.turnToken&&side==='player'))return false;
-            const continuation=canContinueReturnedRun('player',m);
-            if(m.lastAttachToken===state.turnToken&&!continuation)return false;
-            const wouldReturn=m.type==='RUN'||(m.type==='SET'&&m.cards.length===3);
-            if(!wouldReturn)return false;
-            if(!continuation&&(!canSideReturn('player')||state.player.returnedSwitchThisTurn))return false;
-            return true;
+          /* UI2 P2.5 · unfolded foldable viewport fit */
+          @media (min-width:600px) and (max-width:899px){
+          html,body{width:100%;height:100dvh;min-width:0;overflow:hidden;font-family:"Pretendard Variable","Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif}
+          body{display:block;letter-spacing:-.012em}
+          #app{width:100vw!important;max-width:none;height:100dvh;min-height:0;overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr)}
+          #app:before{max-width:none}
+          .topbar{padding:6px 10px 4px}.logo{font-size:18px}.sub{font-size:8px}.topActions{gap:4px}.topActions .pixelBtn{padding:4px 6px;font-size:8px}.badge{padding:3px 5px;font-size:8px}
+          .main{height:100%;min-height:0;overflow:hidden;padding:0 7px 7px;display:grid;grid-template-columns:minmax(190px,.78fr) minmax(0,1.32fr) minmax(150px,.58fr);grid-template-rows:46px 64px 92px minmax(0,1fr) 196px 28px;grid-template-areas:"status status status" "switch switch switch" "enemy meld detail" "arena meld detail" "hand hand hand" "log log log";gap:5px;align-items:stretch}
+          .main>*{min-width:0;min-height:0}.status{grid-area:status;height:100%;grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);gap:5px}.initiativeBoard{grid-area:switch}.enemyZone{grid-area:enemy}.arena{grid-area:arena}.meldZone{grid-area:meld}.handZone{grid-area:hand}.detail{grid-area:detail}.log{grid-area:log}
+          .hpPanel{padding:4px 7px}.hpHead{font-size:9px}.hpBar{height:8px;margin-top:3px}.mid{padding:4px 3px;font-size:8px}.mid b{font-size:14px;margin-top:1px}.combatMeta{gap:3px;margin-top:2px}.statChip{font-size:6px;padding:1px 3px}
+          .initiativeBoard{height:100%;min-height:0;padding:5px 8px;overflow:hidden}.initiativeLabel{font-size:8px}.initiativeState{font-size:15px;line-height:1.05}.switchAlert{font-size:8px;line-height:1.2}.initiativeRule{font-size:7px;line-height:1.2}.strongAttackBtn{font-size:7px;padding:3px 6px}
+          .enemyZone{height:100%;min-height:0;padding:5px 7px;overflow:hidden}.zoneTitle{font-size:8px;margin-bottom:3px}.backRow{min-height:0;height:calc(100% - 18px);justify-content:center;align-items:center;padding-left:0}.backRow .cardBack{width:26px;height:38px;margin-left:-8px}.backRow .cardBack:nth-child(n+7){display:block}
+          .arena{height:100%;min-height:0;padding:4px 6px;overflow:hidden;display:flex;align-items:center}.arenaGrid{width:100%;gap:3px}.pileVisual{width:56px;height:82px}.deckStackLayer{width:48px;height:72px;left:4px;top:4px}.deckFace{inset:6px 4px 4px 6px}.discardFace{inset:4px}.discardFace>div{width:48px!important;height:73px!important}.discardEmpty{width:48px;height:73px;font-size:6px;padding:3px}.spentPile{width:56px;height:82px}.spentPile:before,.spentPile:after{width:42px;height:62px}.spentMark{font-size:7px}.pileMeta{min-height:20px;font-size:7px}.pileMeta b{font-size:10px}.pileRule,.drawPath{font-size:6px}.phaseText,.fieldStrip{font-size:7px;padding:3px 5px}.centerActions{gap:3px}.centerActions .pixelBtn{font-size:7px;padding:4px 6px}
+          .meldZone{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:5px 6px}.meldZone>.zoneTitle{flex:0 0 auto}.meldRows{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.meldSide{height:100%;min-height:0;overflow:auto;padding:4px}.meldSideTitle{font-size:8px;margin-bottom:3px}.meldEntry{padding:4px;margin-bottom:4px}.meldEntryHead{font-size:8px;margin-bottom:3px}.meldNote,.needLine,.targetHint,.attackReadout{font-size:7px;line-height:1.25}.meldCardRow{min-height:0;gap:3px;padding:2px 0 3px}.meldMiniCard{flex:0 0 40px;width:40px;height:60px}.meldMiniCard .corner{font-size:8px}.meldMiniCard .centerSuit{font-size:22px}.meldMiniCard .namedMark{font-size:5px}.attachHereBtn,.retireBtn{font-size:7px!important;padding:4px 5px!important}
+          .detail{height:100%;min-height:0;overflow:auto;display:block;padding:6px 7px}.detailCard{display:none}.detailTitle{font-size:9px}.detailMeta{font-size:7px;margin-top:2px}.detailText{font-size:8px;line-height:1.35;margin-top:3px}.detailTip{display:none}.tendencyLine{font-size:7px;margin-top:2px}
+          .handZone{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:5px 7px}.handTop{flex:0 0 auto;align-items:center}.handTitle{font-size:10px}.handSub{font-size:8px;line-height:1.2}.hand{flex:1 1 auto;min-height:0;height:auto;gap:5px;padding:4px 5px 2px;align-items:center;justify-content:safe center;overflow-x:auto;overflow-y:hidden}.cardBtn{flex:0 0 70px;width:70px;height:105px}.cardBtn .corner{font-size:11px}.cardBtn .centerSuit{font-size:32px}.cardBtn .namedMark{font-size:6px}.selectionStrip{flex:0 0 auto;margin:2px 0;padding:3px 5px;font-size:7px;line-height:1.2}.controls{flex:0 0 auto;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}.controls .pixelBtn{min-width:0;min-height:29px;padding:4px 5px;font-size:8px}.mulliganBar{flex:0 0 auto;margin-top:2px;padding:4px 5px}.mulliganText{font-size:7px;margin-bottom:3px}.mulliganActions{gap:4px}.mulliganActions .pixelBtn{min-height:29px;padding:4px 5px;font-size:8px}.mulliganBar.show + .controls{display:none}
+          details.log{height:100%;min-height:0;overflow:hidden;padding:0 7px}details.log>summary{height:28px;min-height:28px;padding:5px 0;font-size:8px}details.log[open]{position:fixed;z-index:1460;left:8px;right:8px;bottom:8px;width:auto;height:auto;max-height:38dvh;padding:6px 9px;background:#20292ef5;box-shadow:0 12px 32px #0008}details.log[open] #log{max-height:calc(38dvh - 42px);overflow:auto}.logLine{font-size:8px;line-height:1.35}
+          .tutorialCoach,.practiceCoach{position:fixed;z-index:1450;top:46px;left:8px;right:8px;max-height:calc(100dvh - 56px);overflow:auto}
+          .startScreen{width:100vw;min-height:100dvh;padding:18px}.startShell{width:min(100%,540px)}
           }
-          ''')
-
-          text = replace_function(text, 'canAttachTo', r'''
-          function canAttachTo(side,index,cards=selectedCards()){
-            if(state.turn!=='player'||state.phase!=='action'||!cards.length)return false;
-            if(cards.some(c=>c.blockedUntilTurn===state.turnNo))return false;
-            const m=meldsOf(side)[index];
-            if(!m||(m.createdToken===state.turnToken&&side==='player'))return false;
-            const continuation=canContinueReturnedRun('player',m);
-            if(m.lastAttachToken===state.turnToken&&!continuation)return false;
-            if(meldType(m.cards.concat(cards))!==m.type)return false;
-            const wouldReturn=m.type==='RUN'||(m.type==='SET'&&m.cards.length===3&&m.cards.length+cards.length===4);
-            if(wouldReturn&&!recoveredCardsCanReturn(cards,state.turnToken))return false;
-            if(wouldReturn&&!continuation&&!canSideReturn('player'))return false;
-            if(wouldReturn&&!continuation&&state.player.returnedSwitchThisTurn)return false;
-            return true;
+          @media (min-width:600px) and (max-width:899px) and (max-height:680px){
+          .main{grid-template-rows:42px 56px 80px minmax(0,1fr) 178px 26px;gap:4px;padding-bottom:5px}
+          .topbar{padding-top:4px;padding-bottom:3px}.initiativeBoard{padding:4px 7px}.initiativeRule{display:none}.enemyZone{padding:4px 6px}.pileVisual{width:50px;height:73px}.deckStackLayer{width:43px;height:64px}.discardFace>div{width:43px!important;height:65px!important}.discardEmpty{width:43px;height:65px}.spentPile{width:50px;height:73px}.spentPile:before,.spentPile:after{width:38px;height:56px}.cardBtn{flex-basis:64px;width:64px;height:96px}.controls .pixelBtn,.mulliganActions .pixelBtn{min-height:27px;padding:3px 4px;font-size:7px}.selectionStrip{font-size:6px}.meldMiniCard{flex-basis:36px;width:36px;height:54px}
           }
-          ''')
-
-          text = replace_function(text, 'attachReason', r'''
-          function attachReason(side,index,cards=selectedCards()){
-            const m=meldsOf(side)[index];
-            if(!cards.length)return'카드 선택 시 자동 판정';
-            if(!m)return'조합 없음';
-            if(m.createdToken===state.turnToken&&side==='player')return'이번 턴 만든 내 조합은 다음 턴부터 연장';
-            const continuation=canContinueReturnedRun('player',m);
-            if(m.lastAttachToken===state.turnToken&&!continuation)return'이번 턴 이 조합의 붙이기 처리가 이미 끝남';
-            const wouldReturn=m.type==='RUN'||(m.type==='SET'&&m.cards.length===3&&m.cards.length+cards.length===4);
-            if(wouldReturn&&!recoveredCardsCanReturn(cards,state.turnToken))return'이번 턴 회수한 카드는 버스트/체인 반환에 재사용 불가';
-            if(wouldReturn&&!continuation&&!canSideReturn('player'))return'스위치가 상대에게 있음 · 다른 조합으로 추가 반환 불가';
-            if(wouldReturn&&!continuation&&state.player.returnedSwitchThisTurn)return'이번 턴 스위치 반환 사용함';
-            if(canAttachTo(side,index,cards))return continuation?'연속 연장 가능 · 스위치 이동 없이 체인 위력 추가':'붙이기 가능';
-            if(m.type==='SET'){
-              if(m.cards.length+cards.length>4)return'세트 최대 4장';
-              const base=m.cards.find(c=>!isJoker(c));
-              if(base&&cards.some(c=>!isJoker(c)&&c.rank!==base.rank))return`같은 숫자 ${base.rank} 필요`;
-              const suits=m.cards.concat(cards).filter(c=>!isJoker(c)).map(c=>c.suit);
-              if(new Set(suits).size!==suits.length)return'같은 무늬 중복 불가';
-              return'같은 숫자 + 서로 다른 무늬 필요';
-            }
-            if(m.type==='RUN'){
-              const base=m.cards.find(c=>!isJoker(c)&&!isSuitFlexible(c));
-              const badSuit=base&&cards.some(c=>!isJoker(c)&&!isSuitFlexible(c)&&c.suit!==base.suit);
-              if(badSuit)return`같은 무늬 ${SUIT_SYMBOL[base.suit]} 필요`;
-              return'런 양끝과 이어져야 함';
-            }
-            return'붙일 수 없음';
-          }
-          ''')
-
-          text = replace_function(text, 'attachCards', r'''
-          function attachCards(w,cards,targetSide,targetIndex){
-            if(!cards.length||cards.some(c=>c.blockedUntilTurn===state.turnNo))return false;
-            const s=sideObj(w),m=meldsOf(targetSide)[targetIndex];
-            if(!m||(m.createdToken===state.turnToken&&targetSide===w))return false;
-            const continuation=canContinueReturnedRun(w,m);
-            if(m.lastAttachToken===state.turnToken&&!continuation)return false;
-            const beforeCards=[...m.cards],beforeLen=m.cards.length,beforeChain=m.chain||0,combined=m.cards.concat(cards),type=meldType(combined);
-            if(!type||type!==m.type)return false;
-            const willBaseReturn=(type==='SET'&&beforeLen===3&&combined.length===4)||type==='RUN';
-            if(willBaseReturn&&!recoveredCardsCanReturn(cards,state.turnToken)){
-              if(w==='player')log('회수한 카드는 같은 턴 버스트/체인으로 스위치를 반환하는 데 다시 사용할 수 없습니다.','hit');
-              return false;
-            }
-            if(willBaseReturn&&!continuation&&!canSideReturn(w))return false;
-            if(willBaseReturn&&!continuation&&s.returnedSwitchThisTurn)return false;
-            removeFromHand(w,cards);
-            cards.forEach(c=>c.enteredMeldToken=state.turnToken);
-            s.actedThisTurn=true;
-            m.cards.push(...cards);
-            m.lastAttachToken=state.turnToken;
-            m.lastTouchedOwnerStart=sideObj(targetSide).turnStarts+(w===targetSide?0:1);
-            markSetCompletion(m,targetSide);
-            let base=0,label='붙이기';
-            if(type==='SET'&&beforeLen===3&&m.cards.length===4){base=24;label='세트 버스트'}
-            if(type==='RUN'){
-              for(let i=1;i<=cards.length;i++)base+=chainDamage(beforeChain+i);
-              m.chain=Math.min(4,beforeChain+cards.length);
-              label=`런 체인 ${m.chain}`;
-            }
-            const returning=base>0&&!continuation;
-            const ctx={isNew:false,isAttach:true,targetOwner:targetSide,totalLength:m.cards.length,effectSeen:new Set(),meld:m,willReturn:returning};
-            fieldAction(w,cards,type,ctx);
-            const fx=resolveEffects(w,cards,type,ctx);
-            characterActionBonus(w,cards,type,ctx);
-            triggerOpponentHandTraps(w,cards);
-            let bonus=fx.bonus||0;
-            if(state.pendingTrapReduction){base=Math.max(0,base-state.pendingTrapReduction);state.pendingTrapReduction=0}
-            const forceReturn=!continuation&&!!fx.forceReturn;
-            if(returning||forceReturn){
-              if(w==='player')state.lastPlayerReturnType=type;else state.lastEnemyReturnType=type;
-              attackEvent(w,base?[{amount:base,label,kind:type==='SET'?'burst':'chain'}]:[],{bonus,label,flatReturn:fx.flatReturn,forceReturn:true});
-              m.returnAttachToken=state.turnToken;
-              for(const pz of m.cards)if(pz.tag==='parasite'&&pz.owner!==w){
-                drawOne(pz.owner,false);
-                const ps=sideObj(pz.owner),dc=ps.hand.filter(x=>x.uid!==pz.uid).sort((a,b)=>b.age-a.age)[0];
-                if(dc){removeFromHand(pz.owner,[dc]);pushDiscard(dc)}
-                log(`${pz.name}: 상대가 기생 조합으로 반환해 원주인이 1장 순환.`,'good');
-              }
-            }else if(continuation&&base>0){
-              combatBanner(label,'chain',0);
-              addSwitchPower(w,base,`${label} · 연속 연장`,other(w));
-              log(`${w==='player'?'나':'상대'} 같은 런 연속 연장 · 스위치 추가 이동 없이 체인 위력 +${base}.`,'important');
-            }
-            cards.forEach(c=>c.fromDiscard=false);
-            if(cards.some(c=>c.tag==='connectionLink')&&type==='RUN'&&m.extraAttachGrantedToken!==state.turnToken){m.extraAttachGrantedToken=state.turnToken;m.lastAttachToken=null}
-            let interfered=false;
-            for(const c of cards)if(c.tag==='cutLine'&&targetSide===other(w))interfered=cutOppositeEnd(w,targetSide,m,c)||interfered;
-            recoverRedundantGapRun(targetSide,m,beforeCards,cards);
-            middleManagerReturnPlaceholder(targetSide,m,cards);
-            replaceRedundantJokers(targetSide,m,w);
-            const willRummy=s.hand.length===0;
-            const actionNote=continuation?' · 연속 체인':returning||forceReturn?' · 스위치 반환':' · 구조 변경';
-            log(`${w==='player'?'나':'상대'} ${targetSide===w?'내':'상대'} ${type==='SET'?'세트':'런'}에 ${cards.length}장 붙이기${actionNote}.`,'important');
-            if(type==='SET'&&m.cards.length===4){
-              const currentIndex=meldsOf(targetSide).indexOf(m);
-              if(currentIndex>=0)retireMeld(targetSide,currentIndex,'버스트 후 4장 세트 자동 정리');
-            }
-            if(willRummy&&!state.gameOver){triggerRummy(w,cards,{returned:returning||forceReturn});return'rummy'}
-            return true;
-          }
-          ''')
-
-          old_rule = '<div class="ruleBlock"><h3>반환 제한</h3><p>한 플레이어는 자신의 한 턴에 SWITCH를 기본 <b>1회</b>만 반환합니다. 이미 반환했다면 추가 BURST/CHAIN은 불가하지만 회수·정비·버림패 조작·방어 등 비공격 행동은 가능합니다.</p></div>'
-          new_rule = '<div class="ruleBlock"><h3>반환 제한</h3><p>한 플레이어의 한 턴에 <b>SWITCH가 실제로 이동하는 것은 기본 1회</b>입니다. 다만 반환에 사용한 <b>같은 RUN</b>은 그 턴에 계속 이어붙일 수 있으며, 추가 연장의 CHAIN 위력은 누적되지만 SWITCH는 다시 이동하지 않습니다. 다른 RUN/SET으로 새 반환을 만드는 것은 불가합니다. 회수·정비·버림패 조작·방어 등 비공격 행동은 계속 가능합니다.</p></div>'
-          if old_rule not in text:
-              raise SystemExit('missing return-limit rules text')
-          text = text.replace(old_rule, new_rule, 1)
-
-          old_hint = '<b>이번 턴 스위치 반환 완료.</b> 새 3장 조합·회수·정비는 가능하지만 추가 버스트/체인 반환은 불가.'
-          new_hint = '<b>이번 턴 스위치 반환 완료.</b> 방금 반환한 같은 런은 계속 연장해 체인 위력을 더할 수 있지만 스위치는 다시 움직이지 않습니다. 다른 버스트/체인 반환은 불가.'
-          if old_hint not in text:
-              raise SystemExit('missing returned-switch hint text')
-          text = text.replace(old_hint, new_hint, 1)
-
-          index.write_text(text, encoding='utf-8')
-
-          test = Path('tests/core-behavior.mjs')
-          t = test.read_text(encoding='utf-8')
-
-          def must_replace(src, old, new, label):
-              if old not in src:
-                  raise SystemExit(f'missing test patch target: {label}')
-              return src.replace(old, new, 1)
-
-          t = must_replace(t,
-              "    gameOver: false,\n    pendingTrapReduction: 0,",
-              "    gameOver: false,\n    switchTarget: 'neutral',\n    switchPower: 0,\n    pendingTrapReduction: 0,",
-              'attach state switch fields')
-          t = must_replace(t,
-              "  const capture = { attacks: [], retired: [] };",
-              "  const capture = { attacks: [], retired: [], powerAdds: [] };",
-              'capture power adds')
-          t = must_replace(t,
-              "  ctx.attackEvent = (w, hits, opts) => {\n    capture.attacks.push({ w, hits, opts });\n    ctx.sideObj(w).returnedSwitchThisTurn = true;\n    return { total: hits.reduce((n, h) => n + h.amount, 0) + (opts.bonus || 0) };\n  };",
-              "  ctx.attackEvent = (w, hits, opts) => {\n    capture.attacks.push({ w, hits, opts });\n    const total = hits.reduce((n, h) => n + h.amount, 0) + (opts.bonus || 0);\n    state.switchPower += total;\n    state.switchTarget = ctx.other(w);\n    ctx.sideObj(w).returnedSwitchThisTurn = true;\n    return { total };\n  };\n  ctx.addSwitchPower = (w, amount, label, targetOverride) => {\n    state.switchPower += amount;\n    capture.powerAdds.push({ w, amount, label, targetOverride });\n    return amount;\n  };\n  ctx.combatBanner = () => {};\n  ctx.fxNode = () => {};",
-              'attack event continuation stubs')
-          t = must_replace(t,
-              "  install(ctx, 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'chainDamage', 'attachCards');",
-              "  install(ctx, 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'chainDamage', 'canContinueReturnedRun', 'attachCards');",
-              'install continuation helper')
-
-          marker = "// Recovery guard in the actual attach path, with named override token exception."
-          block = r'''
-          // Sequential same-RUN extension: split 8 then 9 is equivalent to one multi-attach for SWITCH movement.
-          {
-            const c8 = card('H',8);
-            const c9 = card('H',9);
-            const setup = makeAttachContext({
-              type: 'RUN',
-              baseCards: [card('H',5), card('H',6), card('H',7)],
-              handCards: [c8, c9],
-              chain: 0,
-            });
-            ok(setup.ctx.attachCards('player', [c8], 'enemy', 0) === true, 'first RUN extension returns SWITCH normally');
-            ok(setup.ctx.attachCards('player', [c9], 'enemy', 0) === true, 'same RUN can be extended again later in the same turn');
-            ok(setup.capture.attacks.length === 1, 'split same-RUN extension moves SWITCH only once');
-            ok(setup.capture.powerAdds.length === 1 && setup.capture.powerAdds[0].amount === 15, 'second split extension adds next CHAIN power without another return');
-            ok(setup.state.switchPower === 25, 'split 8 then 9 produces total +10 +15 power');
-            ok(setup.enemy.melds[0].chain === 2 && setup.enemy.melds[0].cards.length === 5, 'split extension advances the same RUN to CHAIN 2');
-          }
-
           '''
-          if block.strip() not in t:
-              if marker not in t:
-                  raise SystemExit('missing sequential attach test insertion point')
-              t = t.replace(marker, block + marker, 1)
-          test.write_text(t, encoding='utf-8')
+
+          needle = '\n</style>'
+          if needle not in text:
+              raise SystemExit('Could not find </style> insertion point')
+          text = text.replace(needle, patch + needle, 1)
+          path.write_text(text, encoding='utf-8')
 
           checks = [
-              'function canContinueReturnedRun(',
-              'm.returnAttachToken=state.turnToken',
-              '연속 연장 가능 · 스위치 이동 없이 체인 위력 추가',
-              'same RUN can be extended again later in the same turn',
+              marker,
+              '@media (min-width:600px) and (max-width:899px)',
+              'height:100dvh;min-height:0;overflow:hidden;display:grid',
+              'grid-template-areas:"status status status" "switch switch switch" "enemy meld detail" "arena meld detail" "hand hand hand" "log log log"',
+              'grid-template-columns:repeat(6,minmax(0,1fr))',
+              '.mulliganBar.show + .controls{display:none}',
           ]
-          merged = text + '\n' + t
           for check in checks:
-              assert check in merged, check
-          print('Sequential same-RUN extension patch applied.')
+              assert check in text, check
+          print('Unfolded foldable viewport patch applied.')
           PY
 
       - name: Run core regression test
+        shell: bash
         run: node tests/core-behavior.mjs
 
-      - name: Commit rule change
+      - name: Commit foldable layout
         shell: bash
         run: |
-          if git diff --quiet -- index.html tests/core-behavior.mjs; then
-            echo 'No rule changes to commit.'
+          if git diff --quiet -- index.html; then
+            echo 'No index.html changes to commit.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html tests/core-behavior.mjs
-          git commit -m 'feat: allow sequential extensions on returned run'
+          git add index.html
+          git commit -m 'fix: fit unfolded foldable battle into viewport'
           git push origin HEAD:main
