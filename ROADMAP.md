@@ -94,10 +94,10 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 첫 실행 튜토리얼 안내
 - [x] 기존 progress 저장 스키마에 튜토리얼 상태 저장
 - [x] 일반 게임 로직과 튜토리얼 로직 중복 최소화 구조 확정 (`sessionMode` + `TUTORIAL_STEPS` + 공통 컨트롤러 + 실제 엔진 재사용)
-- [ ] 튜토리얼 전용 고정 게임 상태/손패/드로우 설계
-- [ ] 카드 기본 조작 튜토리얼 — 획득/선택/버리기 및 실제 행동 UI 이해
-- [ ] 세트 튜토리얼
-- [ ] 런 튜토리얼
+- [x] 튜토리얼 전용 고정 게임 상태/손패/드로우 설계 — 실제 카드 객체/조합 판정 엔진을 재사용하고 단계마다 상태만 결정론적으로 재구성
+- [x] 카드 기본 조작 튜토리얼 — 고정 Q♦ 덱 드로우 → 지정 카드 선택 → 버리기 성공 시 자동 진행
+- [x] 세트 튜토리얼 — 3♠ / 3♥ / 3♦ 고정 손패 + 실제 `meldType` / `submitNewMeld` 경로
+- [x] 런 튜토리얼 — 4♣ / 5♣ / 6♣ 고정 손패 + 실제 `meldType` / `submitNewMeld` 경로
 - [ ] 붙이기 튜토리얼
 - [ ] 상대 공개 조합 붙이기 체험
 - [ ] 스위치 튜토리얼
@@ -214,6 +214,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. UI2 P2: hierarchy/density pass is live; finish the 360–480px real-device visual check, then defer P3 art/brand polish until gameplay/tutorial UX is steadier.
-2. UX1 P1: connect deterministic basic controls → 세트 → 런 → 붙이기 → 상대 조합 → 스위치 → 러미 scenarios to the real engine.
+1. UX1 P1: deterministic 기본 조작 → 세트 → 런 lessons are live; next connect 붙이기 → 상대 공개 조합 → 스위치 → 러미 to the same real-engine tutorial controller.
+2. UI2 P2: finish the 360–480px real-device visual check, then defer P3 art/brand polish until gameplay/tutorial UX is steadier.
 3. L10N1 + M8: continue remaining text cleanup and named-card choice/copy/timing audit in parallel; do not begin large M9/content expansion until the first ~50 named-card behaviors and UX1 P1 are both stable.
