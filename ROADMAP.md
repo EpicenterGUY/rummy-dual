@@ -167,7 +167,8 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 390px 이하 한국어 버튼/가이드 잘림 회귀 테스트 — coach 목표/힌트 `overflow-wrap`, 버튼 `white-space:normal`, 370px 단일 열 fallback 검사
 
 ### P3 — 고급 튜토리얼
-- [ ] 회수 / 정비 / 공식 상태 / 조커 고급 튜토리얼
+- [x] 회수 / 정비 / 공식 상태 고급 튜토리얼 — 기본 튜토리얼과 분리된 고급 진입. 실제 RUN 회수·체인 -1, 1장 정비 교체, 취약 1의 다음 폭발 +25% 및 소모를 고정 시나리오로 체험
+- [ ] 조커 고급 튜토리얼
 - [ ] 네임드 카드 설명
 - [ ] 테마군 튜토리얼 기반
 - [ ] V-SIGNAL 등 실제 구현된 테마군 체험전

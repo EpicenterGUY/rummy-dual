@@ -8,7 +8,7 @@ function functionSource(name){const marker=`function ${name}(`,start=script.inde
 function install(ctx,...names){for(const n of names)vm.runInContext(functionSource(n),ctx)}
 new Function(script);
 ok(html.includes('id="practiceStartBtn"')&&html.includes('자유 연습전 · 진행도 영향 없음'),'start screen exposes free practice battle without changing the four primary menu items');
-ok(html.includes('id="tutorialPracticeBtn"')&&script.includes("practice.hidden=!(state.tutorialSegmentDone&&step.id==='rummy')"),'completed tutorial can continue directly into free practice');
+ok(html.includes('id="tutorialPracticeBtn"')&&script.includes("practice.hidden=!(state.tutorialSegmentDone&&segmentEnd)"),'completed basic or advanced tutorial segment can continue directly into free practice');
 ok(script.includes("function newGame(mode='battle'){state.sessionMode=mode;")&&script.includes("function isLiveCombatSession(){return state.sessionMode==='battle'||state.sessionMode==='practice'}"),'battle engine has an explicit practice session mode');
 ok(script.includes("const actionCap=state.sessionMode==='practice'?2:4"),'practice CPU uses a reduced action cap');
 ok(script.includes("if(practice){title.textContent=win?'연습전 승리':'연습전 패배'")&&script.includes("이 결과는 클리어·레벨·해금에 반영되지 않습니다."),'practice result path explicitly avoids progression rewards');
