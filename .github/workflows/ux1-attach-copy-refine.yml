@@ -1,0 +1,35 @@
+name: Verify tutorial completion copy
+on:
+  push:
+    branches:
+      - feat/ux1-attach-switch-tutorial-20260830
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/ux1-attach-switch-tutorial-20260830
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Refine tutorial copy
+        run: python tools/ux1_attach_copy_refine.py
+      - name: Verify
+        run: |
+          node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
+          node --check /tmp/game.js
+          for f in tests/*.mjs; do node "$f"; done
+          git diff --check
+      - name: Commit verified refinement
+        run: |
+          rm tools/ux1_attach_copy_refine.py
+          rm .github/workflows/ux1-attach-copy-refine.yml
+          rmdir tools 2>/dev/null || true
+          git config user.name "EpicenterGUY"
+          git config user.email "mintbamtol7@gmail.com"
+          git add -A
+          git commit -m "Refine attach tutorial completion copy"
+          git push origin HEAD:feat/ux1-attach-switch-tutorial-20260830
