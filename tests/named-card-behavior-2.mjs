@@ -68,5 +68,5 @@ function card(suit,rank,extra={}){return{uid:`${suit}${rank}-${Math.random()}`,s
 
 ok(html.includes('id="discardRuleText"'),'discard UI exposes a dynamic Death Sentence priority line');
 ok(html.includes('사형선고 추적'),'SET readout exposes the tracked Death Sentence card');
-ok(script.includes("c.recoverReturnOverrideToken=freeReason==='tuner'?state.turnToken:null"),'Tuner grants same-turn attach override only to its transfer recovery');
+ok(script.includes("grantRecoveryReturnOverride('player',c,m,{requiredType:m.type==='SET'?'RUN':'SET',ownOnly:true})")&&script.includes("grantRecoveryReturnOverride(w,c,m,{requiredType:m.type==='SET'?'RUN':'SET',ownOnly:true})"),'Tuner grants same-turn return only to authorized own opposite-type destination melds');
 console.log('M8 named-card behavioral pass 2 regressions passed.');

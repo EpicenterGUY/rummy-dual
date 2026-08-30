@@ -14,8 +14,9 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Public meld cap 2 per player; no free base meld/RUN disposal
 - [x] Shared discard has no size cap; base take is top only
 - [x] When a personal deck empties, recycle that player’s spent pile plus cards in the shared discard currently owned by that player; opponent-owned discard and public meld cards stay in place
-- [x] Zero-source circulation safety: if deck/spent/usable shared discard are all empty, skip acquisition; if the player also has no hand and no legal recovery, retire one public meld containing their card as a last-resort circulation release, without duplicating cards
+- [x] Zero-source circulation safety: one-sided stalls skip acquisition / use legal recovery / release one owned public meld as needed; simultaneous two-sided stalls perform one full current-owner recirculation while preserving CORE and SWITCH state, with a second stall resolved by CORE → current HP → draw
 - [x] RUMMY refills 6
+- [x] Low-hand protection: with 1–3 cards and only the base discard remaining, the base discard may be skipped; card-effect extra discards are still paid first
 - [x] Shield has no base hard cap and normally expires at the owner's next turn start
 - [x] Recovery rule refinement: a card recovered this turn may still be used for a new 3-card meld, maintenance, discard, or non-return effects, but cannot be reused that same turn as material for a BURST/CHAIN/SWITCH-returning attach unless a named effect explicitly grants that exception.
 
@@ -28,6 +29,9 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Add conditional RUN completion: controller-only at CHAIN 4+, no bonus power/SWITCH movement, slot opens immediately, continuation remains +25 if not completed; AI and stuck-state logic respect it
 
 ## M2 — Confirmed bug fixes
+- [x] Close Vacancy/Rebel Joker self-recovery loops: a Joker added by the current attach cannot auto-replace itself, and any later auto-return is marked recovered for the turn
+- [x] Make stuck-state legality include same-RUN continuation after the one physical SWITCH return
+- [x] Bind same-turn recovered-card return exceptions to the destination melds authorized by the granting effect
 - [x] Harden invalid/legacy selected character progress data
 - [x] Unify Black Market discard acquisition path for player/CPU
 - [x] Fix CORE LETHAL targeting feedback
@@ -36,6 +40,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Audit RUMMY-linked named cards: Second Heart, Returner, Life Support, Encore, Last Laugh, and grace interactions
 
 ## M3 — Regression tests
+- [x] Full-recirculation / low-hand / Joker-loop / continuation-legality / destination-bound recovery safety regressions
 - [x] Buildless JS syntax/invariant smoke test
 - [x] Recovery → same-turn SWITCH-return guard behavior tests
 - [x] SET validity and BURST retirement tests

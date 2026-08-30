@@ -16,12 +16,14 @@ Single-file mobile-first prototype for GitHub Pages.
 - Each player may keep up to 2 public melds. A full board blocks creating another meld until normal play or a card effect changes the board; there is no free base meld disposal action.
 - Cards may be attached to the opponent's public melds, and the player who actually completes BURST/CHAIN performs the SWITCH return.
 - SWITCH physically moves at most once per player turn. After a RUN returns SWITCH, that **same RUN may still be extended again during the same turn**; each later extension adds its next CHAIN power but does not move SWITCH a second time. A different RUN/SET cannot create another return that turn. This makes split play such as 9♠ then 10♠ equivalent in core power flow to selecting both for one multi-attach.
-- A card recovered this turn may still be used for a new 3-card meld, maintenance, discard, or other non-return play, but it cannot be reused that same turn as material for a BURST/CHAIN/SWITCH-returning attach unless a named effect explicitly allows it.
+- A card recovered this turn may still be used for a new 3-card meld, maintenance, discard, or other non-return play, but it cannot be reused that same turn as material for a BURST/CHAIN/SWITCH-returning attach unless a named effect explicitly allows it, and that exception is bound to the destination meld(s) allowed by that effect.
 - One central SWITCH and uncapped accumulated power; 100+ is OVERLOAD, not an automatic explosion.
 - No default grace turn. DETONATE deferral exists only through named card effects such as Safety Pin.
 - The shared discard pile has no card-count cap; base acquisition only takes its top card. Card/field effects may access deeper cards.
-- When a personal deck is empty, only that player's spent pile is shuffled into a new deck. The shared discard pile stays public.
+- When a personal deck is empty, recycle that player's spent pile plus cards in the shared discard currently owned by that player; opponent-owned discard and public meld cards stay in place.
 - Normal maintenance cycles 1 card; when completely stuck, up to 2 cards.
+- Low-hand protection: when only the base discard remains and the hand is 1–3 cards, that base discard may be skipped; extra discards created by card effects must be paid first.
+- If both players are simultaneously unable to acquire or recover cards, perform one full recirculation: return all cards from hands/decks/spent/shared discard/public melds to their current owners, shuffle, and deal up to 6 each. CORE/HP/shield/SWITCH power and target remain. A second full stall is resolved by remaining CORE, then current CORE HP, then draw.
 - RUMMY refills 6 cards.
 - Shield is temporary defense with no base hard cap; it normally expires at the start of its owner's next turn.
 
