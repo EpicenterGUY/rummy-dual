@@ -26,6 +26,13 @@ jobs:
           p.write_text(s,encoding='utf-8')
           PY
           python3 .github/scripts/rummy_safety_hardening.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('내 카드가 포함된 공개 조합 1개 긴급 정리', '<b>내 카드가 포함된 공개 조합 1개를 긴급 정리</b>', 1)
+          p.write_text(s,encoding='utf-8')
+          PY
       - name: Run buildless regressions
         shell: bash
         run: |
