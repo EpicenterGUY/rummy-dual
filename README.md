@@ -12,7 +12,7 @@ Single-file mobile-first prototype for GitHub Pages.
 ## Current core rules
 - 3 CORE × 60 HP; DETONATE overkill never penetrates to the next CORE.
 - 3-card SET → BURST READY; 4th suit → BURST +24 and the 4SET retires immediately.
-- RUN extensions use CHAIN +10 / +15 / +20 / +25; RUNs do not have a free base retirement action.
+- RUN extensions use CHAIN +10 / +15 / +20 / +25. At CHAIN 4+, the meld controller may voluntarily **complete the RUN** on their own turn to free that public-meld slot; if kept, later extensions remain +25. Completing a RUN adds no power and does not move SWITCH.
 - Each player may keep up to 2 public melds. A full board blocks creating another meld until normal play or a card effect changes the board; there is no free base meld disposal action.
 - Cards may be attached to the opponent's public melds, and the player who actually completes BURST/CHAIN performs the SWITCH return.
 - A card recovered this turn may still be used for a new 3-card meld, maintenance, discard, or other non-return play, but it cannot be reused that same turn as material for a BURST/CHAIN/SWITCH-returning attach unless a named effect explicitly allows it.

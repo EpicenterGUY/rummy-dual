@@ -79,14 +79,16 @@ function makeLegalityContext() {
     hand: [], deck: [], spent: [], melds: [],
     newMeldUsed: false, returnedSwitchThisTurn: false, maintenanceUsed: false,
   };
-  const state = { player, enemy, turnNo: 9, turnToken: 21, switchTarget: 'neutral' };
+  const state = { player, enemy, turnNo: 9, turnToken: 21, switchTarget: 'neutral', gameOver: false, turn: 'player', phase: 'action' };
   const ctx = context({ state });
   ctx.sideObj = w => w === 'player' ? player : enemy;
   ctx.other = w => w === 'player' ? 'enemy' : 'player';
   ctx.meldsOf = w => ctx.sideObj(w).melds;
   ctx.canSideReturn = w => state.switchTarget === 'neutral' || state.switchTarget === w;
   ctx.meldType = meldType;
-  install(ctx, 'combinations', 'bestNewMeld', 'bestNewMeldForTurn', 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'anyAttachOption', 'hasAnyLegalAction', 'maintenanceLimit');
+  ctx.meldFixedActive = () => false;
+  ctx.cardFixedActive = () => false;
+  install(ctx, 'combinations', 'bestNewMeld', 'bestNewMeldForTurn', 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'anyAttachOption', 'canFinishRun', 'hasAnyLegalAction', 'maintenanceLimit');
   return { ctx, state, player, enemy };
 }
 
