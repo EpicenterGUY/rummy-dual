@@ -13,7 +13,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] One normal SWITCH return per turn
 - [x] Public meld cap 2 per player; no free base meld/RUN disposal
 - [x] Shared discard has no size cap; base take is top only
-- [x] Personal spent pile only is recycled when a deck is empty
+- [x] When a personal deck empties, recycle that player’s spent pile plus cards in the shared discard currently owned by that player; opponent-owned discard and public meld cards stay in place
 - [x] RUMMY refills 6
 - [x] Shield has no base hard cap and normally expires at the owner's next turn start
 - [x] Recovery rule refinement: a card recovered this turn may still be used for a new 3-card meld, maintenance, discard, or non-return effects, but cannot be reused that same turn as material for a BURST/CHAIN/SWITCH-returning attach unless a named effect explicitly grants that exception.
@@ -47,7 +47,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 
 ## M4 — Hand circulation
 - [x] Recheck maintenance stuck-state definition against actual playable cards and return restrictions
-- [x] Verify deck exhaustion/recycling under long games; recycle personal spent only and preserve shared discard
+- [x] Verify deck exhaustion/recycling under long games; recycle personal spent + currently-owned cards from shared discard, while preserving opponent-owned discard and all public meld cards
 - [x] Audit player/AI RUMMY turn-end paths; AI now settles contracts before the single turn-end resolution even on RUMMY turns
 - [x] Reset transient discard-contract state whenever a card is freshly acquired from deck/discard before source-specific effects are applied
 
@@ -201,7 +201,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 공개 조합과 손패 사이 여백·높이·스크롤 밀도 재조정
 - [x] 전투 기록 기본 접힘/요약 방식 적용 — 기본 접힘 + 짧은 disclosure 헤더 + 펼쳤을 때만 제한 높이 스크롤
 - [x] 선택 가능 카드·붙이기 가능 조합 강조를 발광보다 테두리/위치 변화 중심으로 통일
-- [x] 덱 / 공용 버림패 / 개인 소모패의 역할 위계 분리 — 소모패를 `직접 사용 불가 · 덱 0장 시 자동 셔플` 재순환 대기 영역으로 명확화하고 데스크톱에서 시각적 비중 축소
+- [x] 덱 / 공용 버림패 / 개인 소모패의 역할 위계 분리 — 소모패를 직접 조작하지 않는 재순환 대기로 명확화하고, 덱 소진 시 `소모패 + 공용 버림패의 내 소유 카드` 자동 회수·셔플 규칙을 상시 표시하며 데스크톱에서 시각적 비중 축소
 - [ ] 360~480px 실제 모바일 폭에서 버튼/상태 문구 잘림 회귀 점검 — 370/390px 정적 fallback과 회귀 테스트 추가, 실기기 시각 검수 남음
 
 ### P2.5 — 데스크톱 / 태블릿 반응형
@@ -289,6 +289,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] PURE는 직접 전투 보너스보다 카드 선택/교체/제거 등 덱 구축 자유도를 장점으로 설계
 - [x] 런 도중 네임드를 받아 어느 테마로도 전환 가능
 - [x] 네임드를 끝까지 받지 않는 온리 순수덱 클리어도 가능한 방향 유지
+- [x] PURE도 기본 순환만으로 장기전이 가능하도록 덱 소진 시 소모패 + 공용 버림패의 현재 내 소유 카드를 재순환하는 공통 규칙 적용
 - [ ] PURE 시작 덱의 숫자/무늬 분포 확정
 - [ ] PURE 보상 특전 후보(선택지 +1, 교체/제거 비용 등) 밸런스 확정
 - [ ] 끝까지 순수덱을 지원할 카드 외부 유물/패시브 구조 검토
