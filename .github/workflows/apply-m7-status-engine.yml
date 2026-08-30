@@ -15,129 +15,31 @@ jobs:
         with:
           node-version: 22
       - name: Patch official status engine
+        run: python3 scripts/m7_patch.py
+      - name: Check JavaScript syntax
         shell: bash
         run: |
-          python3 - <<'PY'
+          python3 - <<'PY' > /tmp/game.js
           from pathlib import Path
-          p=Path('index.html')
-          s=p.read_text()
-          def rep(old,new,label):
-              global s
-              n=s.count(old)
-              if n!=1:
-                  raise SystemExit(f'{label}: expected 1 match, got {n}')
-              s=s.replace(old,new,1)
-
-          rep("const CORE_HP=60,CORE_COUNT=3,OVERLOAD=100,RECOVERY_UNIT=4;", """const CORE_HP=60,CORE_COUNT=3,OVERLOAD=100,RECOVERY_UNIT=4;
-const OFFICIAL_STATUS=Object.freeze({
- vulnerable:{label:'취약',scopes:['player'],lifecycle:'nextDetonate'},
- seal:{label:'봉인',scopes:['player','meld','card'],lifecycle:'nextNamedEffect'},
- fixed:{label:'고정',scopes:['meld','card'],lifecycle:'throughNextOwnerTurn'},
- protect:{label:'보호',scopes:['meld','card'],lifecycle:'nextInterference'},
- regen:{label:'재생',scopes:['player'],lifecycle:'ownerTurnStartDecay'}
-});
-const EFFECT_EVENTS=Object.freeze(['onAcquire','onDiscard','onMeldCreate','onAttach','onBurst','onChain','onRecover','onRummy','onReturnSwitch','onDetonate','onCoreBreak','onTurnStart','onTurnEnd','onRetire']);
-const EFFECT_ACTIONS=Object.freeze(['draw','heal','addShield','addPower','returnSwitch','applyStatus','retireMeld']);""", 'status constants')
-
-          rep("fuseArmed:false,status:{charged:0,reserved:0,cursed:0,pledged:0,marked:0},blockedUntilTurn:null", "fuseArmed:false,officialStatus:{seal:0,fixed:0,protect:0},status:{charged:0,reserved:0,cursed:0,pledged:0,marked:0},blockedUntilTurn:null", 'card official status bag')
-
-          rep("function blankStatus(){return{vulnerable:0,seal:0,regen:0}}", """function blankStatus(){return{vulnerable:0,seal:0,regen:0}}
-function blankMeldStatus(){return{seal:0,fixed:0,protect:0,fixedOwner:null,fixedThroughStart:null}}
-function officialStatusBag(scope,target){if(!target)return null;if(scope==='player'){target.status=target.status||blankStatus();return target.status}if(scope==='meld'){target.status=target.status||blankMeldStatus();if(target.status.protected!=null){target.status.protect=Math.max(target.status.protect||0,target.status.protected||0);delete target.status.protected}if(target.status.sealNamed!=null){target.status.seal=Math.max(target.status.seal||0,target.status.sealNamed||0);delete target.status.sealNamed}return target.status}if(scope==='card'){target.officialStatus=target.officialStatus||{seal:0,fixed:0,protect:0};return target.officialStatus}return null}
-function officialStatusAllowed(scope,key){const def=OFFICIAL_STATUS[key];return !!def&&def.scopes.includes(scope)}
-function officialStatusValue(scope,target,key){if(!officialStatusAllowed(scope,key))return 0;const bag=officialStatusBag(scope,target);return Math.max(0,Number(bag?.[key]||0))}
-function setOfficialStatus(scope,target,key,n){if(!officialStatusAllowed(scope,key))return 0;const bag=officialStatusBag(scope,target);bag[key]=Math.max(0,Number(n||0));return bag[key]}
-function applyOfficialStatus(scope,target,key,n=1,opts={}){if(!officialStatusAllowed(scope,key))return 0;const next=setOfficialStatus(scope,target,key,officialStatusValue(scope,target,key)+Math.max(0,Number(n||0)));if(!opts.silent){const actor=opts.actor||null,label=OFFICIAL_STATUS[key].label,who=scope==='player'?(actor?switchName(actor):'플레이어'):scope==='meld'?'공개 조합':'카드';log(`${who} ${label} +${n}`,'important');if(actor)fxNode(`${label} +${n}`,'status',actor,40)}return next}
-function consumeOfficialStatus(scope,target,key,n=1){const cur=officialStatusValue(scope,target,key);if(cur<=0)return 0;const used=Math.min(cur,Math.max(1,Number(n||1)));setOfficialStatus(scope,target,key,cur-used);return used}
-function clearOfficialStatus(scope,target,key){const cur=officialStatusValue(scope,target,key);setOfficialStatus(scope,target,key,0);return cur}
-function cardFixedActive(c){return officialStatusValue('card',c,'fixed')>0}
-function meldFixedActive(m){const bag=officialStatusBag('meld',m);if(!bag||!(bag.fixed>0))return false;const owner=bag.fixedOwner;if(owner&&bag.fixedThroughStart!=null&&sideObj(owner).turnStarts>bag.fixedThroughStart){bag.fixed=0;bag.fixedOwner=null;bag.fixedThroughStart=null;return false}return true}
-function applyMeldFixed(m,owner){if(!m)return false;const bag=officialStatusBag('meld',m);bag.fixed=Math.max(1,bag.fixed||0);bag.fixedOwner=owner;bag.fixedThroughStart=sideObj(owner).turnStarts+1;log(`${owner==='player'?'내':'상대'} 공개 조합 고정 · 다음 자기 턴 동안 회수·이동 불가.`,'important');return true}
-function meldStatusText(m){const a=[],protect=officialStatusValue('meld',m,'protect'),seal=officialStatusValue('meld',m,'seal');if(protect)a.push(`보호 ${protect}`);if(seal)a.push(`봉인 ${seal}`);if(meldFixedActive(m))a.push('고정');return a.length?` · ${a.join(' · ')}`:''}
-function runEffectAction(name,ctx={},payload={}){if(!EFFECT_ACTIONS.includes(name))return false;const actor=ctx.actor;if(name==='draw')return drawMany(actor,payload.count??1,false);if(name==='heal')return heal(actor,payload.amount??1);if(name==='addShield')return addShield(actor,payload.amount??1);if(name==='addPower')return addSwitchPower(actor,payload.amount??0,payload.label||'POWER');if(name==='returnSwitch')return returnSwitch(actor,payload.amount??0,payload.label||'RETURN',payload.opts||{});if(name==='applyStatus')return applyOfficialStatus(payload.scope,payload.target,payload.key,payload.amount??1,{actor,...(payload.opts||{})});if(name==='retireMeld')return retireMeld(payload.owner,payload.index??0,payload.reason||'효과');return false}""", 'status helpers')
-
-          rep("function lockMeldRecovery(m,owner){if(!m)return;m.recoverLockedOwner=owner;m.recoverLockedThroughStart=sideObj(owner).turnStarts+1;log(`${owner==='player'?'내':'상대'} 공개 조합이 다음 자기 턴 동안 회수 봉인.`,'important')}", "function lockMeldRecovery(m,owner){return applyMeldFixed(m,owner)}", 'fixed wrapper')
-
-          rep("function insuranceBlocks(actor,targetSide,m,targetCard){m.status=m.status||{};if((m.status.protected||0)>0){m.status.protected--;log(`조합 보호가 간섭을 1회 막았습니다.`,'good');return true}", "function insuranceBlocks(actor,targetSide,m,targetCard){if(consumeOfficialStatus('meld',m,'protect')){log(`조합 보호가 간섭을 1회 막았습니다.`,'good');return true}", 'protect consume')
-
-          rep("function freeRecoverFromMeld(w,m,exclude=[],opts={}){const ex=new Set(exclude.map(c=>c.uid));for(let i=0;i<m.cards.length;i++){const c=m.cards[i];if(ex.has(c.uid)||c.owner!==w||c.enteredMeldToken===state.turnToken)continue;", "function freeRecoverFromMeld(w,m,exclude=[],opts={}){if(meldFixedActive(m))return null;const ex=new Set(exclude.map(c=>c.uid));for(let i=0;i<m.cards.length;i++){const c=m.cards[i];if(ex.has(c.uid)||c.owner!==w||c.enteredMeldToken===state.turnToken||cardFixedActive(c))continue;", 'fixed free recovery')
-
-          rep("function autoExtortToNewMeld(w,m){const foe=other(w),arr=meldsOf(foe);for(const om of arr){for(let i=0;i<om.cards.length;i++){const c=om.cards[i];if(protectedByConstruction(om,c))continue;", "function autoExtortToNewMeld(w,m){const foe=other(w),arr=meldsOf(foe);for(const om of arr){if(meldFixedActive(om))continue;for(let i=0;i<om.cards.length;i++){const c=om.cards[i];if(cardFixedActive(c)||protectedByConstruction(om,c))continue;", 'fixed extortion')
-
-          rep("function cutOppositeEnd(w,targetSide,m,newCard){if(m.type!=='RUN'||m.cards.length<4)return false;", "function cutOppositeEnd(w,targetSide,m,newCard){if(m.type!=='RUN'||m.cards.length<4||meldFixedActive(m))return false;", 'fixed cut meld')
-          rep("if(!cand||protectedByConstruction(m,cand))return false;", "if(!cand||cardFixedActive(cand)||protectedByConstruction(m,cand))return false;", 'fixed cut card')
-
-          rep("if(side.status.seal>0){side.status.seal--;log(`${c.name}: 봉인으로 효과가 무효.`,'hit');continue}if(ctx.isAttach&&ctx.meld?.status?.sealNamed>0&&c.tag!=='venomNeedle'){ctx.meld.status.sealNamed--;log(`${c.name}: 조합의 효과 봉인으로 무효.`,'hit');continue}", "if(consumeOfficialStatus('player',side,'seal')){log(`${c.name}: 봉인으로 효과가 무효.`,'hit');continue}if(ctx.isAttach&&c.tag!=='venomNeedle'&&consumeOfficialStatus('meld',ctx.meld,'seal')){log(`${c.name}: 조합의 봉인으로 효과가 무효.`,'hit');continue}", 'seal consume')
-
-          rep("case'venomNeedle':if(ctx.isAttach&&ctx.targetOwner===foe){ctx.meld.status=ctx.meld.status||{};ctx.meld.status.sealNamed=(ctx.meld.status.sealNamed||0)+1;log(`${c.name}: 상대 조합의 다음 네임드 효과 봉인.`,'important')}break;", "case'venomNeedle':if(ctx.isAttach&&ctx.targetOwner===foe){runEffectAction('applyStatus',{actor:w},{scope:'meld',target:ctx.meld,key:'seal',amount:1,opts:{silent:true}});log(`${c.name}: 상대 조합의 다음 네임드 효과 봉인.`,'important')}break;", 'venom seal apply')
-          rep("case'branchLink':if(type==='RUN'){ctx.meld.status=ctx.meld.status||{};ctx.meld.status.protected=(ctx.meld.status.protected||0)+1}break;", "case'branchLink':if(type==='RUN')runEffectAction('applyStatus',{actor:w},{scope:'meld',target:ctx.meld,key:'protect',amount:1,opts:{silent:true}});break;", 'branch protect apply')
-
-          rep("const m={type,cards:[...cards],chain:0,createdTurn:state.turnNo,createdToken:state.turnToken,lastAttachToken:null,recoverLockedOwner:null,recoverLockedThroughStart:null,extraAttachGrantedToken:null,lastTouchedOwnerStart:s.turnStarts,status:{protected:0,sealNamed:0}};", "const m={type,cards:[...cards],chain:0,createdTurn:state.turnNo,createdToken:state.turnToken,lastAttachToken:null,extraAttachGrantedToken:null,lastTouchedOwnerStart:s.turnStarts,status:blankMeldStatus()};", 'new meld status')
-
-          rep("if(s.status.vulnerable>0){raw=Math.round(raw*1.25);log(`${switchName(w)} 취약 · 다음 DETONATE +25%.`,'hit');s.status.vulnerable=0}", "if(officialStatusValue('player',s,'vulnerable')>0){raw=Math.round(raw*1.25);log(`${switchName(w)} 취약 · 다음 DETONATE +25%.`,'hit');clearOfficialStatus('player',s,'vulnerable')}", 'vulnerable consume')
-          rep("function applyStatus(w,key,n){const s=sideObj(w);if(!(key in s.status))s.status[key]=0;s.status[key]+=n;const label={vulnerable:'취약',seal:'봉인',regen:'재생'}[key]||key;log(`${w==='player'?'YOU':'CPU'} ${label} +${n}`,'important');fxNode(`${label} +${n}`,'status',w,40)}", "function applyStatus(w,key,n){return applyOfficialStatus('player',sideObj(w),key,n,{actor:w})}", 'player apply wrapper')
-
-          rep("if(lastCards.some(c=>c.tag==='rummyHeal4')){heal(w,Math.ceil(15/RECOVERY_UNIT));applyStatus(w,'regen',1);if(state.switchPower>=60)addShield(w,4)}", "if(lastCards.some(c=>c.tag==='rummyHeal4')){heal(w,Math.ceil(15/RECOVERY_UNIT));runEffectAction('applyStatus',{actor:w},{scope:'player',target:s,key:'regen',amount:1});if(state.switchPower>=60)addShield(w,4)}", 'regen action')
-          rep("if(s.status.regen>0){const r=s.status.regen;heal(w,r);s.status.regen=Math.max(0,r-1)}", "if(officialStatusValue('player',s,'regen')>0){const r=officialStatusValue('player',s,'regen');heal(w,r);consumeOfficialStatus('player',s,'regen')}", 'regen lifecycle')
-
-          rep("if(s.recoveredThisTurn&&!free)return false;if(m.recoverLockedOwner===w&&s.turnStarts<=m.recoverLockedThroughStart)return false;const remain=", "if(s.recoveredThisTurn&&!free)return false;if(meldFixedActive(m)||cardFixedActive(c))return false;const remain=", 'basic recovery fixed')
-
-          rep("const ms=m.status||{};const mst=(ms.protected?` · 보호 ${ms.protected}`:'')+(ms.sealNamed?` · 효과봉인 ${ms.sealNamed}`:'');", "const mst=meldStatusText(m);", 'meld status ui')
-          rep("function statusHTML(w){const s=sideObj(w),a=[];if(s.shield)a.push(`<span class=\"statChip shieldChip\">🛡 <b>${s.shield}</b></span>`);if(s.graceArmed)a.push('<span class=\"statChip fuseChip\">유예 준비</span>');for(const [k,n]of Object.entries(s.status))if(n){const nm={vulnerable:'취약',seal:'봉인',regen:'재생'}[k]||k;a.push(`<span class=\"statChip statusChip\">${nm} ${n}</span>`)}return a.join('')||'<span class=\"statChip\">상태 없음</span>'}", "function statusHTML(w){const s=sideObj(w),a=[];if(s.shield)a.push(`<span class=\"statChip shieldChip\">🛡 <b>${s.shield}</b></span>`);if(s.graceArmed)a.push('<span class=\"statChip fuseChip\">유예 준비</span>');for(const k of['vulnerable','seal','regen']){const n=officialStatusValue('player',s,k);if(n)a.push(`<span class=\"statChip statusChip\">${OFFICIAL_STATUS[k].label} ${n}</span>`)}return a.join('')||'<span class=\"statChip\">상태 없음</span>'}", 'status ui')
-
-          rep("<div class=\"ruleBlock\"><h3>보호막 · 상태</h3><p>보호막은 현재 CORE 앞에서 피해를 먼저 막는 별도 수치이며 최대 40입니다. 기본적으로 자기 턴 시작 시 남은 보호막이 사라집니다.</p><div class=\"statusLegend\"><span>취약 · 다음 DETONATE +25%</span><span>봉인 · 다음 네임드 효과 1회 무효</span><span>고정 · 카드/조합 회수·이동 불가</span><span>보호 · 다음 조합 간섭 1회 무효</span><span>재생 X · 현재 CORE 회복</span></div></div>", "<div class=\"ruleBlock\"><h3>보호막 · 공식 상태</h3><p>보호막은 현재 CORE 앞에서 피해를 먼저 막는 <b>별도 수치</b>이며 기본 하드캡이 없습니다. 남은 보호막은 자기 턴 시작 시 사라집니다. 공식 상태는 아래 5종만 공용 규칙으로 사용하며, 카드 고유 표식은 별도입니다.</p><div class=\"statusLegend\"><span>취약 · 플레이어 · 다음 DETONATE +25% 후 해제</span><span>봉인 · 플레이어/조합/카드 · 다음 네임드 효과 1회 무효</span><span>고정 · 조합/카드 · 회수·강탈·절단 등 이동 불가</span><span>보호 · 조합/카드 · 다음 적대적 간섭 1회 무효</span><span>재생 X · 플레이어 · 자기 턴 시작에 현재 CORE 회복 후 1 감소</span></div></div>", 'rules status block')
-
-          p.write_text(s)
-
-          Path('tests/status-engine.mjs').write_text(r'''import fs from 'node:fs';
-import vm from 'node:vm';
-const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
-const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
-function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
-function fn(name){const start=script.indexOf(`function ${name}(`);if(start<0)throw new Error(`missing ${name}`);const body=script.indexOf('){',start)+1;let d=0;for(let i=body;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)return script.slice(start,i+1)}throw new Error(`unterminated ${name}`)}
-function constSrc(name){const start=script.indexOf(`const ${name}=`);if(start<0)throw new Error(`missing const ${name}`);const end=script.indexOf(';',start)+1;return script.slice(start,end)}
-const ctx=vm.createContext({console,Math,Number,Object,Array,Set,Map});
-vm.runInContext(constSrc('OFFICIAL_STATUS'),ctx);
-vm.runInContext(constSrc('EFFECT_EVENTS'),ctx);
-vm.runInContext(constSrc('EFFECT_ACTIONS'),ctx);
-ctx.state={player:{turnStarts:2},enemy:{turnStarts:4}};
-ctx.sideObj=w=>ctx.state[w];ctx.switchName=w=>w==='player'?'YOU':'CPU';ctx.log=()=>{};ctx.fxNode=()=>{};
-for(const n of ['blankStatus','blankMeldStatus','officialStatusBag','officialStatusAllowed','officialStatusValue','setOfficialStatus','applyOfficialStatus','consumeOfficialStatus','clearOfficialStatus','cardFixedActive','meldFixedActive','applyMeldFixed','meldStatusText'])vm.runInContext(fn(n),ctx);
-const keys=Object.keys(ctx.OFFICIAL_STATUS);
-ok(JSON.stringify(keys)===JSON.stringify(['vulnerable','seal','fixed','protect','regen']),'official status set is exactly five shared statuses');
-ok(ctx.OFFICIAL_STATUS.vulnerable.scopes.join(',')==='player','vulnerable is player-scoped');
-ok(ctx.OFFICIAL_STATUS.fixed.scopes.includes('meld')&&ctx.OFFICIAL_STATUS.fixed.scopes.includes('card'),'fixed supports meld/card scopes');
-ok(ctx.OFFICIAL_STATUS.protect.scopes.includes('meld'),'protect supports meld scope');
-const player={status:ctx.blankStatus()};ctx.applyOfficialStatus('player',player,'seal',2,{silent:true});ok(ctx.officialStatusValue('player',player,'seal')===2,'player seal stacks in official bag');ctx.consumeOfficialStatus('player',player,'seal');ok(player.status.seal===1,'seal consumes exactly one blocked named effect');
-const meld={status:{protected:1,sealNamed:1}};ok(ctx.officialStatusValue('meld',meld,'protect')===1&&ctx.officialStatusValue('meld',meld,'seal')===1,'legacy meld status aliases migrate to official protect/seal');
-ctx.applyMeldFixed(meld,'player');ok(ctx.meldFixedActive(meld),'fixed is active through target owner next-turn window');ctx.state.player.turnStarts=4;ok(!ctx.meldFixedActive(meld),'fixed expires after its owner-turn window');
-const card={status:{charged:2},officialStatus:{seal:0,fixed:1,protect:0}};ok(ctx.cardFixedActive(card),'card fixed uses separate officialStatus bag');ok(card.status.charged===2,'one-off card markers stay separate from official statuses');
-ok(ctx.EFFECT_EVENTS.includes('onAttach')&&ctx.EFFECT_EVENTS.includes('onDetonate')&&ctx.EFFECT_EVENTS.includes('onCoreBreak'),'effect event vocabulary covers core combat timings');
-ok(ctx.EFFECT_ACTIONS.includes('applyStatus')&&ctx.EFFECT_ACTIONS.includes('returnSwitch'),'effect action vocabulary exposes reusable status/SWITCH actions');
-ok(!html.includes('별도 수치이며 최대 40입니다'),'rules modal no longer claims obsolete shield-40 cap');
-ok(html.includes('고정 · 조합/카드 · 회수·강탈·절단 등 이동 불가'),'rules modal documents fixed scope and movement blocking');
-ok(script.includes("if(meldFixedActive(m)||cardFixedActive(c))return false"),'basic recovery respects fixed status');
-ok(script.includes("if(meldFixedActive(om))continue"),'extortion respects fixed melds');
-ok(script.includes("m.cards.length<4||meldFixedActive(m)"),'RUN cutting respects fixed melds');
-console.log('STATUS ENGINE PASS');
-''')
+          s=Path('index.html').read_text()
+          a=s.rfind('<script>'); b=s.find('</script>',a)
+          print(s[a+8:b])
           PY
+          node --check /tmp/game.js
       - name: Run all regression suites
         run: |
-          node --check <(python3 - <<'PY'
-          from pathlib import Path
-          s=Path('index.html').read_text(); a=s.rfind('<script>'); b=s.find('</script>',a); print(s[a+8:b])
-          PY
-          )
-          for f in tests/*.mjs; do echo "== $f =="; node "$f"; done
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
       - name: Check diff
         run: git diff --check
-      - name: Remove one-shot workflow
-        run: rm .github/workflows/apply-m7-status-engine.yml
+      - name: Remove temporary patch files
+        run: rm scripts/m7_patch.py .github/workflows/apply-m7-status-engine.yml
       - name: Commit verified patch
         run: |
           git config user.name "EpicenterGUY"
           git config user.email "mintbamtol7@gmail.com"
-          git add index.html tests/status-engine.mjs .github/workflows/apply-m7-status-engine.yml
+          git add index.html tests/status-engine.mjs scripts/m7_patch.py .github/workflows/apply-m7-status-engine.yml
           git commit -m "Normalize official status scopes and lifecycle"
           git push origin HEAD:feat/m7-status-engine-20260830
