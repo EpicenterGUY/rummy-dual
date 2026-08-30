@@ -188,6 +188,25 @@ details.log{height:100%;min-height:0;overflow:hidden;padding:0 10px}details.log 
 @media(max-width:390px){.tutorialCoach{padding:8px}.tutorialCoachHead{align-items:flex-start}.tutorialCoachHead b{min-width:0;overflow-wrap:anywhere}.tutorialCoachActions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px}.tutorialCoachActions .pixelBtn{min-width:0;min-height:42px;padding:7px 6px;overflow-wrap:anywhere}.tutorialCoachGoal,.tutorialCoachHint{font-size:8px;line-height:1.55}.startAux .pixelBtn{min-height:40px}}
 @media(max-width:370px){.tutorialCoachActions{grid-template-columns:1fr}.tutorialCoachActions .pixelBtn{min-height:42px}.tutorialCoachHead{flex-wrap:wrap}.tutorialCoachHead b{flex:1 1 180px}}
 
+
+/* UI2 P2 regression · desktop hand controls visibility */
+@media (min-width:1200px){
+.main{grid-template-rows:64px minmax(112px,19vh) minmax(128px,1fr) minmax(240px,29vh) 32px}
+.handZone{overflow:hidden}
+.hand{min-height:0}
+.mulliganBar{margin-top:2px;padding:5px 7px}
+.mulliganText{margin-bottom:4px}
+.mulliganActions .pixelBtn{min-height:32px;padding:5px 7px}
+.mulliganBar.show + .controls{display:none}
+.controls .pixelBtn{min-height:32px;padding:5px 7px}
+}
+@media (min-width:1200px) and (max-height:760px){
+.main{grid-template-rows:52px minmax(92px,15vh) minmax(96px,1fr) 220px 28px}
+.mulliganBar{margin-top:1px;padding:4px 6px}
+.mulliganText{margin-bottom:3px;font-size:9px}
+.mulliganActions .pixelBtn{min-height:29px;padding:4px 6px;font-size:10px}
+}
+
 </style>
 </head>
 <body>
