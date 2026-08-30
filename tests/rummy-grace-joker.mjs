@@ -31,7 +31,10 @@ function functionSource(name) {
 }
 
 function context(extra = {}) {
-  return vm.createContext({ console, Math, Set, Map, Array, Object, Number, String, Boolean, ...extra });
+  const ctx = vm.createContext({ console, Math, Set, Map, Array, Object, Number, String, Boolean, ...extra });
+  ctx.ownedRecycleCount = () => 1;
+  ctx.emergencyReleaseMeld = () => false;
+  return ctx;
 }
 
 function install(ctx, ...names) {
