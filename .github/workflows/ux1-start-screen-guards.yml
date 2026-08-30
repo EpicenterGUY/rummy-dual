@@ -1,0 +1,44 @@
+name: Verify start screen session guards
+
+on:
+  push:
+    branches:
+      - feat/ux1-start-screen-20260830
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: feat/ux1-start-screen-20260830
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply session guards
+        run: python scripts/apply_start_screen_guards.py
+      - name: Run regressions
+        run: |
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+          git diff --check
+      - name: Commit verified changes
+        run: |
+          rm -f scripts/apply_start_screen_guards.py
+          rm -f .github/workflows/ux1-start-screen-guards.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "fix: guard start screen battle sessions"
+          git push origin HEAD:feat/ux1-start-screen-20260830
