@@ -1,7 +1,7 @@
 name: Verify UI2 tactical table redesign
 on:
   push:
-    branches: [feat/ux1-tutorial-framework-20260830]
+    branches: [feat/ui2-tactical-table-redesign-20260830]
 jobs:
   verify:
     if: github.actor != 'github-actions[bot]'
