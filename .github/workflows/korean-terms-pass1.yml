@@ -24,6 +24,7 @@ jobs:
       - name: Apply terminology patch
         run: |
           sed -i "/target selected label/d" scripts/apply_korean_terms_pass1.py
+          sed -i "/selection strip meld/d" scripts/apply_korean_terms_pass1.py
           python scripts/apply_korean_terms_pass1.py
       - name: Run regressions
         run: |
