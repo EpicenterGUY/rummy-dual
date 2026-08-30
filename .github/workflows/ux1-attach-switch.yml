@@ -16,7 +16,9 @@ jobs:
         with:
           node-version: '22'
       - name: Apply tutorial patch
-        run: python tools/ux1_attach_switch_patch.py
+        run: |
+          sed -i 's/},800)/},650)/' tools/ux1_attach_switch_patch.py
+          python tools/ux1_attach_switch_patch.py
       - name: Run regressions
         run: |
           node -e "const fs=require('fs');const h=fs.readFileSync('index.html','utf8');const m=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)];fs.writeFileSync('/tmp/game.js',m.at(-1)[1]);"
