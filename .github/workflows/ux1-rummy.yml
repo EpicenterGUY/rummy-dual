@@ -26,6 +26,13 @@ jobs:
           new="if(w==='player'){if(typeof tutorialCheckProgress==='function')tutorialCheckProgress('rummy',{beforeHand:beforeReloadHand,reload,afterHand:s.hand.length});state.selected.clear();"
           if old not in s: raise SystemExit('missing RUMMY hook for guard refinement')
           p.write_text(s.replace(old,new,1))
+
+          t=Path('tests/tutorial-attach-switch.mjs')
+          ts=t.read_text()
+          old_test="ok(script.includes('여기까지 완료했습니다. 다음 실습은 러미입니다.') && !script.includes('다음 묶음에서는 붙이기와 상대 공개 조합 이용'), 'completion coach points to RUMMY instead of stale attach work');"
+          new_test="ok(script.includes(\"step.id==='rummy'?'기본 튜토리얼 완료!\") && !script.includes('다음 묶음에서는 붙이기와 상대 공개 조합 이용'), 'completion coach now distinguishes final RUMMY completion from stale attach work');"
+          if old_test not in ts: raise SystemExit('missing old attach tutorial completion-copy regression')
+          t.write_text(ts.replace(old_test,new_test,1))
           PY
       - name: Run regressions
         run: |
