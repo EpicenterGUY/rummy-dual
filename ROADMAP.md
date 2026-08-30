@@ -91,9 +91,9 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] `대전 시작 / 튜토리얼 / 카드 도감 / 설정` 구조 정리
 - [x] 미구현 메뉴를 비활성/`준비 중` 상태로 구분
 - [x] 모바일 시작창 대응
-- [ ] 첫 실행 튜토리얼 안내
+- [x] 첫 실행 튜토리얼 안내
 - [x] 기존 progress 저장 스키마에 튜토리얼 상태 저장
-- [ ] 일반 게임 로직과 튜토리얼 로직 중복 최소화 구조 확정 (`sessionMode` + 단계 데이터 + 실제 엔진 재사용)
+- [x] 일반 게임 로직과 튜토리얼 로직 중복 최소화 구조 확정 (`sessionMode` + `TUTORIAL_STEPS` + 공통 컨트롤러 + 실제 엔진 재사용)
 - [ ] 튜토리얼 전용 고정 게임 상태/손패/드로우 설계
 - [ ] 카드 기본 조작 튜토리얼 — 획득/선택/버리기 및 실제 행동 UI 이해
 - [ ] 세트 튜토리얼
@@ -102,7 +102,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [ ] 상대 공개 조합 붙이기 체험
 - [ ] 스위치 튜토리얼
 - [ ] 러미 튜토리얼
-- [ ] 튜토리얼 하이라이트 / 가이드 UI 기본 프레임워크
+- [x] 튜토리얼 하이라이트 / 가이드 UI 기본 프레임워크 — 화면 흐름 안 coach + 힌트/다음/재시작/종료
 
 ### P2 — 폭발/연습/재진입 완성도
 - [ ] 누적 위력 / 폭발 튜토리얼
@@ -186,5 +186,5 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 
 ## Current next work
 1. L10N1: lock and apply the Korean user-facing terminology before tutorial copy proliferates; keep code-internal English identifiers stable.
-2. UX1 P1: start-screen shell/menu/tutorial save flags are live; next build the first-run prompt + shared tutorial controller, then basic controls → 세트 → 런 → 붙이기 → 스위치 → 러미 with fixed states.
+2. UX1 P1: start screen + first-run prompt + shared tutorial controller are live; next connect deterministic basic controls → 세트 → 런 → 붙이기 → 상대 조합 → 스위치 → 러미 scenarios to the real engine.
 3. Continue the remaining M8 choice/copy/timing audit in parallel; do not begin large M9/content expansion until the first ~50 named-card behaviors and UX1 P1 are both stable.
