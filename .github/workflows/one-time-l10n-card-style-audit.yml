@@ -9,3 +9,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 .github/scripts/l10n_card_style_audit.py
+# rerun: sentence-level fragment audit
