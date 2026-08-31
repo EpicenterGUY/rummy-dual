@@ -43,3 +43,4 @@ jobs:
           git commit -m 'feat: add ZERO-SIGHT live starters and targetless fallback'
           git pull --rebase origin main
           git push origin HEAD:main
+# rerun after roadmap-anchor sync
