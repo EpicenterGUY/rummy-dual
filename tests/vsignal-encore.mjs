@@ -40,7 +40,7 @@ const legalTargets=source('legalRecoveryReturnTargets');
 ok(legalTargets.includes('if(m===sourceMeld'),'Encore cannot bounce directly back into the meld it was just recovered from');
 
 ok(script.includes('테마 ${themeDef(c.themeId)?.displayName||c.themeId}'),'card detail visibly labels themed cards');
-ok(script.includes('n.themeId?` · 테마 ${themeDef(n.themeId)?.displayName||n.themeId}`'),'codex visibly labels themed named variants');
+ok(script.includes('n.themeId?` · 카드군 ${themeDef(n.themeId)?.displayName||n.themeId}`'),'codex visibly labels themed named variants with the card-group term');
 ok(road.includes('5♥ `앙코르` 라이브 구현')&&road.includes('- [x] `앙코르` 등 회수 후 동일 턴 반환 예외를 카드 단위로 안전하게 구현'),'ROADMAP records Encore and the card-scoped return exception as complete');
 ok(themeDoc.includes('이 카드를 회수한 턴에도 한 번')&&themeDoc.includes('- [x] 회수 후 동일 턴 반환 예외를 카드 단위로 안전하게 허용'),'canonical theme document locks the self-replay wording and implementation');
 ok(!script.includes('hypeCount')&&!script.includes('HYPE_COUNT'),'Encore adds no HYPE counter or dedicated resource');
