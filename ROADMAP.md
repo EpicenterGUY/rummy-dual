@@ -1,6 +1,6 @@
 # RUMMY//DUEL Development Roadmap
 
-Updated: 2026-08-30
+Updated: 2026-08-31
 
 ## Core direction
 RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITCH bomb through SET/BURST and RUN/CHAIN, including play on the opponent's public melds.
@@ -125,7 +125,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] `앙코르` 등 회수 후 동일 턴 반환 예외를 카드 단위로 안전하게 구현
 - [x] 4♦ `전원 집합!` / K♣ `24시간 내구방송` 라이브 구현 — 정리 직전 선택형 손패 보존, 일반 카드도 후보 가능, 보존 카드는 해당 턴 재사용 금지
 - [x] 버스트 정리/런 완주 직전 카드 보존 타이밍 구현
-- [ ] V-SIGNAL ↔ 일반 카드 혼합 회귀 테스트
+- [x] V-SIGNAL ↔ 일반 카드 혼합 회귀 테스트
 
 ### ZERO//SIGHT — 저격수 / 표적 / 정밀 타격
 - [x] 정식 테마 방향 `ZERO//SIGHT` 잠금
