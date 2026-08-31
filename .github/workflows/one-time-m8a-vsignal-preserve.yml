@@ -38,19 +38,53 @@ jobs:
           done
           echo "$status" > regression.status
           exit 0
-      - name: Upload verification log
+      - name: Commit and push with diagnostics
+        shell: bash
+        run: |
+          set +e
+          : > commit.log
+          final=0
+          {
+            echo "REGRESSION_STATUS=$(cat regression.status)"
+            git status --short
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add index.html ROADMAP.md docs/THEME_GROUPS.md tests/vsignal-retire-preserve.mjs
+            echo '--- staged ---'
+            git status --short
+            git diff --cached --stat
+            if [ "$(cat regression.status)" != "0" ]; then
+              echo 'regressions failed; refusing commit'
+              final=20
+            else
+              git commit -m 'feat: add V-SIGNAL retire preservation'
+              c=$?
+              echo "COMMIT_STATUS=$c"
+              if [ "$c" != "0" ]; then
+                final=$c
+              else
+                git pull --rebase origin main
+                r=$?
+                echo "REBASE_STATUS=$r"
+                if [ "$r" != "0" ]; then
+                  final=$r
+                else
+                  git push origin HEAD:main
+                  p=$?
+                  echo "PUSH_STATUS=$p"
+                  final=$p
+                fi
+              fi
+            fi
+          } 2>&1 | tee commit.log
+          echo "$final" > commit.status
+          exit 0
+      - name: Upload diagnostics
         uses: actions/upload-artifact@v4
         with:
-          name: preserve-verification-log
+          name: preserve-commit-diagnostics
           path: |
             regression.log
             regression.status
-      - name: Commit preservation
-        shell: bash
-        run: |
-          test "$(cat regression.status)" = "0"
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md docs/THEME_GROUPS.md tests/vsignal-retire-preserve.mjs
-          git commit -m 'feat: add V-SIGNAL retire preservation'
-          git push origin HEAD:main
+            commit.log
+            commit.status
