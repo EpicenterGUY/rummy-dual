@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/one-time-m8a-vsignal-foundation.yml'
+      - '.github/scripts/m8a_vsignal_foundation_compat.py'
 
 permissions:
   contents: write
@@ -62,6 +63,7 @@ jobs:
           ok(meld.includes("typeof emitEffectEvent==='function'"),'new-meld hook preserves isolated-function regression compatibility');
           const attach=source('attachCards');
           ok(attach.includes("emitEffectEvent('onAttach'")&&attach.indexOf("emitEffectEvent('onAttach'")<attach.indexOf('retireMeld(targetSide'),'attach event sees a completed 4SET before automatic retirement');
+          ok(attach.includes("typeof emitEffectEvent==='function'"),'attach hook preserves isolated-function regression compatibility');
           for(const name of ['playerRecover','executeRecoverAI','recoverSpecificFromMeld','recoverRedundantGapRun','middleManagerReturnPlaceholder','replaceRedundantJokers'])ok(source(name).includes('emitRecoveryEvent(')&&source(name).includes("typeof emitRecoveryEvent==='function'"),`${name} exposes guarded public-to-hand recovery through onRecover`);
           const rummy=source('triggerRummy');
           ok(rummy.includes("emitEffectEvent('onRummy'")&&rummy.indexOf('drawMany(w,Math.max(0,reload-beforeReloadHand),false)')<rummy.indexOf("emitEffectEvent('onRummy'"),'RUMMY event fires after the base refill is visible');
