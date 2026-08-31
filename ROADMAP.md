@@ -289,7 +289,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 
 ## M10 — AI 2.0
 - [x] Respect recovery same-turn return restriction in planning
-- [ ] Search 5+ card multi-attach cases where practical
+- [x] Search 5+ card multi-attach cases where practical — AI extension planning and stuck-state legality now enumerate up to 6-card attach combinations while preserving the existing recovery, same-turn return, and SWITCH ownership guards
 - [ ] Improve opponent-meld and future-BURST risk evaluation
 - [ ] Improve intentional small-bomb acceptance decisions
 
