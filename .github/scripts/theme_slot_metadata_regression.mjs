@@ -21,13 +21,11 @@ for(const[id,c]of themeCards){
   ok(slot===(c.slot||id),`${id} theme identity does not rewrite its canonical slot`);
 }
 
-// Profiles and card theme IDs use the same stable namespace.
 for(const[id,p]of Object.entries(profiles))if(id!=='mixed'&&p.themeId){
   ok(groups[p.themeId]?.id===p.themeId,`${id} build profile resolves through the same stable themeId namespace`);
   ok(p.displayName===groups[p.themeId].displayName,`${id} build profile and card metadata share one display name`);
 }
 
-// At least one physical slot has ordinary + theme alternatives, but sampling is still slot-exclusive.
 const bySlot=new Map();
 for(const[id,c]of Object.entries(named)){if(id[0]==='J')continue;const slot=ctx.namedSlot(id);if(!bySlot.has(slot))bySlot.set(slot,[]);bySlot.get(slot).push(id)}
 const shared=[...bySlot.entries()].filter(([,ids])=>ids.length>1&&ids.some(id=>named[id].themeId));
@@ -36,11 +34,11 @@ for(const[slot,ids]of shared)ok(new Set(ids.map(id=>ctx.namedSlot(id))).size===1
 
 // ZERO-SIGHT and POINT-BLANK meld metadata coexist without touching cards/slot identity.
 {
- const state={turnNo:9,turnToken:4};
- const player={melds:[]},enemy={melds:[]};
+ const state={turnNo:9,turnToken:4,turn:'enemy'};
+ const player={melds:[],turnStarts:2},enemy={melds:[],turnStarts:3};
  const meld={type:'RUN',cards:[{uid:1,slot:'C2',owner:'player'},{uid:2,slot:'C3',owner:'enemy'},{uid:3,slot:'C4',owner:'enemy'}]};enemy.melds.push(meld);
  const c=context({state,log:()=>{},emitEffectEvent:()=>null,sideObj:w=>w==='player'?player:enemy,other:w=>w==='player'?'enemy':'player',meldsOf:w=>w==='player'?player.melds:enemy.melds,meldOwnerSide:m=>enemy.melds.includes(m)?'enemy':'player'});
- for(const n of['ensureMeldThemeMeta','isZeroSightTarget','zeroSightTargetMeld','clearZeroSightTarget','setZeroSightTarget','ensurePointBlankMeta','isPointBlankClash','pointBlankClashMeld','setPointBlankClash'])vm.runInContext(source(n),c);
+ for(const n of['ensureMeldThemeMeta','isZeroSightTarget','zeroSightTargetMeld','clearZeroSightTarget','setZeroSightTarget','ensurePointBlankMeta','isPointBlankClash','pointBlankClashMeld','pointBlankOwnCardCount','refreshPointBlankClashMeld','setPointBlankClash'])vm.runInContext(source(n),c);
  ok(c.setZeroSightTarget('player',meld,{silent:true})===true,'ZERO-SIGHT target can be written to shared meld metadata');
  ok(c.setPointBlankClash('player',meld,{silent:true})===true,'POINT-BLANK clash can coexist on the same opponent meld');
  ok(c.isZeroSightTarget('player',meld)&&c.isPointBlankClash('player',meld),'target and clash metadata coexist independently');
