@@ -279,7 +279,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 도움말 / 규칙 설명 핵심 용어 반영 + `런 완주` 규칙 동기화
 - [x] 시작창 메뉴 한국어화
 - [x] 기존 규칙 오버레이의 공식 용어집 갱신
-- [ ] 중복 / 폐기된 옛 용어 제거
+- [x] 중복 / 폐기된 옛 용어 제거 — 브라우저 제목·규칙 오버레이·캐릭터/필드 설명·선택창·연습전/전투 로그에서 남아 있던 `FINAL CORE / SET / RUN / BURST / CHAIN / SWITCH / DETONATE DELAY / OVERLOAD / CORE LETHAL / YOU / CPU` 표시를 공식 한국어 표기로 정리. 브랜드 `RUMMY//DUEL`, 테마 고유명과 내부 엔진 키는 유지
 - [ ] 모바일 UI에서 긴 한국어 표현 잘림 점검
 - [x] 사용자 노출 문자열 회귀 테스트 추가
 
