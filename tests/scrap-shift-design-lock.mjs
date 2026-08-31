@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+const doc=fs.readFileSync(new URL('../docs/THEME_GROUPS.md',import.meta.url),'utf8');
+const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
+function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
+ok(doc.includes('# SCRAP//SHIFT')&&doc.includes('아직 라이브 카드군은 아니다'),'SCRAP//SHIFT is design-locked without pretending to be live');
+ok(doc.includes('24장, 수트별 6장'),'candidate pool is locked to 24 cards with six per suit');
+ok(doc.includes('내가 소유한 일반/다른 테마 카드에도 `부품` 표식'),'parts remain mixed-deck compatible');
+ok(doc.includes('숫자·무늬·네임드·테마 ID·소유권·현재 조합 판정을 바꾸지 않는다'),'part marker never rewrites card identity or meld legality');
+ok(doc.includes('손패 / 공개 조합 / 소모패')&&doc.includes('공용 버림패 또는 개인 덱'),'part lifecycle persists through active/scrap zones and clears on discard/deck');
+ok(doc.includes('소모패에 있는 일반 카드를 그 자리에서 새 부품으로 지정할 수는 없다'),'spent cards cannot be marked retroactively for free salvage');
+ok(doc.includes('`해체`는 **공개 조합 안의 내 소유 부품 카드 1장을 내 소모패로 보내는 효과 이동**'),'dismantle is explicitly meld-to-spent');
+ok(doc.includes('해체는 `회수`가 아니다')&&doc.includes('RUN에서 해체하면 일반 회수/이동과 마찬가지로 CHAIN을 1 낮춘다'),'dismantle is separate from recovery while preserving RUN accounting');
+ok(doc.includes('이식은 기존 공용 `조합 이동`과 같은 전투 중립 원칙'),'transplant reuses combat-neutral meld movement');
+ok(doc.includes('재조립하는 순간 그 카드의 `부품` 표식을 소비해 해제')&&doc.includes('이번 턴 사용할 수 없다'),'reassembly consumes the marker and blocks same-turn loops');
+ok(doc.includes('재조립은 `뽑기`도 `회수`도 아니다')&&doc.includes('RUMMY 판정보다 먼저 해결'),'reassembly has explicit acquisition and RUMMY timing semantics');
+ok(doc.includes('onPartSet')&&doc.includes('onDismantle')&&doc.includes('onReassemble')&&doc.includes('이식은 기존 `onMeldMove`'),'event surface stays minimal and reuses onMeldMove');
+ok(doc.includes('K♠ `스크랩 폭주`')&&doc.includes('이번 반환 +14'),'only a narrow finisher lane uses direct SWITCH power');
+ok(!doc.includes('SCRAP_POINT')&&!doc.includes('고철 포인트를 쌓'),'SCRAP//SHIFT creates no dedicated numeric resource');
+ok(road.includes('- [x] SCRAP//SHIFT 카드 풀과 부품 규칙 상세 재설계'),'ROADMAP marks SCRAP//SHIFT detailed redesign complete');
+console.log('SCRAP//SHIFT design lock regression passed.');
