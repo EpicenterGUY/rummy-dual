@@ -47,16 +47,12 @@ text=text.replace(old_resolve,new_resolve,1)
 
 index.write_text(text)
 
-# Roadmap sync.
+# Roadmap sync: this detailed implementation item did not yet exist in ROADMAP, so add it next to the mixed regression lock.
 r=road.read_text()
-r=r.replace('Updated: 2026-09-01','Updated: 2026-09-01',1)
-old_road='- [ ] 표적 없이 잡힌 스타터의 대체 패순환 처리'
-new_road='- [x] 표적 없이 잡힌 스타터의 대체 패순환 처리 — A♣ `관측수`는 사용 조합을 즉시 표적으로 만들어 초동을 열고 무료 1장 교체를 제공; 2♣ `스코프 조정`은 기존 표적을 다른 공개 조합으로 이전하되 표적이 없거나 이전 목적지가 없으면 정확한 손패 1장 패순환으로 전환'
-assert old_road in r,'ROADMAP ZERO-SIGHT fallback anchor changed'
-r=r.replace(old_road,new_road,1)
-needle='- [x] ZERO-SIGHT ↔ 일반/V-SIGNAL/POINT-BLANK 혼합 회귀 테스트'
-assert needle in r,'ROADMAP ZERO-SIGHT mixed anchor missing'
-r=r.replace(needle,"- [x] ZERO-SIGHT 첫 라이브 스타터 페어 — A♣ `관측수` / 2♣ `스코프 조정`을 전체 1클리어 해금으로 추가하고 ZERO-SIGHT 오픈형 테마 선택을 활성화\n"+needle,1)
+road_anchor='- [x] ZERO-SIGHT ↔ 일반/V-SIGNAL/POINT-BLANK 혼합 회귀 테스트 — 표적은 카드군과 분리된 공개 조합 메타데이터로 유지되며, 일반 카드의 붙이기·V-SIGNAL 앙코르 회수·혼합 조합 정리/보존·POINT-BLANK 카드 정체성이 같은 표적 이벤트 경로에서 충돌하지 않는 것을 실행 회귀로 잠금'
+assert road_anchor in r,'ROADMAP ZERO-SIGHT mixed anchor changed'
+road_lines="- [x] 표적 없이 잡힌 스타터의 대체 패순환 처리 — A♣ `관측수`는 사용 조합을 즉시 표적으로 만들어 초동을 열고 무료 1장 교체를 제공; 2♣ `스코프 조정`은 기존 표적을 다른 공개 조합으로 이전하되 표적이 없거나 이전 목적지가 없으면 정확한 손패 1장 패순환으로 전환\n- [x] ZERO-SIGHT 첫 라이브 스타터 페어 — A♣ `관측수` / 2♣ `스코프 조정`을 전체 1클리어 해금으로 추가하고 ZERO-SIGHT 오픈형 테마 선택을 활성화\n"
+r=r.replace(road_anchor,road_lines+road_anchor,1)
 road.write_text(r)
 
 # Canonical theme doc sync.
