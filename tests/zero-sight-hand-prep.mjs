@@ -62,4 +62,4 @@ for(const name of ['recoverSpecificFromMeld','recoverRedundantGapRun','middleMan
 ok(source('fullRecirculation').includes('resetHandPreparation(c)'),'full recirculation clears card preparation metadata');
 ok(road.includes('- [x] 손에서 턴 경과 충전 상태를 카드 단위 `handPrep` 마커로 구현'),'ROADMAP marks hand preparation foundation complete');
 ok(theme.includes('준비는 공식 상태 5종이나 별도 전용 자원이 아니라 카드 단위 메타데이터'),'canonical theme doc separates preparation from official statuses/resources');
-console.log('ZERO//SIGHT hand preparation regression passed.');
+console.log('ZERO-SIGHT hand preparation regression passed.');

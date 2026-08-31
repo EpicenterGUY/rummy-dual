@@ -107,7 +107,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 정식 테마군은 폐쇄형 전용 덱이 아니라 공용 러미 행동과 연결되는 모듈형 카드군으로 설계한다. 현재 최종 설계 기준과 카드 후보 전체는 `docs/THEME_GROUPS.md`를 Source of Truth로 사용한다. 아직 라이브 코드 구현 완료를 의미하지 않는다.
 
 ### 공통 설계 잠금
-- [x] 카드 도감에 카드군 전용 필터 추가 — V-SIGNAL / ZERO//SIGHT / POINT//BLANK 탭에서 현재 라이브 구현 카드를 분리해 보고, 카드군 탭에서는 미해금 카드도 카드군·이름·효과를 확인하되 실제 해금 조건은 잠금으로 표시
+- [x] 카드 도감에 카드군 전용 필터 추가 — V-SIGNAL / ZERO-SIGHT / POINT-BLANK 탭에서 현재 라이브 구현 카드를 분리해 보고, 카드군 탭에서는 미해금 카드도 카드군·이름·효과를 확인하되 실제 해금 조건은 잠금으로 표시
 - [x] 별도 개발자 모드 추가 — 현재 구현 콘텐츠의 해금 제한 우회, 개발 중 카드군 선택, 전체 도감 확인을 지원하며 DEV로 시작한 대전은 실제 클리어·레벨·해금 진행도에 반영하지 않음
 - [x] 테마 전용 개념은 허용하되 별도 전용 자원 남발 금지
 - [x] 초동 카드가 전용 개념 생성 + 정비/보호/덱 조작 등 작은 기본값을 함께 제공하도록 설계
@@ -129,27 +129,27 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 버스트 정리/런 완주 직전 카드 보존 타이밍 구현
 - [x] V-SIGNAL ↔ 일반 카드 혼합 회귀 테스트
 
-### ZERO//SIGHT — 저격수 / 표적 / 정밀 타격
-- [x] 정식 테마 방향 `ZERO//SIGHT` 잠금
+### ZERO-SIGHT — 저격수 / 표적 / 정밀 타격
+- [x] 정식 테마 방향 `ZERO-SIGHT` 잠금
 - [x] 전용 개념 `표적` 확정 — 자신이 기본 1개 유지, 새 표적 지정 시 기존 표적 해제, 조합 정리 시 제거
 - [x] 표적을 생성하는 초동/이전/재지정 카드를 충분히 배치해 초동 안정성 확보
-- [x] 표적 조합에 붙이는 카드는 ZERO//SIGHT일 필요가 없도록 혼합 시너지 잠금
+- [x] 표적 조합에 붙이는 카드는 ZERO-SIGHT일 필요가 없도록 혼합 시너지 잠금
 - [x] 현재 정식 후보 18장 설계 확정 — 관측/덱 조작/고정·봉인/킬각 보정/준비형 공격/표적 이전 포함
 - [x] 공개 조합 단위 표적 메타데이터 및 1개 제한 구현
 - [x] 손에서 턴 경과 충전 상태를 카드 단위 `handPrep` 마커로 구현 — 손에 남긴 자기 턴 종료마다 +1, 손을 떠나는 행동에는 그 준비값을 현재 행동 동안만 스냅샷으로 남기고 즉시 초기화, 새로 손에 들어오면 0부터 다시 시작
-- [ ] 표적 조합 회수/이동/새 조합 생성 반응 이벤트 정리
-- [ ] ZERO//SIGHT ↔ 일반/V-SIGNAL/POINT//BLANK 혼합 회귀 테스트
+- [x] 표적 조합 회수/이동/새 조합 생성 반응 이벤트 정리 — `onTargetSet` / `onTargetClear` / `onTargetMeldChange` / `onMeldMove` 추가, 기존 `onMeldCreate` / `onAttach` / `onRecover` 패킷에 표적 스냅샷 노출
+- [ ] ZERO-SIGHT ↔ 일반/V-SIGNAL/POINT-BLANK 혼합 회귀 테스트
 
-### POINT//BLANK — 근접 총격 / 접전 / 교대
-- [x] 정식 테마 방향 `POINT//BLANK` 잠금
+### POINT-BLANK — 근접 총격 / 접전 / 교대
+- [x] 정식 테마 방향 `POINT-BLANK` 잠금
 - [x] 전용 개념 `접전` 확정 — 상대 공개 조합 1개를 지정하고 자신의 카드가 들어가며 유지되는 근거리 전장
-- [x] 접전에 진입하는 카드는 POINT//BLANK일 필요가 없도록 혼합 시너지 잠금
+- [x] 접전에 진입하는 카드는 POINT-BLANK일 필요가 없도록 혼합 시너지 잠금
 - [x] 접전 생성 초동 + 이동 + 회수 + 재돌입 + 패순환의 순환 엔진 확정
 - [x] 현재 정식 후보 18장 설계 확정 — 봉인/고정/무료 회수/대상 교대/필드 이동/회수 카드 재배치/근거리 피니시 포함
 - [ ] 상대 공개 조합 단위 접전 메타데이터 / 1개 제한 / 지연 해제 구현
 - [ ] 무료 회수와 기본 회수 횟수를 명확히 구분
 - [ ] `퀵 리로드` 등 회수 후 새 조합 생성 전용 예외 구현
-- [ ] POINT//BLANK ↔ 일반/V-SIGNAL/ZERO//SIGHT 혼합 회귀 테스트
+- [ ] POINT-BLANK ↔ 일반/V-SIGNAL/ZERO-SIGHT 혼합 회귀 테스트
 
 ### 후속 테마 후보 — 아직 상세 확정 전
 - [x] `MAIL//ROUTE` 작업안 기록 — 편지/우편 테마, `우편 → 목적지 → 도착 → 반송 → 재배송` 엔진. 일반 카드에도 우편 표식을 붙여 혼합덱 허브로 쓰는 방향
@@ -348,7 +348,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 
 ### 현재 지역 후보 — 모두 후속 설계 대상
 - [x] `NEON//ARC 네온아크` — 미디어/방송/SNS/배송/정보 도시. V-SIGNAL + MAIL//ROUTE 중심 후보
-- [x] `RED//ZONE 레드존` — 도시전/용병/정찰/돌입 분쟁구역. ZERO//SIGHT + POINT//BLANK 중심
+- [x] `RED//ZONE 레드존` — 도시전/용병/정찰/돌입 분쟁구역. ZERO-SIGHT + POINT-BLANK 중심
 - [x] `IRON//GRAVE 아이언그레이브` — 폐공장/고철/기계 산업폐허. SCRAP//SHIFT 중심 후보
 - [x] `OLD//QUARTER 올드쿼터` — 구시가지/탐정/범죄조직/암시장/계약. 향후 탐정·마피아·도둑·밀수·거래 테마 후보
 - [x] `NULL//WARD 널워드` — 기록에서 삭제된 격리구역/실험/괴이/변이. 향후 실험체·초능력·저주 계열 및 후반 특수지역 후보

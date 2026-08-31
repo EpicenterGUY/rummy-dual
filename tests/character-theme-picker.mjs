@@ -11,8 +11,8 @@ ok(html.includes('id="themeGroupGrid"'),'character/progress screen contains a th
 ok(html.includes('캐릭터군 / 테마'),'theme group picker is visibly labeled');
 ok(html.includes('캐릭터 · 캐릭터군 · 해금'),'progress modal title exposes character groups');
 ok(script.includes("'v-signal':Object.freeze({id:'v-signal',displayName:'V-SIGNAL'"),'V-SIGNAL build profile is registered');
-ok(script.includes("'zero-sight':Object.freeze({id:'zero-sight',displayName:'ZERO//SIGHT'"),'ZERO//SIGHT is visible in build profiles');
-ok(script.includes("'point-blank':Object.freeze({id:'point-blank',displayName:'POINT//BLANK'"),'POINT//BLANK is visible in build profiles');
+ok(script.includes("'zero-sight':Object.freeze({id:'zero-sight',displayName:'ZERO-SIGHT'"),'ZERO-SIGHT is visible in build profiles');
+ok(script.includes("'point-blank':Object.freeze({id:'point-blank',displayName:'POINT-BLANK'"),'POINT-BLANK is visible in build profiles');
 ok(script.includes("selectedTheme:'mixed'"),'old/new progress defaults safely to mixed theme');
 ok(source('normalizeProgress').includes('selectedTheme:Object.prototype.hasOwnProperty.call(THEME_BUILD_PROFILES'),'saved theme selection is normalized');
 ok(source('renderProgress').includes("data-theme-build")&&source('renderProgress').includes('themeBuildUnlocked(id)'),'theme cards render with selectable/locked state');

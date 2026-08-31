@@ -9,8 +9,8 @@ function context(extra={}){return vm.createContext({console,Set,Map,Array,Object
 function install(ctx,...names){for(const n of names)vm.runInContext(source(n),ctx)}
 
 ok(html.includes('data-codex-filter="theme:v-signal"'),'codex exposes a V-SIGNAL theme tab');
-ok(html.includes('data-codex-filter="theme:zero-sight"'),'codex exposes a ZERO//SIGHT theme tab');
-ok(html.includes('data-codex-filter="theme:point-blank"'),'codex exposes a POINT//BLANK theme tab');
+ok(html.includes('data-codex-filter="theme:zero-sight"'),'codex exposes a ZERO-SIGHT theme tab');
+ok(html.includes('data-codex-filter="theme:point-blank"'),'codex exposes a POINT-BLANK theme tab');
 ok(html.includes('카드군 탭에서는 카드군 정체성과 효과를 미리 확인'),'codex explains theme-tab reveal behavior');
 ok(source('codexThemeFilterId').includes("startsWith('theme:')"),'theme-filter parser is shared by the codex renderer');
 const codex=source('renderCodex');

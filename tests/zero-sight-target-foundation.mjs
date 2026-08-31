@@ -54,4 +54,4 @@ ok(render.includes("isZeroSightTarget('player',m)")&&render.includes("isZeroSigh
 ok(!source('meldType').includes('zeroSight')&&!source('setValid').includes('zeroSight')&&!source('runValid').includes('zeroSight'),'target metadata does not restrict normal SET/RUN legality');
 ok(road.includes('- [x] 공개 조합 단위 표적 메타데이터 및 1개 제한 구현'),'ROADMAP marks target metadata complete');
 ok(theme.includes('- [x] 공개 조합 단위 `표적` 메타데이터 설계')&&theme.includes('- [x] 표적 1개 제한 / 이전 / 조합 정리 시 해제 처리'),'canonical theme doc locks target lifecycle');
-console.log('ZERO//SIGHT target foundation regression passed.');
+console.log('ZERO-SIGHT target foundation regression passed.');
