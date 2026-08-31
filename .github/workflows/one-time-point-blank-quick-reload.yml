@@ -43,3 +43,5 @@ jobs:
           git commit -m 'feat: implement POINT-BLANK Quick Reload'
           git pull --rebase origin main
           git push origin HEAD:main
+
+# rerun after preserving the M10 bestNewMeldForTurn source contract
