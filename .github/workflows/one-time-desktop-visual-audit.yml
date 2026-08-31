@@ -1,4 +1,4 @@
-name: One-time Desktop Visual Audit
+name: One-time Desktop Visual Audit Finalize
 
 on:
   push:
@@ -6,52 +6,44 @@ on:
     paths:
       - '.github/workflows/one-time-desktop-visual-audit.yml'
 
+permissions:
+  contents: write
+
 jobs:
-  capture:
+  finalize:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Korean font fallback
+        with:
+          fetch-depth: 0
+      - name: Record completed desktop visual audit
         shell: bash
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-cjk
-          fc-cache -f
-          fc-match 'Noto Sans CJK KR'
-      - name: Find Chrome
-        shell: bash
-        run: |
-          set -euo pipefail
-          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser || true)"
-          test -n "$CHROME"
-          echo "CHROME=$CHROME" >> "$GITHUB_ENV"
-          "$CHROME" --version
-      - name: Prepare battle capture page
-        shell: bash
-        run: |
-          cp index.html /tmp/rummy-battle.html
           python3 - <<'PY'
           from pathlib import Path
-          p=Path('/tmp/rummy-battle.html')
+          p=Path('ROADMAP.md')
           s=p.read_text()
-          inject="""<script>window.addEventListener('load',()=>setTimeout(()=>document.getElementById('battleStartBtn')?.click(),120));</script>"""
-          s=s.replace('</body>',inject+'</body>',1)
-          p.write_text(s)
+          old='- [ ] 실제 PC 브라우저에서 1366×768 / 1920×1080 시각 검수 및 필요 시 미세 간격 조정'
+          new='- [x] 실제 Chromium에서 1366×768 / 1920×1080 시작창·대전 화면 시각 검수 — Noto CJK 한글 실제 글자폭으로 잘림·겹침·가로 오버플로 없음 확인. 1080p의 넓은 공개 조합 여유 공간은 실제 조합 누적을 위한 공간으로 유지하며 추가 간격 조정 불필요'
+          if s.count(old)!=1:
+              raise SystemExit(f'desktop visual audit roadmap anchor mismatch: {s.count(old)}')
+          p.write_text(s.replace(old,new,1))
           PY
-      - name: Capture 1366x768 and 1920x1080
+      - name: Run all regressions
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p visual-audit
-          for SIZE in 1366,768 1920,1080; do
-            LABEL="${SIZE/,/x}"
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size="$SIZE" --virtual-time-budget=1200 --screenshot="visual-audit/start-$LABEL.png" "file://$GITHUB_WORKSPACE/index.html"
-            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size="$SIZE" --virtual-time-budget=1800 --screenshot="visual-audit/battle-$LABEL.png" "file:///tmp/rummy-battle.html"
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
           done
-          file visual-audit/*.png
-      - uses: actions/upload-artifact@v4
-        with:
-          name: desktop-visual-audit
-          path: visual-audit/*.png
-          retention-days: 1
-# rerun: install Noto CJK so Korean layout is measured with real Hangul glyphs
+      - name: Commit audit lock and remove one-time workflow
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/one-time-desktop-visual-audit.yml
+          git add ROADMAP.md
+          git commit -m 'docs: lock desktop Chromium visual audit'
+          git pull --rebase origin main
+          git push origin HEAD:main
