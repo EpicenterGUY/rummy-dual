@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0
       - name: Apply resumable choice patch
         run: python3 .github/scripts/m8_choice_resume_patch.py
-      - name: Fix generated continuation assertion
+      - name: Sync choice regression expectations
         shell: bash
         run: |
           python3 - <<'PY'
@@ -27,6 +27,10 @@ jobs:
           p=Path('tests/named-choice-resume.mjs')
           s=p.read_text(encoding='utf-8')
           s=s.replace("ok(attach.indexOf('const willRummy=s.hand.length===0')>attach.indexOf('ctx.resumeEffects'),'attach recalculates RUMMY only inside finalization after resumed choices');", "ok(attach.includes(\"const finish=fx=>\")&&attach.includes(\"const willRummy=s.hand.length===0\")&&attach.includes(\"ctx.resumeEffects=()=>{const next=resolveEffects\")&&attach.includes(\"const result=finish(next)\"),'attach recalculates RUMMY in finalization reached by resumed choices');", 1)
+          p.write_text(s,encoding='utf-8')
+          p=Path('tests/named-choice-ui.mjs')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("fx.includes('onChoose:o=>{if(o?.card)bottom(o.card)}')", "fx.includes('onChoose:o=>{if(o?.card)bottom(o.card);resume()}')", 1)
           p.write_text(s,encoding='utf-8')
           PY
       - name: Run all regressions
@@ -42,6 +46,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md tests/named-choice-resume.mjs
+          git add index.html ROADMAP.md tests/named-choice-resume.mjs tests/named-choice-ui.mjs
           git commit -m 'feat: resume named effects after choices'
           git push origin HEAD:main
