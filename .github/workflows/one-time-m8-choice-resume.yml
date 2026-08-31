@@ -43,6 +43,10 @@ jobs:
           s=p.read_text(encoding='utf-8')
           s=s.replace("const submit=source('submitNewMeld'),attach=source('attachCards'),recover=source('playerRecover'),free=source('freeRecoverFromMeld'),retire=source('retireMeld');", "const submit=source('submitNewMeld'),attach=source('attachCards'),recover=source('playerRecover'),free=source('recoverSpecificFromMeld'),retire=source('retireMeld');", 1)
           p.write_text(s,encoding='utf-8')
+          p=Path('tests/rummy-grace-joker.mjs')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("install(ctx, 'freeRecoverFromMeld');\n  ctx.freeRecoverFromMeld('player', meld, []);", "install(ctx, 'freeRecoverCandidates', 'recoverSpecificFromMeld', 'freeRecoverFromMeld');\n  ctx.freeRecoverFromMeld('player', meld, []);", 1)
+          p.write_text(s,encoding='utf-8')
           PY
       - name: Run all regressions
         shell: bash
@@ -57,6 +61,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md tests/named-choice-resume.mjs tests/named-choice-ui.mjs tests/named-effect-order.mjs tests/named-smuggled-suit-window.mjs
+          git add index.html ROADMAP.md tests/named-choice-resume.mjs tests/named-choice-ui.mjs tests/named-effect-order.mjs tests/named-smuggled-suit-window.mjs tests/rummy-grace-joker.mjs
           git commit -m 'feat: resume named effects after choices'
           git push origin HEAD:main
