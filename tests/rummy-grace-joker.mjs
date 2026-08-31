@@ -219,7 +219,7 @@ function basicSide() {
   ctx.markSetCompletion = () => {};
   ctx.cardText = c => c.uid;
   ctx.meldFixedActive = () => false; ctx.cardFixedActive = () => false;
-  install(ctx, 'freeRecoverFromMeld');
+  install(ctx, 'freeRecoverCandidates', 'recoverSpecificFromMeld', 'freeRecoverFromMeld');
   ctx.freeRecoverFromMeld('player', meld, []);
   ok(!player.rummyRecoveryPending, 'first successful recovery consumes the independent post-RUMMY recovery window');
 }

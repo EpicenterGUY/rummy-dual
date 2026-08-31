@@ -9,7 +9,7 @@ let c={tag:'smuggledSuit',smuggledActive:false,smuggledTurnToken:7};
 ok(ctx.isSuitFlexible(c),'Smuggled Goods is suit-flexible on the turn it is acquired from discard');
 state.turnToken=8;ok(!ctx.isSuitFlexible(c),'an unplayed Smuggled Goods loses suit flexibility on the next turn');
 c.smuggledActive=true;ok(ctx.isSuitFlexible(c),'a Smuggled Goods already committed to a RUN keeps its locked meld role');
-const submit=source('submitNewMeld'),attach=source('attachCards'),recover=source('playerRecover'),free=source('freeRecoverFromMeld'),retire=source('retireMeld');
+const submit=source('submitNewMeld'),attach=source('attachCards'),recover=source('playerRecover'),free=source('recoverSpecificFromMeld'),retire=source('retireMeld');
 ok(submit.includes("if(type==='RUN')for(const c of cards)if(c.tag==='smuggledSuit'&&c.smuggledTurnToken===state.turnToken)c.smuggledActive=true"),'new RUN locks the current-turn Smuggled Goods role');
 ok(attach.includes("if(type==='RUN')for(const c of cards)if(c.tag==='smuggledSuit'&&c.smuggledTurnToken===state.turnToken)c.smuggledActive=true"),'RUN attachment locks the current-turn Smuggled Goods role');
 ok(recover.includes("if(c.tag==='smuggledSuit')c.smuggledActive=false")&&free.includes("if(c.tag==='smuggledSuit')c.smuggledActive=false")&&retire.includes("if(c.tag==='smuggledSuit')c.smuggledActive=false"),'leaving the public meld clears the locked Smuggled Goods role');

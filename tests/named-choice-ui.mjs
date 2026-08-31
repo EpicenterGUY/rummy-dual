@@ -13,7 +13,7 @@ ok(discard.includes("title:c.name,text:'버릴 때 공용 버림패 대신 내 �
 ok(discard.includes("c.effectChoiceDecision=o?.key||'discard';playerDiscard()"),'Reserved Shipping resumes the original discard action after the shared decision');
 const fx=source('resolveEffects');
 ok(fx.includes("case'run4Draw'")&&fx.includes("allowSkip:true,skipLabel:'보내지 않기'"),'Connector 6+ exposes an optional shared hand-bottom choice');
-ok(fx.includes("options:candidates.map(x=>({key:x.uid")&&fx.includes('onChoose:o=>{if(o?.card)bottom(o.card)}'),'Connector player choice is bound to concrete remaining hand cards');
+ok(fx.includes("options:candidates.map(x=>({key:x.uid")&&fx.includes('onChoose:o=>{if(o?.card)bottom(o.card);resume()}'),'Connector player choice is bound to concrete remaining hand cards');
 ok(fx.includes("else bottom([...candidates].sort((a,b)=>b.age-a.age)[0])"),'Connector CPU path remains deterministic instead of opening UI');
 const ng=source('newGame');
 ok(ng.includes('clearEffectChoices()'),'new battles clear stale effect-choice state');

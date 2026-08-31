@@ -60,7 +60,7 @@ function c(uid,owner='player',extra={}){return{uid,owner,suit:'C',rank:'4',age:0
 }
 
 ok(source('attachCards').includes('replaceRedundantJokers(targetSide,m,w,cards)'),'attach resolution passes current new cards into Joker replacement guard');
-ok(source('freeRecoverFromMeld').includes('grantRecoveryReturnOverride'),'free swap recovery records authorized return destinations');
+ok(source('recoverSpecificFromMeld').includes('grantRecoveryReturnOverride'),'free swap recovery records authorized return destinations on the exact chosen recovery');
 ok(source('playerRecover').includes('ownOnly:true')&&source('executeRecoverAI').includes('ownOnly:true'),'Tuner recovery binds its exception to own opposite-type destination melds for player and AI');
 ok(html.includes('저손패 보호')&&html.includes('전체 재순환'),'rules UI documents low-hand protection and full recirculation');
 console.log('Safety hardening regression passed.');
