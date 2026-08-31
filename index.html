@@ -169,6 +169,27 @@ details.log{height:100%;min-height:0;overflow:hidden;padding:0 10px}details.log 
 
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 
+/* L10N · long Korean copy mobile wrap safety */
+.combatBanner{max-width:94%;white-space:normal;text-align:center;line-height:1.25;overflow-wrap:anywhere;word-break:keep-all}
+.effectChoiceTitle,.effectChoiceText,.effectChoiceBtn,.effectChoiceBtn small{min-width:0;white-space:normal;overflow-wrap:anywhere;word-break:keep-all}
+.effectChoiceBtn>span,.effectChoiceBtn>small{min-width:0}
+.fieldStrip>span{min-width:0}.fieldStrip>span:last-child{text-align:right;overflow-wrap:anywhere;word-break:keep-all}.fieldEffect{overflow-wrap:anywhere;word-break:keep-all}
+.phaseText,.initiativeRule,.switchAlert,.practiceCoachText,.startResumeNote{overflow-wrap:anywhere;word-break:keep-all}
+.startMenuBtn>span:first-child{min-width:0}.startMenuBtn small{white-space:normal;overflow-wrap:anywhere;word-break:keep-all}
+.progressFooter .pixelBtn,.developerActions .pixelBtn,.modalBtns .pixelBtn{min-width:0;white-space:normal;overflow-wrap:anywhere;word-break:keep-all}
+.rulesHead h2,.codexSummary>span:first-child{min-width:0;overflow-wrap:anywhere;word-break:keep-all}
+@media(max-width:390px){
+ .combatBanner{max-width:calc(100vw - 28px);padding:7px 9px;font-size:14px}
+ .combatBanner.break{font-size:20px}
+ .effectChoicePanel{width:min(94vw,430px);padding:10px}
+ .effectChoiceBtn{align-items:flex-start;flex-wrap:wrap}
+ .effectChoiceBtn small{flex:1 1 100%;line-height:1.35}
+ .fieldStrip{align-items:flex-start}.fieldStrip>span:last-child{max-width:62%}
+ .startMenuBtn{gap:8px}.startMenuBtn .menuState{flex:0 0 auto}
+ .progressFooter{flex-wrap:wrap}.progressFooter .pixelBtn{flex:1 1 150px}
+}
+
+
 
 /* UI2 P2 · HUD hierarchy and density */
 .topbar{gap:8px}.topBrand{min-width:0;flex:1}.topBrand .sub{font-size:7px;letter-spacing:.2px}.topActions{flex:0 0 auto;gap:5px}#charBadge{max-width:142px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
