@@ -47,6 +47,10 @@ jobs:
           s=p.read_text(encoding='utf-8')
           s=s.replace("install(ctx, 'freeRecoverFromMeld');\n  ctx.freeRecoverFromMeld('player', meld, []);", "install(ctx, 'freeRecoverCandidates', 'recoverSpecificFromMeld', 'freeRecoverFromMeld');\n  ctx.freeRecoverFromMeld('player', meld, []);", 1)
           p.write_text(s,encoding='utf-8')
+          p=Path('tests/safety-hardening.mjs')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("ok(source('freeRecoverFromMeld').includes('grantRecoveryReturnOverride'),'free swap recovery records authorized return destinations');", "ok(source('recoverSpecificFromMeld').includes('grantRecoveryReturnOverride'),'free swap recovery records authorized return destinations on the exact chosen recovery');", 1)
+          p.write_text(s,encoding='utf-8')
           PY
       - name: Run all regressions
         shell: bash
@@ -61,6 +65,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md tests/named-choice-resume.mjs tests/named-choice-ui.mjs tests/named-effect-order.mjs tests/named-smuggled-suit-window.mjs tests/rummy-grace-joker.mjs
+          git add index.html ROADMAP.md tests/named-choice-resume.mjs tests/named-choice-ui.mjs tests/named-effect-order.mjs tests/named-smuggled-suit-window.mjs tests/rummy-grace-joker.mjs tests/safety-hardening.mjs
           git commit -m 'feat: resume named effects after choices'
           git push origin HEAD:main
