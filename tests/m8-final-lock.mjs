@@ -24,7 +24,7 @@ ok(triggerRummy.includes("title:'마지막 웃음'")&&triggerRummy.includes('req
 ok(source('playerDiscard').includes("c.tag==='topDeckChoice'")&&source('playerDiscard').includes('requestEffectChoice'),'D6 Reserved Shipping uses the shared decision modal');
 
 ok(html.includes("'D7':{n:'황금손'")&&html.includes('가장 오래 든 1장을 덱 아래로 보낸다.'),'Golden Hand explicitly documents deterministic oldest-card cycling');
-ok(html.includes("'D8':{n:'환전상'")&&html.includes('가장 오래 든 1장을 덱 아래로 보내고 1장 뽑는다.'),'Money Changer explicitly documents deterministic oldest-card cycling');
+ok(html.includes("'D8':{n:'환전상'")&&html.includes('가장 오래 든 카드 1장을 덱 아래로 보내고 카드 1장을 뽑는다.'),'Money Changer explicitly documents deterministic oldest-card cycling');
 ok(html.includes("'DQ':{n:'시장 조작자'")&&html.includes('공용 버림패 위 3장의 순서를 뒤집는다.'),'Market Maker explicitly documents deterministic reversal rather than a missing reorder choice');
 ok(html.includes("'C6':{n:'중간관리자'")&&script.includes('function middleManagerReturnPlaceholder('),'Middle Manager keeps deterministic legal placeholder cleanup matching its one-placeholder wording');
 
