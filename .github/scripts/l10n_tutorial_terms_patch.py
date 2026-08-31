@@ -7,6 +7,7 @@ r=road.read_text()
 
 replacements=[
 ("RUN 회수는 체인이 1 감소하고","런 회수는 체인이 1 감소하고",1),
+("RUN 회수는 체인 -1입니다.","런 회수는 체인 -1입니다.",1),
 ("내 ♥ RUN의 앙코르 5♥","내 ♥ 런의 앙코르 5♥",2),
 ("같은 턴 BURST/CHAIN 반환에 못 쓰지만","같은 턴 버스트/체인 반환에 못 쓰지만",1),
 ("RUN 체인이 ${context.beforeChain} → ${context.afterChain}로 1 감소했습니다.","런 체인이 ${context.beforeChain} → ${context.afterChain}로 1 감소했습니다.",1),
