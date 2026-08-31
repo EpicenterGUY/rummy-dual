@@ -11,7 +11,7 @@ ok(script.includes("'v-signal':Object.freeze({themeId:'v-signal',startStep:'vsEn
 ok(script.includes("{id:'vsEncore',themeId:'v-signal',title:'앙코르 재입장'")&&script.includes("expectAttachTag:'vEncore'")&&script.includes('expectRecoveredSameTurn:true'),'V-SIGNAL tutorial step requires the real Encore and same-turn recovered reuse');
 ok(script.includes("makeTutorialNamed('VSH5','vsEncoreCard')")&&script.includes("makeTutorialCard('S','5','board','enemy'),makeTutorialCard('D','5','board','enemy'),makeTutorialCard('C','5','board','enemy')"),'scenario uses the live V-SIGNAL H5 variant and an ordinary opponent 5 SET');
 ok(script.includes('if(step.expectRecoveredSameTurn&&!context.cards?.some(c=>c.recoveredToken===state.turnToken))return false'),'tutorial completion gate verifies the card was recovered this same turn');
-ok(script.includes('V-SIGNAL 체험 완료! 전용 자원 없이 회수 → 다른 공개 조합 재입장 → BURST'),'completion copy teaches the actual V-SIGNAL loop without a theme-only resource');
+ok(script.includes('V-SIGNAL 체험 완료! 전용 자원 없이 회수 → 다른 공개 조합 재입장 → 버스트'),'completion copy teaches the actual V-SIGNAL loop without a theme-only resource');
 
 // Reproduce the tutorial board with live legality helpers: ordinary recovered cards are blocked,
 // while Encore receives a one-turn destination-bound exception and can complete the enemy 5 SET.
