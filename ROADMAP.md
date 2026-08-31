@@ -96,6 +96,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Make named effect choices resumable before attack/RUMMY finalization; Connector 6+ now preserves RUMMY timing, free-recovery effects select a legal owned card, and Recycler selects from spent cards
 - [x] Target-choice pass: Extortion now selects the exact legal card to move and Sleeper selects the opponent meld to fix; CPU keeps deterministic first-candidate resolution
 - [x] Add an off-turn choice continuation: when CPU takes a human-owned Bait, the owner draws first, chooses the exact hand card to bottom, and CPU play resumes only after that choice resolves
+- [x] Final semantics pass A: Insurance Agent only protects cards actually owned by its side, Heart King consumes every stored heart at DETONATE, and any Rebel Joker replacement blocks same-turn return/continuation
 - [ ] Finish remaining choice/copy/timing audit and per-card regressions before declaring the first ~50 behavior-stable
 - [ ] Favor meld mutation, recovery, movement, discard, defense, RUMMY and timing interactions
 
