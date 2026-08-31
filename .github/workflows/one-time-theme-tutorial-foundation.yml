@@ -42,3 +42,4 @@ jobs:
           git commit -m 'feat: add theme tutorial foundation'
           git pull --rebase origin main
           git push origin HEAD:main
+# rerun: preserve legacy tutorial menu safety substring
