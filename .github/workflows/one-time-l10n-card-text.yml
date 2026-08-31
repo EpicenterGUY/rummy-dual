@@ -41,4 +41,4 @@ jobs:
           git commit -m 'l10n: localize named-card rule terms'
           git pull --rebase origin main
           git push origin HEAD:main
-# rerun: align Korean named-card audit
+# rerun: align Korean named-card and tutorial audits
