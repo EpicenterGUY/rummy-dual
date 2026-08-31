@@ -91,6 +91,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Repair previous-DETONATE action window so Revenge Blade and Phoenix can trigger on the following owner turn; Phoenix spent return no longer grants its heal before use
 - [x] Fix Golden Hand source check so any discard-acquired card in the same meld action can enable its cycle, not only Golden Hand itself
 - [x] Fix Smuggled Goods duration: free-suit legality lasts only for the discard-acquisition turn in hand, while a role legally committed to a RUN stays valid until that card leaves the meld
+- [x] Remove hand-click order dependency between Buyout King and Golden Hand by resolving discard-origin classification before the dependent Golden Hand check
 - [ ] Finish remaining choice/copy/timing audit and per-card regressions before declaring the first ~50 behavior-stable
 - [ ] Favor meld mutation, recovery, movement, discard, defense, RUMMY and timing interactions
 
