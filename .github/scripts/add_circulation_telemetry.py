@@ -29,35 +29,35 @@ if 'function getCirculationStats()' not in s:
     s=s.replace(marker,helper+marker,1)
 
 once("state.fullRecirculationCount=(state.fullRecirculationCount||0)+1;state.target=null;",
-     "state.fullRecirculationCount=(state.fullRecirculationCount||0)+1;getCirculationStats().fullRecirculations++;state.target=null;",
+     "state.fullRecirculationCount=(state.fullRecirculationCount||0)+1;if(typeof getCirculationStats==='function')getCirculationStats().fullRecirculations++;state.target=null;",
      'full recirculation metric')
 
 once("s.maintenanceUsed=true;s.actedThisTurn=true;log(`${w==='player'?'YOU':'CPU'} 정비",
-     "s.maintenanceUsed=true;s.actedThisTurn=true;getCirculationStats().maintenance++;log(`${w==='player'?'YOU':'CPU'} 정비",
+     "s.maintenanceUsed=true;s.actedThisTurn=true;if(typeof getCirculationStats==='function')getCirculationStats().maintenance++;log(`${w==='player'?'YOU':'CPU'} 정비",
      'maintenance metric')
 
 once("s.rummyReturnPending=true;s.rummyRecoveryPending=true;if(lastCards.some(c=>c.tag==='rummyPlus1'))",
-     "s.rummyReturnPending=true;s.rummyRecoveryPending=true;getCirculationStats().rummys++;if(lastCards.some(c=>c.tag==='rummyPlus1'))",
+     "s.rummyReturnPending=true;s.rummyRecoveryPending=true;if(typeof getCirculationStats==='function')getCirculationStats().rummys++;if(lastCards.some(c=>c.tag==='rummyPlus1'))",
      'rummy metric')
 
 once("if(!cs.length&&typeof canSkipBaseDiscard==='function'&&canSkipBaseDiscard('player')){state.player.discardsRemaining=0;",
-     "if(!cs.length&&typeof canSkipBaseDiscard==='function'&&canSkipBaseDiscard('player')){getCirculationStats().lowSkips++;state.player.discardsRemaining=0;",
+     "if(!cs.length&&typeof canSkipBaseDiscard==='function'&&canSkipBaseDiscard('player')){if(typeof getCirculationStats==='function')getCirculationStats().lowSkips++;state.player.discardsRemaining=0;",
      'player low hand metric')
 
 once("if(typeof canSkipBaseDiscard==='function'&&canSkipBaseDiscard('enemy')){state.enemy.discardsRemaining=0;",
-     "if(typeof canSkipBaseDiscard==='function'&&canSkipBaseDiscard('enemy')){getCirculationStats().lowSkips++;state.enemy.discardsRemaining=0;",
+     "if(typeof canSkipBaseDiscard==='function'&&canSkipBaseDiscard('enemy')){if(typeof getCirculationStats==='function')getCirculationStats().lowSkips++;state.enemy.discardsRemaining=0;",
      'enemy low hand metric')
 
 once("function turnEnd(w){const s=sideObj(w);",
-     "function turnEnd(w){recordCirculationTurn(w);const s=sideObj(w);",
+     "function turnEnd(w){if(typeof recordCirculationTurn==='function')recordCirculationTurn(w);const s=sideObj(w);",
      'turn end hand sample')
 
 once("function showCirculationDraw(){const title=",
-     "function showCirculationDraw(){renderCirculationSummary();const title=",
+     "function showCirculationDraw(){if(typeof renderCirculationSummary==='function')renderCirculationSummary();const title=",
      'circulation draw summary')
 
 once("function showResult(win){const practice=",
-     "function showResult(win){renderCirculationSummary();const practice=",
+     "function showResult(win){if(typeof renderCirculationSummary==='function')renderCirculationSummary();const practice=",
      'normal result summary')
 
 p.write_text(s,encoding='utf-8')
@@ -79,12 +79,12 @@ const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 ok(html.includes('id=\"circulationSummary\"'),'result overlay exposes circulation summary');
 ok(html.includes('function getCirculationStats()')&&html.includes('function circulationSummaryText()'),'circulation telemetry helpers exist');
-ok(html.includes('recordCirculationTurn(w);const s=sideObj(w);'),'both turn-end paths sample final hand size');
-ok(html.includes('getCirculationStats().lowSkips++'),'low-hand protection usage is counted');
-ok(html.includes('getCirculationStats().rummys++'),'RUMMY usage is counted for either side');
-ok(html.includes('getCirculationStats().maintenance++'),'maintenance usage is counted');
-ok(html.includes('getCirculationStats().fullRecirculations++'),'full recirculation usage is counted');
-ok(html.includes('renderCirculationSummary();const practice=')&&html.includes('showCirculationDraw(){renderCirculationSummary();'),'normal and deadlock results render the metrics');
+ok(html.includes("typeof recordCirculationTurn==='function')recordCirculationTurn(w)"),'turn-end sampling is optional for extracted-function tests');
+ok(html.includes("typeof getCirculationStats==='function')getCirculationStats().lowSkips++"),'low-hand protection usage is counted without adding a hard dependency');
+ok(html.includes("typeof getCirculationStats==='function')getCirculationStats().rummys++"),'RUMMY usage is counted for either side');
+ok(html.includes("typeof getCirculationStats==='function')getCirculationStats().maintenance++"),'maintenance usage is counted');
+ok(html.includes("typeof getCirculationStats==='function')getCirculationStats().fullRecirculations++"),'full recirculation usage is counted');
+ok(html.includes("showResult(win){if(typeof renderCirculationSummary==='function')renderCirculationSummary();")&&html.includes("showCirculationDraw(){if(typeof renderCirculationSummary==='function')renderCirculationSummary();"),'normal and deadlock results render the metrics');
 ok(road.includes('per-battle circulation telemetry'),'M4 records live circulation telemetry complete');
 console.log('Circulation telemetry regression passed.');
 """,encoding='utf-8')
