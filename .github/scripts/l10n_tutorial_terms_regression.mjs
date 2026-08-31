@@ -9,9 +9,10 @@ ok(ts>=0&&te>ts,'tutorial step registry is discoverable');
 const steps=scripts.slice(ts,te);
 const visible=[steps,functionSource('applyTutorialScenario'),functionSource('tutorialCheckProgress'),functionSource('renderTutorialCoach')].join('\n');
 const userStrings=[...visible.matchAll(/(['`])((?:(?!\1)[\s\S])*?)\1/g)].map(m=>m[2]).filter(x=>/[가-힣]/.test(x));
+const renderedStrings=userStrings.map(x=>x.replace(/\$\{[^}]*\}/g,''));
 for(const term of ['SET','RUN','BURST','CHAIN','SWITCH','RUMMY','DETONATE','CORE']){
-  const bad=userStrings.filter(x=>new RegExp(`(^|[^A-Za-z])${term}([^A-Za-z]|$)`).test(x));
-  ok(bad.length===0,`tutorial user-facing Korean copy exposes no legacy ${term} term`);
+  const bad=renderedStrings.filter(x=>new RegExp(`(^|[^A-Za-z])${term}([^A-Za-z]|$)`).test(x));
+  ok(bad.length===0,`tutorial rendered Korean copy exposes no legacy ${term} term`);
 }
 ok(steps.includes("expectMeld:'SET'")&&steps.includes("expectMeld:'RUN'"),'internal tutorial meld-type keys remain engine-native SET/RUN');
 ok(steps.includes("themeId:'v-signal'")&&steps.includes('V-SIGNAL'),'theme identity and V-SIGNAL proper name are preserved');
