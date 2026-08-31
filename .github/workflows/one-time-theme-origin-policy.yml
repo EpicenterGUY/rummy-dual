@@ -1,0 +1,44 @@
+name: One-time Theme Origin Policy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-theme-origin-policy.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply region-first theme origin policy
+        run: python3 .github/scripts/theme_origin_policy_patch.py
+      - name: Install regression
+        shell: bash
+        run: |
+          cp .github/scripts/theme_origin_policy_regression.mjs tests/theme-origin-policy.mjs
+          sed -i "s|fs.readFileSync('docs/THEME_GROUPS.md','utf8')|fs.readFileSync(new URL('../docs/THEME_GROUPS.md',import.meta.url),'utf8')|" tests/theme-origin-policy.mjs
+          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/theme-origin-policy.mjs
+      - name: Run all regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+      - name: Commit policy
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/THEME_GROUPS.md ROADMAP.md tests/*.mjs
+          git commit -m 'docs: lock region-first theme origin policy'
+          git pull --rebase origin main
+          git push origin HEAD:main
