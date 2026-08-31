@@ -11,7 +11,7 @@ function context(extra={}){return vm.createContext({console,Set,Map,Array,Object
 function install(ctx,...names){for(const n of names)vm.runInContext(source(n),ctx)}
 
 ok(script.includes("'ZSD6':{slot:'D6',themeId:'zero-sight',n:'탄도 계산',t:'zsBallistics'"),'Ballistics is a live ZERO-SIGHT 6-diamond variant');
-ok(script.includes("items:['S9','H10','D2','VSD4','ZSD6','C6','SJ','H3']"),'Ballistics unlocks at three clears');
+ok(script.includes("{id:'zs3',label:'전체 3클리어 · ZERO-SIGHT',kind:'theme',when:p=>p.totalClears>=3,items:['ZSD6'],fields:[]}"),'Ballistics unlocks at three clears without mutating existing progression groups');
 ok(script.includes("zsBallistics:['pressure','control']"),'Ballistics uses ordinary open-deck tendencies');
 ok(!script.includes("coreShieldDeficit:['")&&!script.includes("'coreShieldDeficit'"),'core+shield deficit stays a pure helper rather than a new effect action');
 
