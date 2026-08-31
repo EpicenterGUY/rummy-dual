@@ -38,3 +38,5 @@ jobs:
           git add index.html ROADMAP.md tests/circulation-telemetry.mjs
           git commit -m 'feat: add live circulation telemetry'
           git push origin HEAD:main
+
+# rerun after optional telemetry hooks were isolated from extracted-function tests
