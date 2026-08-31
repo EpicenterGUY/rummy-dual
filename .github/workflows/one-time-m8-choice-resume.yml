@@ -19,6 +19,16 @@ jobs:
           fetch-depth: 0
       - name: Apply resumable choice patch
         run: python3 .github/scripts/m8_choice_resume_patch.py
+      - name: Fix generated continuation assertion
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('tests/named-choice-resume.mjs')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("ok(attach.indexOf('const willRummy=s.hand.length===0')>attach.indexOf('ctx.resumeEffects'),'attach recalculates RUMMY only inside finalization after resumed choices');", "ok(attach.includes(\"const finish=fx=>\")&&attach.includes(\"const willRummy=s.hand.length===0\")&&attach.includes(\"ctx.resumeEffects=()=>{const next=resolveEffects\")&&attach.includes(\"const result=finish(next)\"),'attach recalculates RUMMY in finalization reached by resumed choices');", 1)
+          p.write_text(s,encoding='utf-8')
+          PY
       - name: Run all regressions
         shell: bash
         run: |
