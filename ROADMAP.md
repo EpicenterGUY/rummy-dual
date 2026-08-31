@@ -101,7 +101,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Final choice pass C: Last Laugh returning-RUMMY now lets the human choose which post-refill card goes to deck bottom, and the RUMMY turn ends only after that mandatory choice resolves
 - [x] Final lock audit: explicit player-choice cards use shared/resumable selection; deterministic cards keep explicit oldest/reverse/placeholder wording; legacy first-target/auto-discard paths are rejected by regression
 - [x] Finish remaining choice/copy/timing audit and per-card regressions; first ~50 named-card behavior is now locked by executable final-audit coverage
-- [ ] Favor meld mutation, recovery, movement, discard, defense, RUMMY and timing interactions
+- [x] Favor meld mutation, recovery, movement, discard, defense, RUMMY and timing interactions
 
 ## M8A — 정식 테마군 콘텐츠 설계
 정식 테마군은 폐쇄형 전용 덱이 아니라 공용 러미 행동과 연결되는 모듈형 카드군으로 설계한다. 현재 최종 설계 기준과 카드 후보 전체는 `docs/THEME_GROUPS.md`를 Source of Truth로 사용한다. 아직 라이브 코드 구현 완료를 의미하지 않는다.
@@ -119,7 +119,8 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 방송 시작 → 합방 → RAID → 회수/방송 종료 → 앵콜/재방송 → 러미 흐름 잠금
 - [x] ♠ 화제성/염상, ♥ 팬덤/회수/러미, ♦ 합방/세트, ♣ 방송 진행/런/RAID 역할 분리
 - [x] 현재 정식 후보 24장 설계 확정 — 상세 카드 목록/효과 방향은 `docs/THEME_GROUPS.md`
-- [ ] 새 조합/붙이기/회수/러미/런 완주 이벤트를 공용 효과 엔진에 필요한 만큼 노출
+- [x] 새 조합/붙이기/회수/러미/런 완주 이벤트를 공용 효과 엔진에 필요한 만큼 노출
+- [x] V-SIGNAL foundation: `themeId`/표시명 메타데이터 + 구독형 공용 이벤트 버스 + 정리 직전 `onRunFinish`/`onRetire` 훅 추가
 - [ ] `앙코르` 등 회수 후 동일 턴 반환 예외를 카드 단위로 안전하게 구현
 - [ ] 버스트 정리/런 완주 직전 카드 보존 타이밍 구현
 - [ ] V-SIGNAL ↔ 일반 카드 혼합 회귀 테스트
@@ -154,7 +155,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [ ] 향후 신규 테마는 카드군부터 만들기보다 지역의 문화/직업/갈등에서 파생시키는 방식 우선 검토
 
 ### 구현 전 공통 검증
-- [ ] M8 첫 ~50 네임드 선택/복사/타이밍 안정화 후 대규모 테마 구현 시작
+- [x] M8 첫 ~50 네임드 선택/복사/타이밍 안정화 후 대규모 테마 구현 시작
 - [ ] 테마 ID/표시명/전용 조합 메타데이터가 기존 동일 랭크+무늬 슬롯 후보 구조와 충돌하지 않는지 확인
 - [ ] 한 행동에서 표적/접전/RAID/회수 반응이 중첩될 때 트리거 순서와 턴당 1회 제한 명문화
 - [ ] AI가 표적·접전·RAID·회수 가치를 판단할 최소 휴리스틱 추가
