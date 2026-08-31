@@ -10,7 +10,7 @@ assert old_newmeld in text, 'bestNewMeld anchor changed'
 text = text.replace(old_newmeld, new_newmeld, 1)
 
 old_bias = "if(targetSide===other(w))sc+=4;if(targetSide===other(w)&&cs.some(c=>c.tag==='enemyAttachBonus'))sc+=15;"
-new_bias = "sc+=opponentMeldAttachBias(w,targetSide,m,combined,k);if(targetSide===other(w)&&cs.some(c=>c.tag==='enemyAttachBonus'))sc+=15;"
+new_bias = "if(typeof opponentMeldAttachBias==='function')sc+=opponentMeldAttachBias(w,targetSide,m,combined,k);else if(targetSide===other(w))sc+=4;if(targetSide===other(w)&&cs.some(c=>c.tag==='enemyAttachBonus'))sc+=15;"
 assert old_bias in text, 'bestExtension opponent-meld score anchor changed'
 text = text.replace(old_bias, new_bias, 1)
 
