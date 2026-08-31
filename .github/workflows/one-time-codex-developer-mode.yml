@@ -21,6 +21,7 @@ jobs:
         run: |
           python3 .github/scripts/codex_developer_mode_patch_fix.py
           python3 .github/scripts/codex_developer_mode_patch.py
+          python3 .github/scripts/codex_developer_test_compat.py
       - name: Install regression
         shell: bash
         run: |
@@ -40,7 +41,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md tests/codex-developer-mode.mjs
+          git add index.html ROADMAP.md tests/codex-developer-mode.mjs tests/vsignal-encore.mjs
           git commit -m 'feat: add theme codex and developer mode'
           git pull --rebase origin main
           git push origin HEAD:main
