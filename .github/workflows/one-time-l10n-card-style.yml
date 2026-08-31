@@ -42,4 +42,4 @@ jobs:
           git commit -m 'l10n: normalize named-card effect style'
           git pull --rebase origin main
           git push origin HEAD:main
-# rerun: align M8 deterministic text contract
+# rerun: align M8 and named-card text contracts
