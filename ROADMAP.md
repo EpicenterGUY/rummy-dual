@@ -169,7 +169,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 테마 ID/표시명/전용 조합 메타데이터 ↔ 동일 랭크+무늬 슬롯 불변식 검증 — `themeId`는 카드의 정체성 메타데이터일 뿐 `namedSlot`/52슬롯 키를 바꾸지 않으며, 모든 라이브 테마 변형은 정규 슬롯에 귀속됨. ZERO-SIGHT `themeMeta.zeroSight`와 POINT-BLANK `themeMeta.pointBlank`는 같은 공개 조합에서 독립 공존하고 카드 슬롯/소유권을 변경하지 않음을 실행 회귀로 잠금
 - [x] 한 행동의 테마 반응 순서 + 턴당 1회 게이트 명문화 — 공용 순서는 `기본 행동 이벤트 → ZERO-SIGHT 표적 변화 → POINT-BLANK 접전 변화 → 반환 후 지연 처리`로 잠금. 이동은 표적 source→target 뒤 접전 source→target 순서. 카드 단위 `themeTurnGates` / `claimThemeTurnGate`가 같은 `turnToken`의 중복 테마 반응을 차단하고 기존 앙코르/퀵 리로드/엄폐 교대 토큰은 호환용으로 유지
 - [x] AI 표적·접전·상대 조합 사용·회수 최소 휴리스틱 추가 — 기존 M10 합법성/보드 위험 점수는 그대로 두고 `themeAIAttachBias` / `themeAIRecoveryBias`를 가산층으로 추가. 내 표적 활용, 탄도 계산의 실제 부족분, ONE SHOT 50+ 성공/실패, 내 접전 재진입, V-SIGNAL의 상대 조합 사용(RAID형 진입), 무료 회수·앙코르 재진입·접전 회수 가치를 판단하며 테마 점수가 행동 합법성을 우회하지 않음
-- [ ] 각 테마 순수덱 / 2테마 혼합 / 일반 카드 혼합 시뮬레이션 및 직접 위력 카드 비율 검사
+- [x] 테마 최대밀도 / 2테마 / 일반 혼합 구성 시뮬레이션 + 직접 위력 비율 검사 — `tests/theme-mix-simulation.mjs`가 라이브/개발 테마별 최대 4장 우선 편성 오픈형 9네임드 빌드, 모든 2테마 조합의 슬롯 충돌 해소, 일반 mixed 다중 시드 표본을 실행 검증. 모든 구성은 `namedSlot` 중복 0을 유지하며 테마 외 카드가 남고, 직접 누적 위력 태그는 전체 네임드 풀 20% 미만·현재 테마 카드 풀 과반 미만으로 잠금
 
 ## UX1 — 신규 유저 UX / 튜토리얼
 신규 유저 진입 장벽을 낮추는 정식 핵심 UX 작업. 상세 기준은 `docs/NEW_USER_UX_TERMS.md`를 따른다.
