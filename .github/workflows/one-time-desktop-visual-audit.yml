@@ -11,6 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install Korean font fallback
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          fc-cache -f
+          fc-match 'Noto Sans CJK KR'
       - name: Find Chrome
         shell: bash
         run: |
@@ -47,3 +54,4 @@ jobs:
           name: desktop-visual-audit
           path: visual-audit/*.png
           retention-days: 1
+# rerun: install Noto CJK so Korean layout is measured with real Hangul glyphs
