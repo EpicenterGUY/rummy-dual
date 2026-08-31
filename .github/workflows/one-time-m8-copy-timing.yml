@@ -35,3 +35,4 @@ jobs:
           git add index.html ROADMAP.md tests/named-copy-timing.mjs
           git commit -m 'fix: harden named copy timing'
           git push origin HEAD:main
+# rerun after regression parser fix
