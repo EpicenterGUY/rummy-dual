@@ -19,6 +19,18 @@ jobs:
           fetch-depth: 0
       - name: Apply POINT-BLANK movement and cover patch
         run: python3 .github/scripts/point_blank_interference_patch.py
+      - name: Preserve ZERO-SIGHT Extortion move-event contract
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old="emitMeldMoveEvent(w,c,om,m,{reason:'extortion',interferenceRedirected:!!swap?.redirected,coverSwapFallback:!!swap?.fallback})"
+          new="emitMeldMoveEvent(w,c,om,m,{reason:'extortion'})"
+          assert old in s, 'patched Extortion event call not found'
+          p.write_text(s.replace(old,new,1))
+          PY
       - name: Install regression
         shell: bash
         run: |
