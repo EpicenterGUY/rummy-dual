@@ -35,10 +35,10 @@ ok(retire.indexOf("emitEffectEvent('onRetire'")<retire.indexOf('arr.splice(index
 ok(retire.includes('c.blockedUntilTurn=state.turnNo')&&retire.includes('sideObj(home).hand.push(c)'),'preserved cards return to hand and cannot be reused in the same turn');
 ok(!retire.includes("emitRecoveryEvent("),'preservation is not misclassified as a recovery event');
 const attach=source('attachCards');
-ok(attach.includes("requestRetirePreservation(w,m,'burst'")&&attach.indexOf("requestRetirePreservation(w,m,'burst'")<attach.indexOf("retireMeld(targetSide,currentIndex,'버스트 후 4장 세트 자동 정리'"),'BURST chooses preservation before the SET is retired');
+ok(attach.includes("const completeRetire=preserved=>{const currentIndex=meldsOf(targetSide).indexOf(m);if(currentIndex>=0)retireMeld(targetSide,currentIndex,'버스트 후 4장 세트 자동 정리',{preserveCards:preserved?[preserved]:[],preserveLabel:'전원 집합!'})")&&attach.includes("const req=requestRetirePreservation(w,m,'burst',completeRetire);if(req.paused)return'choice';return completeRetire(req.card)"),'BURST pauses for preservation and only retires through the chosen-card continuation');
 ok(attach.indexOf("const afterRetire=()=>{const willRummy=s.hand.length===0")>attach.indexOf("emitEffectEvent('onAttach'"),'BURST RUMMY is evaluated after the optional preservation result');
 const finish=source('finishRun');
-ok(finish.indexOf("emitEffectEvent('onRunFinish'")<finish.indexOf("requestRetirePreservation(w,m,'runFinish'")&&finish.indexOf("requestRetirePreservation(w,m,'runFinish'")<finish.indexOf("retireMeld(w,currentIndex,'런 완주'"),'RUN finish ordering is onRunFinish -> preservation choice -> onRetire/removal');
+ok(finish.indexOf("emitEffectEvent('onRunFinish'")<finish.indexOf("const complete=preserved=>")&&finish.includes("retireMeld(w,currentIndex,'런 완주',{preserveCards:preserved?[preserved]:[],preserveLabel:'24시간 내구방송'})")&&finish.includes("const req=requestRetirePreservation(w,m,'runFinish',complete);if(req.paused)return'choice';return complete(req.card)"),'RUN finish emits onRunFinish, then resolves preservation through the retire continuation');
 ok(road.includes('- [x] 버스트 정리/런 완주 직전 카드 보존 타이밍 구현')&&road.includes('전원 집합!')&&road.includes('24시간 내구방송'),'ROADMAP marks the preservation timing and both live cards complete');
 ok(themeDoc.includes('보존한 카드는 이번 턴 사용할 수 없다')&&themeDoc.includes('일반/타 테마 카드도 보존 가능'),'theme source of truth records mixed-card preservation and the same-turn safety lock');
 ok(!script.includes('hypeCount')&&!script.includes('HYPE_COUNT'),'preservation adds no HYPE resource');
