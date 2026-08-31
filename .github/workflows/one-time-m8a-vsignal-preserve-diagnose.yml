@@ -1,0 +1,37 @@
+name: Diagnose M8A V-SIGNAL preservation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m8a-vsignal-preserve-diagnose.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply preservation patch
+        run: python3 .github/scripts/m8a_vsignal_preserve_patch.py
+      - name: Run existing regressions with log
+        shell: bash
+        run: |
+          set +e
+          : > regression.log
+          status=0
+          for f in tests/*.mjs; do
+            echo "== $f ==" | tee -a regression.log
+            node "$f" 2>&1 | tee -a regression.log || { status=$?; break; }
+          done
+          echo "$status" > regression.status
+          exit 0
+      - name: Upload log
+        uses: actions/upload-artifact@v4
+        with:
+          name: preserve-diagnose-log
+          path: |
+            regression.log
+            regression.status
