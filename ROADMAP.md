@@ -82,7 +82,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Add executable status-engine regressions and keep every M1–M6 suite passing
 
 ## M8 — Named cards
-- [ ] Stabilize first ~50 named cards
+- [x] Stabilize first ~50 named cards
 - [x] First correctness pass: fix CPU new-meld crash, duplicate CJ recovery, Phoenix one-time return, and revive Gap Run / Middle Manager placeholder behavior
 - [x] Synchronize deterministic card text for Revenge Blade, Ambulance, Fence, Golden Hand, Money Changer, Recursive Function, Connection Link, Branch Link and Copier
 - [x] Keep direct SWITCH manipulation to a minority of the audited pool with an executable ratio guard
@@ -99,7 +99,8 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Final semantics pass A: Insurance Agent only protects cards actually owned by its side, Heart King consumes every stored heart at DETONATE, and any Rebel Joker replacement blocks same-turn return/continuation
 - [x] Final choice pass B: Parasite now lets the human owner choose the discard on an opponent-turn return, while CPU action resolution pauses and resumes without granting extra actions
 - [x] Final choice pass C: Last Laugh returning-RUMMY now lets the human choose which post-refill card goes to deck bottom, and the RUMMY turn ends only after that mandatory choice resolves
-- [ ] Finish remaining choice/copy/timing audit and per-card regressions before declaring the first ~50 behavior-stable
+- [x] Final lock audit: explicit player-choice cards use shared/resumable selection; deterministic cards keep explicit oldest/reverse/placeholder wording; legacy first-target/auto-discard paths are rejected by regression
+- [x] Finish remaining choice/copy/timing audit and per-card regressions; first ~50 named-card behavior is now locked by executable final-audit coverage
 - [ ] Favor meld mutation, recovery, movement, discard, defense, RUMMY and timing interactions
 
 ## M8A — 정식 테마군 콘텐츠 설계
