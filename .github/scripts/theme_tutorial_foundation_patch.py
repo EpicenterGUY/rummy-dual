@@ -29,8 +29,8 @@ new="if(advanced){advanced.disabled=!progress.tutorialCompleted;advanced.setAttr
 if old not in s: raise SystemExit('render start advanced anchor not found')
 s=s.replace(old,new,1)
 
-old="function showStartScreen(){state.battleId++;state.sessionMode='menu';state.tutorialStep=null;state.tutorialExitArmed=false;"
-new="function showStartScreen(){state.battleId++;state.sessionMode='menu';state.tutorialStep=null;state.tutorialThemeId=null;state.tutorialExitArmed=false;"
+old="function showStartScreen(){state.battleId++;state.sessionMode='menu';state.tutorialStep=null;state.tutorialExitArmed=false;state.tutorialHintOpen=false;"
+new="function showStartScreen(){state.battleId++;state.sessionMode='menu';state.tutorialStep=null;state.tutorialExitArmed=false;state.tutorialHintOpen=false;state.tutorialThemeId=null;"
 if old not in s: raise SystemExit('show start anchor not found')
 s=s.replace(old,new,1)
 
