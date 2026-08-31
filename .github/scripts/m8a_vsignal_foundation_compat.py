@@ -6,6 +6,8 @@ s=p.read_text(encoding='utf-8')
 before=s
 s=s.replace(";emitEffectEvent(", ";if(typeof emitEffectEvent==='function')emitEffectEvent(")
 s=s.replace(";emitRecoveryEvent(", ";if(typeof emitRecoveryEvent==='function')emitRecoveryEvent(")
+s=s.replace("\n    emitEffectEvent(", "\n    if(typeof emitEffectEvent==='function')emitEffectEvent(")
+s=s.replace("\n    emitRecoveryEvent(", "\n    if(typeof emitRecoveryEvent==='function')emitRecoveryEvent(")
 
 if s==before:
     raise SystemExit('no event hook calls were guarded')
