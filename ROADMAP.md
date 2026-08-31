@@ -1,6 +1,6 @@
 # RUMMY//DUEL Development Roadmap
 
-Updated: 2026-08-31
+Updated: 2026-09-01
 
 ## Core direction
 RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITCH bomb through SET/BURST and RUN/CHAIN, including play on the opponent's public melds.
@@ -149,7 +149,9 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 상대 공개 조합 단위 접전 메타데이터 / 1개 제한 / 지연 해제 구현 — 접전은 표적과 분리된 `themeMeta.pointBlank`로 관리하고 상대 공개 조합만 지정 가능; 새 접전은 기존 접전을 이전하며, 자신의 카드가 모두 빠지면 다음 자기 턴 종료를 해제 시점으로 예약하고 그 전에 재돌입하면 예약을 취소함
 - [x] 무료 회수와 기본 회수 횟수를 명확히 구분 — 공용 `recoveryAccess`가 `free / reason / consumesBasic`을 반환하고 플레이어·AI·합법성 판정·`onRecover` 이벤트가 이를 공유; 기본 회수를 이미 쓴 뒤에도 조건부 무료 회수는 가능하며 UI도 `무료 회수`와 `기본 회수 사용함`을 구분
 - [x] `퀵 리로드` 회수 후 추가 새 조합 예외 구현 — 기존 기본 규칙이 이미 회수 카드를 같은 턴 첫 새 조합에 허용하므로 죽은 효과를 수정; J♦ 변형 `퀵 리로드`는 접전에서 회수했을 때 그 카드를 포함하는 새 3장 조합을 이번 턴 1회 추가로 허용하며, `recoverReturnOverrideToken`은 부여하지 않아 버스트/체인 반환 재사용 금지는 그대로 유지
-- [ ] POINT-BLANK ↔ 일반/V-SIGNAL/ZERO-SIGHT 혼합 회귀 테스트
+- [x] 이동 효과 전투 중립 원칙 잠금 — `onMeldMove`는 `combatNeutral / powerDelta:0 / returnsSwitch:false`를 명시하고 공용 `moveCardBetweenMelds`는 조합/CHAIN/메타데이터만 갱신하며 이동 자체로 BURST·CHAIN 위력·SWITCH 반환·자동 정리를 만들지 않음
+- [x] 7♥ `엄폐 교대` 적대 대상 교체/fallback 구현 — 접전의 자기 카드가 상대의 직접 간섭 대상일 때 턴당 1회 같은 효과의 다른 합법적인 자기 카드로 교대; 대체 대상이 없으면 보호막 12를 얻고 원래 간섭은 계속 해결
+- [x] POINT-BLANK ↔ 일반/V-SIGNAL/ZERO-SIGHT 혼합 회귀 테스트 — 접전/표적 동시 메타데이터, 테마 비의존 이동, V-SIGNAL·일반 카드 대상 교대, 이동 전투 중립을 실행 회귀로 잠금
 
 ### 후속 테마 후보 — 아직 상세 확정 전
 - [x] `MAIL//ROUTE` 작업안 기록 — 편지/우편 테마, `우편 → 목적지 → 도착 → 반송 → 재배송` 엔진. 일반 카드에도 우편 표식을 붙여 혼합덱 허브로 쓰는 방향
