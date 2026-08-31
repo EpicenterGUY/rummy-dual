@@ -88,6 +88,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Keep direct SWITCH manipulation to a minority of the audited pool with an executable ratio guard
 - [x] Second correctness pass: activate Death Sentence discard targeting, Tuner cross-meld recovery, role-sensitive Understudy retirement, and executable Doppelganger SET support coverage
 - [x] Third timing pass: Recursive Function / Copier ignore unrelated named cards and only copy effects whose current action trigger conditions are actually satisfied
+- [x] Repair previous-DETONATE action window so Revenge Blade and Phoenix can trigger on the following owner turn; Phoenix spent return no longer grants its heal before use
 - [ ] Finish remaining choice/copy/timing audit and per-card regressions before declaring the first ~50 behavior-stable
 - [ ] Favor meld mutation, recovery, movement, discard, defense, RUMMY and timing interactions
 
