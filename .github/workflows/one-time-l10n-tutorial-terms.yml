@@ -41,4 +41,4 @@ jobs:
           git commit -m 'l10n: localize tutorial rule terminology'
           git pull --rebase origin main
           git push origin HEAD:main
-# rerun: ignore template interpolation identifiers in rendered-copy audit
+# rerun: align V-SIGNAL completion-copy regression with official Korean terms
