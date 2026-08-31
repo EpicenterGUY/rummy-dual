@@ -8,7 +8,7 @@ function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 function source(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw new Error(`missing ${name}`);let par=0,brace=-1;for(let i=start+marker.length-1;i<script.length;i++){if(script[i]==='(')par++;else if(script[i]===')')par--;else if(script[i]==='{'&&par===0){brace=i;break}}if(brace<0)throw new Error(`missing body ${name}`);let d=0;for(let i=brace;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)return script.slice(start,i+1)}throw new Error(`unterminated ${name}`)}
 
 new Function(script);
-ok(script.includes("'H8':{n:'응급 보호구',t:'emergencyGear',d:'조합에 들어갈 때 보호막 20. SWITCH가 나를 향하면 보호막 32.'}"),'Emergency Gear remains the live H8 named variant');
+ok(script.includes("'H8':{n:'응급 보호구',t:'emergencyGear',d:'조합에 들어갈 때 보호막 20. 스위치가 나를 향하면 보호막 32.'}"),'Emergency Gear remains the live H8 named variant');
 ok(script.includes("{id:'namedCard',title:'네임드 카드'")&&script.includes("expectAttachTag:'emergencyGear'")&&script.includes("expectShieldGain:20"),'advanced tutorial declares a real Emergency Gear named-card step');
 ok(script.includes("makeTutorialNamed('H8','namedCard')"),'named-card scenario instantiates the live H8 variant instead of a fake tutorial card');
 ok(script.includes("makeTutorialCard('S','8','board','player'),makeTutorialCard('D','8','board','player'),makeTutorialCard('C','8','board','player')"),'named-card scenario uses the ordinary missing-suit 8 SET structure');
