@@ -1,0 +1,44 @@
+name: One-time Theme Tutorial Foundation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-theme-tutorial-foundation.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply theme tutorial foundation patch
+        run: python3 .github/scripts/theme_tutorial_foundation_patch.py
+      - name: Install regression
+        shell: bash
+        run: |
+          cp .github/scripts/theme_tutorial_foundation_regression.mjs tests/theme-tutorial-foundation.mjs
+          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/theme-tutorial-foundation.mjs
+          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/theme-tutorial-foundation.mjs
+      - name: Run all regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+      - name: Commit feature
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md tests/*.mjs
+          git commit -m 'feat: add theme tutorial foundation'
+          git pull --rebase origin main
+          git push origin HEAD:main
