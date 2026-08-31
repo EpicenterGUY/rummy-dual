@@ -18,7 +18,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Apply hand preparation patch
-        run: python3 .github/scripts/zero_sight_hand_prep_patch.py
+        run: |
+          python3 .github/scripts/zero_sight_hand_prep_patch.py
+          python3 .github/scripts/zero_sight_hand_prep_compat.py
       - name: Install regression
         shell: bash
         run: |
