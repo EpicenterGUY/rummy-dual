@@ -11,13 +11,14 @@ new=old+"\n'ZSD6':{slot:'D6',themeId:'zero-sight',n:'탄도 계산',t:'zsBallist
 assert old in text,'D6 card anchor changed'
 text=text.replace(old,new,1)
 
-# 2) Ordinary open-deck tendency and unlock progression.
+# 2) Ordinary open-deck tendency and independent unlock progression.
 old="zsObserver:['control','cycle','combo'],zsScopeAdjust:['control','cycle','interact']"
 new="zsObserver:['control','cycle','combo'],zsScopeAdjust:['control','cycle','interact'],zsBallistics:['pressure','control']"
 assert old in text,'ZERO-SIGHT tendency anchor changed'
 text=text.replace(old,new,1)
+# Do not mutate existing g3 array: older theme regressions intentionally lock that progression contract.
 old=" {id:'g3',label:'전체 3클리어',kind:'mixed',when:p=>p.totalClears>=3,items:['S9','H10','D2','VSD4','C6','SJ','H3'],fields:[]},"
-new=" {id:'g3',label:'전체 3클리어',kind:'mixed',when:p=>p.totalClears>=3,items:['S9','H10','D2','VSD4','ZSD6','C6','SJ','H3'],fields:[]},"
+new=old+"\n {id:'zs3',label:'전체 3클리어 · ZERO-SIGHT',kind:'theme',when:p=>p.totalClears>=3,items:['ZSD6'],fields:[]},"
 assert old in text,'g3 unlock anchor changed'
 text=text.replace(old,new,1)
 
