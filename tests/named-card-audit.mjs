@@ -16,7 +16,7 @@ const gapCleanup=script.indexOf('recoverRedundantGapRun(targetSide,m,beforeCards
 const middleCleanup=script.indexOf('middleManagerReturnPlaceholder(targetSide,m,cards);',gapCleanup);
 const jokerCleanup=script.indexOf('replaceRedundantJokers(targetSide,m,w,cards);',middleCleanup);
 ok(gapCleanup>=0&&middleCleanup>gapCleanup&&jokerCleanup>middleCleanup,'attach resolution runs placeholder cleanup in one deterministic phase');
-ok(html.includes("'H4B':{slot:'H4',n:'구급차',t:'ambulance',d:'상대 공개 조합에서 회수하면 체력 8 회복 + 보호막 8."),'Ambulance text matches its 8-shield implementation');
+ok(html.includes("'H4B':{slot:'H4',n:'구급차',t:'ambulance',d:'상대 공개 조합에서 회수하면 체력 8을 회복하고 보호막 8을 얻는다. 내 조합에서 회수하면 체력 8을 회복한다.'}"),'Ambulance text matches its 8-shield implementation');
 ok(html.includes("'C5':{n:'연결고리',t:'connectionLink',d:'런에 붙일 때" )&&html.includes('그 런에는 이번 턴 한 번 더 붙일 수 있다.'),'Connection Link documents its extra-attach behavior');
 ok(html.includes("'C5B':{slot:'C5',n:'분기점',t:'branchLink',d:'런에 붙일 때 그 런에 보호 상태 1회를 부여한다.'}"),'Branch Link text matches protect-only implementation');
 ok(html.includes("'DA':{n:'장물아비',t:'fencePeek',d:'버림패에서 가져올 때 바로 아래 카드도 함께 확인한다.'}"),'Fence text no longer promises an unimplemented swap');
