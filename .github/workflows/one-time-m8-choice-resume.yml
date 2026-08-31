@@ -39,6 +39,10 @@ jobs:
           s=s.replace("ok(fx.includes('const[dep]=effectCards.splice(j,1);effectCards.splice(i,0,dep)'),'Buyout King is moved immediately before the dependent Golden Hand without globally sorting unrelated effects');", "ok(fx.includes('const[dep]=list.splice(j,1);list.splice(i,0,dep)'),'Buyout King is moved immediately before the dependent Golden Hand without globally sorting unrelated effects');", 1)
           s=s.replace("ok(fx.includes('for(const c of effectCards){'),'named effects resolve from the minimally adjusted action order');", "ok(fx.includes('const effectCards=fx.effectCards')&&fx.includes('for(let i=fx.index;i<effectCards.length;i++)'),'named effects resume from the minimally adjusted action order without replaying prior effects');", 1)
           p.write_text(s,encoding='utf-8')
+          p=Path('tests/named-smuggled-suit-window.mjs')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("const submit=source('submitNewMeld'),attach=source('attachCards'),recover=source('playerRecover'),free=source('freeRecoverFromMeld'),retire=source('retireMeld');", "const submit=source('submitNewMeld'),attach=source('attachCards'),recover=source('playerRecover'),free=source('recoverSpecificFromMeld'),retire=source('retireMeld');", 1)
+          p.write_text(s,encoding='utf-8')
           PY
       - name: Run all regressions
         shell: bash
@@ -53,6 +57,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md tests/named-choice-resume.mjs tests/named-choice-ui.mjs tests/named-effect-order.mjs
+          git add index.html ROADMAP.md tests/named-choice-resume.mjs tests/named-choice-ui.mjs tests/named-effect-order.mjs tests/named-smuggled-suit-window.mjs
           git commit -m 'feat: resume named effects after choices'
           git push origin HEAD:main
