@@ -41,3 +41,4 @@ jobs:
           git commit -m 'l10n: localize tutorial rule terminology'
           git pull --rebase origin main
           git push origin HEAD:main
+# rerun: handle duplicated V-SIGNAL tutorial copy intentionally
