@@ -57,6 +57,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Close zero-source deadlocks for player/AI/RUMMY and make maintenance recognize currently-owned shared-discard cards as a valid personal recycle source
 - [x] Audit player/AI RUMMY turn-end paths; AI now settles contracts before the single turn-end resolution even on RUMMY turns
 - [x] Reset transient discard-contract state whenever a card is freshly acquired from deck/discard before source-specific effects are applied
+- [x] Add per-battle circulation telemetry at result time: average hand, low-hand rate/skips, RUMMY, maintenance, and full-recirculation counts
 
 ## M5 — Multi-attach UX
 - [x] Preserve explicit hand-card selection order and pass that order into attach resolution
