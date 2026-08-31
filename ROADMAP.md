@@ -121,7 +121,8 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 현재 정식 후보 24장 설계 확정 — 상세 카드 목록/효과 방향은 `docs/THEME_GROUPS.md`
 - [x] 새 조합/붙이기/회수/러미/런 완주 이벤트를 공용 효과 엔진에 필요한 만큼 노출
 - [x] V-SIGNAL foundation: `themeId`/표시명 메타데이터 + 구독형 공용 이벤트 버스 + 정리 직전 `onRunFinish`/`onRetire` 훅 추가
-- [ ] `앙코르` 등 회수 후 동일 턴 반환 예외를 카드 단위로 안전하게 구현
+- [x] 5♥ `앙코르` 라이브 구현 — H5 대체 네임드 변형, 자기 회수 시 다른 합법 조합으로의 반환 재사용을 카드 단위·턴당 1회·목적지 제한으로 허용
+- [x] `앙코르` 등 회수 후 동일 턴 반환 예외를 카드 단위로 안전하게 구현
 - [ ] 버스트 정리/런 완주 직전 카드 보존 타이밍 구현
 - [ ] V-SIGNAL ↔ 일반 카드 혼합 회귀 테스트
 
