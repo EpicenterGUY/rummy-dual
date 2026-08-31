@@ -42,3 +42,4 @@ jobs:
           git commit -m 'docs: lock SCRAP SHIFT part rules'
           git pull --rebase origin main
           git push origin HEAD:main
+# rerun: align dismantle regression wording
