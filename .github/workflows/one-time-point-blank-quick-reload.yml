@@ -19,6 +19,8 @@ jobs:
           fetch-depth: 0
       - name: Apply Quick Reload patch
         run: python3 .github/scripts/point_blank_quick_reload_patch.py
+      - name: Preserve RUN-finish AI contract
+        run: python3 .github/scripts/point_blank_quick_reload_compat_fix.py
       - name: Install regression
         shell: bash
         run: |
@@ -43,5 +45,3 @@ jobs:
           git commit -m 'feat: implement POINT-BLANK Quick Reload'
           git pull --rebase origin main
           git push origin HEAD:main
-
-# rerun after preserving the M10 bestNewMeldForTurn source contract
