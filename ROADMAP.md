@@ -291,7 +291,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Respect recovery same-turn return restriction in planning
 - [x] Search 5+ card multi-attach cases where practical — AI extension planning and stuck-state legality now enumerate up to 6-card attach combinations while preserving the existing recovery, same-turn return, and SWITCH ownership guards
 - [x] Improve opponent-meld and future-BURST risk evaluation — AI now penalizes exposed 3-card SETs using public hand-count / current SWITCH pressure / top-discard burst access, favors immediate BURST cleanup of opponent SETs, and discounts opponent-controlled RUNs that would be pushed to CHAIN 4+ completion flexibility
-- [ ] Improve intentional small-bomb acceptance decisions
+- [x] Improve intentional small-bomb acceptance decisions — AI accepts only survivable low-cost bombs that preserve a safe current-CORE reserve, but returns instead when the available extension is high-value or creates immediate lethal pressure on the opponent
 
 ## M11 — Deckbuilder
 - [ ] Player-facing 52-slot deck construction
