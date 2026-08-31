@@ -8,7 +8,7 @@ ok(doc.includes('내가 소유한 일반/다른 테마 카드에도 `부품` 표
 ok(doc.includes('숫자·무늬·네임드·테마 ID·소유권·현재 조합 판정을 바꾸지 않는다'),'part marker never rewrites card identity or meld legality');
 ok(doc.includes('손패 / 공개 조합 / 소모패')&&doc.includes('공용 버림패 또는 개인 덱'),'part lifecycle persists through active/scrap zones and clears on discard/deck');
 ok(doc.includes('소모패에 있는 일반 카드를 그 자리에서 새 부품으로 지정할 수는 없다'),'spent cards cannot be marked retroactively for free salvage');
-ok(doc.includes('해체는 **공개 조합 안의 내 소유 부품 카드 1장을 내 소모패로 보내는 효과 이동**'),'dismantle is explicitly meld-to-spent');
+ok(doc.includes('`해체`는 **공개 조합 안의 내 소유 부품 카드 1장을 내 소모패로 보내는 효과 이동**'),'dismantle is explicitly meld-to-spent');
 ok(doc.includes('해체는 `회수`가 아니다')&&doc.includes('RUN에서 해체하면 일반 회수/이동과 마찬가지로 CHAIN을 1 낮춘다'),'dismantle is separate from recovery while preserving RUN accounting');
 ok(doc.includes('이식은 기존 공용 `조합 이동`과 같은 전투 중립 원칙'),'transplant reuses combat-neutral meld movement');
 ok(doc.includes('재조립하는 순간 그 카드의 `부품` 표식을 소비해 해제')&&doc.includes('이번 턴 사용할 수 없다'),'reassembly consumes the marker and blocks same-turn loops');
