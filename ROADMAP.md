@@ -295,7 +295,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 
 ## M11 — Deckbuilder
 - [ ] Player-facing 52-slot deck construction
-- [ ] One variant per exact rank+suit slot
+- [x] One variant per exact rank+suit slot — named variants canonicalize through `namedSlot()`, variant sampling removes every other candidate sharing that base slot, and battle-deck materialization keeps one selected variant per canonical regular slot
 - [ ] Rank/suit/SET/RUN distribution analysis UI
 
 ## M11A — 로그라이크 캐릭터 / 스타터 / 순수덱
