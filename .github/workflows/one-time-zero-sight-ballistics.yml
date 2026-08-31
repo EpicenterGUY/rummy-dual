@@ -43,3 +43,4 @@ jobs:
           git commit -m 'feat: add ZERO-SIGHT lethal deficit calculation'
           git pull --rebase origin main
           git push origin HEAD:main
+# rerun: preserve existing progression contracts
