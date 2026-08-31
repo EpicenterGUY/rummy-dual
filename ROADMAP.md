@@ -140,6 +140,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 표적 조합 회수/이동/새 조합 생성 반응 이벤트 정리 — `onTargetSet` / `onTargetClear` / `onTargetMeldChange` / `onMeldMove` 추가, 기존 `onMeldCreate` / `onAttach` / `onRecover` 패킷에 표적 스냅샷 노출
 - [x] 표적 없이 잡힌 스타터의 대체 패순환 처리 — A♣ `관측수`는 사용 조합을 즉시 표적으로 만들어 초동을 열고 무료 1장 교체를 제공; 2♣ `스코프 조정`은 기존 표적을 다른 공개 조합으로 이전하되 표적이 없거나 이전 목적지가 없으면 정확한 손패 1장 패순환으로 전환
 - [x] ZERO-SIGHT 첫 라이브 스타터 페어 — A♣ `관측수` / 2♣ `스코프 조정`을 전체 1클리어 해금으로 추가하고 ZERO-SIGHT 오픈형 테마 선택을 활성화
+- [x] 코어+보호막 부족분 공용 계산 + 6♦ `탄도 계산` 라이브 구현 — `coreShieldRequirement` / `coreShieldDeficit` 순수 헬퍼로 현재 코어+보호막 기준 킬각 부족분을 계산하며, 별도 효과 액션/자원은 만들지 않음. 탄도 계산은 표적 반환의 실제 기본 위력·기존 누적·네임드 보정·매복 감소까지 반영한 최종 반환 직전에 부족분만 최대 +12 보정
 - [x] ZERO-SIGHT ↔ 일반/V-SIGNAL/POINT-BLANK 혼합 회귀 테스트 — 표적은 카드군과 분리된 공개 조합 메타데이터로 유지되며, 일반 카드의 붙이기·V-SIGNAL 앙코르 회수·혼합 조합 정리/보존·POINT-BLANK 카드 정체성이 같은 표적 이벤트 경로에서 충돌하지 않는 것을 실행 회귀로 잠금
 
 ### POINT-BLANK — 근접 총격 / 접전 / 교대
