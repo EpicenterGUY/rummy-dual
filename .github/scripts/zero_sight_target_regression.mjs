@@ -37,12 +37,13 @@ ok(script.includes('zeroSightTag'),'target has a public-board visual marker');
  const player={melds:[m],hand:[],deck:[],spent:[]},enemy={melds:[],hand:[],deck:[],spent:[]};
  const state={turnNo:6,turnToken:60,player,enemy};
  const seen=[];
- const box=ctx({state,log:()=>{},cardText:()=>'',emitEffectEvent:(e,p)=>seen.push({e,p})});
+ const box=ctx({state,log:()=>{},cardText:()=>'',emitEffectEvent:(e,p)=>seen.push({e,targetedBy:{...p.themeMeta.zeroSight.targetedBy}})});
  box.meldsOf=w=>w==='player'?player.melds:enemy.melds; box.sideObj=w=>w==='player'?player:enemy;
  install(box,'retireMeld');
  box.retireMeld('player',0,'표적 정리');
  ok(seen.length===1&&seen[0].e==='onRetire','retire still emits onRetire');
- ok(seen[0].p.themeMeta.zeroSight.targetedBy.player===false&&seen[0].p.themeMeta.zeroSight.targetedBy.enemy===false,'removed meld target metadata is cleared after retirement');
+ ok(seen[0].targetedBy.player===true&&seen[0].targetedBy.enemy===true,'onRetire observes target ownership before removal');
+ ok(m.themeMeta.zeroSight.targetedBy.player===false&&m.themeMeta.zeroSight.targetedBy.enemy===false,'removed meld target metadata is cleared after retirement');
  ok(player.melds.length===0,'targeted meld physically retires normally');
 }
 
