@@ -35,3 +35,4 @@ jobs:
           git add index.html ROADMAP.md tests/named-detonate-window.mjs
           git commit -m 'fix: preserve previous DETONATE action window'
           git push origin HEAD:main
+# rerun after telemetry-aware patch alignment
