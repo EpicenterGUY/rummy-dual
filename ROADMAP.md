@@ -283,9 +283,9 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 내부 함수/변수명 (`setValid`, `attachCards`, `switchTarget`, `detonate`, `triggerRummy` 등)은 현지화 때문에 일괄 변경하지 않음
 
 ## M9 — Jokers and fields
-- [ ] Finalize distinct Joker identities
-- [ ] Audit Joker King return-to-owner-deck behavior
-- [ ] Stabilize 10–15 behavior-changing shared fields
+- [x] Finalize distinct Joker identities — J1~J5 keep separate wildcard identities for owner-deck return, RUMMY/DETONATE timing, SET/RUN split payoff, vacancy replacement, and opponent-meld rebellion
+- [x] Audit Joker King return-to-owner-deck behavior — public-meld retirement restores `originOwner`, bottoms J1 into that owner deck, and never sends it to spent
+- [x] Stabilize 10 behavior-changing shared fields — F1~F10 now cover recovery, discard acquisition, cycling, RUN legality, interference protection, and opponent-meld interaction without adding a new base resource
 
 ## M10 — AI 2.0
 - [x] Respect recovery same-turn return restriction in planning
