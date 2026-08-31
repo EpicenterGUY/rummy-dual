@@ -19,6 +19,17 @@ jobs:
           fetch-depth: 0
       - name: Apply shared named choice patch
         run: python3 .github/scripts/m8_shared_choice_patch.py
+      - name: Fix generated roadmap assertion
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('tests/named-choice-ui.mjs')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');", "const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');\nconst road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');", 1)
+          s=s.replace("ok(html.includes('Add a shared queued effect-choice modal'),'M8 roadmap records the shared choice foundation');", "ok(road.includes('Add a shared queued effect-choice modal'),'M8 roadmap records the shared choice foundation');", 1)
+          p.write_text(s,encoding='utf-8')
+          PY
       - name: Run all regressions
         shell: bash
         run: |
