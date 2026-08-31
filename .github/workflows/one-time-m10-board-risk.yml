@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write
 
+# rerun: 2
 jobs:
   patch:
     runs-on: ubuntu-latest
