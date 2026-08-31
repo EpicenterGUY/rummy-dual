@@ -19,6 +19,8 @@ jobs:
           fetch-depth: 0
       - name: Apply V-SIGNAL foundation patch
         run: python3 .github/scripts/m8a_vsignal_foundation_patch.py
+      - name: Preserve isolated function compatibility
+        run: python3 .github/scripts/m8a_vsignal_foundation_compat.py
       - name: Add event foundation regression
         shell: bash
         run: |
@@ -57,9 +59,10 @@ jobs:
 
           const meld=source('submitNewMeld');
           ok(meld.includes("emitEffectEvent('onMeldCreate'")&&meld.indexOf("emitEffectEvent('onMeldCreate'")<meld.indexOf('triggerRummy('),'new-meld event fires before possible RUMMY finalization');
+          ok(meld.includes("typeof emitEffectEvent==='function'"),'new-meld hook preserves isolated-function regression compatibility');
           const attach=source('attachCards');
           ok(attach.includes("emitEffectEvent('onAttach'")&&attach.indexOf("emitEffectEvent('onAttach'")<attach.indexOf('retireMeld(targetSide'),'attach event sees a completed 4SET before automatic retirement');
-          for(const name of ['playerRecover','executeRecoverAI','recoverSpecificFromMeld','recoverRedundantGapRun','middleManagerReturnPlaceholder','replaceRedundantJokers'])ok(source(name).includes('emitRecoveryEvent('),`${name} exposes its public-to-hand recovery through onRecover`);
+          for(const name of ['playerRecover','executeRecoverAI','recoverSpecificFromMeld','recoverRedundantGapRun','middleManagerReturnPlaceholder','replaceRedundantJokers'])ok(source(name).includes('emitRecoveryEvent(')&&source(name).includes("typeof emitRecoveryEvent==='function'"),`${name} exposes guarded public-to-hand recovery through onRecover`);
           const rummy=source('triggerRummy');
           ok(rummy.includes("emitEffectEvent('onRummy'")&&rummy.indexOf('drawMany(w,Math.max(0,reload-beforeReloadHand),false)')<rummy.indexOf("emitEffectEvent('onRummy'"),'RUMMY event fires after the base refill is visible');
           const finish=source('finishRun');
