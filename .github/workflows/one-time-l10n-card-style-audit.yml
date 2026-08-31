@@ -1,0 +1,11 @@
+name: One-time L10N Card Style Audit
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/one-time-l10n-card-style-audit.yml']
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/l10n_card_style_audit.py
