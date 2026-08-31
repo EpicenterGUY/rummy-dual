@@ -246,7 +246,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] PC 전용 한국어 산세리프 폰트 스택(Pretendard/Noto Sans KR/Apple SD Gothic Neo/맑은 고딕 fallback)과 주요 HUD·버튼·설명 글자 크기 상향
 - [x] PC 전투 화면의 body/page 스크롤 제거 — 상태/전장/손패/접힌 로그를 뷰포트 높이 안의 고정 그리드로 배치하고 상세/공개 조합/열린 로그만 내부 스크롤 허용
 - [x] 낮은 PC 뷰포트(`max-height:760px`) 전용 압축 규칙으로 1366×768 계열 브라우저 화면 대응
-- [ ] 실제 PC 브라우저에서 1366×768 / 1920×1080 시각 검수 및 필요 시 미세 간격 조정
+- [x] 실제 Chromium에서 1366×768 / 1920×1080 시작창·대전 화면 시각 검수 — Noto CJK 한글 실제 글자폭으로 잘림·겹침·가로 오버플로 없음 확인. 1080p의 넓은 공개 조합 여유 공간은 실제 조합 누적을 위한 공간으로 유지하며 추가 간격 조정 불필요
 
 ### P3 — 아트/브랜드 마감
 - [ ] 카드 아이콘/네임드 프레임과 새 UI 팔레트 통일
