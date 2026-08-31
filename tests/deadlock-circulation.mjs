@@ -91,7 +91,7 @@ function makeState(){
 const rummy=functionSource('triggerRummy');
 ok(rummy.includes("ownedRecycleCount(w)<=0")&&rummy.includes("emergencyReleaseMeld(w,'러미 재충전원 0 · 순환 정체')"),'RUMMY has a zero-supply emergency circulation hook');
 ok(functionSource('confirmMulligan').includes("prepareAcquisitionPhase('player')"),'first player turn prepares zero-source acquisition safely');
-ok(functionSource('aiTurn').includes("prepareAcquisitionPhase('enemy')")&&functionSource('aiTurn').includes("prepareAcquisitionPhase('player')"),'AI and following player turn both run acquisition safety');
+ok(functionSource('aiTurn').includes("prepareAcquisitionPhase('enemy')")&&functionSource('continueAITurnAfterAcquisition').includes("prepareAcquisitionPhase('player')"),'AI and following player turn both run acquisition safety across the resumable turn split');
 ok(functionSource('playerDraw').includes("prepareAcquisitionPhase('player')"),'failed manual draw falls back through the same acquisition safety');
 ok(html.includes('완전 정체에서는 <b>내 카드가 포함된 공개 조합 1개를 긴급 정리</b>'),'rules explain the last-resort no-duplication circulation release');
 ok(road.includes('Zero-source circulation safety')&&road.includes('Close zero-source deadlocks for player/AI/RUMMY'),'roadmap locks the deadlock safety rule and implementation');

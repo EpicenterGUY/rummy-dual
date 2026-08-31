@@ -95,7 +95,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Add a shared queued effect-choice modal and migrate Reserved Shipping plus Connector 6+ hand-bottom choice; optional Connector bottoming may be skipped while CPU resolution stays deterministic
 - [x] Make named effect choices resumable before attack/RUMMY finalization; Connector 6+ now preserves RUMMY timing, free-recovery effects select a legal owned card, and Recycler selects from spent cards
 - [x] Target-choice pass: Extortion now selects the exact legal card to move and Sleeper selects the opponent meld to fix; CPU keeps deterministic first-candidate resolution
-- [ ] Add an off-turn choice continuation so Bait can let the human owner choose the hand card to bottom without the CPU turn racing ahead
+- [x] Add an off-turn choice continuation: when CPU takes a human-owned Bait, the owner draws first, chooses the exact hand card to bottom, and CPU play resumes only after that choice resolves
 - [ ] Finish remaining choice/copy/timing audit and per-card regressions before declaring the first ~50 behavior-stable
 - [ ] Favor meld mutation, recovery, movement, discard, defense, RUMMY and timing interactions
 
