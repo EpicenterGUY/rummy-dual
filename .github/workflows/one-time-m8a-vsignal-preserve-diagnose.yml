@@ -16,21 +16,21 @@ jobs:
       - uses: actions/checkout@v4
       - name: Apply preservation patch
         run: python3 .github/scripts/m8a_vsignal_preserve_patch.py
-      - name: Run existing regressions and new preservation check
+      - name: Build transformed preservation test
+        shell: bash
+        run: |
+          cp .github/scripts/vsignal_retire_preserve_diagnose.mjs tests/vsignal-retire-preserve.mjs
+          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/vsignal-retire-preserve.mjs
+          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/vsignal-retire-preserve.mjs
+          sed -i "s|fs.readFileSync('docs/THEME_GROUPS.md','utf8')|fs.readFileSync(new URL('../docs/THEME_GROUPS.md',import.meta.url),'utf8')|" tests/vsignal-retire-preserve.mjs
+      - name: Run transformed preservation test with log
         shell: bash
         run: |
           set +e
-          : > regression.log
-          status=0
-          for f in tests/*.mjs; do
-            echo "== $f ==" | tee -a regression.log
-            node "$f" 2>&1 | tee -a regression.log || { status=$?; break; }
-          done
-          if [ "$status" = "0" ]; then
-            echo "== temporary preservation diagnostic ==" | tee -a regression.log
-            node .github/scripts/vsignal_retire_preserve_diagnose.mjs 2>&1 | tee -a regression.log || status=$?
-          fi
+          node tests/vsignal-retire-preserve.mjs > regression.log 2>&1
+          status=$?
           echo "$status" > regression.status
+          cat regression.log
           exit 0
       - name: Upload log
         uses: actions/upload-artifact@v4
@@ -39,3 +39,4 @@ jobs:
           path: |
             regression.log
             regression.status
+            tests/vsignal-retire-preserve.mjs
