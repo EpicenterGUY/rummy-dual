@@ -1,0 +1,91 @@
+name: One-time M8A V-SIGNAL foundation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m8a-vsignal-foundation.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply V-SIGNAL foundation patch
+        run: python3 .github/scripts/m8a_vsignal_foundation_patch.py
+      - name: Add event foundation regression
+        shell: bash
+        run: |
+          cat > tests/theme-event-foundation.mjs <<'EOF'
+          import fs from 'node:fs';
+          import vm from 'node:vm';
+
+          const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+          const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+          const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
+          const themeDoc=fs.readFileSync(new URL('../docs/THEME_GROUPS.md',import.meta.url),'utf8');
+          function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
+          function source(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw new Error(`missing ${name}`);let par=0,brace=-1;for(let i=start+marker.length-1;i<script.length;i++){if(script[i]==='(')par++;else if(script[i]===')')par--;else if(script[i]==='{'&&par===0){brace=i;break}}if(brace<0)throw new Error(`missing body ${name}`);let d=0;for(let i=brace;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)return script.slice(start,i+1)}throw new Error(`unterminated ${name}`)}
+
+          ok(script.includes("'v-signal':Object.freeze({id:'v-signal',name:'V-SIGNAL',displayName:'V-SIGNAL'"),'V-SIGNAL has a stable theme id/display metadata entry');
+          ok(source('makeCard').includes('themeId:def?.themeId||null'),'card objects carry themeId independently of rank/suit slot identity');
+          ok(source('makeCard').includes("const slot=suit==='J'?'J':suit+rank"),'theme metadata does not replace the existing rank+suit slot key');
+          ok(script.includes("'onRunFinish','onRetire'"),'shared effect vocabulary exposes run-finish before retire');
+
+          const defsStart=script.indexOf('const EFFECT_EVENTS=');
+          const defsEnd=script.indexOf('const TUTORIAL_STEPS=',defsStart);
+          ok(defsStart>=0&&defsEnd>defsStart,'event foundation block is extractable');
+          const sandbox={state:{turnNo:12,turnToken:34},meldsOf:()=>[],globalThis:null};
+          sandbox.globalThis=sandbox;
+          vm.runInNewContext(script.slice(defsStart,defsEnd)+`;globalThis.__eventApi={THEME_GROUPS,themeDef,subscribeEffectEvent,emitEffectEvent};`,sandbox);
+          const seen=[];
+          const off=sandbox.__eventApi.subscribeEffectEvent(e=>seen.push(e));
+          const packet=sandbox.__eventApi.emitEffectEvent('onMeldCreate',{actor:'player',value:7});
+          ok(packet?.event==='onMeldCreate'&&packet.turnNo===12&&packet.turnToken===34&&packet.actor==='player'&&packet.value===7,'event bus delivers normalized turn metadata and payload');
+          ok(seen.length===1&&seen[0]===packet,'subscribers receive the exact shared event packet');
+          off();
+          sandbox.__eventApi.emitEffectEvent('onAttach',{actor:'enemy'});
+          ok(seen.length===1,'event subscribers can unsubscribe cleanly');
+          ok(sandbox.__eventApi.emitEffectEvent('not-a-real-event',{})===null,'unknown event names are rejected');
+          ok(sandbox.__eventApi.themeDef('v-signal')?.displayName==='V-SIGNAL','theme metadata is queryable by stable id');
+
+          const meld=source('submitNewMeld');
+          ok(meld.includes("emitEffectEvent('onMeldCreate'")&&meld.indexOf("emitEffectEvent('onMeldCreate'")<meld.indexOf('triggerRummy('),'new-meld event fires before possible RUMMY finalization');
+          const attach=source('attachCards');
+          ok(attach.includes("emitEffectEvent('onAttach'")&&attach.indexOf("emitEffectEvent('onAttach'")<attach.indexOf('retireMeld(targetSide'),'attach event sees a completed 4SET before automatic retirement');
+          for(const name of ['playerRecover','executeRecoverAI','recoverSpecificFromMeld','recoverRedundantGapRun','middleManagerReturnPlaceholder','replaceRedundantJokers'])ok(source(name).includes('emitRecoveryEvent('),`${name} exposes its public-to-hand recovery through onRecover`);
+          const rummy=source('triggerRummy');
+          ok(rummy.includes("emitEffectEvent('onRummy'")&&rummy.indexOf('drawMany(w,Math.max(0,reload-beforeReloadHand),false)')<rummy.indexOf("emitEffectEvent('onRummy'"),'RUMMY event fires after the base refill is visible');
+          const finish=source('finishRun');
+          ok(finish.includes("emitEffectEvent('onRunFinish'")&&finish.indexOf("emitEffectEvent('onRunFinish'")<finish.indexOf('retireMeld('),'run-finish event fires before the run is retired');
+          const retire=source('retireMeld');
+          ok(retire.includes("emitEffectEvent('onRetire'")&&retire.indexOf("emitEffectEvent('onRetire'")<retire.indexOf('arr.splice(index,1)'),'generic retire event fires before meld removal, enabling later preservation effects');
+
+          ok(road.includes('- [x] 새 조합/붙이기/회수/러미/런 완주 이벤트를 공용 효과 엔진에 필요한 만큼 노출'),'ROADMAP marks the shared V-SIGNAL event foundation complete');
+          ok(road.includes('- [x] M8 첫 ~50 네임드 선택/복사/타이밍 안정화 후 대규모 테마 구현 시작'),'theme implementation gate is unlocked after M8 stabilization');
+          ok(themeDoc.includes('- [x] 테마 ID/표시명 데이터 구조 추가')&&themeDoc.includes('`onMeldCreate` / `onAttach` / `onRecover` / `onRummy` / `onRunFinish`'),'canonical theme document records the event contract');
+          ok(!script.includes('hypeCount')&&!script.includes('HYPE_COUNT'),'V-SIGNAL foundation introduces no dedicated HYPE resource');
+          console.log('M8A V-SIGNAL event foundation regression passed.');
+          EOF
+      - name: Run all regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+      - name: Commit foundation
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md docs/THEME_GROUPS.md tests/theme-event-foundation.mjs
+          git commit -m 'feat: expose V-SIGNAL theme event foundation'
+          git push origin HEAD:main
