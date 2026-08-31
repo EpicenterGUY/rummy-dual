@@ -294,9 +294,9 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Improve intentional small-bomb acceptance decisions — AI accepts only survivable low-cost bombs that preserve a safe current-CORE reserve, but returns instead when the available extension is high-value or creates immediate lethal pressure on the opponent
 
 ## M11 — Deckbuilder
-- [ ] Player-facing 52-slot deck construction
+- [x] Player-facing 52-slot deck construction — progress screen now exposes all 52 canonical rank+suit slots; custom mode selects exactly 29 regular slots plus 1 Joker for the existing 30-card battle deck, with per-slot PURE ↔ unlocked NAMED cycling and legacy automatic generation preserved as an opt-in fallback
 - [x] One variant per exact rank+suit slot — named variants canonicalize through `namedSlot()`, variant sampling removes every other candidate sharing that base slot, and battle-deck materialization keeps one selected variant per canonical regular slot
-- [ ] Rank/suit/SET/RUN distribution analysis UI
+- [x] Rank/suit/SET/RUN distribution analysis UI — deckbuilder reports suit counts, all 13 rank counts, 2+/3+ same-rank SET material, 3-card RUN windows, longest same-suit streak, PURE/NAMED split, and invalid 29-slot construction warnings live while editing
 
 ## M11A — 로그라이크 캐릭터 / 스타터 / 순수덱
 캐릭터/테마/지역/보상까지 포함한 전체 작업안은 `docs/ROGUELIKE_MASTER_PLAN.md`에 보존한다. 기존 스타터 상세는 `docs/ROGUELIKE_DECK_STARTERS.md`를 참고한다. 현재 단계에서는 후속 설계를 위한 방향 기록이며, 정확한 수치와 실제 개발 착수 시점은 아직 확정하지 않는다.
