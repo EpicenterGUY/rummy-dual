@@ -41,3 +41,4 @@ jobs:
           git commit -m 'l10n: remove obsolete player-facing terminology'
           git pull --rebase origin main
           git push origin HEAD:main
+# rerun: match interpolated Cut Line log
