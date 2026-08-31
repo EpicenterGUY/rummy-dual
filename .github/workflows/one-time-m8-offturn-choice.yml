@@ -22,11 +22,24 @@ jobs:
       - name: Run all regressions
         shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          : > /tmp/offturn-regression.log
+          status=0
           for f in tests/*.mjs; do
-            echo "== $f =="
-            node "$f"
+            { echo "== $f =="; node "$f"; } 2>&1 | tee -a /tmp/offturn-regression.log
+            rc=${PIPESTATUS[0]}
+            if [ "$rc" -ne 0 ]; then
+              status=$rc
+              break
+            fi
           done
+          exit "$status"
+      - name: Upload regression log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: offturn-regression-log
+          path: /tmp/offturn-regression.log
       - name: Commit patch
         shell: bash
         run: |
