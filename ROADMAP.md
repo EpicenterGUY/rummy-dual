@@ -415,7 +415,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [ ] 프로토타입 결과가 좋으면 M0/M11의 정식 카드 규칙으로 승격하고, 좋지 않으면 소수 카드의 개별 효과 또는 특정 테마 기믹으로 축소
 
 ## M12 — Metrics and balance
-- [ ] Track turn count, BURST/CHAIN/DETONATE timing, max power, opponent-meld use, multi-attach size, RUMMY, maintenance and intentional bomb acceptance
+- [x] Track turn count, BURST/CHAIN/DETONATE timing, max power, opponent-meld use, multi-attach size, RUMMY, maintenance and intentional bomb acceptance — 전투별 구조화 이벤트를 수집해 결과 요약에 표시하고 일반/연습 전투 최근 50판을 `rummyDuelBattleMetricsV1` 로컬 기록으로 보존. 튜토리얼/DEV 전투는 밸런스 표본에서 제외
 - [ ] Balance from playtest data before large content expansion
 
 ## M13 — Static code split
@@ -427,6 +427,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. UX1 P1: deterministic 기본 조작 → 세트 → 런 → 붙이기 → 상대 공개 조합 → 스위치 lessons are live; next connect 러미, then move into P2 누적 위력 / 폭발 tutorial.
-2. UI2 P2: finish the 360–480px real-device visual check, then defer P3 art/brand polish until gameplay/tutorial UX is steadier.
-3. L10N1 + M8: continue remaining text cleanup and named-card choice/copy/timing audit in parallel; do not begin large M9/content expansion until the first ~50 named-card behaviors and UX1 P1 are both stable.
+1. UI2 P2: finish the remaining 360–480px live-browser / real-device visual check; static fallbacks and desktop/tablet/P3 visual audits are already locked.
+2. M12: collect real playtest samples from the new per-battle metrics history and balance from data before large content expansion.
+3. M11A/M11B: keep roguelike progression and asymmetric top/bottom-rank cards in prototype/design validation until M12 evidence supports promotion; defer M13 file splitting until rules/tests remain stable through those experiments.
