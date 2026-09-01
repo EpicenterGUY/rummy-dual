@@ -21,8 +21,8 @@ ok(source('newGame').includes('state.battleMetrics=null'),'every new game resets
 ok(source('newGame').includes('state.m11bExperimentBattle=false')&&source('newGame').includes('state.m11bExperimentStats=null'),'ordinary new games clear all previous M11B experiment flags/stats');
 ok(source('applyRankChoicePlan').includes("recordM11BRankChoices(list,normalized)"),'atomic rank-plan commit records actual asymmetric choice only after success');
 ok(source('saveBattleMetrics').includes("if(state.m11bExperimentBattle){st.saved=true;return saveM11BExperimentMetrics(outcome)}")&&source('saveBattleMetrics').includes('if(state.developerBattle)return false'),'experiment battles route to isolated storage while ordinary DEV battles stay unsaved');
-ok(source('restartCurrentCombat').includes("startM11BExperimentBattle(state.m11bExperimentCohort||'few')"),'result replay preserves the current experiment cohort');
-ok(source('setupM11BExperimentBattle').includes("e.deck=makeM11BExperimentDeck('enemy','zero')"),'experiment opponent always uses the zero-asymmetric control deck');
+ok(source('restartCurrentCombat').includes("startM11BExperimentBattle(state.m11bExperimentCohort||'few',state.m11bExperimentSeed||currentM11BExperimentSeed())"),'result replay preserves the current experiment cohort and paired deck seed');
+ok(source('setupM11BExperimentBattle').includes("e.deck=makeM11BExperimentDeck('enemy','zero',pairSeed)"),'experiment opponent always uses the zero-asymmetric control deck under the same paired seed');
 ok(source('setupM11BExperimentBattle').includes('state.developerBattle=true')&&source('setupM11BExperimentBattle').includes('state.field=null'),'experiment battle is progress-safe DEV combat with field noise removed');
 
 // Synthetic experiment deck must keep the same 29 canonical slots + one Joker and add no NAMED definitions.
