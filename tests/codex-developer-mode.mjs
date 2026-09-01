@@ -65,7 +65,7 @@ ok(script.includes('developerBattle:false'),'battle state owns an explicit devel
 ok(source('newGame').includes("state.developerBattle=mode==='battle'"),'new battle snapshots DEV status at battle start');
 ok(source('render').includes("state.developerBattle?'<span class=\"gold\"> · DEV</span>'"),'combat HUD marks a non-rewarding DEV battle');
 const grant=source('grantVictoryProgress');
-ok(grant.includes('if(state.developerBattle){state.rewarded=true;return[]}'),'progress grant has a hard DEV battle guard');
+ok(grant.includes("if(state.developerBattle||state.sessionMode!=='battle'){state.rewarded=true;return[]}"),'progress grant has hard DEV and non-standard-session guards');
 {
  const state={rewarded:false,developerBattle:true};
  const ctx=context({state});

@@ -17,7 +17,7 @@ ok(script.includes('state.tutorialStepToken++;state.tutorialStep=id'), 'every tu
 ok(script.includes('stepToken=state.tutorialStepToken') && script.includes('state.tutorialStepToken===stepToken'), 'auto advance requires the same tutorial step revision');
 ok(script.includes("function restartTutorialStep(){if(state.sessionMode!=='tutorial'||!state.tutorialStep)return false") && script.includes('단계 재시작 · 고정 상태를 처음부터 다시 구성했습니다.'), 'manual step restart rebuilds deterministic state explicitly');
 ok(script.includes("if(!state.tutorialExitArmed){state.tutorialExitArmed=true") && script.includes("},2400);return false}progress.tutorialPromptSeen=true;saveProgress();showStartScreen();return true}"), 'tutorial exit requires a second confirmation tap and preserves progress state');
-ok(script.includes("state.sessionMode='menu';state.tutorialStep=null;state.tutorialExitArmed=false"), 'returning to menu clears tutorial exit state and invalidates session work');
+ok(script.includes("state.sessionMode='menu'")&&source('showStartScreen').includes('state.tutorialStep=null')&&source('showStartScreen').includes('state.tutorialExitArmed=false'), 'returning to menu clears tutorial exit state and invalidates session work');
 ok(script.includes("exit.textContent=state.tutorialExitArmed?'한 번 더 눌러 종료':'튜토리얼 종료'"), 'coach gives explicit Korean exit confirmation feedback');
 
 const drawStart=script.indexOf('function playerDraw('), drawGuard=script.indexOf("if(!tutorialAllows(tutorialAction",drawStart), drawMutation=script.indexOf("c=drawOne('player'",drawStart);

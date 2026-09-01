@@ -9,7 +9,7 @@ function install(ctx,...names){for(const n of names)vm.runInContext(functionSour
 new Function(script);
 ok(html.includes('id="practiceStartBtn"')&&html.includes('자유 연습전 · 진행도 영향 없음'),'start screen exposes free practice battle without changing the four primary menu items');
 ok(html.includes('id="tutorialPracticeBtn"')&&script.includes("practice.hidden=!(state.tutorialSegmentDone&&segmentEnd)"),'completed basic or advanced tutorial segment can continue directly into free practice');
-ok(script.includes("function newGame(mode='battle'){state.sessionMode=mode;")&&script.includes("function isLiveCombatSession(){return state.sessionMode==='battle'||state.sessionMode==='practice'}"),'battle engine has an explicit practice session mode');
+ok(script.includes("function newGame(mode='battle'){state.sessionMode=mode;")&&functionSource('isLiveCombatSession').includes("state.sessionMode==='practice'")&&functionSource('isLiveCombatSession').includes("state.sessionMode==='roguelike'"),'battle engine has explicit practice and roguelike experiment session modes');
 ok(script.includes("const actionCap=state.sessionMode==='practice'?2:4"),'practice CPU uses a reduced action cap');
 ok(script.includes("if(practice){title.textContent=win?'연습전 승리':'연습전 패배'")&&script.includes("이 결과는 클리어·레벨·해금에 반영되지 않습니다."),'practice result path explicitly avoids progression rewards');
 ok(script.includes("if(state.sessionMode==='practice')startPracticeBattle();else newGame('battle')"),'reset and result replay preserve practice mode');

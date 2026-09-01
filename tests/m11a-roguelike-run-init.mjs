@@ -23,7 +23,7 @@ ok(source('createRoguelikeRunDraft').includes('themeLocks:[]')&&source('createRo
 ok(script.includes("const ROGUELIKE_STARTER_REGULAR_SLOTS=Object.freeze(['S3','S4','S5'"),'starter baseline keeps an isolated canonical 29-slot structure');
 ok(source('createRoguelikeRunDraft').includes('deckPlan:roguelikeStarterDeckPlan(id)'),'run draft materializes the locked starter deck-plan contract');
 ok(source('createRoguelikeRunDraft').includes("passivePlan:{status:'locked-v1',id:'none',directCombat:false}"),'v1 starters explicitly have no direct combat passive');
-ok(source('roguelikeRunDraftText').includes('현재 전투에는 아직 연결하지 않음'),'UI clearly labels the run draft as non-combat prototype state');
+ok(source('roguelikeRunDraftText').includes('별도 런 덱 실험전 사용 가능'),'UI exposes the prepared run deck as an isolated experiment battle source');
 
 {
   const store=new Map();
@@ -61,4 +61,3 @@ ok(road.includes('- [x] PURE 시작 덱의 숫자/무늬 분포 확정'),'PURE d
 ok(master.includes('## 15. 스타터 수치 기준 v1 — 30장 / PURE 기준 구조')&&master.includes('character-tendency-score-v1'),'master plan records the locked starter counts and soft reward-ranking weights');
 ok(starters.includes('## 3. 일반 캐릭터 스타터 덱 — v1 잠금')&&starters.includes('순수 정규 29 + 기본 와일드 조커 1'),'starter doc records both general and PURE 30-card baselines');
 console.log('M11A roguelike run initialization regression passed.');
-
