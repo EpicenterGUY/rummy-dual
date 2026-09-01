@@ -1,4 +1,4 @@
-name: One-time M11B Mobile First Exposure v2
+name: One-time M11B Mobile First Exposure v3
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
       - name: Apply M11B mobile first-exposure guidance
         run: python3 .github/scripts/m11b_mobile_intro_patch.py
-      - name: Align prior M11B UI regression
+      - name: Align prior M11B UI regressions
         run: python3 .github/scripts/m11b_mobile_intro_compat.py
       - name: Install M11B mobile intro regression
         shell: bash
@@ -40,7 +40,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-mobile-intro.mjs tests/m11b-rank-choice-ui.mjs .github/scripts/m11b_rank_choice_ui_regression.mjs
+          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-mobile-intro.mjs tests/m11b-rank-choice-ui.mjs tests/m11b-rank-ui.mjs .github/scripts/m11b_rank_choice_ui_regression.mjs .github/scripts/m11b_rank_ui_regression.mjs
           git commit -m 'feat: finish M11B mobile rank onboarding'
           git pull --rebase origin main
           git push origin HEAD:main
