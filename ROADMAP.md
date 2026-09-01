@@ -416,6 +416,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 
 ## M12 — Metrics and balance
 - [x] Track turn count, BURST/CHAIN/DETONATE timing, max power, opponent-meld use, multi-attach size, RUMMY, maintenance and intentional bomb acceptance — 전투별 구조화 이벤트를 수집해 결과 요약에 표시하고 일반/연습 전투 최근 50판을 `rummyDuelBattleMetricsV1` 로컬 기록으로 보존. 튜토리얼/DEV 전투는 밸런스 표본에서 제외
+- [x] Review/export local playtest metrics — 개발자 패널에서 최근 50판의 일반/연습 표본 수, 일반전 승률, 평균 턴·최대 위력·버스트·체인·폭발·상대 조합 사용·러미·정비와 다중붙이기/소폭탄 수용을 즉시 요약하고 최근 8판 상세·JSON 복사·기록 초기화를 지원
 - [ ] Balance from playtest data before large content expansion
 
 ## M13 — Static code split
