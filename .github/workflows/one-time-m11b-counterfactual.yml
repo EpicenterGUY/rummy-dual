@@ -1,4 +1,4 @@
-name: One-time M11B Counterfactual Telemetry v3
+name: One-time M11B Counterfactual Telemetry v4
 
 on:
   push:
@@ -40,7 +40,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-counterfactual.mjs
+          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-counterfactual.mjs .github/scripts/m11b_counterfactual_regression.mjs
           git commit -m 'feat: track M11B base-rank action rescues'
           git pull --rebase origin main
           git push origin HEAD:main
