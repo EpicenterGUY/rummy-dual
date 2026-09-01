@@ -33,7 +33,7 @@ const unresolved={uid:2,suit:'S',rank:'7',baseRank:'7',topRank:'3',bottomRank:'7
 const unresolvedHtml=ctx.cardHTML({...unresolved});
 ok(unresolvedHtml.includes('asymmetricRank rankUnresolved'),'unresolved X/Y card is visibly classified as asymmetric');
 ok(unresolvedHtml.includes('>3<br>♠')&&unresolvedHtml.includes('>7<br>♠'),'unresolved X/Y card prints distinct top and bottom ranks');
-ok(unresolvedHtml.includes('↕ 3/7'),'unresolved X/Y card displays a compact two-choice marker');
+ok(unresolvedHtml.includes('↕ 선택')&&unresolvedHtml.includes('>3<br>♠')&&unresolvedHtml.includes('>7<br>♠'),'unresolved X/Y card combines distinct printed corners with an explicit selectable-rank marker');
 ok(ctx.rankPrototypeDetailText({...unresolved})===' · 원본 슬롯 7♠ · 인쇄 3/7 · 사용값 미확정','detail text separates original slot, printed ranks, and unresolved use value');
 
 const top={...unresolved,uid:3,rank:'3',activeRank:'3',rankOrientation:'top'};

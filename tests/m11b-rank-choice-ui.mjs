@@ -59,5 +59,5 @@ const namedStart=script.indexOf('const NAMED={'),namedEnd=script.indexOf('const 
 ok(!/topRank\s*:|bottomRank\s*:/.test(namedBlock),'player choice UI still ships with zero live asymmetric card definitions');
 ok(doc.includes('UI 프로토타입 단계 2')&&doc.includes('합법 plan이 1개뿐이어도 자동 선택하지 않는다'),'prototype document locks explicit player direction choice');
 ok(road.includes('- [x] 손패에서 비대칭 카드 선택 시 두 사용값과 각각의 합법 세트/런 후보를 미리보기로 표시'),'ROADMAP closes the hand rank-choice preview item');
-ok(road.includes('- [ ] 모바일에서 상·하단 숫자가 다른 카드가 단순 오타처럼 보이지 않도록 최초 획득/튜토리얼 설명 설계'),'mobile/onboarding explanation remains the final M11B UI item');
+ok(road.includes('- [x] 모바일에서 상·하단 숫자가 다른 카드가 단순 오타처럼 보이지 않도록 최초 획득/튜토리얼 설명 설계'),'mobile/onboarding explanation is completed after the rank-choice UI phase');
 console.log('M11B player asymmetric-rank choice UI regression passed.');
