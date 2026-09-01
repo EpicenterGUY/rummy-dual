@@ -1,4 +1,4 @@
-name: One-time M11B Paired Seed v2
+name: One-time M11B Paired Seed v3
 
 on:
   push:
@@ -44,4 +44,4 @@ jobs:
           git commit -m 'feat: add paired M11B experiment seeds'
           git pull --rebase origin main
           git push origin HEAD:main
-# rerun v2: normalize legacy duplicate M11B event wiring
+# rerun v3: robust duplicate event-block cleanup and onclick regression
