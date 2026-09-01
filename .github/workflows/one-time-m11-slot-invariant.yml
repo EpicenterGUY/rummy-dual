@@ -1,4 +1,4 @@
-name: One-time M11B Player Rank Choice UI
+name: One-time M11B Player Rank Choice UI v2
 
 on:
   push:
@@ -16,6 +16,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Align rank-choice patcher to current attach source
+        run: python3 .github/scripts/m11b_rank_choice_ui_anchor_fix.py
       - name: Apply M11B player rank-choice UI
         run: python3 .github/scripts/m11b_rank_choice_ui_patch.py
       - name: Install M11B player rank-choice regression
