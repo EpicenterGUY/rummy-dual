@@ -1,4 +1,4 @@
-name: One-time M11B CPU Rank Plans v2
+name: One-time M11B Rank Frame UI
 
 on:
   push:
@@ -16,17 +16,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Apply M11B CPU rank-plan heuristic
-        run: python3 .github/scripts/m11b_ai_rank_patch.py
-      - name: Make prior M11B regressions phase-progress tolerant
-        run: python3 .github/scripts/m11b_progressive_test_patch.py
-      - name: Install M11B CPU regression
+      - name: Apply M11B asymmetric-rank frame UI
+        run: python3 .github/scripts/m11b_rank_ui_patch.py
+      - name: Install M11B rank-frame UI regression
         shell: bash
         run: |
-          cp .github/scripts/m11b_ai_rank_regression.mjs tests/m11b-ai-rank-plans.mjs
-          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/m11b-ai-rank-plans.mjs
-          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/m11b-ai-rank-plans.mjs
-          sed -i "s|fs.readFileSync('docs/ASYMMETRIC_RANK_PROTOTYPE.md','utf8')|fs.readFileSync(new URL('../docs/ASYMMETRIC_RANK_PROTOTYPE.md',import.meta.url),'utf8')|" tests/m11b-ai-rank-plans.mjs
+          cp .github/scripts/m11b_rank_ui_regression.mjs tests/m11b-rank-ui.mjs
+          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/m11b-rank-ui.mjs
+          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/m11b-rank-ui.mjs
+          sed -i "s|fs.readFileSync('docs/ASYMMETRIC_RANK_PROTOTYPE.md','utf8')|fs.readFileSync(new URL('../docs/ASYMMETRIC_RANK_PROTOTYPE.md',import.meta.url),'utf8')|" tests/m11b-rank-ui.mjs
       - name: Run all regressions
         shell: bash
         run: |
@@ -35,12 +33,12 @@ jobs:
             echo "== $f =="
             node "$f"
           done
-      - name: Commit M11B CPU rank plans
+      - name: Commit M11B rank-frame UI
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-ai-rank-plans.mjs tests/m11b-action-commit.mjs .github/scripts/m11b_action_commit_regression.mjs
-          git commit -m 'feat: add dormant M11B CPU rank-plan heuristic'
+          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-rank-ui.mjs
+          git commit -m 'feat: prototype M11B asymmetric-rank card frame UI'
           git pull --rebase origin main
           git push origin HEAD:main
