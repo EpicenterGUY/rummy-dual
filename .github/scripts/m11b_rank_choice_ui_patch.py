@@ -33,13 +33,8 @@ if helpers.strip() not in s:
     s=s.replace(anchor,anchor+helpers,1)
 
 # Player attach legality must inspect all rank projections, not unresolved base rank.
-old="""  const combined=m.cards.concat(cards),type=meldType(combined);
-  if(type!==m.type)return false;
-"""
-new="""  const rankPlans=typeof legalRankChoicePlansForAttach==='function'?legalRankChoicePlansForAttach(m,cards):null;
-  const combined=m.cards.concat(cards),type=rankPlans?.[0]?.type||meldType(combined);
-  if(rankPlans?rankPlans.length===0:type!==m.type)return false;
-"""
+old="  if(meldType(m.cards.concat(cards))!==m.type)return false;"
+new="const rankPlans=typeof legalRankChoicePlansForAttach==='function'?legalRankChoicePlansForAttach(m,cards):null;if(rankPlans?rankPlans.length===0:meldType(m.cards.concat(cards))!==m.type)return false;"
 if old in s:s=s.replace(old,new,1)
 elif new not in s:raise SystemExit('canAttachTo legality anchor missing')
 

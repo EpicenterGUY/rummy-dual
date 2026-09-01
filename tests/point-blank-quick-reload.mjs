@@ -87,8 +87,9 @@ ok(script.includes('이미 새 조합을 만들었어도')&&script.includes('버
   ok(ctx.recoveredCardCanReturn(quick,66,{})===false,'destination-bound return override rules remain separate from Quick Reload');
 }
 
-const playerMeld=source('playerMeld'),buttons=source('updateButtons'),ai=source('continueAITurnAfterAcquisition'),bestFinish=source('bestFinishRunAI'),legal=source('hasAnyLegalAction');
-ok(playerMeld.includes("newMeldAccess('player',cs)")&&playerMeld.includes('퀵 리로드가 있다면'),'player new-meld action recognizes only the explicit Quick Reload exception');
+const playerMeld=source('playerMeld'),executePlayerMeld=script.includes('function executePlayerMeld(')?source('executePlayerMeld'):'',buttons=source('updateButtons'),ai=source('continueAITurnAfterAcquisition'),bestFinish=source('bestFinishRunAI'),legal=source('hasAnyLegalAction');
+const playerMeldContract=executePlayerMeld||playerMeld;
+ok(playerMeldContract.includes("newMeldAccess('player',cs)")&&playerMeldContract.includes('퀵 리로드가 있다면')&&(!executePlayerMeld||playerMeld.includes('executePlayerMeld(cs')),'player new-meld action recognizes only the explicit Quick Reload exception across the rank-choice UI delegation');
 ok(buttons.includes("newMeldAccess('player',cs)")&&buttons.includes('퀵 리로드 · 추가'),'UI previews the extra new meld instead of saying the action is already spent');
 ok(!ai.includes("nm=!state.enemy.newMeldUsed")&&!ai.includes("if(nm&&!state.enemy.newMeldUsed"),'AI new-meld loop no longer hard-blocks a valid Quick Reload extra action');
 ok(!bestFinish.includes('if(s.newMeldUsed||'),'AI may finish a RUN to open a slot when a valid Quick Reload extra action exists');
