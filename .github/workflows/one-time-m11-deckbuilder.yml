@@ -1,4 +1,4 @@
-name: One-time M12 Battle Metrics
+name: One-time M12 Metrics Viewer
 
 on:
   push:
@@ -16,14 +16,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Apply M12 battle metrics
-        run: python3 .github/scripts/m12_battle_metrics_patch.py
-      - name: Install M12 metrics regression
+      - name: Apply M12 metrics viewer
+        run: python3 .github/scripts/m12_metrics_viewer_patch.py
+      - name: Install M12 viewer regression
         shell: bash
         run: |
-          cp .github/scripts/m12_battle_metrics_regression.mjs tests/m12-battle-metrics.mjs
-          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/m12-battle-metrics.mjs
-          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/m12-battle-metrics.mjs
+          cp .github/scripts/m12_metrics_viewer_regression.mjs tests/m12-metrics-viewer.mjs
+          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/m12-metrics-viewer.mjs
+          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/m12-metrics-viewer.mjs
       - name: Run all regressions
         shell: bash
         run: |
@@ -32,12 +32,12 @@ jobs:
             echo "== $f =="
             node "$f"
           done
-      - name: Commit M12 battle metrics
+      - name: Commit M12 metrics viewer
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md tests/m12-battle-metrics.mjs
-          git commit -m 'feat: add per-battle M12 metrics history'
+          git add index.html ROADMAP.md tests/m12-metrics-viewer.mjs
+          git commit -m 'ui: add M12 local metrics review panel'
           git pull --rebase origin main
           git push origin HEAD:main
