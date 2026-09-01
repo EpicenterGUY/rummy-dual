@@ -1,4 +1,4 @@
-name: One-time M11B Developer Sandbox v2
+name: One-time M11B Developer Sandbox v3
 
 on:
   push:
@@ -42,3 +42,4 @@ jobs:
           git commit -m 'feat: add M11B developer battle sandbox'
           git pull --rebase origin main
           git push origin HEAD:main
+# rerun v3: M12 experiment-storage regression compatibility
