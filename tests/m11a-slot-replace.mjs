@@ -44,5 +44,6 @@ ok(road.includes('- [x] 카드 보상/상점/이벤트에서 슬롯 교체 UI �
 ok(road.includes('- [x] 카드 제거와 네임드 교체의 경제적 가치 비교'),'ROADMAP closes the structural removal-versus-replacement economy comparison');
 ok(master.includes('## 14. 성장 경제 구조 실험 v1 — 제거 vs 동일 슬롯 교체'),'master plan records the structural economy decision after the replacement contract');
 ok(master.includes('## 13. 동일 슬롯 교체 UI 계약 v1')&&master.includes('`reward / shop / event`'),'master plan documents shared reward/shop/event replacement source contract');
-ok(master.includes('실제 적용 버튼은 비활성 상태'),'master plan explicitly keeps live deck mutation disabled at this stage');
+ok(master.includes('런 덱에 적용'),'master plan documents live run-only replacement');
 console.log('M11A same-slot replacement UI regression passed.');
+

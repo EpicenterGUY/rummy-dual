@@ -51,3 +51,4 @@ ok(road.includes('- [x] 캐릭터별 실제 시작 네임드 6 + 조커 1 조합
 ok(master.includes('## 16. 실제 스타터 네임드 조립 v1')&&master.includes('ROGUELIKE_STARTER_LOADOUTS'),'master plan records the actual starter loadout contract');
 ok(starters.includes('H2 귀환자, C5 연결고리')&&starters.includes('C8 복사기, D6 예약 발송'),'starter doc exposes the locked character loadouts');
 console.log('M11A starter loadout regression passed.');
+

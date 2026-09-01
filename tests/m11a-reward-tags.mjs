@@ -16,7 +16,7 @@ for(const n of ['roguelikeEffectActionTags','roguelikeNamedActionTags','roguelik
 ok(source('createRoguelikeRunDraft').includes("status:'ranking-weights-v1',probabilityStatus:'unresolved',candidateAlgorithm:ROGUELIKE_REWARD_ALGORITHM")&&source('createRoguelikeRunDraft').includes("weightingMode:'character-tendency-score-v1',hardLock:false"),'run draft locks soft ranking weights while exact reward probabilities remain unresolved');
 ok(source('roguelikeRewardCandidates').includes("mode:'same-slot-replacement'"),'v1 candidate generation is explicitly same-slot replacement only');
 ok(source('roguelikeRewardCandidates').includes("String(id).startsWith('J')")&&source('roguelikeRewardCandidates').includes('profile.slots.includes(slot)')&&source('roguelikeRewardCandidates').includes('profile.variants[slot]!==id'),'candidate pool excludes jokers, out-of-deck slots, and already equipped exact variants');
-ok(source('roguelikeRewardPreviewText').includes('normalizeDeckBuild(progress.deckBuild)'),'developer preview uses the current 29-slot builder only as a structural surrogate');
+ok(source('roguelikeRewardPreviewText').includes('roguelikeRunDeckProfile(draft)')&&!source('roguelikeRewardPreviewText').includes('progress.deckBuild'),'developer preview uses persistent run deck rather than normal battle deck');
 
 {
   const NAMED={
@@ -58,3 +58,4 @@ ok(master.includes('## 12. 행동 태그 기반 카드 보상 후보 알고리�
 ok(master.includes('현재 장착 중인 동일 변형, 조커, 덱에 없는 슬롯은 제외'),'master plan locks same-slot replacement candidate safety');
 ok(master.includes('건너뛰기')&&master.includes('하드 잠금은 만들지 않으므로'),'master plan retains skip and cross-theme openness');
 console.log('M11A action-tag reward algorithm regression passed.');
+
