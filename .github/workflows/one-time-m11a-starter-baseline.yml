@@ -1,0 +1,42 @@
+name: One-time M11A Starter Baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m11a-starter-baseline.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-test-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply starter baseline patch
+        run: python .github/scripts/patch_m11a_starter_baseline.py
+      - name: Run all regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+      - name: Recheck structural baseline
+        env:
+          M11A_ECONOMY_SEEDS: '4000'
+        run: node experiments/m11a-growth-economy.mjs
+      - name: Commit M11A starter baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md docs/ROGUELIKE_MASTER_PLAN.md docs/ROGUELIKE_DECK_STARTERS.md tests/m11a-roguelike-run-init.mjs tests/m11a-reward-tags.mjs
+          git diff --cached --check
+          git commit -m 'feat: lock M11A starter baseline v1'
+          git push origin HEAD:main
