@@ -41,3 +41,4 @@ jobs:
           git commit -m 'ui: unify card and named-frame palette'
           git pull --rebase origin main
           git push origin HEAD:main
+# rerun after fixing the regression to validate final CSS cascade order
