@@ -1,4 +1,4 @@
-name: One-time M11B Deck Analysis
+name: One-time M11B Deck Analysis v2
 
 on:
   push:
