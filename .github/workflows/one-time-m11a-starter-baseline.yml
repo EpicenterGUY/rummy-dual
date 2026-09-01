@@ -18,6 +18,28 @@ jobs:
           fetch-depth: 0
       - name: Apply starter baseline patch
         run: python .github/scripts/patch_m11a_starter_baseline.py
+      - name: Isolate starter slot constant
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          slots="['S3','S4','S5','S6','S7','S8','S9','H2','H3','H4','H7','H8','H9','D2','D3','D4','D5','D6','D7','D8','C3','C4','C5','C6','C7','C8','C9','S10','H10']"
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='const ROGUELIKE_STARTER_REGULAR_SLOTS=Object.freeze(CORE_IDS.slice(0,29));'
+          new=f'const ROGUELIKE_STARTER_REGULAR_SLOTS=Object.freeze({slots});'
+          if old not in s:
+              raise SystemExit('starter slot constant anchor missing')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+
+          p=Path('tests/m11a-roguelike-run-init.mjs')
+          s=p.read_text(encoding='utf-8')
+          old="ok(script.includes('const ROGUELIKE_STARTER_REGULAR_SLOTS=Object.freeze(CORE_IDS.slice(0,29));'),'starter baseline reuses the canonical 29-slot structure');"
+          new="ok(script.includes(\"const ROGUELIKE_STARTER_REGULAR_SLOTS=Object.freeze(['S3','S4','S5'\"),'starter baseline keeps an isolated canonical 29-slot structure');"
+          if old not in s:
+              raise SystemExit('starter slot regression anchor missing')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
       - name: Run all regressions
         shell: bash
         run: |
