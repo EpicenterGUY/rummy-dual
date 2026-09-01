@@ -1,0 +1,49 @@
+name: One-time P3 Shell Visual Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-p3-shell-visual-audit.yml'
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Korean font fallback
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          fc-cache -f
+      - name: Prepare result and codex pages
+        shell: bash
+        run: |
+          cp index.html /tmp/p3-result.html
+          cp index.html /tmp/p3-codex.html
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/p3-result.html'); s=p.read_text()
+          inject=r'''<script>window.addEventListener('load',()=>setTimeout(()=>{document.getElementById('startScreen')?.classList.add('hidden');const t=document.getElementById('resultTitle'),x=document.getElementById('resultText'),c=document.getElementById('circulationSummary'),u=document.getElementById('resultUnlocks');if(t){t.textContent='승리';t.className='cyan'}if(x)x.textContent='상대의 마지막 코어를 파괴했습니다. 유랑자 Lv.4 · 전체 12클리어 · 러미 2회.';if(c)c.textContent='패순환 · 평균 손패 4.8장 · 2장 이하 11% · 저손패 보호 1회 · 러미 2회 · 정비 3회 · 전체 재순환 0회';if(u){u.style.display='block';u.innerHTML='<b>새 해금</b><br>• 네임드: 앙코르<br>• 필드: 교차로'}document.getElementById('overlay')?.classList.add('show')},150));</script>'''
+          s=s.replace('</body>',inject+'</body>',1);p.write_text(s)
+          p=Path('/tmp/p3-codex.html'); s=p.read_text()
+          inject=r'''<script>window.addEventListener('load',()=>setTimeout(()=>document.getElementById('startCodexBtn')?.click(),180));</script>'''
+          s=s.replace('</body>',inject+'</body>',1);p.write_text(s)
+          PY
+      - name: Capture desktop and mobile shells
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          mkdir -p visual-audit
+          for SPEC in '1366,768:desktop' '390,844:mobile'; do
+            SIZE="${SPEC%%:*}"; LABEL="${SPEC##*:}"
+            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size="$SIZE" --virtual-time-budget=1300 --screenshot="visual-audit/start-$LABEL.png" "file://$GITHUB_WORKSPACE/index.html"
+            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size="$SIZE" --virtual-time-budget=1500 --screenshot="visual-audit/result-$LABEL.png" "file:///tmp/p3-result.html"
+            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size="$SIZE" --virtual-time-budget=1800 --screenshot="visual-audit/codex-$LABEL.png" "file:///tmp/p3-codex.html"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: p3-shell-visual-audit
+          path: visual-audit/*.png
+          retention-days: 1
