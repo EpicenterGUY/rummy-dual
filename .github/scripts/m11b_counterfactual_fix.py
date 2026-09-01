@@ -2,6 +2,8 @@ from pathlib import Path
 
 p=Path('index.html')
 s=p.read_text()
+
+# Multi-attach telemetry only applies to attach actions with 2+ cards.
 old="opponent:targetSide===other(w),multi:list.length>1,slots:"
 new="opponent:targetSide===other(w),multi:!!m&&list.length>1,slots:"
 if old not in s:
@@ -9,6 +11,16 @@ if old not in s:
         raise SystemExit('counterfactual multi-attach anchor missing')
 else:
     s=s.replace(old,new,1)
+
+# Keep recordM11BRankChoices extractable in isolated regressions. Runtime uses
+# RANK_VALUE; extracted-function tests get the same canonical fallback table.
+old_gap="const orientation=x.orientation==='bottom'?'bottom':'top',gap=Math.abs((RANK_VALUE[c.topRank]||0)-(RANK_VALUE[c.bottomRank]||0));"
+new_gap="const orientation=x.orientation==='bottom'?'bottom':'top',rv=typeof RANK_VALUE==='object'&&RANK_VALUE?RANK_VALUE:{A:1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13},gap=Math.abs((rv[c.topRank]||0)-(rv[c.bottomRank]||0));"
+if old_gap in s:
+    s=s.replace(old_gap,new_gap,1)
+elif new_gap not in s:
+    raise SystemExit('rank-choice gap anchor missing')
+
 p.write_text(s)
 
 # Lock the terminology in the prototype doc: multi-attach means attach action only.
@@ -22,7 +34,7 @@ elif new_doc not in d:
     raise SystemExit('counterfactual doc anchor missing')
 doc.write_text(d)
 
-# Add a permanent regression assertion for the semantic boundary.
+# Add permanent regression assertions for both semantic boundaries.
 t=Path('.github/scripts/m11b_counterfactual_regression.mjs')
 r=t.read_text()
 anchor="ok(st.asymActions===1&&st.rescuedActions===1&&st.rescuedSet===1&&st.rescuedRun===0,'rescued SET counters update exactly once');"
@@ -31,4 +43,4 @@ if insert not in r:
     if anchor not in r: raise SystemExit('counterfactual regression anchor missing')
     r=r.replace(anchor,insert,1)
 t.write_text(r)
-print('M11B counterfactual multi-attach semantics fixed')
+print('M11B counterfactual telemetry semantics and isolated-test compatibility fixed')
