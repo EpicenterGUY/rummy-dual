@@ -21,11 +21,26 @@ jobs:
       - name: Run all regressions
         shell: bash
         run: |
-          set -euo pipefail
+          set +e
+          : > starter-baseline-test-report.txt
+          failed=0
           for f in tests/*.mjs; do
-            echo "== $f =="
-            node "$f"
+            echo "== $f ==" | tee -a starter-baseline-test-report.txt
+            node "$f" 2>&1 | tee -a starter-baseline-test-report.txt
+            rc=${PIPESTATUS[0]}
+            if [ "$rc" -ne 0 ]; then
+              echo "FAILED_FILE=$f RC=$rc" | tee -a starter-baseline-test-report.txt
+              failed=$rc
+              break
+            fi
           done
+          exit "$failed"
+      - name: Upload regression report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m11a-starter-regression-report
+          path: starter-baseline-test-report.txt
       - name: Recheck structural baseline
         env:
           M11A_ECONOMY_SEEDS: '4000'
@@ -35,7 +50,7 @@ jobs:
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.email '41898282+github-actions-bot@users.noreply.github.com'
           git add index.html ROADMAP.md docs/ROGUELIKE_MASTER_PLAN.md docs/ROGUELIKE_DECK_STARTERS.md tests/m11a-roguelike-run-init.mjs tests/m11a-reward-tags.mjs
           git diff --cached --check
           git commit -m 'feat: lock M11A starter baseline v1'
