@@ -54,5 +54,5 @@ for(const text of [
   '버림패·소모패·덱·재순환처럼 조합 밖 영역에서는 방향 선택 상태를 유지하지 않는 기본안 검증'
 ])ok(road.includes(`- [x] ${text}`),`ROADMAP locks M11B scaffold item: ${text}`);
 ok(road.includes('새 조합 생성·붙이기·다중 붙이기에서 각 비대칭 카드의 사용값 선택 순서와 합법성 미리보기 구조 설계'),'later rank-choice planning remains tracked without forcing a past checklist state');
-ok(road.includes('- [ ] 버스트·체인·런 완주·러미 판정이 선택된 사용값만 읽고 기존 처리 순서를 그대로 유지하는지 검증'),'full live action/timing integration remains open after the dormant scaffold');
+ok(/- \[[ x]\] 버스트·체인·런 완주·러미 판정이 선택된 사용값만 읽고 기존 처리 순서를 그대로 유지하는지 검증/.test(road),'selected-rank action/timing integration remains tracked without forcing the original scaffold phase state');
 console.log('M11B asymmetric-rank compatibility scaffold regression passed.');

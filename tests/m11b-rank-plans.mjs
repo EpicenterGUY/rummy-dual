@@ -80,6 +80,6 @@ ok(doc.includes('## 2단계 — 사용값 plan 열거와 합법성 미리보기'
 ok(doc.includes('원본 카드 상태를 바꾸지 않고'),'prototype doc locks non-mutating legality exploration');
 ok(road.includes('- [x] 새 조합 생성·붙이기·다중 붙이기에서 각 비대칭 카드의 사용값 선택 순서와 합법성 미리보기 구조 설계'),'ROADMAP locks M11B rank-choice legality preview');
 ok(road.includes('- [x] A/Q/K 경계와 A-2-3 / Q-K-A / K-A-2 런 특수 규칙에서 비대칭 값 회귀 테스트 추가'),'ROADMAP locks asymmetric A/Q/K boundary regression');
-ok(road.includes('- [ ] 버스트·체인·런 완주·러미 판정이 선택된 사용값만 읽고 기존 처리 순서를 그대로 유지하는지 검증'),'full live action/timing verification remains open');
-ok(road.includes('- [ ] 조커의 와일드 판정, 기존 숫자 변경 효과, 복사 효과와 비대칭 값이 중첩될 때 우선순위 명문화'),'Joker/rank-modifier priority remains explicitly open');
+ok(/- \[[ x]\] 버스트·체인·런 완주·러미 판정이 선택된 사용값만 읽고 기존 처리 순서를 그대로 유지하는지 검증/.test(road),'selected-rank action/timing roadmap item remains tracked across later M11B phases');
+ok(/- \[[ x]\] 조커의 와일드 판정, 기존 숫자 변경 효과, 복사 효과와 비대칭 값이 중첩될 때 우선순위 명문화/.test(road),'Joker/rank-modifier priority roadmap item remains tracked across later M11B phases');
 console.log('M11B rank-choice planning and boundary regression passed.');

@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
-const html=fs.readFileSync('index.html','utf8');
-const road=fs.readFileSync('ROADMAP.md','utf8');
-const doc=fs.readFileSync('docs/ASYMMETRIC_RANK_PROTOTYPE.md','utf8');
+const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
+const doc=fs.readFileSync(new URL('../docs/ASYMMETRIC_RANK_PROTOTYPE.md',import.meta.url),'utf8');
 const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 function source(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw new Error(`missing ${name}`);let par=0,brace=-1;for(let i=start+marker.length-1;i<script.length;i++){if(script[i]==='(')par++;else if(script[i]===')')par--;else if(script[i]==='{'&&par===0){brace=i;break}}if(brace<0)throw new Error(`missing body ${name}`);let d=0;for(let i=brace;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)return script.slice(start,i+1)}throw new Error(`unterminated ${name}`)}
