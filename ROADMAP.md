@@ -11,6 +11,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] RUN CHAIN +10 / +15 / +20 / +25; CHAIN 4+ RUN may be voluntarily `런 완주`ed by its controller on their own turn to free the slot, while keeping it allows continued +25 extensions
 - [x] One central uncapped SWITCH; 100+ is display-only OVERLOAD
 - [x] One normal SWITCH return per turn
+- [x] Base new-meld limit: SET/RUN combined, at most one new exact 3-card meld per turn unless a named effect explicitly grants an extra new meld
 - [x] Public meld cap 2 per player; no free base meld/RUN disposal
 - [x] Shared discard has no size cap; base take is top only
 - [x] When a personal deck empties, recycle that player’s spent pile plus cards in the shared discard currently owned by that player; opponent-owned discard and public meld cards stay in place
