@@ -393,9 +393,9 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [ ] 순수 `X/X` 카드와 일반 네임드 `X/X`가 비대칭 `X/Y` 카드와 경쟁할 수 있는 유지 가치 설계
 
 ### 규칙·엔진 검증
-- [ ] 기존 단일 `rank`와 호환되는 `baseRank / topRank / bottomRank / activeRank` 데이터 구조 설계
-- [ ] 손에서는 `activeRank` 미확정, 조합 투입 시 확정, 조합을 떠나 손으로 돌아오면 다시 미확정으로 초기화하는 생명주기 명문화
-- [ ] 버림패·소모패·덱·재순환처럼 조합 밖 영역에서는 방향 선택 상태를 유지하지 않는 기본안 검증
+- [x] 기존 단일 `rank`와 호환되는 `baseRank / topRank / bottomRank / activeRank` 데이터 구조 설계 — 모든 정규 카드는 원본 슬롯용 `baseRank`, 인쇄값 `topRank/bottomRank`, 조합 안 선택값 `activeRank`를 가질 수 있다. 기존 엔진 호환을 위해 `rank`는 조합 밖에서는 `baseRank`, 향후 선택이 확정된 조합 안에서는 `activeRank`를 미러링하는 전환 계층으로 잠금. 현재 라이브 비대칭 정의는 0장
+- [x] 손에서는 `activeRank` 미확정, 조합 투입 시 확정, 조합을 떠나 손으로 돌아오면 다시 미확정으로 초기화하는 생명주기 명문화 — `chooseCardActiveRank` / `clearCardActiveRank`와 `rankOrientation`으로 top/bottom 방향을 분리하고 `docs/ASYMMETRIC_RANK_PROTOTYPE.md`에 영역별 생명주기를 고정
+- [x] 버림패·소모패·덱·재순환처럼 조합 밖 영역에서는 방향 선택 상태를 유지하지 않는 기본안 검증 — 손 진입, 공용 버림패 진입, 공개 조합 정리, 전체 재순환 경로에서 `activeRank/rankOrientation`을 제거하고 `rank=baseRank`로 복귀. 조합→조합 이동은 공개 조합을 떠나지 않으므로 선택값 유지 후보로 잠금
 - [ ] 새 조합 생성·붙이기·다중 붙이기에서 각 비대칭 카드의 사용값 선택 순서와 합법성 미리보기 구조 설계
 - [ ] 버스트·체인·런 완주·러미 판정이 선택된 사용값만 읽고 기존 처리 순서를 그대로 유지하는지 검증
 - [ ] A/Q/K 경계와 A-2-3 / Q-K-A / K-A-2 런 특수 규칙에서 비대칭 값 회귀 테스트 추가
