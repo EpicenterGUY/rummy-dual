@@ -38,6 +38,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html ROADMAP.md tests/*.mjs
-          git commit -m 'ui: finish tutorial tactical-board visuals'
+          git commit -m 'fix: preserve desktop tutorial coach placement'
           git pull --rebase origin main
           git push origin HEAD:main
+# rerun after real Chromium audit exposed a desktop position override
