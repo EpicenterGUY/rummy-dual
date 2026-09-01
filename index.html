@@ -674,6 +674,42 @@ function cardRuleRank(c){if(!c)return null;if(c.suit==='J')return c.rank||null;e
 function chooseCardActiveRank(c,rank,orientation=null){if(!c||c.suit==='J')return false;ensureRankPrototype(c);const options=cardPrintedRanks(c),pick=orientation?options.find(x=>x.orientation===orientation&&x.rank===rank):options.find(x=>x.rank===rank);if(!pick)return false;c.activeRank=pick.rank;c.rankOrientation=pick.orientation;c.rank=pick.rank;return true}
 function clearCardActiveRank(c){if(!c)return null;if(c.suit==='J'){c.activeRank=null;c.rankOrientation=null;return c}ensureRankPrototype(c);c.activeRank=null;c.rankOrientation=null;c.rank=c.baseRank;return c}
 function rankChoiceState(c){const printed=cardPrintedRanks(c);return{baseRank:c?.baseRank||c?.rank||null,topRank:printed[0]?.rank||null,bottomRank:printed[1]?.rank||null,activeRank:c?.activeRank||null,orientation:c?.rankOrientation||null,asymmetric:printed.length===2&&printed[0].rank!==printed[1].rank}}
+function rankChoiceOptions(c){
+  if(!c)return[];
+  if(isJoker(c))return[{uid:c.uid,orientation:null,rank:c.rank||null,locked:true,choiceRequired:false}];
+  ensureRankPrototype(c);
+  if(c.activeRank){
+    const orientation=c.rankOrientation||(c.activeRank===c.bottomRank&&c.activeRank!==c.topRank?'bottom':'top');
+    return[{uid:c.uid,orientation,rank:c.activeRank,locked:true,choiceRequired:false}];
+  }
+  if(!isAsymmetricRankCard(c))return[{uid:c.uid,orientation:null,rank:c.baseRank||c.rank,locked:true,choiceRequired:false}];
+  return cardPrintedRanks(c).map(x=>({uid:c.uid,orientation:x.orientation,rank:x.rank,locked:false,choiceRequired:true}));
+}
+function rankChoicePlans(cards,limit=64){
+  const list=Array.isArray(cards)?cards:[],cap=Math.max(1,Math.min(256,Math.floor(Number(limit)||64))),out=[],options=list.map(rankChoiceOptions);
+  if(options.some(x=>!x.length))return out;
+  function rec(i,plan){
+    if(out.length>=cap)return;
+    if(i>=options.length){out.push(plan.map((x,index)=>({...x,index})));return}
+    for(const opt of options[i]){plan.push(opt);rec(i+1,plan);plan.pop();if(out.length>=cap)break}
+  }
+  rec(0,[]);return out
+}
+function projectRankChoiceCards(cards,plan){
+  const list=Array.isArray(cards)?cards:[],p=Array.isArray(plan)?plan:[];
+  return list.map((c,i)=>{const pick=p[i];if(!pick||isJoker(c))return{...c};const projected={...c,rank:pick.rank};if(pick.orientation==='top'||pick.orientation==='bottom'){projected.activeRank=pick.rank;projected.rankOrientation=pick.orientation}else if(!c.activeRank){projected.activeRank=null;projected.rankOrientation=null}return projected})
+}
+function rankChoicePlanLabel(plan){const chosen=(Array.isArray(plan)?plan:[]).filter(x=>x.choiceRequired);return chosen.length?chosen.map(x=>`${x.index+1}번 ${x.orientation==='bottom'?'아래':'위'} ${x.rank}`).join(' · '):'기본 랭크'}
+function legalRankChoicePlansForNewMeld(cards){
+  if(!Array.isArray(cards)||cards.length!==3)return[];
+  const out=[];for(const plan of rankChoicePlans(cards)){const projected=projectRankChoiceCards(cards,plan),type=meldType(projected);if(type)out.push({plan,type,projected,label:rankChoicePlanLabel(plan)})}return out
+}
+function legalRankChoicePlansForAttach(m,cards){
+  if(!m||!Array.isArray(m.cards)||!Array.isArray(cards)||!cards.length)return[];
+  const out=[];for(const plan of rankChoicePlans(cards)){const projected=projectRankChoiceCards(cards,plan),combined=m.cards.concat(projected),type=meldType(combined);if(type===m.type)out.push({plan,type,projected,totalLength:combined.length,label:rankChoicePlanLabel(plan)})}return out
+}
+function rankChoicePreview(cards,m=null){const plans=m?legalRankChoicePlansForAttach(m,cards):legalRankChoicePlansForNewMeld(cards);return{requiresChoice:(cards||[]).some(c=>isAsymmetricRankCard(c)&&!c.activeRank),legal:plans.length>0,count:plans.length,plans:plans.map(x=>({type:x.type,label:x.label,ranks:x.plan.map(p=>p.rank),orientations:x.plan.map(p=>p.orientation)}))}}
+
 function makeCard(suit,rank,named,owner,variantId=null){const slot=suit==='J'?'J':suit+rank,id=variantId||(suit==='J'?rank:slot),def=named?NAMED[id]:null,baseRank=suit==='J'?null:rank,topRank=suit==='J'?null:(def?.topRank||baseRank),bottomRank=suit==='J'?null:(def?.bottomRank||baseRank);return{uid:uidSeq++,id,slot,suit,rank,baseRank,topRank,bottomRank,activeRank:null,rankOrientation:null,owner,originOwner:owner,name:def?.n||'순수 카드',effect:def?.d||'효과 없음. 기본 랭크와 무늬만 사용한다.',tag:def?.t||null,themeId:def?.themeId||null,prepRequired:Math.max(0,Number(def?.prepRequired)||0),named:!!def,age:0,handPrep:{turns:0,exitTurns:0,exitTurnToken:null,exitOwner:null},fromDiscard:false,smuggledActive:false,smuggledTurnToken:null,enteredMeldToken:null,suppressEffectToken:null,contractActive:false,healCharge:0,recoveredToken:null,recoverReturnOverrideToken:null,encoreGrantToken:null,encoreReturnUsedToken:null,themeTurnGates:{},fuseArmed:false,flexSuitOffSuit:false,officialStatus:{seal:0,fixed:0,protect:0,fixedOwner:null,fixedThroughStart:null},status:{charged:0,reserved:0,cursed:0,pledged:0,marked:0},blockedUntilTurn:null}}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const state={sessionMode:'menu',battleId:0,tutorialStep:null,tutorialStepToken:0,tutorialExitArmed:false,tutorialHintOpen:false,tutorialSegmentDone:false,tutorialSuccessText:'',player:null,enemy:null,discard:[],field:null,phase:'mulligan',turn:'player',turnNo:1,turnToken:0,selected:new Set(),selectionOrder:[],boardSelected:new Set(),target:null,logs:[],rummy:0,lastDamageTaken:0,lastEnemyUsedDiscard:false,lastPlayerUsedDiscard:false,lastEnemyDiscardRank:null,lastPlayerDiscardRank:null,lastPlayerMeldType:null,lastEnemyMeldType:null,lastPlayerReturnType:null,lastEnemyReturnType:null,switchTarget:'neutral',switchPower:0,lastSwitchAdd:0,lastSwitchActor:null,fuseUsed:false,gameOver:false,rewarded:false,pendingEffectChoice:null,effectChoiceQueue:[],aiChoiceResume:null,aiAsyncActionResult:null,developerBattle:false,tutorialThemeId:null};

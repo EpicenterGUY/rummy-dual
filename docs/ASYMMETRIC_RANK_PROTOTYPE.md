@@ -39,3 +39,25 @@
 - `fullRecirculation()` — 모든 영역을 덱으로 되돌리는 긴급 재순환에서 선택값 제거.
 
 다음 구현 단계는 `새 조합 생성 / 단일 붙이기 / 다중 붙이기`에서 비대칭 카드마다 가능한 사용값 조합을 열거하고, 실제 행동을 확정하기 전에 선택값을 고르게 하는 것이다.
+## 2단계 — 사용값 plan 열거와 합법성 미리보기
+
+이 단계도 라이브 카드/행동에는 연결하지 않는다. 합성 비대칭 카드로 가능한 `top/bottom` 선택을 **원본 카드 상태를 바꾸지 않고** 탐색한다.
+
+- `rankChoiceOptions(card)`: 이미 `activeRank`가 고정된 카드는 1개 고정 후보, 일반 `X/X`도 1개 기본 후보, 미확정 `X/Y`만 `top → bottom` 두 후보를 낸다.
+- `rankChoicePlans(cards)`: 사용자가 고른 카드 배열 순서를 유지하며 후보의 데카르트 곱을 만든다. 현재 다중 붙이기 탐색 상한과 맞춰 기본 최대 64개 plan으로 제한한다.
+- `projectRankChoiceCards(cards, plan)`: 실제 카드 객체는 건드리지 않고 얕은 복제본의 `rank/activeRank/rankOrientation`만 plan대로 투영한다.
+- `legalRankChoicePlansForNewMeld(cards)`: 정확히 3장의 projection을 기존 `meldType()`에 통과시켜 합법 세트/런 plan만 반환한다.
+- `legalRankChoicePlansForAttach(meld, cards)`: 대상 공개 조합 + projection이 원래 조합 종류를 유지하는 plan만 반환한다. 단일/다중 붙이기에 같은 함수를 쓴다.
+- `rankChoicePreview(cards, meld?)`: 향후 UI가 사용할 수 있도록 선택 필요 여부, 합법 plan 수, 각 카드의 선택 랭크/방향을 직렬화한다.
+
+### 경계 규칙
+
+`activeRank`는 기존 엔진의 `rank` 미러로 투영되므로 새 런 규칙을 만들지 않는다. 따라서 기존과 동일하게 `A-2-3`, `Q-K-A`는 허용하고 `K-A-2`는 허용하지 않는다. 비대칭 카드는 이 판정을 우회하지 않고, 두 인쇄값 중 선택된 하나가 기존 `setValid/runValid`에 들어갈 뿐이다.
+
+### 아직 하지 않는 것
+
+- 실제 네임드 정의에 `topRank != bottomRank`를 넣지 않는다.
+- 손패 클릭/붙이기 버튼에서 방향 선택 모달을 열지 않는다.
+- AI가 방향을 선택하지 않는다.
+- 조커·카운터피터·랭크 복사와의 최종 우선순위를 아직 확정하지 않는다.
+
