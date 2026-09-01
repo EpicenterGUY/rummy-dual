@@ -1,4 +1,4 @@
-name: One-time M11 exact-slot invariant
+name: One-time M11B Rank Scaffold
 
 on:
   push:
@@ -13,18 +13,18 @@ jobs:
   patch:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Lock M11 slot invariant
-        run: python3 .github/scripts/m11_slot_invariant_patch.py
-      - name: Install regression
+      - name: Apply M11B rank scaffold
+        run: python3 .github/scripts/m11b_rank_scaffold_patch.py
+      - name: Install M11B regression
         shell: bash
         run: |
-          cp .github/scripts/m11_slot_invariant_regression.mjs tests/m11-slot-invariant.mjs
-          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/m11-slot-invariant.mjs
-          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/m11-slot-invariant.mjs
+          cp .github/scripts/m11b_rank_scaffold_regression.mjs tests/m11b-rank-scaffold.mjs
+          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/m11b-rank-scaffold.mjs
+          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/m11b-rank-scaffold.mjs
+          sed -i "s|fs.readFileSync('docs/ASYMMETRIC_RANK_PROTOTYPE.md','utf8')|fs.readFileSync(new URL('../docs/ASYMMETRIC_RANK_PROTOTYPE.md',import.meta.url),'utf8')|" tests/m11b-rank-scaffold.mjs
       - name: Run all regressions
         shell: bash
         run: |
@@ -33,12 +33,12 @@ jobs:
             echo "== $f =="
             node "$f"
           done
-      - name: Commit M11 invariant
+      - name: Commit M11B rank scaffold
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add ROADMAP.md tests/m11-slot-invariant.mjs
-          git commit -m 'test: lock one-variant-per-slot deck invariant'
+          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-rank-scaffold.mjs
+          git commit -m 'feat: add dormant M11B asymmetric-rank scaffold'
           git pull --rebase origin main
           git push origin HEAD:main
