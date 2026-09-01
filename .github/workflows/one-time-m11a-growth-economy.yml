@@ -1,0 +1,29 @@
+name: One-time M11A Growth Economy Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m11a-growth-economy.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run all regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+      - name: Run M11A growth economy experiment
+        shell: bash
+        env:
+          M11A_ECONOMY_SEEDS: '4000'
+        run: node experiments/m11a-growth-economy.mjs
