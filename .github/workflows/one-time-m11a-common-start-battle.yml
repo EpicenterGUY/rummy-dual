@@ -1,0 +1,450 @@
+name: One-time M11A common-start battle progression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m11a-common-start-battle.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-common-start-battle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch common-start progression
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import textwrap
+
+          index = Path('index.html')
+          text = index.read_text(encoding='utf-8')
+
+          def function_span(src, name):
+              marker = f'function {name}('
+              start = src.find(marker)
+              if start < 0:
+                  raise SystemExit(f'missing function {name}')
+              brace = src.find('{', start + len(marker))
+              if brace < 0:
+                  raise SystemExit(f'missing function brace {name}')
+              depth = 0
+              quote = None
+              esc = False
+              i = brace
+              while i < len(src):
+                  ch = src[i]
+                  if quote:
+                      if esc:
+                          esc = False
+                      elif ch == '\\':
+                          esc = True
+                      elif ch == quote:
+                          quote = None
+                      i += 1
+                      continue
+                  if ch in "'\"`":
+                      quote = ch
+                      i += 1
+                      continue
+                  if ch == '{':
+                      depth += 1
+                  elif ch == '}':
+                      depth -= 1
+                      if depth == 0:
+                          return start, i + 1
+                  i += 1
+              raise SystemExit(f'unterminated function {name}')
+
+          def replace_function(src, name, replacement):
+              start, end = function_span(src, name)
+              return src[:start] + textwrap.dedent(replacement).strip() + src[end:]
+
+          def insert_after_function(src, name, addition):
+              _, end = function_span(src, name)
+              return src[:end] + '\n' + textwrap.dedent(addition).strip() + '\n' + src[end:]
+
+          route_decl = """const ROGUELIKE_COMMON_START_ROUTE=Object.freeze([
+            Object.freeze({id:'common-1',label:'공통 시작 · 첫 교전',kind:'battle'}),
+            Object.freeze({id:'common-2',label:'공통 시작 · 두 번째 교전',kind:'battle'}),
+            Object.freeze({id:'common-3',label:'공통 시작 · 지역 관문',kind:'battle'})
+          ]);"""
+          if 'const ROGUELIKE_COMMON_START_ROUTE=' not in text:
+              anchor = "const ROGUELIKE_COMMON_START_ZONE='common-start';"
+              if anchor not in text:
+                  raise SystemExit('missing common-start zone declaration')
+              text = text.replace(anchor, anchor + '\n' + textwrap.dedent(route_decl).strip(), 1)
+
+          text = replace_function(text, 'normalizeRoguelikeRewardNodes', r'''
+          function normalizeRoguelikeRewardNodes(rewards,runDeck,runId){
+           if(!rewards||rewards.version!==1||!Number.isSafeInteger(rewards.baseRevision)||rewards.baseRevision<0||rewards.baseRevision>runDeck.revision||!Array.isArray(rewards.entries))return null;
+           const entries=[];let revision=rewards.baseRevision,battleIndex=0;
+           for(let i=0;i<rewards.entries.length;i++){
+            const raw=rewards.entries[i],sequence=i+1,source=raw?.source;
+            if(!raw||raw.sequence!==sequence||raw.id!==roguelikeRewardNodeId(runId,sequence)||!['prototype','battle'].includes(source)||raw.algorithm!==ROGUELIKE_REWARD_ALGORITHM||raw.revision!==revision||typeof raw.deckSignature!=='string'||!['pending','claimed','skipped'].includes(raw.status)||!Array.isArray(raw.picks)||raw.picks.length>ROGUELIKE_REWARD_ROLES.length)return null;
+            if(source==='battle'){
+             const routeNode=ROGUELIKE_COMMON_START_ROUTE[battleIndex];
+             if(!routeNode||raw.battleIndex!==battleIndex||raw.battleNodeId!==routeNode.id)return null;
+             battleIndex++
+            }else if(raw.battleIndex!==undefined||raw.battleNodeId!==undefined)return null;
+            if(raw.status==='pending'&&i!==rewards.entries.length-1)return null;
+            const picks=[],ids=new Set();
+            for(let j=0;j<raw.picks.length;j++){
+             const p=raw.picks[j];
+             if(!p||typeof p.id!=='string'||!NAMED[p.id]||p.id.startsWith('J')||p.role!==ROGUELIKE_REWARD_ROLES[j].id||ids.has(p.id)||!ROGUELIKE_STARTER_REGULAR_SLOTS.includes(p.slot)||namedSlot(p.id)!==p.slot)return null;
+             if(p.fromVariant!==null&&(typeof p.fromVariant!=='string'||!NAMED[p.fromVariant]||p.fromVariant.startsWith('J')||namedSlot(p.fromVariant)!==p.slot))return null;
+             if(p.fromVariant===p.id)return null;
+             ids.add(p.id);picks.push({id:p.id,role:p.role,slot:p.slot,fromVariant:p.fromVariant});
+            }
+            if(raw.status==='claimed'){if(!picks.some(p=>p.id===raw.selectedId))return null;revision++}
+            else if(raw.selectedId!==null)return null;
+            entries.push({id:raw.id,sequence,source,algorithm:raw.algorithm,status:raw.status,revision:raw.revision,deckSignature:raw.deckSignature,picks,selectedId:raw.selectedId,...(source==='battle'?{battleIndex:raw.battleIndex,battleNodeId:raw.battleNodeId}:{})});
+           }
+           if(revision!==runDeck.revision)return null;
+           const cards=runDeck.cards.map(c=>({...c}));
+           for(let i=entries.length-1;i>=0;i--){
+            const node=entries[i];
+            if(node.status==='claimed'){
+             const pick=node.picks.find(p=>p.id===node.selectedId),card=cards.find(c=>c.slot===pick.slot);
+             if(card.variantId!==pick.id)return null;
+             card.variantId=pick.fromVariant;card.pure=!pick.fromVariant;
+            }
+            if(node.deckSignature!==roguelikeRunDeckSignature({cards})||node.picks.some(p=>cards.find(c=>c.slot===p.slot).variantId!==p.fromVariant))return null;
+           }
+           return{version:1,baseRevision:rewards.baseRevision,entries}
+          }
+          ''')
+
+          if 'function roguelikeBattleProgress(' not in text:
+              text = insert_after_function(text, 'roguelikePendingRewardNode', r'''
+              function roguelikeBattleProgress(draft=loadRoguelikeRunDraft()){
+               const battleEntries=draft?.rewardNodes?.entries?.filter(n=>n.source==='battle')||[],completed=battleEntries.length,current=ROGUELIKE_COMMON_START_ROUTE[completed]||null,pending=roguelikePendingRewardNode(draft);
+               return{zone:ROGUELIKE_COMMON_START_ZONE,completed,total:ROGUELIKE_COMMON_START_ROUTE.length,current,pending,finished:!current,battleEntries}
+              }
+              function roguelikeCurrentBattleNodeRequest(draft=loadRoguelikeRunDraft()){
+               if(!draft||roguelikePendingRewardNode(draft))return null;
+               const progress=roguelikeBattleProgress(draft),next=roguelikeNextRewardNodeRequest(draft);
+               if(!progress.current||!next)return null;
+               return{...next,battleIndex:progress.completed,battleNodeId:progress.current.id,zone:ROGUELIKE_COMMON_START_ZONE}
+              }
+              ''')
+
+          text = replace_function(text, 'roguelikeIssueRewardNode', r'''
+          function roguelikeIssueRewardNode(request){
+           const draft=loadRoguelikeRunDraft();
+           if(!draft||!request||request.runId!==draft.runId||!Number.isSafeInteger(request.sequence)||request.sequence<1)return null;
+           const existing=draft.rewardNodes.entries.find(n=>n.sequence===request.sequence);
+           if(existing)return existing.source==='prototype'&&existing.revision===request.revision&&existing.deckSignature===request.deckSignature?existing:null;
+           const next=roguelikeNextRewardNodeRequest(draft);
+           if(!next||request.sequence!==next.sequence||request.revision!==next.revision||request.deckSignature!==next.deckSignature)return null;
+           const profile=roguelikeRunDeckProfile(draft),id=roguelikeRewardNodeId(draft.runId,request.sequence);
+           const result=roguelikeRewardCandidates({...profile,poolIds:[...unlockedNamed()],seed:id+':'+draft.runDeck.revision});
+           const node={id,sequence:request.sequence,source:'prototype',algorithm:ROGUELIKE_REWARD_ALGORITHM,status:'pending',revision:draft.runDeck.revision,deckSignature:next.deckSignature,picks:result.picks.map(p=>({id:p.id,role:p.role,slot:p.slot,fromVariant:profile.variants[p.slot]||null})),selectedId:null};
+           draft.rewardNodes.entries.push(node);
+           return saveRoguelikeRunDraft(draft)?node:null
+          }
+          ''')
+
+          if 'function roguelikeCompleteBattleNode(' not in text:
+              text = insert_after_function(text, 'roguelikeIssueRewardNode', r'''
+              function roguelikeCompleteBattleNode(request){
+               const draft=loadRoguelikeRunDraft();
+               if(!draft||!request||request.runId!==draft.runId||!Number.isSafeInteger(request.sequence)||!Number.isSafeInteger(request.battleIndex)||typeof request.battleNodeId!=='string')return null;
+               const existing=draft.rewardNodes.entries.find(n=>n.source==='battle'&&n.battleNodeId===request.battleNodeId);
+               if(existing)return existing.sequence===request.sequence&&existing.battleIndex===request.battleIndex&&existing.revision===request.revision&&existing.deckSignature===request.deckSignature?existing:null;
+               const next=roguelikeCurrentBattleNodeRequest(draft);
+               if(!next||request.sequence!==next.sequence||request.revision!==next.revision||request.deckSignature!==next.deckSignature||request.battleIndex!==next.battleIndex||request.battleNodeId!==next.battleNodeId||request.zone!==next.zone)return null;
+               const profile=roguelikeRunDeckProfile(draft),id=roguelikeRewardNodeId(draft.runId,request.sequence);
+               const result=roguelikeRewardCandidates({...profile,poolIds:[...unlockedNamed()],seed=id+':'+draft.runDeck.revision});
+               const node={id,sequence:request.sequence,source:'battle',algorithm:ROGUELIKE_REWARD_ALGORITHM,status:'pending',revision:draft.runDeck.revision,deckSignature:next.deckSignature,picks:result.picks.map(p=>({id:p.id,role:p.role,slot:p.slot,fromVariant:profile.variants[p.slot]||null})),selectedId:null,battleIndex:next.battleIndex,battleNodeId:next.battleNodeId};
+               draft.rewardNodes.entries.push(node);
+               return saveRoguelikeRunDraft(draft)?node:null
+              }
+              ''')
+
+          text = replace_function(text, 'roguelikeRunDraftText', r'''
+          function roguelikeRunDraftText(draft=loadRoguelikeRunDraft()){
+           if(!draft)return'런 덱 없음 · 스타터를 고른 뒤 새 런 덱을 만드세요.';
+           const profile=roguelikeStarterProfile(draft.starterId),deck=draft.pureStart?'30장 · 순수 정규 29 + 기본 와일드 조커 1 · 효과 0':'30장 · 순수 23 + 네임드 정규 6 + 네임드 조커 1',loadout=roguelikeStarterLoadoutSummary(draft.starterId),route=roguelikeBattleProgress(draft),pending=route.pending;
+           const routeText=pending?`공통 시작 실전 ${route.completed}/${route.total} · ${pending.source==='battle'?'전투 보상':'테스트 보상'} 선택 대기`:route.finished?`공통 시작 실전 ${route.total}/${route.total} 완료 · 지역 분기 구현 대기`:`공통 시작 실전 ${route.completed}/${route.total} · 다음 ${route.current.label}`;
+           return`<b>${profile.name}</b> · 공통 시작 구역 · 시작 ${deck}<br>현재 런 덱 · ${draft.runDeck.cards.length}장 · 네임드 ${draft.runDeck.cards.filter(c=>c.variantId).length}장 · 교체 ${draft.runDeck.revision}회<br>${routeText}<br>시작 구성 · ${loadout}<br>카드군 하드 잠금 없음 · 직접 전투 패시브 없음 · 보상 후보 소프트 가중치 · 실제 보상 확률 미확정 · 별도 런 덱 실험전 사용 가능`
+          }
+          ''')
+
+          text = replace_function(text, 'roguelikeRewardPreviewText', r'''
+          function roguelikeRewardPreviewText(draft=loadRoguelikeRunDraft()){
+           if(!draft)return'<span class="unlockChip">런 덱을 만든 뒤 테스트 보상 노드를 발급하세요.</span>';
+           const entries=draft.rewardNodes.entries,node=entries[entries.length-1],done=entries.filter(n=>n.status!=='pending');
+           const summary=`<span class="unlockChip">발급 ${entries.length}회 · 수령 ${done.filter(n=>n.status==='claimed').length}회 · 건너뜀 ${done.filter(n=>n.status==='skipped').length}회</span>`;
+           const history=done.slice(-5).map(n=>`<span class="unlockChip">#${n.sequence} ${n.status==='claimed'?`수령 · ${NAMED[n.selectedId].n}`:'건너뜀'} · ${n.source==='battle'?'실전':'테스트'}</span>`).join('');
+           if(!node)return summary+'<span class="unlockChip">아직 발급된 보상 노드 없음 · 아래 버튼으로 테스트 노드를 만들거나 실전 노드에 도전하세요.</span>';
+           if(node.status!=='pending')return summary+history+'<span class="unlockChip">이 노드는 처리 완료되었습니다. 다음 보상 또는 실전 전투를 진행할 수 있습니다.</span>';
+           const status=`<span class="unlockChip">노드 #${node.sequence} · 선택 대기 · 발급 당시 후보 고정 · ${node.source==='battle'?'실전 보상':'테스트 보상'}</span>`;
+           const candidates=node.picks.map(p=>{
+            const def=NAMED[p.id],role=ROGUELIKE_REWARD_ROLES.find(r=>r.id===p.role),tags=roguelikeNamedActionTags(p.id);
+            return`<button class="pixelBtn" type="button" data-roguelike-reward-pick="${p.id}" data-reward-role="${p.role}" data-reward-node="${node.sequence}" title="${tags.join(' / ')||'행동 태그 없음'}"><b>${role.label}</b> · ${def.n} · ${p.slot.slice(1)}${SUIT_SYMBOL[p.slot[0]]}<br><small>${tags.join(' · ')||'기반 효과'}${def.themeId?` · ${THEME_BUILD_PROFILES[def.themeId]?.displayName||def.themeId}`:' · 범용'}</small></button>`
+           }).join('');
+           const hint=node.picks.length?`후보 ${node.picks.length}장 중 1장 수령 또는 건너뛰기 · 교체 선택 취소는 노드를 소모하지 않습니다.`:'현재 풀에 같은 슬롯 교체 후보가 없습니다. 건너뛰기로 이 노드를 완료하세요.';
+           return summary+history+status+`<div class="roguelikeRewardCandidates">${candidates}</div><div class="sub">${hint}</div>`
+          }
+          ''')
+
+          text = replace_function(text, 'renderRoguelikeStarterPicker', r'''
+          function renderRoguelikeStarterPicker(){
+           const grid=document.getElementById('roguelikeStarterGrid'),status=document.getElementById('roguelikeRunDraftStatus'),prepare=document.getElementById('roguelikePrepareBtn'),clear=document.getElementById('roguelikeClearDraftBtn');if(!grid)return;
+           const group=grid.closest('.roguelikeStarterGroup'),heading=group?.querySelector('h4');if(heading)heading.textContent='로그라이크 런 스타터 · 전투 프로토타입';if(clear)clear.textContent='런 덱 지우기';
+           let battle=document.getElementById('roguelikeBattleBtn');if(!battle&&clear?.parentElement){battle=document.createElement('button');battle.id='roguelikeBattleBtn';battle.type='button';battle.className='pixelBtn goldBtn';battle.textContent='런 덱 실험전 시작';clear.insertAdjacentElement('afterend',battle)}
+           let nodeBattle=document.getElementById('roguelikeNodeBattleBtn');if(!nodeBattle&&clear?.parentElement){nodeBattle=document.createElement('button');nodeBattle.id='roguelikeNodeBattleBtn';nodeBattle.type='button';nodeBattle.className='pixelBtn primary';clear.insertAdjacentElement('afterend',nodeBattle)}
+           let selected=normalizeRoguelikeStarterId(progress.roguelikeStarter);if(!roguelikeStarterUnlocked(selected))selected='wanderer';progress.roguelikeStarter=selected;
+           grid.innerHTML=ROGUELIKE_STARTER_IDS.map(id=>{const p=roguelikeStarterProfile(id),open=roguelikeStarterUnlocked(id),on=id===selected,meta=p.pure?'효과카드 0장 시작 · 이후 네임드 획득 가능':`출발 성향 · ${p.short}`;return`<div class="charCard ${on?'selected':''} ${open?'':'locked'}"><div class="charName">${p.name} ${open?'':'🔒'}</div><div class="charMeta">${meta}${open?'':' · 현재 진행도에서 잠김'}</div><div class="charPassive">${p.desc}<br><b>런 원칙:</b> 다른 카드군 획득을 막지 않음</div><button class="pixelBtn ${on?'primary':''}" data-roguelike-starter="${id}" ${open?'':'disabled'}>${on?'선택됨':'선택'}</button></div>`}).join('');
+           grid.querySelectorAll('[data-roguelike-starter]').forEach(b=>b.onclick=()=>{const id=b.dataset.roguelikeStarter;if(!roguelikeStarterUnlocked(id))return;progress.roguelikeStarter=id;saveProgress();renderRoguelikeStarterPicker()});
+           const draft=loadRoguelikeRunDraft(),route=roguelikeBattleProgress(draft),nodeRequest=roguelikeCurrentBattleNodeRequest(draft);if(prepare)prepare.textContent=draft?'새 런 덱으로 초기화':'런 덱 만들기';if(clear)clear.disabled=!draft;
+           if(battle){battle.disabled=!draft;battle.onclick=()=>{if(!startRoguelikeBattle()){renderRoguelikeStarterPicker();if(status)status.textContent='런 덱을 불러오지 못했습니다. 새 런 덱을 만들어 주세요.'}}}
+           if(nodeBattle){nodeBattle.disabled=!nodeRequest;nodeBattle.textContent=!draft?'실전 노드 전투 · 런 덱 필요':route.pending?'보상 처리 후 다음 실전':route.finished?'공통 시작 실전 완료':`${route.current.label} 시작`;nodeBattle.onclick=()=>{if(!startRoguelikeNodeBattle()){renderRoguelikeStarterPicker();if(status)status.textContent=route.pending?'현재 보상을 수령하거나 건너뛴 뒤 다음 실전에 도전하세요.':route.finished?'공통 시작 실전을 모두 완료했습니다. 다음 지역 분기 구현을 기다리는 상태입니다.':'실전 노드를 시작하지 못했습니다. 런 상태를 다시 확인하세요.'}}}
+           if(status)status.innerHTML=roguelikeRunDraftText(draft);if(prepare)prepare.onclick=()=>{const saved=prepareRoguelikeRunDraft(progress.roguelikeStarter);renderRoguelikeStarterPicker();if(!saved&&status)status.textContent='런 덱을 저장하지 못했습니다. 저장 공간을 확인하세요.'};if(clear)clear.onclick=()=>{clearRoguelikeRunDraft();renderRoguelikeStarterPicker()};renderRoguelikeRewardPanel(draft)
+          }
+          ''')
+
+          text = replace_function(text, 'setupRoguelikeBattle', r'''
+          function setupRoguelikeBattle(draft,options={}){
+           const clean=normalizeRoguelikeRunDraft(draft);if(!clean)return false;
+           const deck=makeRoguelikeBattleDeck(clean,'player'),p=state.player,progression=!!options.progression,expected=progression?roguelikeCurrentBattleNodeRequest(clean):null,ticket=options.nodeRequest;
+           const ticketOk=!progression||(expected&&ticket&&ticket.runId===expected.runId&&ticket.sequence===expected.sequence&&ticket.revision===expected.revision&&ticket.deckSignature===expected.deckSignature&&ticket.battleIndex===expected.battleIndex&&ticket.battleNodeId===expected.battleNodeId&&ticket.zone===expected.zone);
+           if(!deck||!p||!ticketOk)return false;
+           state.sessionMode='roguelike';state.roguelikeBattle=true;state.roguelikeProgressionBattle=progression;state.roguelikeBattleNodeRequest=progression?{...expected}:null;state.roguelikeNodeResult=null;state.roguelikeRunId=clean.runId;state.roguelikeRunRevision=clean.runDeck.revision;state.roguelikeStarterId=clean.starterId;state.roguelikeDeckFingerprint=roguelikeBattleDeckFingerprint(clean);state.developerBattle=false;state.battleMetrics=null;
+           p.charId=clean.characterId||'wanderer';p.themeId='mixed';p.deck=deck;p.hand=[];p.spent=[];p.melds=[];
+           state.selected.clear();state.selectionOrder=[];state.boardSelected.clear();state.target=null;state.phase='mulligan';state.logs=[];clearEffectChoices();drawMany('player',8,false);
+           const profile=roguelikeStarterProfile(clean.starterId),named=clean.runDeck.cards.filter(c=>c.variantId).length;
+           if(progression){const routeNode=ROGUELIKE_COMMON_START_ROUTE[expected.battleIndex];log(`로그라이크 실전 노드 · ${routeNode.label} · ${profile.name} · 런 덱 ${clean.runDeck.cards.length}장 · 네임드 ${named}장 · 교체 ${clean.runDeck.revision}회.`,'important');log('승리하면 이 전투 자격과 현재 런 덱 지문을 검증해 보상 노드 1개를 즉시 고정 발급합니다. 패배·무승부는 노드를 소비하지 않으며 일반 클리어·레벨·해금·M12 표본에는 반영되지 않습니다.','important')}
+           else{log(`로그라이크 덱 실험전 · ${profile.name} · 런 덱 ${clean.runDeck.cards.length}장 · 네임드 ${named}장 · 교체 ${clean.runDeck.revision}회.`,'important');log('전투는 런 덱의 독립 복제본을 사용합니다. 카드 상태·승패·클리어·해금·M12 표본은 저장되지 않습니다.','important')}
+           render();return true
+          }
+          ''')
+
+          if 'function startRoguelikeNodeBattle(' not in text:
+              text = insert_after_function(text, 'startRoguelikeBattle', r'''
+              function startRoguelikeNodeBattle(){
+               const draft=loadRoguelikeRunDraft(),nodeRequest=roguelikeCurrentBattleNodeRequest(draft);if(!draft||!nodeRequest)return false;
+               const normalSelection={selectedChar:progress.selectedChar,selectedTheme:progress.selectedTheme};
+               state.tutorialStep=null;state.tutorialHintOpen=false;hideTutorialCoach();hideStartScreen();document.getElementById('progressOverlay')?.classList.remove('show');document.getElementById('overlay')?.classList.remove('show');newGame('roguelike');progress.selectedChar=normalSelection.selectedChar;progress.selectedTheme=normalSelection.selectedTheme;
+               if(setupRoguelikeBattle(draft,{progression:true,nodeRequest}))return true;showStartScreen();return false
+              }
+              ''')
+
+          text = replace_function(text, 'restartCurrentCombat', r'''
+          function restartCurrentCombat(){
+           document.getElementById('overlay')?.classList.remove('show');
+           if(state.m11bExperimentBattle)return startM11BExperimentBattle(state.m11bExperimentCohort||'few',state.m11bExperimentSeed||currentM11BExperimentSeed());
+           if(state.sessionMode==='roguelike'){
+            if(state.roguelikeProgressionBattle){
+             if(state.roguelikeNodeResult==='win'||state.roguelikeNodeResult==='stale'){showStartScreen();renderProgress();document.getElementById('progressOverlay')?.classList.add('show');return}
+             if(!startRoguelikeNodeBattle()){showStartScreen();renderProgress();document.getElementById('progressOverlay')?.classList.add('show')}return
+            }
+            if(!startRoguelikeBattle())showStartScreen();return
+           }
+           if(state.sessionMode==='practice')startPracticeBattle();else newGame('battle')
+          }
+          ''')
+
+          text = replace_function(text, 'renderPracticeCoach', r'''
+          function renderPracticeCoach(){
+           const box=document.getElementById('practiceCoach'),txt=document.getElementById('practiceCoachText');if(!box||!txt)return;
+           const badge=box.querySelector('.badge'),meta=box.querySelector('.practiceCoachHead b'),run=state.sessionMode==='roguelike',nodeRun=run&&state.roguelikeProgressionBattle;
+           if(state.sessionMode!=='practice'&&!run){box.hidden=true;return}box.hidden=false;
+           if(badge)badge.textContent=nodeRun?'로그라이크 실전 노드':run?'로그라이크 덱 실험전':'자유 연습전';if(meta)meta.textContent=nodeRun?'승리 시 런 보상 · 일반 진행도/M12 제외':run?'런 덱·진행도·M12 표본 변경 없음':'승패·해금 기록 없음';
+           if(run){const p=roguelikeStarterProfile(state.roguelikeStarterId),route=state.roguelikeBattleNodeRequest&&ROGUELIKE_COMMON_START_ROUTE[state.roguelikeBattleNodeRequest.battleIndex];txt.textContent=nodeRun?(state.gameOver?`${route?.label||'실전 노드'} 종료 · 승리만 검증된 보상 영수증으로 저장됩니다.`:`${p.name} · ${route?.label||'실전 노드'} · 저장 revision ${state.roguelikeRunRevision}의 독립 전투 복제본입니다. 승리 시에만 현재 전투 자격을 검증합니다.`):(state.gameOver?`${p.name} 실험전 종료 · 현재 런 덱은 전투 전 상태 그대로 유지됩니다.`:`${p.name} · 저장 revision ${state.roguelikeRunRevision}의 독립 복제본으로 전투 중입니다. 카드의 위치·상태·효과 마커는 저장 덱으로 돌아가지 않습니다.`);return}
+           if(state.gameOver)txt.textContent='연습전 종료 · 결과는 진행도에 반영되지 않습니다.';else if(state.turnNo===1&&state.turn==='player')txt.textContent='첫 손패에는 3♠·3♥·3♦ 세트와 4♣·5♣·6♣ 런 재료가 있습니다. 원하는 쪽부터 만들어 보세요.';else if(state.switchTarget==='player'&&state.switchPower>0)txt.textContent=`스위치가 나를 가리킵니다. 턴 종료 전 버스트/체인으로 반환하지 못하면 ${state.switchPower}이 폭발합니다.`;else if(state.switchTarget==='enemy'&&state.switchPower>0)txt.textContent='스위치가 상대를 가리킵니다. 지금은 새 조합·회수·정비로 다음 반환을 준비해도 좋습니다.';else if(state.phase==='draw')txt.textContent='내 턴 시작 · 개인 덱 또는 공용 버림패에서 1장을 가져온 뒤 자유롭게 조합을 만들어 보세요.';else txt.textContent='세트·런·상대 공개 조합 붙이기·회수·정비를 자유롭게 시험할 수 있습니다. 상대는 연습전에서 행동 수가 줄어듭니다.'
+          }
+          ''')
+
+          text = replace_function(text, 'showResult', r'''
+          function showResult(win){
+           if(typeof renderCirculationSummary==='function')renderCirculationSummary();if(typeof saveBattleMetrics==='function')saveBattleMetrics(win?'win':'loss');
+           const practice=state.sessionMode==='practice',roguelike=state.sessionMode==='roguelike',devBattle=!!state.developerBattle,title=document.getElementById('resultTitle'),text=document.getElementById('resultText'),box=document.getElementById('resultUnlocks'),again=document.getElementById('againBtn');box.style.display='none';box.innerHTML='';again.textContent=roguelike?'런 덱으로 다시 하기':practice?'연습전 다시 하기':devBattle?'DEV 다시 하기':'다시 하기';
+           if(practice){title.textContent=win?'연습전 승리':'연습전 패배';title.className=win?'cyan':'red';text.textContent=win?'연습 상대의 마지막 코어를 파괴했습니다. 이 결과는 클리어·레벨·해금에 반영되지 않습니다.':'연습전에서 내 마지막 코어가 파괴되었습니다. 진행도 변화 없이 바로 다시 연습할 수 있습니다.';renderProgress();document.getElementById('overlay').classList.add('show');return}
+           if(roguelike){
+            state.rewarded=true;const profile=roguelikeStarterProfile(state.roguelikeStarterId),nodeRun=!!state.roguelikeProgressionBattle;
+            if(nodeRun){
+             const route=state.roguelikeBattleNodeRequest&&ROGUELIKE_COMMON_START_ROUTE[state.roguelikeBattleNodeRequest.battleIndex];
+             if(win){const issued=roguelikeCompleteBattleNode(state.roguelikeBattleNodeRequest);state.roguelikeNodeResult=issued?'win':'stale';again.textContent='런 진행 보기';if(issued){title.textContent='로그라이크 노드 승리';title.className='cyan';text.textContent=`${route?.label||'실전 노드'} 완료 · revision ${state.roguelikeRunRevision} 전투 자격을 검증했고 보상 노드 #${issued.sequence} 후보를 고정했습니다. 보상을 처리해야 다음 실전을 시작할 수 있습니다.`;box.style.display='block';box.innerHTML=`<b>런 보상 발급 완료</b><br>후보 ${issued.picks.length}장 · 수령 또는 건너뛰기 전까지 다음 노드 잠김.`}else{title.textContent='노드 결과 저장 실패';title.className='red';text.textContent='전투 중 런 덱 revision/지문이 바뀌었거나 저장에 실패해 승리 결과를 런에 반영하지 않았습니다. 중복 보상은 발급되지 않았습니다.'}}
+             else{state.roguelikeNodeResult='loss';again.textContent='노드 다시 도전';title.textContent='로그라이크 노드 패배';title.className='red';text.textContent=`${route?.label||'실전 노드'} 패배 · 런 덱과 노드 진행은 소비되지 않았습니다. 같은 현재 노드에 다시 도전할 수 있습니다.`}
+             renderProgress();document.getElementById('overlay').classList.add('show');return
+            }
+            title.textContent=win?'런 덱 실험전 승리':'런 덱 실험전 패배';title.className=win?'cyan':'red';text.textContent=`${profile.name} · revision ${state.roguelikeRunRevision} 실험 종료. 이 결과와 전투 중 카드 상태는 런 덱·클리어·레벨·해금·M12 전투 표본에 반영되지 않습니다.`;renderProgress();document.getElementById('overlay').classList.add('show');return
+           }
+           if(devBattle){state.rewarded=true;title.textContent=win?'DEV 승리':'DEV 패배';title.className=win?'gold':'red';text.textContent=win?'개발자 모드 전투 승리. 이 판은 클리어·캐릭터 레벨·카드/필드 해금 진행도에 반영되지 않습니다.':'개발자 모드 전투 종료. 이 판은 진행도에 영향을 주지 않습니다.';renderProgress();document.getElementById('overlay').classList.add('show');return}
+           title.textContent=win?'승리':'패배';title.className=win?'cyan':'red';if(win){const news=grantVictoryProgress(),lv=charLevel(progress,state.player.charId);text.textContent=`상대의 마지막 코어를 파괴했습니다. ${CHARACTERS[state.player.charId].name} Lv.${lv} · 전체 ${progress.totalClears}클리어 · 러미 ${state.rummy}회.`;if(news.length){box.style.display='block';box.innerHTML=`<b>새 해금</b><br>${news.map(x=>'• '+x).join('<br>')}`}}else text.textContent='상대가 내 마지막 코어를 먼저 파괴했습니다. 패배해도 해금 진행은 감소하지 않습니다.';renderProgress();document.getElementById('overlay').classList.add('show')
+          }
+          ''')
+
+          text = replace_function(text, 'showCirculationDraw', r'''
+          function showCirculationDraw(){
+           if(typeof renderCirculationSummary==='function')renderCirculationSummary();if(typeof saveBattleMetrics==='function')saveBattleMetrics('draw');
+           const title=document.getElementById('resultTitle'),text=document.getElementById('resultText'),box=document.getElementById('resultUnlocks'),again=document.getElementById('againBtn'),nodeRun=state.sessionMode==='roguelike'&&state.roguelikeProgressionBattle;if(box){box.style.display='none';box.innerHTML=''}
+           if(nodeRun)state.roguelikeNodeResult='draw';if(again)again.textContent=nodeRun?'노드 다시 도전':state.sessionMode==='roguelike'?'런 덱으로 다시 하기':state.sessionMode==='practice'?'연습전 다시 하기':'다시 하기';
+           if(title){title.textContent=nodeRun?'로그라이크 노드 무승부':state.sessionMode==='roguelike'?'런 덱 실험전 무승부':state.sessionMode==='practice'?'연습전 무승부':'무승부';title.className='gold'}
+           if(text)text.textContent=nodeRun?'두 번째 완전 순환 정체로 무승부입니다. 런 덱과 실전 노드는 소비되지 않았고 보상도 발급되지 않았습니다.':state.sessionMode==='roguelike'?'두 번째 완전 순환 정체로 무승부입니다. 전투 결과와 임시 카드 상태는 런 덱이나 진행도에 반영되지 않습니다.':'두 번째 완전 순환 정체가 발생했고 남은 코어 수와 현재 코어 체력도 같아 무승부로 종료되었습니다.';if(typeof renderProgress==='function')renderProgress();document.getElementById('overlay')?.classList.add('show')
+          }
+          ''')
+
+          reset_anchor = "state.roguelikeDeckFingerprint=null;"
+          reset_extra = "state.roguelikeProgressionBattle=false;state.roguelikeBattleNodeRequest=null;state.roguelikeNodeResult=null;"
+          if reset_extra not in text:
+              if reset_anchor not in text:
+                  raise SystemExit('missing roguelike reset anchor')
+              text = text.replace(reset_anchor, reset_anchor + reset_extra, 1)
+
+          old_badge = "state.sessionMode==='roguelike'?`<span class=\"gold\">◆</span> ${roguelikeStarterProfile(state.roguelikeStarterId).name} <span class=\"sub\">· RUN TEST</span>`:"
+          new_badge = "state.sessionMode==='roguelike'?`<span class=\"gold\">◆</span> ${roguelikeStarterProfile(state.roguelikeStarterId).name} <span class=\"sub\">· ${state.roguelikeProgressionBattle?'RUN NODE':'RUN TEST'}</span>`:"
+          if old_badge in text:
+              text = text.replace(old_badge, new_badge, 1)
+          elif new_badge not in text:
+              raise SystemExit('missing roguelike HUD badge anchor')
+
+          index.write_text(text, encoding='utf-8')
+
+          reward_test = Path('tests/m11a-reward-nodes.mjs')
+          rt = reward_test.read_text(encoding='utf-8')
+          rt = rt.replace("['unimplemented source',d=>d.rewardNodes.entries[0].source='battle']", "['unimplemented source',d=>d.rewardNodes.entries[0].source='event']")
+          reward_test.write_text(rt, encoding='utf-8')
+
+          progression_test = Path('tests/m11a-run-progression.mjs')
+          progression_test.write_text(textwrap.dedent(r'''
+          import fs from 'node:fs';
+          import vm from 'node:vm';
+          import assert from 'node:assert/strict';
+
+          const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+          const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
+          const master=fs.readFileSync(new URL('../docs/ROGUELIKE_MASTER_PLAN.md',import.meta.url),'utf8');
+          const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+          function ok(v,m){assert.ok(v,m);console.log('PASS: '+m)}
+          function source(name){const marker=`function ${name}(`,start=script.indexOf(marker);assert.ok(start>=0,`missing ${name}`);let par=0,brace=-1;for(let i=start+marker.length-1;i<script.length;i++){if(script[i]==='(')par++;else if(script[i]===')')par--;else if(script[i]==='{'&&par===0){brace=i;break}}let d=0;for(let i=brace;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)return script.slice(start,i+1)}throw Error('unterminated '+name)}
+          new Function(script);
+
+          ok(script.includes("const ROGUELIKE_COMMON_START_ROUTE=Object.freeze([")&&script.includes("id:'common-1'")&&script.includes("id:'common-3'"),'common-start progression exposes a locked three-battle route');
+          ok(source('normalizeRoguelikeRewardNodes').includes("['prototype','battle'].includes(source)")&&source('normalizeRoguelikeRewardNodes').includes('battleNodeId'),'reward ledger accepts and validates battle-issued receipts without changing the v5 draft schema');
+          ok(source('roguelikeIssueRewardNode').includes("existing.source==='prototype'"),'manual test issuance cannot impersonate an existing battle reward');
+          ok(source('showResult').includes('roguelikeCompleteBattleNode(state.roguelikeBattleNodeRequest)'),'only the progression result route commits a battle reward after victory');
+          ok(source('showCirculationDraw').includes("state.roguelikeNodeResult='draw'")&&source('showCirculationDraw').includes('보상도 발급되지 않았습니다'),'progression draw remains retryable and reward-free');
+          ok(source('setupRoguelikeBattle').includes("log('전투는 런 덱의 독립 복제본")&&source('setupRoguelikeBattle').includes('승리하면 이 전투 자격'),'sandbox isolation and real-node persistence copy remain explicitly separate');
+          ok(html.includes("state.roguelikeProgressionBattle?'RUN NODE':'RUN TEST'"),'combat HUD visibly distinguishes real run nodes from RUN TEST');
+          ok(source('renderRoguelikeStarterPicker').includes("nodeBattle.id='roguelikeNodeBattleBtn'")&&source('renderRoguelikeStarterPicker').includes('startRoguelikeNodeBattle()'),'progress UI exposes a separate guarded real-node battle control');
+
+          const route=[{id:'common-1',label:'1'},{id:'common-2',label:'2'},{id:'common-3',label:'3'}];
+          let saved={runId:'run-a',runDeck:{revision:0,cards:[{slot:'S3',variantId:null},{slot:'H2',variantId:null},{slot:'D2',variantId:null}]},rewardNodes:{version:1,baseRevision:0,entries:[]}},writes=0,fail=false;
+          const clone=x=>JSON.parse(JSON.stringify(x));
+          const ctx=vm.createContext({console,ROGUELIKE_COMMON_START_ROUTE:route,ROGUELIKE_COMMON_START_ZONE:'common-start',ROGUELIKE_REWARD_ALGORITHM:'action-tags-v1'});
+          ctx.loadRoguelikeRunDraft=()=>clone(saved);
+          ctx.saveRoguelikeRunDraft=d=>{if(fail)return false;saved=clone(d);writes++;return true};
+          ctx.roguelikeRunDeckSignature=deck=>deck.cards.map(c=>`${c.slot}:${c.variantId||'-'}`).join('|');
+          ctx.roguelikeRewardNodeId=(runId,sequence)=>`${runId}:reward:${sequence}`;
+          ctx.roguelikeRunDeckProfile=d=>({slots:d.runDeck.cards.map(c=>c.slot),variants:Object.fromEntries(d.runDeck.cards.filter(c=>c.variantId).map(c=>[c.slot,c.variantId]))});
+          ctx.unlockedNamed=()=>new Set(['A','B','C']);
+          ctx.roguelikeRewardCandidates=()=>({picks:[{id:'A',role:'reinforce',slot:'S3'},{id:'B',role:'branch',slot:'H2'},{id:'C',role:'foundation',slot:'D2'}]});
+          for(const name of ['roguelikePendingRewardNode','roguelikeNextRewardNodeRequest','roguelikeBattleProgress','roguelikeCurrentBattleNodeRequest','roguelikeCompleteBattleNode'])vm.runInContext(source(name),ctx);
+
+          let req=ctx.roguelikeCurrentBattleNodeRequest(saved);
+          ok(req.battleIndex===0&&req.battleNodeId==='common-1'&&req.sequence===1,'fresh run receives an identity-bound first common-start combat ticket');
+          fail=true;ok(ctx.roguelikeCompleteBattleNode(req)===null&&writes===0&&saved.rewardNodes.entries.length===0,'failed atomic save does not consume the battle or create a partial reward');fail=false;
+          let node=ctx.roguelikeCompleteBattleNode(req);
+          ok(node?.source==='battle'&&node.battleIndex===0&&node.battleNodeId==='common-1'&&writes===1,'victory commits one battle receipt and frozen reward in one save');
+          ok(ctx.roguelikeCompleteBattleNode(req)?.id===node.id&&writes===1,'duplicate victory callback is idempotent and cannot issue a second reward');
+          ok(ctx.roguelikeCurrentBattleNodeRequest(saved)===null,'pending battle reward blocks the next combat node');
+          saved.rewardNodes.entries.at(-1).status='skipped';
+          saved.rewardNodes.entries.push({id:'run-a:reward:2',sequence:2,source:'prototype',status:'skipped',revision:0,deckSignature:ctx.roguelikeRunDeckSignature(saved.runDeck),picks:[],selectedId:null});
+          req=ctx.roguelikeCurrentBattleNodeRequest(saved);
+          ok(req.battleIndex===1&&req.battleNodeId==='common-2'&&req.sequence===3,'completed test rewards do not advance the real combat route');
+          ok(ctx.roguelikeCompleteBattleNode({...req,battleNodeId:'common-3'})===null&&saved.rewardNodes.entries.length===2,'forged or stale route identity cannot consume a node');
+          node=ctx.roguelikeCompleteBattleNode(req);saved.rewardNodes.entries.at(-1).status='skipped';
+          req=ctx.roguelikeCurrentBattleNodeRequest(saved);node=ctx.roguelikeCompleteBattleNode(req);saved.rewardNodes.entries.at(-1).status='skipped';
+          const progress=ctx.roguelikeBattleProgress(saved);
+          ok(progress.completed===3&&progress.finished&&ctx.roguelikeCurrentBattleNodeRequest(saved)===null,'three verified wins finish only the common-start slice and expose no phantom fourth battle');
+
+          ok(road.includes('공통 시작 구역 3연전 실전 슬라이스'),'ROADMAP records the completed first real-node slice');
+          ok(road.includes('- [ ] 실제 맵/전투 노드와 보상 발급 연결'),'full map/reward milestone stays open after the linear common-start slice');
+          ok(master.includes('## 20. 공통 시작 실전 노드 v1')&&master.includes('battle 출처'),'master plan documents the atomic combat-reward receipt contract');
+          console.log('M11A common-start progression regression passed.');
+          ''').lstrip(), encoding='utf-8')
+
+          roadmap = Path('ROADMAP.md')
+          rm = roadmap.read_text(encoding='utf-8')
+          road_anchor = '- [ ] 실제 맵/전투 노드와 보상 발급 연결 — 실험전과 분리된 런 진행 및 전투 완료 자격에 따라 보상 노드를 발급\n'
+          road_line = '  - [x] 공통 시작 구역 3연전 실전 슬라이스 — RUN TEST와 별개인 실전 버튼/전투 자격을 추가하고, 승리 시 runId·노드 ID·revision·덱 지문을 검증해 `battle` 출처 보상 영수증을 1회 저장. 수령/건너뛰기 전 다음 전투 잠금, 패배·무승부 재도전, 일반 클리어·레벨·해금·M12 표본 격리 및 중복/오래된 승리 거부\n'
+          if road_line not in rm:
+              if road_anchor not in rm:
+                  raise SystemExit('missing ROADMAP real-node anchor')
+              rm = rm.replace(road_anchor, road_anchor + road_line, 1)
+              roadmap.write_text(rm, encoding='utf-8')
+
+          master = Path('docs/ROGUELIKE_MASTER_PLAN.md')
+          md = master.read_text(encoding='utf-8')
+          section = textwrap.dedent('''
+
+          ## 20. 공통 시작 실전 노드 v1
+
+          M11A의 첫 실제 런 진행은 전체 맵을 가장하지 않고 `공통 시작 구역`의 선형 3전투만 연결한다. 기존 `런 덱 실험전(RUN TEST)`은 회귀·체감 확인용 샌드박스로 그대로 남으며 승패를 저장하지 않는다. 별도의 `RUN NODE` 전투만 런 진행 자격을 가진다.
+
+          - 실전 시작 시 현재 저장 런의 `runId`, 보상 sequence, `runDeck.revision`, 덱 지문, 공통 시작 전투 index/ID를 하나의 전투 티켓으로 스냅샷한다.
+          - 승리 시 현재 저장 런과 티켓을 다시 비교한다. 일치할 때만 rewardNodes에 `source: battle`인 보상 노드 하나를 추가한다. 이 엔트리는 **전투 완료 영수증과 고정 보상 후보를 동시에 표현**하므로 별도 진행 저장과 보상 저장이 갈라지지 않는다.
+          - `battle 출처` 보상은 기존 테스트 보상과 같은 3역할 후보 생성, 동일 슬롯 교체, 수령/건너뛰기 계약을 사용한다. 후보는 승리 저장 시점에 고정된다.
+          - 저장 실패, 다른 탭/세션에서의 revision·덱 지문 변화, 잘못된 노드 ID, 오래된 승리 콜백은 아무 진행도 소비하지 않고 보상도 발급하지 않는다. 같은 승리 콜백이 다시 도착해도 이미 기록된 같은 battle 영수증만 반환한다.
+          - battle 보상이 `pending`인 동안 다음 실전 전투는 잠긴다. 수령 또는 건너뛰기 후에만 다음 공통 시작 전투 티켓을 만들 수 있다.
+          - 패배와 완전 순환 무승부는 저장 런의 노드 진행을 소비하지 않는다. 현재 전투를 다시 시도할 수 있다.
+          - 세 번째 battle 영수증까지 처리하면 공통 시작 3연전은 완료 상태가 된다. **지역 선택/분기, 엘리트, 보스, 상점, 이벤트는 아직 구현하지 않았으므로 전체 `실제 맵/전투 노드와 보상 발급 연결` 마일스톤은 계속 열린다.**
+          - 실전 노드도 일반 클리어 수, 캐릭터 레벨, 해금, M12 일반 전투 표본에는 기록하지 않는다. 런 전용 지표/런 종료 규칙은 후속 단계에서 별도로 추가한다.
+          ''').rstrip() + '\n'
+          if '## 20. 공통 시작 실전 노드 v1' not in md:
+              master.write_text(md.rstrip() + section, encoding='utf-8')
+
+          checks = [
+              'const ROGUELIKE_COMMON_START_ROUTE=Object.freeze([',
+              "['prototype','battle'].includes(source)",
+              'function roguelikeCompleteBattleNode(',
+              'function startRoguelikeNodeBattle(',
+              "state.roguelikeProgressionBattle?'RUN NODE':'RUN TEST'",
+              "nodeBattle.id='roguelikeNodeBattleBtn'",
+          ]
+          final = index.read_text(encoding='utf-8')
+          for check in checks:
+              if check not in final:
+                  raise SystemExit('missing patched marker: '+check)
+          print('M11A common-start battle patch applied.')
+          PY
+
+      - name: Run all regression suites
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          for test in tests/*.mjs; do
+            echo "==> $test"
+            node "$test"
+            count=$((count+1))
+          done
+          echo "Regression suites passed: $count"
+
+      - name: Run M11A economy experiment
+        shell: bash
+        run: node experiments/m11a-growth-economy.mjs
+
+      - name: Commit project patch
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html ROADMAP.md docs/ROGUELIKE_MASTER_PLAN.md tests/m11a-reward-nodes.mjs tests/m11a-run-progression.mjs; then
+            echo 'No project changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md docs/ROGUELIKE_MASTER_PLAN.md tests/m11a-reward-nodes.mjs tests/m11a-run-progression.mjs
+          git commit -m 'feat: connect common-start battles to run rewards'
+          git push origin HEAD:main
