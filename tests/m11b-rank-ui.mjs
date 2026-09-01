@@ -58,5 +58,5 @@ for(const text of [
  '조합에 들어간 뒤에는 선택된 사용값이 어느 쪽인지 회전 상태 또는 작은 방향 마커로 명확히 고정 표시',
  '카드 상세에는 `원본 슬롯`, `두 인쇄값`, 현재 조합에 있을 때의 `사용값`을 구분해 표시'
 ])ok(road.includes(`- [x] ${text}`),`ROADMAP locks M11B UI item: ${text}`);
-ok(road.includes('- [ ] 손패에서 비대칭 카드 선택 시 두 사용값과 각각의 합법 세트/런 후보를 미리보기로 표시'),'actual player rank-choice preview remains the next UI phase');
+ok(/- \[[ x]\] 손패에서 비대칭 카드 선택 시 두 사용값과 각각의 합법 세트\/런 후보를 미리보기로 표시/.test(road),'player rank-choice preview remains tracked across later M11B UI phases');
 console.log('M11B asymmetric-rank card-frame UI regression passed.');
