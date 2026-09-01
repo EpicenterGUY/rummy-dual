@@ -1,0 +1,43 @@
+name: One-time P3 Shell Visuals
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-p3-shell-visuals.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply P3 start/result/codex visuals
+        run: python3 .github/scripts/p3_shell_visuals_patch.py
+      - name: Install P3 shell visual regression
+        shell: bash
+        run: |
+          cp .github/scripts/p3_shell_visuals_regression.mjs tests/p3-shell-visuals.mjs
+          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/p3-shell-visuals.mjs
+          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/p3-shell-visuals.mjs
+      - name: Run all regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+      - name: Commit P3 shell visuals
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md tests/*.mjs
+          git commit -m 'ui: unify start result and codex visuals'
+          git pull --rebase origin main
+          git push origin HEAD:main
