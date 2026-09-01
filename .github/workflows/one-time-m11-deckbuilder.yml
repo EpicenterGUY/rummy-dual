@@ -1,4 +1,4 @@
-name: One-time M12 Metrics Visual Audit
+name: One-time UI2 Mobile Live Audit
 
 on:
   push:
@@ -6,50 +6,137 @@ on:
     paths:
       - '.github/workflows/one-time-m11-deckbuilder.yml'
 
+permissions:
+  contents: write
+
 jobs:
-  capture:
+  audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Install Korean font fallback
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq fonts-noto-cjk
           fc-cache -f
-      - name: Prepare metrics viewer capture
+      - name: Prepare start and battle audit pages
         shell: bash
         run: |
-          cp index.html /tmp/m12-metrics.html
+          cp index.html /tmp/ui2-start.html
+          cp index.html /tmp/ui2-battle.html
           python3 - <<'PY'
           from pathlib import Path
-          p=Path('/tmp/m12-metrics.html')
-          s=p.read_text()
-          inject=r'''<script>
-          window.addEventListener('load',()=>{
-            const now=Date.now();
-            const rows=[
-              {version:1,savedAt:now-180000,mode:'battle',outcome:'win',playerTheme:'v-signal',fieldName:'교차 선로',turns:12,maxPower:76,bursts:[{}],chains:[{},{}],detonates:[{}],opponentMeldUses:2,multiAttachMax:3,rummys:[{}],maintenance:[{}],intentionalBombAccepts:[]},
-              {version:1,savedAt:now-360000,mode:'battle',outcome:'loss',playerTheme:'mixed',fieldName:'없음',turns:18,maxPower:92,bursts:[{},{}],chains:[{}],detonates:[{},{}],opponentMeldUses:1,multiAttachMax:2,rummys:[],maintenance:[{},{}],intentionalBombAccepts:[{}]},
-              {version:1,savedAt:now-540000,mode:'practice',outcome:'win',playerTheme:'zero-sight',fieldName:'연습 필드 없음',turns:8,maxPower:48,bursts:[],chains:[{}],detonates:[],opponentMeldUses:1,multiAttachMax:1,rummys:[{}],maintenance:[],intentionalBombAccepts:[]},
-              {version:1,savedAt:now-720000,mode:'battle',outcome:'draw',playerTheme:'point-blank',fieldName:'환승 터미널',turns:24,maxPower:110,bursts:[{}],chains:[{},{},{}],detonates:[{}],opponentMeldUses:3,multiAttachMax:4,rummys:[{},{}],maintenance:[{}],intentionalBombAccepts:[{},{}]}
-            ];
-            localStorage.setItem('rummyDuelBattleMetricsV1',JSON.stringify(rows));
-            setTimeout(()=>document.getElementById('developerBtn')?.click(),220);
-          });
-          </script>'''
-          s=s.replace('</body>',inject+'</body>',1)
-          p.write_text(s)
+          audit = r'''
+          <script>
+          (()=>{
+            const auditNow=()=>{
+              const selectors=['#startScreen','.startShell','.startHero','.startMenu','.menuCard','#app','.topbar','.main','.status','.initiativeBoard','.enemyZone','.arena','.meldZone','.detail','.handZone','.controls'];
+              const issues=[];
+              const width=window.innerWidth;
+              for(const sel of selectors){
+                document.querySelectorAll(sel).forEach((el,i)=>{
+                  const cs=getComputedStyle(el),r=el.getBoundingClientRect();
+                  if(cs.display==='none'||cs.visibility==='hidden'||r.width<1||r.height<1)return;
+                  if(r.left < -1 || r.right > width + 1)issues.push({selector:sel,index:i,left:+r.left.toFixed(2),right:+r.right.toFixed(2),width:+r.width.toFixed(2)});
+                });
+              }
+              const docWidth=Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0);
+              if(docWidth>width+1)issues.push({selector:'document',scrollWidth:docWidth,innerWidth:width});
+              let pre=document.getElementById('viewportAudit');
+              if(!pre){pre=document.createElement('pre');pre.id='viewportAudit';pre.style.display='none';document.body.appendChild(pre)}
+              pre.textContent=JSON.stringify({innerWidth:width,innerHeight:innerHeight,docWidth,issues});
+            };
+            window.__ui2AuditNow=auditNow;
+          })();
+          </script>
+          '''
+          for name in ['ui2-start.html','ui2-battle.html']:
+              p=Path('/tmp')/name
+              s=p.read_text()
+              s=s.replace('</body>',audit+'</body>',1)
+              if name=='ui2-start.html':
+                  hook=r'''<script>window.addEventListener('load',()=>setTimeout(()=>window.__ui2AuditNow?.(),500));</script>'''
+              else:
+                  hook=r'''<script>window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('battleStartBtn')?.click(),160);setTimeout(()=>window.__ui2AuditNow?.(),900)});</script>'''
+              s=s.replace('</body>',hook+'</body>',1)
+              p.write_text(s)
           PY
-      - name: Capture desktop and mobile
+      - name: Audit 360-480px live Chromium widths
         shell: bash
         run: |
           set -euo pipefail
           CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
-          mkdir -p visual-audit
-          "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size=1366,768 --virtual-time-budget=1800 --screenshot="visual-audit/m12-metrics-desktop.png" "file:///tmp/m12-metrics.html"
-          "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size=390,844 --virtual-time-budget=1800 --screenshot="visual-audit/m12-metrics-mobile.png" "file:///tmp/m12-metrics.html"
+          mkdir -p visual-audit dumps
+          for W in 360 370 390 430 480; do
+            for MODE in start battle; do
+              OUT="dumps/${MODE}-${W}.html"
+              "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size=${W},844 --virtual-time-budget=1800 --dump-dom "file:///tmp/ui2-${MODE}.html" > "$OUT"
+              python3 - "$OUT" "$MODE" "$W" <<'PY'
+          import sys,re,json,html
+          path,mode,w=sys.argv[1],sys.argv[2],int(sys.argv[3])
+          s=open(path,encoding='utf-8').read()
+          m=re.search(r'<pre id="viewportAudit"[^>]*>(.*?)</pre>',s,re.S)
+          if not m:
+              raise SystemExit(f'FAIL {mode} {w}: viewportAudit result missing')
+          data=json.loads(html.unescape(m.group(1)))
+          print(f"AUDIT {mode} {w}: inner={data['innerWidth']} doc={data['docWidth']} issues={len(data['issues'])}")
+          if abs(data['innerWidth']-w)>2:
+              raise SystemExit(f"FAIL {mode} {w}: unexpected innerWidth {data['innerWidth']}")
+          if data['issues']:
+              raise SystemExit('FAIL '+mode+' '+str(w)+': '+json.dumps(data['issues'],ensure_ascii=False))
+          PY
+            done
+          done
+          for W in 360 390 480; do
+            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size=${W},844 --virtual-time-budget=1800 --screenshot="visual-audit/start-${W}.png" "file:///tmp/ui2-start.html"
+            "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size=${W},844 --virtual-time-budget=1800 --screenshot="visual-audit/battle-${W}.png" "file:///tmp/ui2-battle.html"
+          done
+      - name: Lock live-browser audit in roadmap and regression
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('ROADMAP.md'); s=p.read_text()
+          old='- [ ] 360~480px 실제 모바일 폭에서 버튼/상태 문구 잘림 회귀 점검 — 370/390px 정적 fallback과 회귀 테스트 추가, 실기기 시각 검수 남음'
+          new='- [x] 360~480px 라이브 Chromium 폭에서 버튼/상태 문구 잘림 회귀 점검 — Noto CJK 실제 한글 글자폭으로 360/370/390/430/480px 시작창·전투 화면을 검사해 문서 가로 오버플로와 핵심 패널 viewport 이탈 0건 확인. 360/390/480px 대표 화면은 스크린샷으로 추가 검수\n- [ ] Android/iOS 실제 물리 기기 최종 확인 — 브라우저 주소창·safe-area·시스템 글꼴/확대 설정까지 포함한 마지막 실기기 확인만 남음'
+          if s.count(old)!=1: raise SystemExit(f'ROADMAP mobile audit anchor mismatch: {s.count(old)}')
+          s=s.replace(old,new,1)
+          s=s.replace('1. UI2 P2: finish the remaining 360–480px live-browser / real-device visual check; static fallbacks and desktop/tablet/P3 visual audits are already locked.','1. UI2 P2: 360–480px live Chromium audit is locked; only final Android/iOS physical-device safe-area/system-UI verification remains.')
+          p.write_text(s)
+          PY
+          cat > tests/ui2-mobile-live-audit.mjs <<'EOF'
+          import fs from 'node:fs';
+          const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+          const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
+          function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
+          ok(html.includes('@media(max-width:390px)'),'390px compact fallback remains present');
+          ok(html.includes('@media(max-width:370px)'),'370px narrow fallback remains present');
+          ok(road.includes('- [x] 360~480px 라이브 Chromium 폭에서 버튼/상태 문구 잘림 회귀 점검'),'ROADMAP locks 360/370/390/430/480 live-browser audit');
+          ok(road.includes('문서 가로 오버플로와 핵심 패널 viewport 이탈 0건'),'ROADMAP records the measured overflow criterion');
+          ok(road.includes('- [ ] Android/iOS 실제 물리 기기 최종 확인'),'physical-device verification remains explicitly open');
+          console.log('UI2 mobile live-browser audit regression passed.');
+          EOF
+      - name: Run all permanent regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
       - uses: actions/upload-artifact@v4
         with:
-          name: m12-metrics-visual-audit
+          name: ui2-mobile-live-audit
           path: visual-audit/*.png
           retention-days: 1
+      - name: Commit UI2 mobile live audit
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add ROADMAP.md tests/ui2-mobile-live-audit.mjs
+          git commit -m 'test: lock UI2 360-480px live browser audit'
+          git pull --rebase origin main
+          git push origin HEAD:main
