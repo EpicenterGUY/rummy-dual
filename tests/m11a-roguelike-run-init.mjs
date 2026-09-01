@@ -31,6 +31,7 @@ ok(source('roguelikeRunDraftText').includes('현재 전투에는 아직 연결�
   const progress={roguelikeStarter:'wanderer'};
   const ctx=vm.createContext({console,Date,Math,Object,Array,String,JSON,Map,localStorage,CHARACTERS,progress,charUnlocked:id=>id!=='jester'});
   vm.runInContext("const ROGUELIKE_RUN_DRAFT_KEY='rummyDuelRoguelikeRunDraftV1'; const ROGUELIKE_COMMON_START_ZONE='common-start'; const ROGUELIKE_STARTER_IDS=Object.freeze(['wanderer','collector','salvager','jester','pure']);",ctx);
+  vm.runInContext("const ROGUELIKE_REWARD_ALGORITHM='action-tags-v1'; const ROGUELIKE_REWARD_ROLES=Object.freeze([{id:'reinforce',label:'현재 강화'},{id:'branch',label:'새 방향'},{id:'foundation',label:'기반 보강'}]);",ctx);
   install(ctx,'normalizeRoguelikeStarterId','roguelikeStarterUnlocked','roguelikeStarterProfile','createRoguelikeRunDraft','normalizeRoguelikeRunDraft','loadRoguelikeRunDraft','saveRoguelikeRunDraft','clearRoguelikeRunDraft','prepareRoguelikeRunDraft');
   const pure=ctx.createRoguelikeRunDraft('pure');
   ok(pure.pureStart===true&&pure.characterId===null&&pure.deckPlan.namedCardCount===0,'PURE draft starts with zero named cards but no fake character id');
