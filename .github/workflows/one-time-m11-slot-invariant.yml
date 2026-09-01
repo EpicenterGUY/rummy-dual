@@ -1,4 +1,4 @@
-name: One-time M11B Action Commit
+name: One-time M11B Action Commit v2
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
       - name: Apply M11B action commit layer
         run: python3 .github/scripts/m11b_action_commit_patch.py
-      - name: Make earlier M11B regressions phase-progress tolerant
+      - name: Make M11B regressions phase-progress tolerant
         run: python3 .github/scripts/m11b_progressive_test_patch.py
       - name: Install M11B action regression
         shell: bash
@@ -40,7 +40,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-action-commit.mjs tests/m11b-rank-plans.mjs .github/scripts/m11b_rank_plans_regression.mjs
+          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-action-commit.mjs tests/m11b-rank-plans.mjs .github/scripts/m11b_rank_plans_regression.mjs .github/scripts/m11b_action_commit_regression.mjs
           git commit -m 'feat: lock dormant M11B rank action priority'
           git pull --rebase origin main
           git push origin HEAD:main
