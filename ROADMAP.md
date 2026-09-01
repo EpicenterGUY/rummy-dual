@@ -234,7 +234,8 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 전투 기록 기본 접힘/요약 방식 적용 — 기본 접힘 + 짧은 disclosure 헤더 + 펼쳤을 때만 제한 높이 스크롤
 - [x] 선택 가능 카드·붙이기 가능 조합 강조를 발광보다 테두리/위치 변화 중심으로 통일
 - [x] 덱 / 공용 버림패 / 개인 소모패의 역할 위계 분리 — 소모패를 직접 조작하지 않는 재순환 대기로 명확화하고, 덱 소진 시 `소모패 + 공용 버림패의 내 소유 카드` 자동 회수·셔플 규칙을 상시 표시하며 데스크톱에서 시각적 비중 축소
-- [ ] 360~480px 실제 모바일 폭에서 버튼/상태 문구 잘림 회귀 점검 — 370/390px 정적 fallback과 회귀 테스트 추가, 실기기 시각 검수 남음
+- [x] 360~480px 라이브 Chromium 폭에서 버튼/상태 문구 잘림 회귀 점검 — Chrome DevTools 모바일 viewport로 Noto CJK 실제 한글 글자폭의 360/370/390/430/480 CSS px 시작창·전투 화면을 검사해 문서 가로 오버플로와 핵심 패널 viewport 이탈 0건 확인. 360/390/480px 대표 화면은 스크린샷으로 추가 검수
+- [ ] Android/iOS 실제 물리 기기 최종 확인 — 브라우저 주소창·safe-area·시스템 글꼴/확대 설정까지 포함한 마지막 실기기 확인만 남음
 
 ### P2.5 — 데스크톱 / 태블릿 반응형
 - [x] 기존 480px 모바일 전장을 899px 이하에서 그대로 유지
@@ -428,6 +429,6 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [ ] UI/progress JS
 
 ## Current next work
-1. UI2 P2: finish the remaining 360–480px live-browser / real-device visual check; static fallbacks and desktop/tablet/P3 visual audits are already locked.
+1. UI2 P2: 360–480px live Chromium audit is locked; only final Android/iOS physical-device safe-area/system-UI verification remains.
 2. M12: collect real playtest samples from the new per-battle metrics history and balance from data before large content expansion.
 3. M11A/M11B: keep roguelike progression and asymmetric top/bottom-rank cards in prototype/design validation until M12 evidence supports promotion; defer M13 file splitting until rules/tests remain stable through those experiments.
