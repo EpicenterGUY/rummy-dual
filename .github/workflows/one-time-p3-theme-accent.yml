@@ -41,3 +41,4 @@ jobs:
           git commit -m 'ui: restrain theme identity to accent layer'
           git pull --rebase origin main
           git push origin HEAD:main
+# rerun after narrowing the no-background-replacement regression to the theme root surfaces
