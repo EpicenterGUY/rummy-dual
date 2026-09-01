@@ -1,4 +1,4 @@
-name: One-time M11B Paired Seed
+name: One-time M11B Paired Seed v2
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
       - name: Apply M11B paired-seed experiment control
         run: |
-          python3 .github/scripts/m11b_paired_seed_patch.py
+          python3 .github/scripts/m11b_paired_seed_runner.py
           python3 .github/scripts/m11b_paired_seed_compat.py
       - name: Install regression
         shell: bash
@@ -44,3 +44,4 @@ jobs:
           git commit -m 'feat: add paired M11B experiment seeds'
           git pull --rebase origin main
           git push origin HEAD:main
+# rerun v2: normalize legacy duplicate M11B event wiring
