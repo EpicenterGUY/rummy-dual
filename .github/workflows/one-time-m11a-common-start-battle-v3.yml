@@ -1,0 +1,68 @@
+name: One-time M11A common-start battle progression v3
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m11a-common-start-battle-v3.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-common-start-battle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply original patch and fixes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          workflow=Path('.github/workflows/one-time-m11a-common-start-battle.yml').read_text(encoding='utf-8')
+          start=workflow.index("          python - <<'PY'\n")+len("          python - <<'PY'\n")
+          end=workflow.index("\n          PY\n",start)
+          lines=workflow[start:end].splitlines()
+          script='\n'.join(line[10:] if line.startswith('          ') else line for line in lines)
+          exec(compile(script,'m11a-common-start-original','exec'),{})
+
+          index=Path('index.html')
+          text=index.read_text(encoding='utf-8')
+          text=text.replace("function showResult(win){\n if(typeof renderCirculationSummary==='function')renderCirculationSummary();","function showResult(win){if(typeof renderCirculationSummary==='function')renderCirculationSummary();",1)
+          text=text.replace("function showCirculationDraw(){\n if(typeof renderCirculationSummary==='function')renderCirculationSummary();","function showCirculationDraw(){if(typeof renderCirculationSummary==='function')renderCirculationSummary();",1)
+          text=text.replace("poolIds:[...unlockedNamed()],seed=id+':'+draft.runDeck.revision","poolIds:[...unlockedNamed()],seed:id+':'+draft.runDeck.revision",1)
+          index.write_text(text,encoding='utf-8')
+          PY
+
+      - name: Run all regression suites
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          for test in tests/*.mjs; do
+            echo "==> $test"
+            node "$test"
+            count=$((count+1))
+          done
+          echo "Regression suites passed: $count"
+
+      - name: Run M11A economy experiment
+        shell: bash
+        run: node experiments/m11a-growth-economy.mjs
+
+      - name: Commit project patch
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html ROADMAP.md docs/ROGUELIKE_MASTER_PLAN.md tests/m11a-reward-nodes.mjs tests/m11a-run-progression.mjs; then
+            echo 'No project changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md docs/ROGUELIKE_MASTER_PLAN.md tests/m11a-reward-nodes.mjs tests/m11a-run-progression.mjs
+          git commit -m 'feat: connect common-start battles to run rewards'
+          git push origin HEAD:main
