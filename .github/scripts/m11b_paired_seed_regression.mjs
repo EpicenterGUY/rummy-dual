@@ -13,7 +13,9 @@ ok(html.includes('id="m11bPairSeedLabel"')&&html.includes('id="m11bNewPairSeedBt
 ok(script.includes("const M11B_EXPERIMENT_SEED_KEY='rummyDuelM11BExperimentSeedV1'"),'paired experiment seed persists under its own key');
 for(const n of ['m11bNormalizeSeed','m11bGenerateSeed','m11bExperimentSeedState','saveM11BExperimentSeedState','currentM11BExperimentSeed','newM11BExperimentSeed','markM11BExperimentSeedComplete','m11bExperimentSeedStatusText','renderM11BExperimentSeedStatus','m11bSeedMix','m11bSeededShuffle','m11bExperimentDeckSeed','m11bExperimentCompletePairs'])ok(script.includes(`function ${n}(`),`paired-seed helper exists: ${n}`);
 ok(source('renderDeveloperPanel').includes("renderM11BExperimentSeedStatus"),'developer panel refreshes paired-seed status');
-ok(script.includes("document.getElementById('m11bNewPairSeedBtn')?.addEventListener('click',()=>newM11BExperimentSeed())"),'new paired-seed button is wired');
+ok(script.includes("document.getElementById('m11bNewPairSeedBtn').onclick=()=>newM11BExperimentSeed()"),'new paired-seed button is wired');
+ok((script.match(/document\.querySelectorAll\('\[data-m11b-experiment\]'\)\.forEach\(b=>b\.onclick=/g)||[]).length===1,'legacy duplicate cohort event wiring is normalized to one assignment');
+ok((script.match(/document\.getElementById\('m11bExperimentClearBtn'\)\.onclick=/g)||[]).length===1,'legacy duplicate M11B clear event wiring is normalized to one assignment');
 ok(source('newGame').includes('state.m11bExperimentSeed=null'),'ordinary new games clear the active battle seed snapshot');
 ok(source('restartCurrentCombat').includes("state.m11bExperimentSeed||currentM11BExperimentSeed()"),'result replay preserves the active paired seed');
 ok(source('setupM11BExperimentBattle').includes("p.deck=makeM11BExperimentDeck('player',cohort.id,pairSeed)")&&source('setupM11BExperimentBattle').includes("e.deck=makeM11BExperimentDeck('enemy','zero',pairSeed)"),'player and control opponent are both built from the same comparison seed');
