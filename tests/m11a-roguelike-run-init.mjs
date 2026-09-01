@@ -55,6 +55,7 @@ ok(source('roguelikeRunDraftText').includes('현재 전투에는 아직 연결�
 }
 
 ok(road.includes('- [x] 캐릭터 선택 UI와 로그라이크 런 초기화 구조 설계'),'ROADMAP marks only the run-init architecture/UI item complete');
+ok(!road.includes('PURE만 시작 네임드 0장을 확정값으로 기록')&&!road.includes('시작 덱 총 장수·순수/효과 비율·패시브·정확한 보상 확률은 미확정 상태'),'ROADMAP contains no stale pre-baseline run-init wording');
 ok(road.includes('- [x] 캐릭터별 시작 카드 수 / 순수카드 비율 / 보상 가중치 / 패시브 확정'),'quantitative character starter baseline is closed');
 ok(road.includes('- [x] PURE 시작 덱의 숫자/무늬 분포 확정'),'PURE distribution baseline is closed');
 ok(master.includes('## 15. 스타터 수치 기준 v1 — 30장 / PURE 기준 구조')&&master.includes('character-tendency-score-v1'),'master plan records the locked starter counts and soft reward-ranking weights');
