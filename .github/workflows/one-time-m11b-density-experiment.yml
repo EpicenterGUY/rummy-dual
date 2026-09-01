@@ -1,4 +1,4 @@
-name: One-time M11B Density Experiment v2
+name: One-time M11B Density Experiment v3
 
 on:
   push:
@@ -15,4 +15,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run deterministic asymmetric-density simulation
-        run: node .github/scripts/m11b_density_experiment.mjs
+        run: node experiments/m11b-asymmetric-density.mjs
