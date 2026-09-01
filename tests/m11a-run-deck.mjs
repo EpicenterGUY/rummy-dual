@@ -18,12 +18,12 @@ for(const n of ['NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','
 vm.runInContext("const ROGUELIKE_STARTER_DECK_SIZE=30;const ROGUELIKE_RUN_DRAFT_KEY='rummyDuelRoguelikeRunDraftV1';const ROGUELIKE_COMMON_START_ZONE='common-start';const ROGUELIKE_REWARD_ALGORITHM='action-tags-v1';function unlockedNamed(){return new Set(Object.keys(NAMED))}",ctx);
 for(const n of [...script.matchAll(/function (\w+)\(/g)].map(m=>m[1]).filter(n=>/roguelike/i.test(n)).concat('namedSlot'))vm.runInContext(source(n),ctx);
 for(const starter of ['wanderer','collector','salvager','jester','pure']){
- const d=ctx.prepareRoguelikeRunDraft(starter);ok(d.version===4&&d.runDeck.cards.length===30,starter+' creates persistent 30-card deck');
+ const d=ctx.prepareRoguelikeRunDraft(starter);ok(d.version===5&&d.runDeck.cards.length===30,starter+' creates persistent 30-card deck');
  ok(ctx.loadRoguelikeRunDraft().runDeck.cards.filter(c=>c.variantId).length===(starter==='pure'?0:7),starter+' retains correct identities on reload');
 }
 const draft=ctx.prepareRoguelikeRunDraft('pure');
-function candidate(){const d=ctx.loadRoguelikeRunDraft();return ctx.roguelikeRewardCandidates({...ctx.roguelikeRunDeckProfile(d),poolIds:vm.runInContext('Object.keys(NAMED)',ctx),seed:d.runId+':'+d.runDeck.revision}).picks[0]}
-let pick=candidate(),plan=ctx.roguelikeCurrentReplacementPlan(pick.id,pick.role);
+function candidate(){const d=ctx.loadRoguelikeRunDraft(),node=ctx.roguelikePendingRewardNode(d)||ctx.roguelikeIssueRewardNode(ctx.roguelikeNextRewardNodeRequest(d));return{...node.picks[0],nodeId:node.id}}
+let pick=candidate(),plan=ctx.roguelikeCurrentReplacementPlan(pick.id,pick.role,'reward',pick.nodeId);
 ok(plan.applyEnabled&&plan.fromVariant===null,'PURE reward uses its own deck, not normal custom deck');
 const savedBefore=storage.get('rummyDuelRoguelikeRunDraftV1');
 ok(ctx.roguelikeApplyRunReplacement({...plan,runId:'old'})===false,'different run selection rejected');
@@ -35,8 +35,8 @@ const changed=ctx.loadRoguelikeRunDraft();
 ok(changed.runDeck.cards.length===30&&changed.runDeck.revision===1&&changed.runDeck.cards.find(c=>c.slot===plan.slot).variantId===pick.id,'reload preserves replacement and exact slot count');
 ok(changed.deckPlan.namedCardCount===0&&changed.runDeck.cards.filter(c=>c.variantId).length===1,'start blueprint stays PURE while current deck grows');
 ok(!ctx.roguelikeApplyRunReplacement(plan),'double click/stale revision rejected');
-ok(ctx.roguelikeCurrentReplacementPlan('J1','reinforce')===null,'joker cannot replace a regular slot');
-ok(ctx.roguelikeCurrentReplacementPlan(pick.id,pick.role,'shop')===null,'unimplemented shop payment cannot be bypassed');
+ok(ctx.roguelikeCurrentReplacementPlan('J1','reinforce','reward',pick.nodeId)===null,'joker cannot replace a regular slot');
+ok(ctx.roguelikeCurrentReplacementPlan(pick.id,pick.role,'shop',pick.nodeId)===null,'unimplemented shop payment cannot be bypassed');
 const invalid=JSON.parse(JSON.stringify(changed));invalid.runDeck.cards[0].slot=invalid.runDeck.cards[1].slot;
 ok(ctx.normalizeRoguelikeRunDraft(invalid)===null,'duplicate/corrupt slot rejected rather than silently resetting growth');
 const wrong=JSON.parse(JSON.stringify(changed));wrong.runDeck.cards[0].variantId='J1';ok(ctx.normalizeRoguelikeRunDraft(wrong)===null,'joker in regular slot rejected');
@@ -44,7 +44,7 @@ const legacy={...draft,version:3};delete legacy.runDeck;ok(ctx.normalizeRoguelik
 ctx.charUnlocked=()=>false;const locked={...changed,starterId:'collector'};ok(ctx.normalizeRoguelikeRunDraft(locked).starterId==='collector','existing run identity survives unlock changes');
 ok(JSON.stringify(progress)===before,'normal battle deck and progression remain unchanged');
 ctx.clearRoguelikeRunDraft();ok(!ctx.roguelikeApplyRunReplacement(plan),'deleted run rejects old selection');
-ctx.charUnlocked=()=>true;ctx.prepareRoguelikeRunDraft('pure');pick=candidate();plan=ctx.roguelikeCurrentReplacementPlan(pick.id,pick.role);
+ctx.charUnlocked=()=>true;ctx.prepareRoguelikeRunDraft('pure');pick=candidate();plan=ctx.roguelikeCurrentReplacementPlan(pick.id,pick.role,'reward',pick.nodeId);
 const nodes=Object.fromEntries(['roguelikeReplacementPreview','roguelikeReplacementApplyBtn','roguelikeReplacementCancelBtn'].map(id=>[id,{}]));
 ctx.document={getElementById:id=>nodes[id]};ctx.SUIT_SYMBOL={S:'♠',H:'♥',D:'♦',C:'♣'};
 let renders=0;ctx.renderRoguelikeStarterPicker=()=>{renders++};
