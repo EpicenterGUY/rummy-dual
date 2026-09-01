@@ -1,4 +1,4 @@
-name: One-time M11B Player Rank Choice UI v7
+name: One-time M11B Player Rank Choice UI v8
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-rank-choice-ui.mjs tests/point-blank-quick-reload.mjs .github/scripts/point_blank_quick_reload_regression.mjs
+          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-rank-choice-ui.mjs tests/point-blank-quick-reload.mjs .github/scripts/point_blank_quick_reload_regression.mjs .github/scripts/m11b_rank_choice_ui_patch.py
           git commit -m 'feat: connect M11B player rank-choice UI'
           git pull --rebase origin main
           git push origin HEAD:main
