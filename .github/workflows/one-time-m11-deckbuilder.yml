@@ -1,4 +1,4 @@
-name: One-time M12 Metrics Viewer
+name: One-time M12 Metrics Visual Audit
 
 on:
   push:
@@ -6,38 +6,50 @@ on:
     paths:
       - '.github/workflows/one-time-m11-deckbuilder.yml'
 
-permissions:
-  contents: write
-
 jobs:
-  patch:
+  capture:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Apply M12 metrics viewer
-        run: python3 .github/scripts/m12_metrics_viewer_patch.py
-      - name: Install M12 viewer regression
+      - name: Install Korean font fallback
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          fc-cache -f
+      - name: Prepare metrics viewer capture
         shell: bash
         run: |
-          cp .github/scripts/m12_metrics_viewer_regression.mjs tests/m12-metrics-viewer.mjs
-          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/m12-metrics-viewer.mjs
-          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/m12-metrics-viewer.mjs
-      - name: Run all regressions
+          cp index.html /tmp/m12-metrics.html
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/m12-metrics.html')
+          s=p.read_text()
+          inject=r'''<script>
+          window.addEventListener('load',()=>{
+            const now=Date.now();
+            const rows=[
+              {version:1,savedAt:now-180000,mode:'battle',outcome:'win',playerTheme:'v-signal',fieldName:'교차 선로',turns:12,maxPower:76,bursts:[{}],chains:[{},{}],detonates:[{}],opponentMeldUses:2,multiAttachMax:3,rummys:[{}],maintenance:[{}],intentionalBombAccepts:[]},
+              {version:1,savedAt:now-360000,mode:'battle',outcome:'loss',playerTheme:'mixed',fieldName:'없음',turns:18,maxPower:92,bursts:[{},{}],chains:[{}],detonates:[{},{}],opponentMeldUses:1,multiAttachMax:2,rummys:[],maintenance:[{},{}],intentionalBombAccepts:[{}]},
+              {version:1,savedAt:now-540000,mode:'practice',outcome:'win',playerTheme:'zero-sight',fieldName:'연습 필드 없음',turns:8,maxPower:48,bursts:[],chains:[{}],detonates:[],opponentMeldUses:1,multiAttachMax:1,rummys:[{}],maintenance:[],intentionalBombAccepts:[]},
+              {version:1,savedAt:now-720000,mode:'battle',outcome:'draw',playerTheme:'point-blank',fieldName:'환승 터미널',turns:24,maxPower:110,bursts:[{}],chains:[{},{},{}],detonates:[{}],opponentMeldUses:3,multiAttachMax:4,rummys:[{},{}],maintenance:[{}],intentionalBombAccepts:[{},{}]}
+            ];
+            localStorage.setItem('rummyDuelBattleMetricsV1',JSON.stringify(rows));
+            setTimeout(()=>document.getElementById('developerBtn')?.click(),220);
+          });
+          </script>'''
+          s=s.replace('</body>',inject+'</body>',1)
+          p.write_text(s)
+          PY
+      - name: Capture desktop and mobile
         shell: bash
         run: |
           set -euo pipefail
-          for f in tests/*.mjs; do
-            echo "== $f =="
-            node "$f"
-          done
-      - name: Commit M12 metrics viewer
-        shell: bash
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md tests/m12-metrics-viewer.mjs
-          git commit -m 'ui: add M12 local metrics review panel'
-          git pull --rebase origin main
-          git push origin HEAD:main
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          mkdir -p visual-audit
+          "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size=1366,768 --virtual-time-budget=1800 --screenshot="visual-audit/m12-metrics-desktop.png" "file:///tmp/m12-metrics.html"
+          "$CHROME" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --allow-file-access-from-files --window-size=390,844 --virtual-time-budget=1800 --screenshot="visual-audit/m12-metrics-mobile.png" "file:///tmp/m12-metrics.html"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m12-metrics-visual-audit
+          path: visual-audit/*.png
+          retention-days: 1
