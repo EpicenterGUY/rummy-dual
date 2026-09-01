@@ -1,0 +1,137 @@
+name: One-time HUD menu stacking and turn-rule clarity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-hud-menu-rule-clarity.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-hud-menu-rule-clarity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch HUD menu and rule copy
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          index = Path('index.html')
+          text = index.read_text(encoding='utf-8')
+          marker = '/* UI4 P1 · HUD menu stacking fix */'
+          if marker not in text:
+              patch = r'''
+
+          /* UI4 P1 · HUD menu stacking fix */
+          /* .topbar and .main were both z-index:2; because .main is painted later,
+             the absolute HUD menu could open underneath the combat board. */
+          .topbar{z-index:120}
+          .hudMenu[open]{z-index:121}
+          .hudMenuPanel{z-index:122}
+          '''
+              needle = '\n</style>'
+              if needle not in text:
+                  raise SystemExit('Could not find </style> insertion point')
+              text = text.replace(needle, patch + needle, 1)
+
+          old_phase = "phase='내 턴 · 스위치 반환 1회 완료. 추가 공격 없이 회수·정비·버림패로 판을 정리하세요.'"
+          new_phase = "phase='내 턴 · 스위치 반환 1회 완료. 방금 반환한 같은 런은 계속 연장 가능하며, 다른 버스트/체인 반환은 불가합니다. 회수·정비·버리기는 계속 가능합니다.'"
+          if old_phase in text:
+              text = text.replace(old_phase, new_phase, 1)
+          elif new_phase not in text:
+              raise SystemExit('Could not find returned-SWITCH phase copy')
+
+          old_turn = '기본 턴은 <b>1장 획득 → 행동 → 1장 버리기</b>입니다. 단, 행동을'
+          new_turn = '기본 턴은 <b>1장 획득 → 행동 → 1장 버리기</b>입니다. <b>새 3장 조합(세트/런)은 둘을 합쳐 기본 턴당 1회</b>만 만들 수 있습니다. 카드 효과가 명시한 경우에만 추가 새 조합이 가능합니다. 단, 행동을'
+          if old_turn in text:
+              text = text.replace(old_turn, new_turn, 1)
+          elif new_turn not in text:
+              raise SystemExit('Could not find basic-turn rule paragraph')
+
+          old_practice = '새 조합은 한 턴에 1개만 만들 수 있습니다.'
+          new_practice = '새 3장 조합은 세트/런을 합쳐 한 턴에 1개만 만들 수 있습니다.'
+          if old_practice in text:
+              text = text.replace(old_practice, new_practice, 1)
+          elif new_practice not in text:
+              raise SystemExit('Could not find practice new-meld copy')
+
+          index.write_text(text, encoding='utf-8')
+
+          readme = Path('README.md')
+          r = readme.read_text(encoding='utf-8')
+          readme_line = '- Each player may create at most one new exact 3-card meld (SET or RUN combined) per turn unless a named effect explicitly grants an extra new meld.\n'
+          if readme_line not in r:
+              anchor = '- Each player may keep up to 2 public melds. A full board blocks creating another meld until normal play or a card effect changes the board; there is no free base meld disposal action.\n'
+              if anchor not in r:
+                  raise SystemExit('Could not find README public-meld anchor')
+              r = r.replace(anchor, anchor + readme_line, 1)
+              readme.write_text(r, encoding='utf-8')
+
+          roadmap = Path('ROADMAP.md')
+          rm = roadmap.read_text(encoding='utf-8')
+          roadmap_line = '- [x] Base new-meld limit: SET/RUN combined, at most one new exact 3-card meld per turn unless a named effect explicitly grants an extra new meld\n'
+          if roadmap_line not in rm:
+              anchor = '- [x] One normal SWITCH return per turn\n'
+              if anchor not in rm:
+                  raise SystemExit('Could not find ROADMAP SWITCH-return anchor')
+              rm = rm.replace(anchor, anchor + roadmap_line, 1)
+              roadmap.write_text(rm, encoding='utf-8')
+
+          test = Path('tests/ui-hud-menu-regression.mjs')
+          test.write_text(r'''import fs from 'node:fs';
+import assert from 'node:assert/strict';
+
+const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const readme = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
+const roadmap = fs.readFileSync(new URL('../ROADMAP.md', import.meta.url), 'utf8');
+
+assert.ok(html.includes('/* UI4 P1 · HUD menu stacking fix */'), 'HUD stacking marker missing');
+assert.ok(html.includes('.topbar{z-index:120}'), 'topbar must stack above .main');
+assert.ok(html.includes('.hudMenuPanel{z-index:122}'), 'HUD menu panel stacking guard missing');
+assert.ok(html.includes('새 3장 조합(세트/런)은 둘을 합쳐 기본 턴당 1회'), 'rules overlay must explain the combined new-meld limit');
+assert.ok(html.includes('방금 반환한 같은 런은 계속 연장 가능하며, 다른 버스트/체인 반환은 불가합니다.'), 'returned-SWITCH phase must preserve same-RUN continuation');
+assert.ok(!html.includes('스위치 반환 1회 완료. 추가 공격 없이'), 'obsolete no-more-attack copy must be removed');
+assert.ok(readme.includes('SET or RUN combined'), 'README must document combined new-meld limit');
+assert.ok(roadmap.includes('Base new-meld limit: SET/RUN combined'), 'ROADMAP M0 must lock combined new-meld limit');
+
+console.log('HUD menu stacking and turn-rule clarity regression passed.');
+''', encoding='utf-8')
+
+          for check in [
+              marker,
+              '.topbar{z-index:120}',
+              '새 3장 조합(세트/런)은 둘을 합쳐 기본 턴당 1회',
+              '방금 반환한 같은 런은 계속 연장 가능하며, 다른 버스트/체인 반환은 불가합니다.',
+          ]:
+              assert check in text, check
+          print('HUD menu and turn-rule clarity patch applied.')
+          PY
+
+      - name: Run core regression suite
+        shell: bash
+        run: node tests/core-behavior.mjs
+
+      - name: Run HUD menu regression
+        shell: bash
+        run: node tests/ui-hud-menu-regression.mjs
+
+      - name: Commit patch
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html README.md ROADMAP.md tests/ui-hud-menu-regression.mjs; then
+            echo 'No project changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html README.md ROADMAP.md tests/ui-hud-menu-regression.mjs
+          git commit -m 'fix: keep HUD menu above board and clarify turn limits'
+          git push origin HEAD:main
