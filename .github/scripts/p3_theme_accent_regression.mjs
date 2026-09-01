@@ -14,6 +14,6 @@ ok(html.includes('#app[data-theme="zero-sight"] #charBadge{border-color:#60747c}
 ok(html.includes('.card.theme-point-blank.named:after{background:var(--theme-pointblank)'),'POINT-BLANK theme identity is limited to the existing named-card diamond marker');
 const block=html.slice(html.indexOf('/* UI3 P3 · restrained theme accent layer */'),html.indexOf('</style>',html.indexOf('/* UI3 P3 · restrained theme accent layer */')));
 ok(!/text-shadow|filter:|animation:|box-shadow/.test(block),'theme-specific layer introduces no glow, filter, animation, or special shadow');
-ok(!/data-theme[^\n{}]*\]\s*(?:body|#app)?\s*\{[^}]*background/.test(block),'theme layer does not replace the common page/battle background');
+ok(!/#app\[data-theme=[^\]]+\]\s*\{[^}]*background/.test(block)&&!/.startScreen\[data-theme=[^\]]+\]\s*\{[^}]*background/.test(block),'theme layer does not replace the common page/battle background');
 ok(road.includes('- [x] V-SIGNAL 등 테마군은 기본 UI 위에 테마 포인트만 얹고 카지노형 네온 남발 금지'),'ROADMAP marks restrained theme-accent policy complete');
 console.log('P3 restrained theme accent regression passed.');
