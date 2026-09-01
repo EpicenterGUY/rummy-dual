@@ -1,0 +1,44 @@
+name: One-time M11B Mobile First Exposure
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m11b-mobile-intro.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply M11B mobile first-exposure guidance
+        run: python3 .github/scripts/m11b_mobile_intro_patch.py
+      - name: Install M11B mobile intro regression
+        shell: bash
+        run: |
+          cp .github/scripts/m11b_mobile_intro_regression.mjs tests/m11b-mobile-intro.mjs
+          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/m11b-mobile-intro.mjs
+          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/m11b-mobile-intro.mjs
+          sed -i "s|fs.readFileSync('docs/ASYMMETRIC_RANK_PROTOTYPE.md','utf8')|fs.readFileSync(new URL('../docs/ASYMMETRIC_RANK_PROTOTYPE.md',import.meta.url),'utf8')|" tests/m11b-mobile-intro.mjs
+      - name: Run all regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+      - name: Commit M11B mobile first-exposure guidance
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-mobile-intro.mjs
+          git commit -m 'feat: finish M11B mobile rank onboarding'
+          git pull --rebase origin main
+          git push origin HEAD:main
