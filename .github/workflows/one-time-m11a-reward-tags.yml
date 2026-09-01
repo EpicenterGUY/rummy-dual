@@ -1,4 +1,4 @@
-name: One-time M11A Reward Tags
+name: One-time M11A Reward Tags v2
 
 on:
   push:
@@ -25,6 +25,8 @@ jobs:
           sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/m11a-reward-tags.mjs
           sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/m11a-reward-tags.mjs
           sed -i "s|fs.readFileSync('docs/ROGUELIKE_MASTER_PLAN.md','utf8')|fs.readFileSync(new URL('../docs/ROGUELIKE_MASTER_PLAN.md',import.meta.url),'utf8')|" tests/m11a-reward-tags.mjs
+      - name: Update prior isolated regression context
+        run: python3 .github/scripts/m11a_reward_tags_test_compat.py
       - name: Run all regressions
         shell: bash
         run: |
@@ -38,7 +40,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md docs/ROGUELIKE_MASTER_PLAN.md tests/m11a-reward-tags.mjs
+          git add index.html ROADMAP.md docs/ROGUELIKE_MASTER_PLAN.md tests/m11a-reward-tags.mjs tests/m11a-roguelike-run-init.mjs
           git commit -m 'feat: add M11A action-tag reward candidates'
           git pull --rebase origin main
           git push origin HEAD:main
