@@ -4,7 +4,10 @@ const road=fs.readFileSync('ROADMAP.md','utf8');
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 
 ok(html.includes('/* UI3 P3 · tutorial tactical-board finish */'),'P3 tutorial tactical-board block exists');
-ok(html.includes('.tutorialCoach{position:relative;border:1px solid #56666a!important;border-left:4px solid #6f9690!important'),'tutorial coach uses a restrained teal tactical-board edge');
+ok(html.includes('.tutorialCoach{border:1px solid #56666a!important;border-left:4px solid #6f9690!important'),'tutorial coach uses a restrained teal tactical-board edge');
+ok(html.includes('.tutorialCoach,.practiceCoach{position:fixed;z-index:1450;right:18px;top:60px'),'desktop tutorial coach retains its fixed viewport placement');
+const p3=html.slice(html.indexOf('/* UI3 P3 · tutorial tactical-board finish */'),html.indexOf('</style>',html.indexOf('/* UI3 P3 · tutorial tactical-board finish */')));
+ok(!p3.includes('.tutorialCoach{position:relative'),'P3 finish does not override desktop fixed positioning');
 ok(html.includes('.tutorialCoachHead{padding-bottom:6px;border-bottom:1px solid #445258;margin-bottom:7px}'),'tutorial header has clear low-contrast board hierarchy');
 ok(html.includes('.tutorialCoachHead .badge{border:1px solid #5d7774;border-radius:999px;background:#31423f;box-shadow:none'),'tutorial step badge drops pixel/neon styling');
 ok(html.includes('.tutorialCoachHint{border:1px solid #4a5c60!important;border-left:3px solid #8d8065!important'),'hint panel uses a muted brass annotation edge');
