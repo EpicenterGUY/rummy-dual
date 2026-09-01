@@ -1,0 +1,38 @@
+name: One-time M11A Starter Consistency
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m11a-starter-consistency.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-test-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply consistency patch
+        run: python .github/scripts/patch_m11a_starter_consistency.py
+      - name: Run all regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in tests/*.mjs; do
+            echo "== $f =="
+            node "$f"
+          done
+      - name: Commit consistency pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add ROADMAP.md docs/ROGUELIKE_MASTER_PLAN.md tests/m11a-roguelike-run-init.mjs
+          git diff --cached --check
+          git commit -m 'docs: sync M11A starter baseline wording'
+          git push origin HEAD:main
