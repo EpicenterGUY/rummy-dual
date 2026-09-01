@@ -79,3 +79,16 @@
 5. **조합 정리**: 버스트 정리, 런 완주, 회수/재순환 등으로 공개 조합을 떠날 때 기존 중앙 초기화 경로가 `activeRank/rankOrientation`을 지우고 `rank=baseRank`로 되돌린다.
 
 합성 회귀에서는 비대칭 세트로 새 조합을 만든 뒤 러미까지 선택값이 유지되는지, 비대칭 카드로 상대 세트를 버스트하거나 런 체인을 올릴 때 선택값이 공개 조합/공격 처리에 들어가는지, 잘못된 plan이 실제 카드 상태를 부분 변경하지 않는지 검사한다.
+
+## 4단계 — CPU 사용값 선택
+
+라이브 비대칭 카드를 추가하지 않은 채 CPU가 미래의 `X/Y` 카드를 정상적으로 사용할 수 있는 최소 계획 계층을 연결한다.
+
+- 새 3장 조합: `bestNewMeld`가 손패 조합마다 `legalRankChoicePlansForNewMeld()`의 합법 방향을 모두 검사한다. 각 projection에 기존 새 조합 점수와 `futureBurstRisk()`를 그대로 적용하고 최고 점수의 `rankPlan`을 보존한다.
+- 단일/다중 붙이기: `bestExtensionFromHand`가 최대 6장 조합의 모든 `legalRankChoicePlansForAttach()`를 검사한다. 선택된 projection으로 버스트 +24, 런 체인 단계 합계, 상대 공개 조합 보정, 테마 AI 보정을 계산한다.
+- 스위치 반환 가치는 기존 AI 구조를 유지한다. 붙이기 후보의 점수 자체가 버스트/체인 위력을 포함하고, 현재 스위치가 CPU를 향하면 `continueAITurnAfterAcquisition()`이 새 조합보다 반환 가능한 붙이기를 우선한다. 따라서 비대칭 plan도 동일한 반환 판단에 들어간다.
+- 실행 시 `bestNewMeld` / `bestExtensionFromHand`가 선택한 `rankPlan`을 각각 `submitNewMeld(..., rankPlan)` / `attachCards(..., rankPlan)`에 전달한다. CPU도 플레이어와 같은 원자적 plan 검증을 통과해야 실제 카드 방향이 확정된다.
+- 완전 막힘 판정 `anyAttachOption`도 baseRank만 보지 않고 합법 top/bottom plan 존재 여부를 검사하므로, 다른 면으로는 붙일 수 있는 카드를 정비 대상으로 잘못 판정하지 않는다.
+- 동점 plan은 기존 plan 열거 순서(카드 선택 순서, 위→아래)를 유지해 랜덤 노이즈 없이 결정적으로 선택한다.
+
+이 단계도 현재 라이브 카드풀에는 `topRank/bottomRank` 비대칭 정의를 추가하지 않는다. 합성 회귀로만 CPU 선택과 실제 plan 전달을 검증한다.

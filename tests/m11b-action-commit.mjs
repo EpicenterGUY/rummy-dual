@@ -133,5 +133,5 @@ ok(doc.includes('## 3단계 — 행동 확정과 숫자 우선순위'),'prototyp
 ok(doc.includes('조커 와일드')&&doc.includes('카운터피터')&&doc.includes('도플갱어'),'prototype document records Joker / modifier / copy priority');
 ok(road.includes('- [x] 버스트·체인·런 완주·러미 판정이 선택된 사용값만 읽고 기존 처리 순서를 그대로 유지하는지 검증'),'ROADMAP locks selected-rank action/timing verification');
 ok(road.includes('- [x] 조커의 와일드 판정, 기존 숫자 변경 효과, 복사 효과와 비대칭 값이 중첩될 때 우선순위 명문화'),'ROADMAP locks rank-resolution priority');
-ok(road.includes('- [ ] CPU가 두 사용값의 세트·런 가능성, 즉시 버스트/체인, 스위치 반환 가치까지 비교하는 최소 휴리스틱 설계'),'CPU asymmetric-rank planning remains explicitly open for the next engine phase');
+ok(/- \[[ x]\] CPU가 두 사용값의 세트·런 가능성, 즉시 버스트\/체인, 스위치 반환 가치까지 비교하는 최소 휴리스틱 설계/.test(road),'CPU asymmetric-rank planning remains tracked across later M11B phases');
 console.log('M11B action commit and rank-priority regression passed.');
