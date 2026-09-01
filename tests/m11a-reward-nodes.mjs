@@ -152,7 +152,7 @@ const corruptions=[
  ['invalid entries',d=>d.rewardNodes.entries={}],
  ['node from another run',d=>d.rewardNodes.entries[0].id='other-run:reward:1'],
  ['out-of-order node',d=>d.rewardNodes.entries[1].sequence=3],
- ['unimplemented source',d=>d.rewardNodes.entries[0].source='battle'],
+ ['unimplemented source',d=>d.rewardNodes.entries[0].source='event'],
  ['unknown algorithm',d=>d.rewardNodes.entries[0].algorithm='unknown'],
  ['duplicate candidates',d=>d.rewardNodes.entries[2].picks[1].id=d.rewardNodes.entries[2].picks[0].id],
  ['duplicate roles',d=>d.rewardNodes.entries[2].picks[1].role='reinforce'],
