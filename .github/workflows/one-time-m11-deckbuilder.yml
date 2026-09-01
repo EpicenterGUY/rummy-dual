@@ -1,4 +1,4 @@
-name: One-time M11 deckbuilder
+name: One-time M12 Battle Metrics
 
 on:
   push:
@@ -13,18 +13,17 @@ jobs:
   patch:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Apply M11 deckbuilder patch
-        run: python3 .github/scripts/m11_deckbuilder_patch.py
-      - name: Install regression
+      - name: Apply M12 battle metrics
+        run: python3 .github/scripts/m12_battle_metrics_patch.py
+      - name: Install M12 metrics regression
         shell: bash
         run: |
-          cp .github/scripts/m11_deckbuilder_regression.mjs tests/m11-deckbuilder.mjs
-          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/m11-deckbuilder.mjs
-          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/m11-deckbuilder.mjs
+          cp .github/scripts/m12_battle_metrics_regression.mjs tests/m12-battle-metrics.mjs
+          sed -i "s|fs.readFileSync('index.html','utf8')|fs.readFileSync(new URL('../index.html',import.meta.url),'utf8')|" tests/m12-battle-metrics.mjs
+          sed -i "s|fs.readFileSync('ROADMAP.md','utf8')|fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8')|" tests/m12-battle-metrics.mjs
       - name: Run all regressions
         shell: bash
         run: |
@@ -33,12 +32,12 @@ jobs:
             echo "== $f =="
             node "$f"
           done
-      - name: Commit M11 deckbuilder
+      - name: Commit M12 battle metrics
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md tests/m11-deckbuilder.mjs
-          git commit -m 'feat: complete M11 52-slot deckbuilder'
+          git add index.html ROADMAP.md tests/m12-battle-metrics.mjs
+          git commit -m 'feat: add per-battle M12 metrics history'
           git pull --rebase origin main
           git push origin HEAD:main
