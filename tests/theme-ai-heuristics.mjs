@@ -38,7 +38,7 @@ function install(ctx,...names){for(const n of names)vm.runInContext(source(n),ct
 
 const ext=source('bestExtensionFromHand'),rec=source('bestRecoverAI');
 ok(ext.includes("sc+=opponentMeldAttachBias(w,targetSide,m,combined,k)"),'M10 opponent-board scoring remains intact');
-ok(ext.includes('const powerGain=sc')&&ext.includes('themeAIAttachBias(w,targetSide,m,cs,powerGain)'),'extension scoring adds theme context only after preserving raw power gain');
+ok(ext.includes('const powerGain=sc')&&(ext.includes('themeAIAttachBias(w,targetSide,m,cs,powerGain)')||ext.includes('themeAIAttachBias(w,targetSide,m,projected,powerGain)')),'extension scoring adds theme context only after preserving raw power gain, using the live or rank-projected cards');
 ok(ext.indexOf('opponentMeldAttachBias')<ext.indexOf('themeAIAttachBias'),'theme AI bias is additive after the established M10 board-risk layer');
 ok(rec.includes('themeAIRecoveryBias(w,targetSide,m,c)'),'recovery planning consumes the shared theme recovery bias');
 ok(rec.includes("c.tag==='pbQuickReload'")&&rec.includes('bestNewMeldForTurn(w,hyp)'),'existing Quick Reload and new-meld recovery logic remain present');
