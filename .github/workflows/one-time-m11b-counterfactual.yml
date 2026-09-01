@@ -1,4 +1,4 @@
-name: One-time M11B Counterfactual Telemetry
+name: One-time M11B Counterfactual Telemetry v2
 
 on:
   push:
@@ -17,7 +17,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Apply M11B counterfactual telemetry
-        run: python3 .github/scripts/m11b_counterfactual_patch.py
+        run: |
+          python3 .github/scripts/m11b_counterfactual_patch.py
+          python3 .github/scripts/m11b_counterfactual_fix.py
       - name: Install regression
         shell: bash
         run: |
