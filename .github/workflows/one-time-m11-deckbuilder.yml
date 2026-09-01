@@ -39,41 +39,43 @@ jobs:
             sleep .1
           done
           node <<'NODE'
-          const fs=require('fs');
-          const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-          const targets=await fetch('http://127.0.0.1:9222/json/list').then(r=>r.json());
-          const page=targets.find(x=>x.type==='page');
-          if(!page?.webSocketDebuggerUrl)throw new Error('Chrome page debugging target missing');
-          const ws=new WebSocket(page.webSocketDebuggerUrl);
-          await new Promise((resolve,reject)=>{ws.onopen=resolve;ws.onerror=reject});
-          let seq=0; const pending=new Map();
-          ws.onmessage=e=>{const m=JSON.parse(e.data);if(!m.id)return;const p=pending.get(m.id);if(!p)return;pending.delete(m.id);if(m.error)p.reject(new Error(`${p.method}: ${JSON.stringify(m.error)}`));else p.resolve(m.result)};
-          const send=(method,params={})=>new Promise((resolve,reject)=>{const id=++seq;pending.set(id,{resolve,reject,method});ws.send(JSON.stringify({id,method,params}))});
-          await send('Page.enable'); await send('Runtime.enable');
-          const selectors=['#startScreen','.startShell','.startHero','.startMenu','.menuCard','#app','.topbar','.main','.status','.initiativeBoard','.enemyZone','.arena','.meldZone','.detail','.handZone','.controls'];
-          const auditExpr=`(()=>{const selectors=${JSON.stringify(selectors)},issues=[],width=innerWidth;for(const sel of selectors){document.querySelectorAll(sel).forEach((el,i)=>{const cs=getComputedStyle(el),r=el.getBoundingClientRect();if(cs.display==='none'||cs.visibility==='hidden'||r.width<1||r.height<1)return;if(r.left < -1 || r.right > width + 1)issues.push({selector:sel,index:i,left:+r.left.toFixed(2),right:+r.right.toFixed(2),width:+r.width.toFixed(2)})})}const docWidth=Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0);if(docWidth>width+1)issues.push({selector:'document',scrollWidth:docWidth,innerWidth:width});return{innerWidth:width,innerHeight,docWidth,issues}})()`;
-          for(const width of [360,370,390,430,480]){
-            await send('Emulation.setDeviceMetricsOverride',{width,height:844,deviceScaleFactor:1,mobile:true,screenWidth:width,screenHeight:844});
-            for(const mode of ['start','battle']){
-              await send('Page.navigate',{url:`file:///tmp/ui2-${mode}.html`});
-              await sleep(650);
-              if(mode==='battle'){
-                await send('Runtime.evaluate',{expression:`document.getElementById('battleStartBtn')?.click()`});
-                await sleep(700);
-              }
-              const ev=await send('Runtime.evaluate',{expression:auditExpr,returnByValue:true});
-              const data=ev.result?.value;
-              if(!data)throw new Error(`AUDIT ${mode} ${width}: result missing`);
-              console.log(`AUDIT ${mode} ${width}: inner=${data.innerWidth} doc=${data.docWidth} issues=${data.issues.length}`);
-              if(data.innerWidth!==width)throw new Error(`AUDIT ${mode} ${width}: expected exact innerWidth ${width}, got ${data.innerWidth}`);
-              if(data.issues.length)throw new Error(`AUDIT ${mode} ${width}: ${JSON.stringify(data.issues)}`);
-              if([360,390,480].includes(width)){
-                const shot=await send('Page.captureScreenshot',{format:'png',fromSurface:true});
-                fs.writeFileSync(`visual-audit/${mode}-${width}.png`,Buffer.from(shot.data,'base64'));
+          (async()=>{
+            const fs=require('fs');
+            const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+            const targets=await fetch('http://127.0.0.1:9222/json/list').then(r=>r.json());
+            const page=targets.find(x=>x.type==='page');
+            if(!page?.webSocketDebuggerUrl)throw new Error('Chrome page debugging target missing');
+            const ws=new WebSocket(page.webSocketDebuggerUrl);
+            await new Promise((resolve,reject)=>{ws.onopen=resolve;ws.onerror=reject});
+            let seq=0; const pending=new Map();
+            ws.onmessage=e=>{const m=JSON.parse(e.data);if(!m.id)return;const p=pending.get(m.id);if(!p)return;pending.delete(m.id);if(m.error)p.reject(new Error(`${p.method}: ${JSON.stringify(m.error)}`));else p.resolve(m.result)};
+            const send=(method,params={})=>new Promise((resolve,reject)=>{const id=++seq;pending.set(id,{resolve,reject,method});ws.send(JSON.stringify({id,method,params}))});
+            await send('Page.enable'); await send('Runtime.enable');
+            const selectors=['#startScreen','.startShell','.startHero','.startMenu','.menuCard','#app','.topbar','.main','.status','.initiativeBoard','.enemyZone','.arena','.meldZone','.detail','.handZone','.controls'];
+            const auditExpr=`(()=>{const selectors=${JSON.stringify(selectors)},issues=[],width=innerWidth;for(const sel of selectors){document.querySelectorAll(sel).forEach((el,i)=>{const cs=getComputedStyle(el),r=el.getBoundingClientRect();if(cs.display==='none'||cs.visibility==='hidden'||r.width<1||r.height<1)return;if(r.left < -1 || r.right > width + 1)issues.push({selector:sel,index:i,left:+r.left.toFixed(2),right:+r.right.toFixed(2),width:+r.width.toFixed(2)})})}const docWidth=Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0);if(docWidth>width+1)issues.push({selector:'document',scrollWidth:docWidth,innerWidth:width});return{innerWidth:width,innerHeight,docWidth,issues}})()`;
+            for(const width of [360,370,390,430,480]){
+              await send('Emulation.setDeviceMetricsOverride',{width,height:844,deviceScaleFactor:1,mobile:true,screenWidth:width,screenHeight:844});
+              for(const mode of ['start','battle']){
+                await send('Page.navigate',{url:`file:///tmp/ui2-${mode}.html`});
+                await sleep(650);
+                if(mode==='battle'){
+                  await send('Runtime.evaluate',{expression:`document.getElementById('battleStartBtn')?.click()`});
+                  await sleep(700);
+                }
+                const ev=await send('Runtime.evaluate',{expression:auditExpr,returnByValue:true});
+                const data=ev.result?.value;
+                if(!data)throw new Error(`AUDIT ${mode} ${width}: result missing`);
+                console.log(`AUDIT ${mode} ${width}: inner=${data.innerWidth} doc=${data.docWidth} issues=${data.issues.length}`);
+                if(data.innerWidth!==width)throw new Error(`AUDIT ${mode} ${width}: expected exact innerWidth ${width}, got ${data.innerWidth}`);
+                if(data.issues.length)throw new Error(`AUDIT ${mode} ${width}: ${JSON.stringify(data.issues)}`);
+                if([360,390,480].includes(width)){
+                  const shot=await send('Page.captureScreenshot',{format:'png',fromSurface:true});
+                  fs.writeFileSync(`visual-audit/${mode}-${width}.png`,Buffer.from(shot.data,'base64'));
+                }
               }
             }
-          }
-          ws.close();
+            ws.close();
+          })().catch(err=>{console.error(err);process.exit(1)});
           NODE
       - name: Lock live-browser audit in roadmap and regression
         shell: bash
