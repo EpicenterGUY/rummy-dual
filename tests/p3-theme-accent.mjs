@@ -12,7 +12,7 @@ ok(html.includes('--theme-vsignal:#8b7788')&&html.includes('--theme-zero:#718892
 ok(html.includes('#themeGroupGrid .charCard[data-theme-card="v-signal"]{border-left-color:var(--theme-vsignal)}'),'V-SIGNAL is limited to a theme-card accent edge');
 ok(html.includes('#app[data-theme="zero-sight"] #charBadge{border-color:#60747c}'),'ZERO-SIGHT battle identity is limited to the existing HUD badge');
 ok(html.includes('.card.theme-point-blank.named:after{background:var(--theme-pointblank)'),'POINT-BLANK theme identity is limited to the existing named-card diamond marker');
-const block=html.slice(html.indexOf('/* UI3 P3 · restrained theme accent layer */'),html.indexOf('</style>',html.indexOf('/* UI3 P3 · restrained theme accent layer */')));
+const themeStart=html.indexOf('/* UI3 P3 · restrained theme accent layer */'),nextLayer=html.indexOf('/* M11B UI1 · asymmetric top/bottom rank frame prototype */',themeStart),styleEnd=html.indexOf('</style>',themeStart),themeEnd=nextLayer>themeStart?nextLayer:styleEnd,block=html.slice(themeStart,themeEnd);
 ok(!/text-shadow|filter:|animation:|box-shadow/.test(block),'theme-specific layer introduces no glow, filter, animation, or special shadow');
 ok(!/#app\[data-theme=[^\]]+\]\s*\{[^}]*background/.test(block)&&!/.startScreen\[data-theme=[^\]]+\]\s*\{[^}]*background/.test(block),'theme layer does not replace the common page/battle background');
 ok(road.includes('- [x] V-SIGNAL 등 테마군은 기본 UI 위에 테마 포인트만 얹고 카지노형 네온 남발 금지'),'ROADMAP marks restrained theme-accent policy complete');
