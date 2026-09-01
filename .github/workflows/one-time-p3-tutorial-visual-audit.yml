@@ -41,3 +41,4 @@ jobs:
           name: p3-tutorial-visual-audit
           path: visual-audit/*.png
           retention-days: 1
+# rerun after removing the P3 position override that displaced the desktop coach
