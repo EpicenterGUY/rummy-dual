@@ -5,6 +5,7 @@ root = Path(__file__).resolve().parents[2]
 roadmap_path = root / 'ROADMAP.md'
 plan_path = root / 'docs' / 'ROGUELIKE_MASTER_PLAN.md'
 test_path = root / 'tests' / 'm11a-growth-economy.mjs'
+slot_test_path = root / 'tests' / 'm11a-slot-replace.mjs'
 
 roadmap = roadmap_path.read_text(encoding='utf-8')
 pattern = r'(?m)^- \[ \] 카드 제거와 네임드 교체의 경제적 가치 비교\s*$'
@@ -33,4 +34,11 @@ if old not in test:
     raise SystemExit('growth-economy test anchor missing')
 test_path.write_text(test.replace(old, new, 1), encoding='utf-8')
 
-print('patched ROADMAP, roguelike master plan, and M11A economy regression')
+slot_test = slot_test_path.read_text(encoding='utf-8')
+slot_old = "ok(road.includes('- [ ] 카드 제거와 네임드 교체의 경제적 가치 비교'),'removal-versus-replacement economy remains open');"
+slot_new = "ok(road.includes('- [x] 카드 제거와 네임드 교체의 경제적 가치 비교'),'ROADMAP closes the structural removal-versus-replacement economy comparison');\nok(master.includes('## 14. 성장 경제 구조 실험 v1 — 제거 vs 동일 슬롯 교체'),'master plan records the structural economy decision after the replacement contract');"
+if slot_old not in slot_test:
+    raise SystemExit('slot-replace economy-open regression anchor missing')
+slot_test_path.write_text(slot_test.replace(slot_old, slot_new, 1), encoding='utf-8')
+
+print('patched ROADMAP, roguelike master plan, and M11A economy regressions')
