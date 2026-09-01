@@ -1,0 +1,18 @@
+name: One-time M11B Density Experiment
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m11b-density-experiment.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run deterministic asymmetric-density simulation
+        run: node .github/scripts/m11b_density_experiment.mjs
