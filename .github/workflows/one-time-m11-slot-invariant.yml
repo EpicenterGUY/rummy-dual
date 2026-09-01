@@ -1,4 +1,4 @@
-name: One-time M11B Player Rank Choice UI v3
+name: One-time M11B Player Rank Choice UI v4
 
 on:
   push:
@@ -20,6 +20,8 @@ jobs:
         run: python3 .github/scripts/m11b_rank_choice_ui_anchor_fix.py
       - name: Apply M11B player rank-choice UI
         run: python3 .github/scripts/m11b_rank_choice_ui_patch.py
+      - name: Align Quick Reload regression to split player meld UI
+        run: python3 .github/scripts/m11b_quick_reload_test_compat.py
       - name: Install M11B player rank-choice regression
         shell: bash
         run: |
@@ -40,7 +42,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-rank-choice-ui.mjs
+          git add index.html ROADMAP.md docs/ASYMMETRIC_RANK_PROTOTYPE.md tests/m11b-rank-choice-ui.mjs tests/point-blank-quick-reload.mjs .github/scripts/point_blank_quick_reload_regression.mjs
           git commit -m 'feat: connect M11B player rank-choice UI'
           git pull --rebase origin main
           git push origin HEAD:main
