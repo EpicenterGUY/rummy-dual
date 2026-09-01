@@ -44,7 +44,10 @@ ok(html.includes("if(acceptSmall&&typeof recordIntentionalBombAcceptance==='func
 ok(html.includes("if(typeof recordBattleTurn==='function')recordBattleTurn(w)"),'turn-end path records completed side turns');
 ok(html.includes("showResult(win){if(typeof renderCirculationSummary==='function')renderCirculationSummary();if(typeof saveBattleMetrics==='function')saveBattleMetrics(win?'win':'loss');"),'normal battle results persist the sample');
 ok(html.includes("showCirculationDraw(){if(typeof renderCirculationSummary==='function')renderCirculationSummary();if(typeof saveBattleMetrics==='function')saveBattleMetrics('draw');"),'circulation draws persist the sample');
-ok(html.includes("state.sessionMode==='tutorial'||state.developerBattle"),'tutorial and DEV sessions are excluded from balance history');
+const saveSource=functionSource('saveBattleMetrics');
+ok(saveSource.includes("state.sessionMode==='tutorial'")&&saveSource.includes('if(state.developerBattle)return false'),'tutorial and ordinary DEV sessions remain excluded from normal balance history');
+ok(saveSource.includes('if(state.m11bExperimentBattle)')&&saveSource.includes('saveM11BExperimentMetrics(outcome)')&&saveSource.indexOf('if(state.m11bExperimentBattle)')<saveSource.indexOf('if(state.developerBattle)return false'),'M11B DEV sandbox may route to its isolated history before generic DEV suppression');
+ok(functionSource('newGame').includes('state.battleMetrics=null'),'each new combat resets the per-battle M12 metrics object');
 ok(html.includes("history.slice(-50)"),'local metric history is bounded to the most recent 50 samples');
 ok(road.includes('- [x] Track turn count, BURST/CHAIN/DETONATE timing'),'ROADMAP marks M12 tracking complete');
 ok(road.includes('M12: collect real playtest samples from the new per-battle metrics history'),'Current next work now points to real metric-driven balance instead of completed UX/L10N work');
