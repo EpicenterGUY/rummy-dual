@@ -13,7 +13,7 @@ ok(html.includes('id="roguelikeRewardPreview"')&&html.includes('id="roguelikeRew
 ok(script.includes("const ROGUELIKE_REWARD_ALGORITHM='action-tags-v1'"),'reward candidate algorithm has a stable version id');
 ok(script.includes("{id:'reinforce',label:'현재 강화'}")&&script.includes("{id:'branch',label:'새 방향'}")&&script.includes("{id:'foundation',label:'기반 보강'}"),'three reward roles are explicit');
 for(const n of ['roguelikeEffectActionTags','roguelikeNamedActionTags','roguelikeRewardDeckProfile','roguelikeRewardCandidateScore','roguelikeRewardCandidates'])ok(script.includes(`function ${n}(`),`reward helper exists: ${n}`);
-ok(source('createRoguelikeRunDraft').includes("status:'unresolved',candidateAlgorithm:ROGUELIKE_REWARD_ALGORITHM"),'run draft records ranking algorithm while exact reward probabilities remain unresolved');
+ok(source('createRoguelikeRunDraft').includes("status:'ranking-weights-v1',probabilityStatus:'unresolved',candidateAlgorithm:ROGUELIKE_REWARD_ALGORITHM")&&source('createRoguelikeRunDraft').includes("weightingMode:'character-tendency-score-v1',hardLock:false"),'run draft locks soft ranking weights while exact reward probabilities remain unresolved');
 ok(source('roguelikeRewardCandidates').includes("mode:'same-slot-replacement'"),'v1 candidate generation is explicitly same-slot replacement only');
 ok(source('roguelikeRewardCandidates').includes("String(id).startsWith('J')")&&source('roguelikeRewardCandidates').includes('profile.slots.includes(slot)')&&source('roguelikeRewardCandidates').includes('profile.variants[slot]!==id'),'candidate pool excludes jokers, out-of-deck slots, and already equipped exact variants');
 ok(source('roguelikeRewardPreviewText').includes('normalizeDeckBuild(progress.deckBuild)'),'developer preview uses the current 29-slot builder only as a structural surrogate');
@@ -53,8 +53,8 @@ ok(source('roguelikeRewardPreviewText').includes('normalizeDeckBuild(progress.de
 
 ok(road.includes('- [x] 행동 태그 기반 후보 생성 알고리즘 설계'),'ROADMAP closes the action-tag candidate algorithm item');
 ok(road.includes('- [ ] 일반전 / 엘리트 / 보스별 카드 보상 등급과 유물 보상 확정'),'reward rarity and encounter-tier economy remain open');
-ok(road.includes('- [ ] 캐릭터별 시작 카드 수 / 순수카드 비율 / 보상 가중치 / 패시브 확정'),'starter quantitative reward weights remain open');
-ok(master.includes('## 12. 행동 태그 기반 카드 보상 후보 알고리즘 v1')&&master.includes('실제 보상 확률표가 아니라 **후보 랭킹 계층**'),'master plan distinguishes candidate ranking from actual drop probabilities');
+ok(road.includes('- [x] 캐릭터별 시작 카드 수 / 순수카드 비율 / 보상 가중치 / 패시브 확정'),'starter candidate-ranking weights are locked without pretending to lock drop probabilities');
+ok(master.includes('## 12. 행동 태그 기반 카드 보상 후보 알고리즘 v1')&&master.includes('실제 보상 확률표가 아니라 **후보 랭킹 계층**')&&master.includes('character-tendency-score-v1'),'master plan distinguishes locked candidate-ranking weights from actual drop probabilities');
 ok(master.includes('현재 장착 중인 동일 변형, 조커, 덱에 없는 슬롯은 제외'),'master plan locks same-slot replacement candidate safety');
 ok(master.includes('건너뛰기')&&master.includes('하드 잠금은 만들지 않으므로'),'master plan retains skip and cross-theme openness');
 console.log('M11A action-tag reward algorithm regression passed.');

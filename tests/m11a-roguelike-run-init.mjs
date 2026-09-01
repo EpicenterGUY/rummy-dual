@@ -20,8 +20,9 @@ ok(source('renderProgress').includes('renderRoguelikeStarterPicker();renderDeckB
 ok(source('newGame').includes("makeSide('player',progress.selectedChar,progress.selectedTheme)"),'normal battle still uses its existing character/theme selection path');
 ok(!source('createRoguelikeRunDraft').includes('selectedTheme'),'roguelike initialization never inherits the normal-battle selected theme');
 ok(source('createRoguelikeRunDraft').includes('themeLocks:[]')&&source('createRoguelikeRunDraft').includes('allowCrossThemeRewards:true'),'run draft encodes no hard theme lock and keeps cross-theme rewards open');
-ok(source('createRoguelikeRunDraft').includes("namedCardCount:id==='pure'?0:null"),'only PURE locks the concrete starting named-card count to zero');
-ok(source('createRoguelikeRunDraft').includes('exactDeckSize:null')&&source('createRoguelikeRunDraft').includes("passivePlan:{status:'unresolved'"),'unsettled deck size and passive values remain explicitly unresolved');
+ok(script.includes("const ROGUELIKE_STARTER_REGULAR_SLOTS=Object.freeze(['S3','S4','S5'"),'starter baseline keeps an isolated canonical 29-slot structure');
+ok(source('createRoguelikeRunDraft').includes('deckPlan:roguelikeStarterDeckPlan(id)'),'run draft materializes the locked starter deck-plan contract');
+ok(source('createRoguelikeRunDraft').includes("passivePlan:{status:'locked-v1',id:'none',directCombat:false}"),'v1 starters explicitly have no direct combat passive');
 ok(source('roguelikeRunDraftText').includes('현재 전투에는 아직 연결하지 않음'),'UI clearly labels the run draft as non-combat prototype state');
 
 {
@@ -30,16 +31,19 @@ ok(source('roguelikeRunDraftText').includes('현재 전투에는 아직 연결�
   const CHARACTERS={wanderer:{name:'유랑자',short:'연계',desc:'x',weights:{combo:1.7}},collector:{name:'수집가',short:'축적',desc:'x',weights:{hold:1.8}},salvager:{name:'회수꾼',short:'순환',desc:'x',weights:{cycle:1.1}},jester:{name:'광대',short:'변칙',desc:'x',weights:{trick:2.2}}};
   const progress={roguelikeStarter:'wanderer'};
   const ctx=vm.createContext({console,Date,Math,Object,Array,String,JSON,Map,localStorage,CHARACTERS,progress,charUnlocked:id=>id!=='jester'});
-  vm.runInContext("const ROGUELIKE_RUN_DRAFT_KEY='rummyDuelRoguelikeRunDraftV1'; const ROGUELIKE_COMMON_START_ZONE='common-start'; const ROGUELIKE_STARTER_IDS=Object.freeze(['wanderer','collector','salvager','jester','pure']);",ctx);
+  vm.runInContext("const ROGUELIKE_RUN_DRAFT_KEY='rummyDuelRoguelikeRunDraftV1'; const ROGUELIKE_COMMON_START_ZONE='common-start'; const ROGUELIKE_STARTER_IDS=Object.freeze(['wanderer','collector','salvager','jester','pure']); const CORE_IDS=['S3','S4','S5','S6','S7','S8','S9','H2','H3','H4','H7','H8','H9','D2','D3','D4','D5','D6','D7','D8','C3','C4','C5','C6','C7','C8','C9','S10','H10','D10','C10']; const ROGUELIKE_STARTER_REGULAR_SLOTS=Object.freeze(CORE_IDS.slice(0,29)); const ROGUELIKE_STARTER_DECK_SIZE=30; const ROGUELIKE_STARTER_NAMED_REGULAR_COUNT=6;",ctx);
   vm.runInContext("const ROGUELIKE_REWARD_ALGORITHM='action-tags-v1'; const ROGUELIKE_REWARD_ROLES=Object.freeze([{id:'reinforce',label:'현재 강화'},{id:'branch',label:'새 방향'},{id:'foundation',label:'기반 보강'}]);",ctx);
-  install(ctx,'normalizeRoguelikeStarterId','roguelikeStarterUnlocked','roguelikeStarterProfile','createRoguelikeRunDraft','normalizeRoguelikeRunDraft','loadRoguelikeRunDraft','saveRoguelikeRunDraft','clearRoguelikeRunDraft','prepareRoguelikeRunDraft');
+  install(ctx,'normalizeRoguelikeStarterId','roguelikeStarterUnlocked','roguelikeStarterProfile','roguelikeStarterDeckPlan','createRoguelikeRunDraft','normalizeRoguelikeRunDraft','loadRoguelikeRunDraft','saveRoguelikeRunDraft','clearRoguelikeRunDraft','prepareRoguelikeRunDraft');
   const pure=ctx.createRoguelikeRunDraft('pure');
-  ok(pure.pureStart===true&&pure.characterId===null&&pure.deckPlan.namedCardCount===0,'PURE draft starts with zero named cards but no fake character id');
+  ok(pure.pureStart===true&&pure.characterId===null&&pure.deckPlan.exactDeckSize===30&&pure.deckPlan.namedCardCount===0,'PURE draft is a 30-card zero-named starter with no fake character id');
+  ok(pure.deckPlan.pureRegularCount===29&&pure.deckPlan.pureJokerCount===1&&pure.deckPlan.jokerPolicy==='base-wild-no-effect','PURE uses 29 pure regular slots plus one effectless base wild Joker');
+  ok(pure.deckPlan.regularSlots.join(',')==='S3,S4,S5,S6,S7,S8,S9,H2,H3,H4,H7,H8,H9,D2,D3,D4,D5,D6,D7,D8,C3,C4,C5,C6,C7,C8,C9,S10,H10','PURE regular-slot distribution is locked to the canonical 29-slot baseline');
   ok(pure.startZone==='common-start'&&pure.currentZone==='common-start'&&pure.regionPath.length===0&&pure.nodeIndex===0,'new run draft begins at the common zone with an empty route');
   ok(Array.isArray(pure.themeLocks)&&pure.themeLocks.length===0&&pure.allowCrossThemeRewards===true,'PURE remains free to acquire any theme after starting');
   const wanderer=ctx.createRoguelikeRunDraft('wanderer');
-  ok(wanderer.deckPlan.exactDeckSize===null&&wanderer.deckPlan.namedCardCount===null&&wanderer.passivePlan.status==='unresolved','character starter does not invent unresolved deck/passive numbers');
-  ok(wanderer.rewardPlan.status==='unresolved'&&wanderer.rewardPlan.tendencyHints.combo===1.7,'existing character weights are retained only as prototype tendency hints');
+  ok(wanderer.deckPlan.exactDeckSize===30&&wanderer.deckPlan.pureCardCount===23&&wanderer.deckPlan.namedRegularCount===6&&wanderer.deckPlan.namedJokerCount===1&&wanderer.deckPlan.namedCardCount===7,'character starter locks 23 pure + 6 named regular + 1 named Joker');
+  ok(wanderer.passivePlan.status==='locked-v1'&&wanderer.passivePlan.id==='none'&&wanderer.passivePlan.directCombat===false,'character starter v1 adds no direct combat passive');
+  ok(wanderer.rewardPlan.status==='ranking-weights-v1'&&wanderer.rewardPlan.probabilityStatus==='unresolved'&&wanderer.rewardPlan.hardLock===false&&wanderer.rewardPlan.tendencyHints.combo===1.7,'existing character weights are locked as soft candidate-ranking weights while drop probabilities remain unresolved');
   const locked=ctx.createRoguelikeRunDraft('jester');
   ok(locked.starterId==='wanderer','locked character starter safely falls back instead of bypassing progression');
   const saved=ctx.prepareRoguelikeRunDraft('pure');
@@ -51,8 +55,8 @@ ok(source('roguelikeRunDraftText').includes('현재 전투에는 아직 연결�
 }
 
 ok(road.includes('- [x] 캐릭터 선택 UI와 로그라이크 런 초기화 구조 설계'),'ROADMAP marks only the run-init architecture/UI item complete');
-ok(road.includes('- [ ] 캐릭터별 시작 카드 수 / 순수카드 비율 / 보상 가중치 / 패시브 확정'),'quantitative character starter balance remains open');
-ok(road.includes('- [ ] PURE 시작 덱의 숫자/무늬 분포 확정'),'PURE distribution remains open');
-ok(master.includes('## 11. 런 초기화 구조 프로토타입')&&master.includes('기존 일반전 덱 생성 가중치를 로그라이크 확률로 오인해 재사용하지 않는다'),'master plan records the architectural separation and unresolved reward probabilities');
-ok(starters.includes('## 9. 캐릭터 선택 UI / 런 초안 초기화')&&starters.includes('즉시 로그라이크 전투를 시작하지 않는다'),'starter doc records that the draft is not yet a combat mode');
+ok(road.includes('- [x] 캐릭터별 시작 카드 수 / 순수카드 비율 / 보상 가중치 / 패시브 확정'),'quantitative character starter baseline is closed');
+ok(road.includes('- [x] PURE 시작 덱의 숫자/무늬 분포 확정'),'PURE distribution baseline is closed');
+ok(master.includes('## 15. 스타터 수치 기준 v1 — 30장 / PURE 기준 구조')&&master.includes('character-tendency-score-v1'),'master plan records the locked starter counts and soft reward-ranking weights');
+ok(starters.includes('## 3. 일반 캐릭터 스타터 덱 — v1 잠금')&&starters.includes('순수 정규 29 + 기본 와일드 조커 1'),'starter doc records both general and PURE 30-card baselines');
 console.log('M11A roguelike run initialization regression passed.');
