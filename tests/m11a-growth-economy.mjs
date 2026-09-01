@@ -19,7 +19,10 @@ assert.ok(!String(result.worstSingleRemoval.removedSlot).startsWith('J'),'Joker 
 
 const roadmap=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
 const plan=fs.readFileSync(new URL('../docs/ROGUELIKE_MASTER_PLAN.md',import.meta.url),'utf8');
-assert.match(roadmap,/카드 제거와 네임드 교체의 경제적 가치 비교/,'roadmap must keep the growth-economy decision');
+assert.match(roadmap,/- \[x\] 카드 제거와 네임드 교체의 경제적 가치 비교/,'roadmap must close the structural removal-versus-replacement comparison');
+assert.match(roadmap,/H10 제거.*\+2\.25%p.*S7 제거.*-2\.38%p/s,'roadmap must retain the measured slot-variance warning');
 assert.match(plan,/동일 슬롯 교체 UI 계약 v1/,'master plan must keep the replacement contract before economy conclusions');
+assert.match(plan,/성장 경제 구조 실험 v1/,'master plan must record the structural economy experiment');
+assert.match(plan,/제거를 동일 슬롯 교체의 단순 상위 업그레이드로 가격 책정하지 않는다/,'removal must remain a separate scarce growth action rather than a flat stronger replacement');
 
 console.log('M11A growth economy regression OK');
