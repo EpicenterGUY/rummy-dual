@@ -36,7 +36,7 @@ ok(html.includes('id="roguelikeBattleBtn"')&&source('renderRoguelikeStarterPicke
 
 const progress={roguelikeStarter:'pure',selectedChar:'collector',selectedTheme:'v-signal',totalClears:3,chars:{wanderer:2,collector:1,salvager:0,jester:0}};
 const ctx=vm.createContext({console,Date,Math,Object,Array,String,JSON,Map,Set,progress,charUnlocked:()=>true});
-for(const n of ['NAMED','CHARACTERS','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES'])vm.runInContext(declaration(n),ctx);
+for(const n of ['ROGUELIKE_ROUTE_LIMITS','NAMED','CHARACTERS','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES'])vm.runInContext(declaration(n),ctx);
 vm.runInContext("const ROGUELIKE_STARTER_DECK_SIZE=30;const ROGUELIKE_COMMON_START_ZONE='common-start';const ROGUELIKE_REWARD_ALGORITHM='action-tags-v1';let uidSeq=1;",ctx);
 install(ctx,'normalizeRoguelikeStarterId','roguelikeStarterUnlocked','roguelikeStarterProfile','roguelikeStarterLoadout','roguelikeStarterDeckPlan','createRoguelikeRunDeck','normalizeRoguelikeRunDeck','createRoguelikeRewardNodes','normalizeRoguelikeRewardNodes','roguelikeRunDeckSignature','roguelikeRewardNodeId','createRoguelikeRunDraft','normalizeRoguelikeRunDraft','parseRegularId','namedSlot','makeCard','shuffle','roguelikeBattleCardFromBlueprint','makeRoguelikeBattleDeck','roguelikeBattleDeckFingerprint');
 

@@ -22,7 +22,7 @@ ok(source('renderRoguelikeStarterPicker').includes("nodeBattle.id='roguelikeNode
 const route=[{id:'common-1',label:'1'},{id:'common-2',label:'2'},{id:'common-3',label:'3'}];
 let saved={runId:'run-a',runDeck:{revision:0,cards:[{slot:'S3',variantId:null},{slot:'H2',variantId:null},{slot:'D2',variantId:null}]},rewardNodes:{version:1,baseRevision:0,entries:[]}},writes=0,fail=false;
 const clone=x=>JSON.parse(JSON.stringify(x));
-const ctx=vm.createContext({console,ROGUELIKE_COMMON_START_ROUTE:route,ROGUELIKE_COMMON_START_ZONE:'common-start',ROGUELIKE_REWARD_ALGORITHM:'action-tags-v1'});
+const ctx=vm.createContext({console,ROGUELIKE_ROUTE_LIMITS:{regionVisits:2},ROGUELIKE_COMMON_START_ROUTE:route,ROGUELIKE_COMMON_START_ZONE:'common-start',ROGUELIKE_REWARD_ALGORITHM:'action-tags-v1'});
 ctx.loadRoguelikeRunDraft=()=>clone(saved);
 ctx.saveRoguelikeRunDraft=d=>{if(fail)return false;saved=clone(d);writes++;return true};
 ctx.roguelikeRunDeckSignature=deck=>deck.cards.map(c=>`${c.slot}:${c.variantId||'-'}`).join('|');

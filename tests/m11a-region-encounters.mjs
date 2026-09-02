@@ -36,7 +36,7 @@ const progress={roguelikeStarter:'pure',selectedChar:'collector',selectedTheme:'
 const state={sessionMode:'roguelike',player:{hand:['test-hand'],deck:['test-deck']},rewarded:false};
 const progressBefore=JSON.stringify(progress),battleBefore=JSON.stringify(state);
 const ctx=vm.createContext({console,localStorage,progress,state,charUnlocked:()=>true,SUIT_SYMBOL:{S:'♠',H:'♥',D:'♦',C:'♣'},THEME_BUILD_PROFILES:{}});
-for(const name of ['FIELDS','ROGUELIKE_ENCOUNTER_PROFILES','ROGUELIKE_REGIONS','ROGUELIKE_COMMON_START_ROUTE','NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES','ROGUELIKE_THEME_ENTRY_TAGS'])vm.runInContext(declaration(name),ctx);
+for(const name of ['ROGUELIKE_ROUTE_LIMITS','FIELDS','ROGUELIKE_ENCOUNTER_PROFILES','ROGUELIKE_REGIONS','ROGUELIKE_COMMON_START_ROUTE','NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES','ROGUELIKE_THEME_ENTRY_TAGS'])vm.runInContext(declaration(name),ctx);
 vm.runInContext("const ROGUELIKE_STARTER_DECK_SIZE=30;const ROGUELIKE_RUN_DRAFT_KEY='rummyDuelRoguelikeRunDraftV1';const ROGUELIKE_COMMON_START_ZONE='common-start';const ROGUELIKE_REWARD_ALGORITHM='action-tags-v1';",ctx);
 for(const name of [...script.matchAll(/function (\w+)\(/g)].map(m=>m[1]).filter(name=>/roguelike/i.test(name)).concat('namedSlot'))vm.runInContext(source(name),ctx);
 const allIds=vm.runInContext('Object.keys(NAMED)',ctx);let pool=[...allIds];
@@ -99,7 +99,7 @@ for(const region of regions){
   failWrites=true;ctx.showResult(true);failWrites=false;assert.equal(saved(),before);assert.equal(state.roguelikeNodeResult,'stale');
   ctx.showResult(true);const receipt=current().rewardNodes.entries.at(-1);assert.equal(receipt.battleNodeId,node.id);
   assert.equal(receipt.regionId,region.id);assert.equal(receipt.status,'pending');assert.equal(ctx.roguelikeCurrentBattleNodeRequest(),null);
-  if(i===3){assert.equal(ui.resultTitle.textContent,'중간 보스 격파');assert.ok(ui.resultText.textContent.includes('후속 지역은 준비 중'));}
+  if(i===3){assert.equal(ui.resultTitle.textContent,'중간 보스 격파');assert.ok(ui.resultText.textContent.includes('다음 지역을 선택할 수 있습니다'));}
   const issued=saved();ctx.showResult(true);assert.equal(saved(),issued,'replayed result cannot double-grant boss rewards');
   assert.ok(skip(receipt));
  }

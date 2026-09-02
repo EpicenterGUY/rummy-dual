@@ -36,7 +36,7 @@ const progress={roguelikeStarter:'pure',selectedChar:'collector',selectedTheme:'
 const state={sessionMode:'roguelike',player:{hand:['test-hand'],deck:['test-deck']},rewarded:false};
 const progressBefore=JSON.stringify(progress),battleBefore=JSON.stringify(state);
 const ctx=vm.createContext({console,localStorage,progress,state,charUnlocked:()=>true,SUIT_SYMBOL:{S:'♠',H:'♥',D:'♦',C:'♣'},THEME_BUILD_PROFILES:{}});
-for(const name of ['ROGUELIKE_REGIONS','ROGUELIKE_COMMON_START_ROUTE','NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES','ROGUELIKE_THEME_ENTRY_TAGS'])vm.runInContext(declaration(name),ctx);
+for(const name of ['ROGUELIKE_ROUTE_LIMITS','ROGUELIKE_REGIONS','ROGUELIKE_COMMON_START_ROUTE','NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES','ROGUELIKE_THEME_ENTRY_TAGS'])vm.runInContext(declaration(name),ctx);
 vm.runInContext("const ROGUELIKE_STARTER_DECK_SIZE=30;const ROGUELIKE_RUN_DRAFT_KEY='rummyDuelRoguelikeRunDraftV1';const ROGUELIKE_COMMON_START_ZONE='common-start';const ROGUELIKE_REWARD_ALGORITHM='action-tags-v1';",ctx);
 for(const name of [...script.matchAll(/function (\w+)\(/g)].map(m=>m[1]).filter(name=>/roguelike/i.test(name)).concat('namedSlot'))vm.runInContext(source(name),ctx);
 const allIds=vm.runInContext('Object.keys(NAMED)',ctx);let pool=[...allIds];
@@ -61,7 +61,7 @@ for(const id of regions){
  }
  const before=current(),legacy=clone(before);legacy.version=5;
  storage.set(KEY,JSON.stringify(legacy));
- ok(current().version===6&&current().rewardNodes.entries.length===3,'v5 common victories survive migration');
+ ok(current().version===7&&current().rewardNodes.entries.length===3,'v5 common victories survive migration');
  const oldRequest={...nextRequest(),regionId:id};
  const extra=issue();skip(extra);
  ok(!ctx.roguelikeChooseRegion(oldRequest),'stale region UI cannot bypass changed reward sequence');
@@ -81,15 +81,15 @@ for(const id of regions){
  }
  ok(current().nodeIndex===6&&ctx.roguelikeCurrentBattleNodeRequest().battleNodeId===id+'-boss','existing six-win save continues at its new boss');
  assert.ok(skip(win()));
- ok(current().nodeIndex===7&&ctx.roguelikeBattleProgress().finished&&!ctx.roguelikeBattleProgress().awaitingRegion,'region slice finishes after the boss and its reward');
- ok(ctx.roguelikeCurrentBattleNodeRequest()===null,'completed slice has no phantom next battle');
+ ok(current().nodeIndex===7&&ctx.roguelikeBattleProgress().finished&&ctx.roguelikeBattleProgress().awaitingRegion,'first region finishes after the boss reward and opens the next region choice');
+ ok(ctx.roguelikeCurrentBattleNodeRequest()===null,'region choice does not invent the next battle before selection');
  const good=saved(),bad=current();bad.regionPath=[regions.find(x=>x!==id)];
  storage.set(KEY,JSON.stringify(bad));ok(current()===null,'receipts from another region are rejected');storage.set(KEY,good);
  const position=current();position.nodeIndex=999;position.currentZone='wrong';storage.set(KEY,JSON.stringify(position));
  ok(current().nodeIndex===7&&current().currentZone===id,'position cannot override validated receipts');
 }
 fresh();const bad=current();bad.regionPath=['red-zone'];storage.set(KEY,JSON.stringify(bad));
-ok(current()===null,'v6 route cannot be injected before common completion');
+ok(current()===null,'route cannot be injected before common completion');
 ok(storage.get('normal-progress')==='untouched'&&storage.get('m12-history')==='untouched','regional progression keeps normal progress and metrics isolated');
 console.log('M11A region progression regression passed.');
 
