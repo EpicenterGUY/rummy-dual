@@ -1,4 +1,4 @@
-name: One-time HWA-TU roadmap candidate
+name: One-time faster meld roadmap candidate
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  patch-hwatu-roadmap:
+  patch-faster-meld-roadmap:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Patch HWA-TU roadmap candidate
+      - name: Patch faster meld roadmap candidate
         shell: bash
         run: |
           python - <<'PY'
@@ -26,27 +26,31 @@ jobs:
 
           path = Path('ROADMAP.md')
           text = path.read_text(encoding='utf-8')
-          marker = '`HWA-TU` 정식 후보 정비'
+          marker = '## M0R — 공개 조합 전개 속도 개편 후보'
           if marker in text:
-              print('HWA-TU roadmap candidate already present; nothing to do.')
+              print('Faster meld roadmap candidate already present; nothing to do.')
               raise SystemExit(0)
 
-          text = text.replace('MAIL//ROUTE', 'MAIL-ROUTE')
-          text = text.replace('SCRAP//SHIFT', 'SCRAP-SHIFT')
-
-          anchor = '- [x] 향후 신규 테마는 카드군부터 만들기보다 지역의 문화/직업/갈등에서 파생시키는 방식 우선 검토'
+          anchor = '## M1 — Final rules ↔ live code sync'
           pos = text.find(anchor)
           if pos < 0:
-              raise SystemExit('Could not find future-theme insertion point')
+              raise SystemExit('Could not find M1 insertion point')
 
           lines = [
-              '- [ ] `HWA-TU` 정식 후보 정비 — 화투 모티브는 유지하되 `홍단/청단/고도리/피/열끗`처럼 사전지식을 요구하는 용어를 전면에 두지 않고, `달 / 계절맞춤 / 붉은 띠 / 풀빛 띠 / 푸른 띠 / 새 셋 / 빛 셋`처럼 효과문만 읽어도 이해되는 한국어 구조로 재구성',
-              '- [ ] HWA-TU 기본 판정 잠금 — A~Q를 1~12월로 읽고 K는 `윤달` 후보로 검토하되 실제 세트/런의 랭크·수트 판정은 전혀 바꾸지 않는다. 윤달/조커의 달·그림 대체 범위, 한 맞춤 내 대체 최대치, 재지정 타이밍을 확정',
-              '- [ ] 계절맞춤 / 그림맞춤 구조 재평가 — `1·2·3 / 4·5·6 / 7·8·9 / 10·J·Q` 계절맞춤은 넓은 초동·엔진 조건으로, 정확한 랭크+수트 그림맞춤은 선택형 고급 보상으로 두어 숨은 족보 과밀과 보드 계산 부담을 억제',
-              '- [ ] HWA-TU 혼합덱 규칙 잠금 — HWA-TU가 아닌 일반/다른 카드군도 랭크·수트만 맞으면 달·그림 재료가 되며, 상대 공개 조합에 들어간 내 소유 카드도 공개 재료로 인정하는 방향을 검증. 카드군 전용 카드끼리만 맞추는 폐쇄형 조건은 지양',
-              '- [ ] HWA-TU 20~24장 정식 후보 풀 재설계 — ♣ 탐색/패순환, ♥ 띠/생존/회수, ♦ 새/이동/상대 조합, ♠ 빛/공격 역할을 중심으로 재배치하고 직접 누적 위력 +X 카드는 소수만 유지',
-              '- [ ] HWA-TU UI/UX 검증 — 현재 완성된 맞춤과 이번 행동으로 새로 완성될 맞춤만 필요할 때 은은하게 안내하고, HWA-TU 비채용 덱에는 달/그림 정보를 상시 노출하지 않는다. 긴 공개 런에서도 판정 가독성이 무너지지 않는지 확인',
-              '- [ ] HWA-TU 밸런스/회귀 검증 — 윤달·조커 대체로 조건이 지나치게 느슨해지는지, 회수/이동으로 같은 맞춤이 반복 발동하는 루프, 세트/런 기본 가치 잠식, 다른 테마와의 혼합 밀도 및 직접 위력 비율을 실행 테스트로 검증',
+              '## M0R — 공개 조합 전개 속도 개편 후보',
+              '현재 라이브 규칙의 `공개 조합 2개 / 새 3장 조합 턴당 1개`가 초반 전개와 테마 시동을 지나치게 늦추는지 재검토한다. 아래 항목은 이정표에 등록된 개편 후보이며, 코드·튜토리얼·AI·밸런스 검증이 끝나기 전까지 라이브 확정으로 간주하지 않는다.',
+              '',
+              '- [ ] 자기 공개 조합 한도 `2 → 3` 검토 및 구현 — 세트/런 합산 최대 3개. 4개 이상은 허용하지 않아 모바일 가독성·보드 과밀·장기 고착을 억제',
+              '- [ ] 새 정확히 3장 조합 생성 제한 `턴당 총 1개 → 최대 2개` 검토 및 구현 — 세트+런, 세트+세트, 런+런 모두 가능하되 빈 공개 슬롯 수를 넘을 수 없음',
+              '- [ ] 같은 턴 새로 만든 자신의 조합은 그 턴 붙이기로 확장할 수 없는 기존 안전장치 유지 — `3장 생성 → 즉시 체인/버스트 연속 공격` 폭발을 차단',
+              '- [ ] 시작 손패 8 + 턴 획득 1 기준 첫 턴 전개 속도 검증 — 최대 2조합이면 6장 소모 후 손패 3장이 남아 기본적으로 즉시 러미가 발생하지 않는 구조 확인',
+              '- [ ] 새 조합 생성 반응 카드 전수 감사 — `새 조합을 만들 때`가 2회 발동해 과도해지는 효과는 `이번 턴 처음 새 조합을 만들 때` 또는 카드별 턴당 1회로 제한',
+              '- [ ] AI 행동 상한/새 조합 선택/3슬롯 가치평가 갱신 — 빈 슬롯 3개와 턴당 새 조합 2개를 고려해 세트·런 배치, 기존 조합 확장, 회수 우선순위를 재조정',
+              '- [ ] UI/반응형 갱신 — 모바일·Fold·태블릿·PC에서 각 진영 공개 조합 3개가 길어진 런과 함께 겹치거나 과도하게 축소되지 않는지 실기기 확인',
+              '- [ ] 튜토리얼/도움말/규칙 문구 갱신 — `새 조합 턴당 1개`, `공개 조합 최대 2개` 전제 문구를 모두 제거하고 새 제한을 명시',
+              '- [ ] HWA-TU 및 후속 테마 재평가 — 여러 공개 카드의 랭크·수트를 참조하는 테마가 3슬롯/2회 전개에서 지나치게 빨라지거나 오히려 자연스러워지는지 혼합덱 기준으로 검증',
+              '- [ ] 실행 회귀 테스트 추가 — 3슬롯 상한, 한 턴 새 조합 2개 허용/3번째 거부, 신규 조합 당턴 확장 거부, 러미/회수/반환/조합 정리 후 슬롯 재사용을 잠금',
+              '',
           ]
           block = '\n'.join(lines) + '\n'
           text = text[:pos] + block + text[pos:]
@@ -54,16 +58,15 @@ jobs:
 
           checks = [
               marker,
-              '`MAIL-ROUTE` 작업안 기록',
-              '`SCRAP-SHIFT` 작업안 기록',
-              'HWA-TU 기본 판정 잠금',
-              'HWA-TU 혼합덱 규칙 잠금',
-              'HWA-TU UI/UX 검증',
-              'HWA-TU 밸런스/회귀 검증',
+              '자기 공개 조합 한도 `2 → 3`',
+              '새 정확히 3장 조합 생성 제한 `턴당 총 1개 → 최대 2개`',
+              '같은 턴 새로 만든 자신의 조합은 그 턴 붙이기로 확장할 수 없는 기존 안전장치 유지',
+              'HWA-TU 및 후속 테마 재평가',
+              '한 턴 새 조합 2개 허용/3번째 거부',
           ]
           for check in checks:
               assert check in text, check
-          print('HWA-TU roadmap candidate added and theme naming normalized.')
+          print('Faster meld roadmap candidate added.')
           PY
 
       - name: Commit roadmap update
@@ -76,5 +79,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add ROADMAP.md
-          git commit -m 'docs: add HWA-TU refinement roadmap'
+          git commit -m 'docs: add faster meld expansion candidate'
           git push origin HEAD:main
