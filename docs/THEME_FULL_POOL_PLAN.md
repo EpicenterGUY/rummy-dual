@@ -31,14 +31,14 @@ Status: ACTIVE IMPLEMENTATION POLICY
 | 카드군 | 정식 후보 | 현재 main 라이브 | 남은 구현 | 목표 |
 |---|---:|---:|---:|---:|
 | V-SIGNAL | 24 | 24 | 0 | 24/24 |
-| ZERO-SIGHT | 18 | 4 | 14 | 18/18 |
+| ZERO-SIGHT | 18 | 18 | 0 | 18/18 |
 | POINT-BLANK | 18 | 2 | 16 | 18/18 |
-| **합계** | **60** | **30** | **30** | **60/60** |
+| **합계** | **60** | **44** | **16** | **60/60** |
 
 현재 main의 라이브 기준은 다음과 같다.
 
 - V-SIGNAL: **24/24 풀 구현 완료**
-- ZERO-SIGHT: `관측수`, `스코프 조정`, `탄도 계산`, `ONE SHOT`
+- ZERO-SIGHT: **18/18 풀 구현 완료**
 - POINT-BLANK: `엄폐 교대`, `퀵 리로드`
 
 `CARD_EXPANSION_WAVE_01.md`에서 설계한 18장은 이 51장 잔여 구현 안으로 흡수한다. 별도의 소규모 카드군 확장으로 끝내지 않는다.
@@ -76,9 +76,9 @@ Status: ACTIVE IMPLEMENTATION POLICY
 
 **F1 완료 기록** — 2026-09-02. `tests/vsignal-full-pool.mjs`, 기존 `tests/vsignal-mixed-regression.mjs`, 확장형 `tests/theme-mix-simulation.mjs` 및 전체 회귀를 릴리스 게이트로 사용한다.
 
-### F2 — ZERO-SIGHT 18/18
+### F2 — ZERO-SIGHT 18/18 · 완료
 
-현재 4장 → 18장으로 완성한다.
+18장 전체 정의·실전 효과·해금·도감/덱빌더 연결을 완료했다. 신규 14장은 60장 통합 전까지 기존 로그라이크 지역 적 덱에는 넣지 않고, 일반 랜덤 보상 순위에서도 후보가 충분할 때 우선 제외한다.
 
 핵심 구현 축:
 
@@ -95,6 +95,8 @@ Status: ACTIVE IMPLEMENTATION POLICY
 - 표적 1개 계약 위반 없음
 - 표적 조합의 카드는 ZERO-SIGHT일 필요 없음
 - V-SIGNAL 회수 및 POINT-BLANK 접전과 같은 조합에서 공존
+
+**F2 완료 기록** — 2026-09-03. `tests/zero-sight-full-pool.mjs`와 기존 ZERO-SIGHT 표적/준비/탄도/ONE SHOT/혼합 회귀 및 전체 `tests/*.mjs`를 릴리스 게이트로 사용한다.
 
 ### F3 — POINT-BLANK 18/18
 

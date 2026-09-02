@@ -505,3 +505,10 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 1. UI2 P2: 360–480px live Chromium audit is locked; only final Android/iOS physical-device safe-area/system-UI verification remains.
 2. M12: collect real playtest samples from the new per-battle metrics history and balance from data before large content expansion.
 3. M11A/M11B: keep roguelike progression and asymmetric top/bottom-rank cards in prototype/design validation until M12 evidence supports promotion; defer M13 file splitting until rules/tests remain stable through those experiments.
+
+
+## 2026-09-03 · ZERO-SIGHT 풀 카드군
+- [x] ZERO-SIGHT 18/18 풀 카드군 구현
+- [x] 신규 14장 실제 효과·해금·도감/덱빌더 연결
+- [x] 표적 1개 계약과 일반/V-SIGNAL 혼합 상호작용 유지
+- [x] 신규 14장 로그라이크 보상은 60장 통합 전까지 staged 처리

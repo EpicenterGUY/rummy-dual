@@ -27,7 +27,7 @@ ok(script.includes('function recordFlexibleSuitRoles('),'Understudy records its 
 const namedStart=script.indexOf('const NAMED={'), namedEnd=script.indexOf('\n};',namedStart);
 const named=script.slice(namedStart,namedEnd);
 const tags=[...named.matchAll(/t:'([^']+)'/g)].map(m=>m[1]);
-const direct=new Set(['finalUltimatum','blackBullet','fuseRound','zsBallistics','zsOneShot']);
+const direct=new Set(['finalUltimatum','blackBullet','fuseRound','zsArmorPiercing','zsCounterTrace','zsLongShot','zsBallistics','zsOneShot']);
 const directCount=tags.filter(t=>direct.has(t)).length;
 ok(tags.length>=45,'named pool audit covers at least the first ~50-card scale');
 ok(directCount/tags.length<0.2,'direct SWITCH/power manipulation remains a minority of named effects');
