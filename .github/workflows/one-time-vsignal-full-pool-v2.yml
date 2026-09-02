@@ -1,0 +1,50 @@
+name: One-time V-SIGNAL full pool v2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-vsignal-full-pool-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  vsignal-full-pool:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply V-SIGNAL 24-card full pool
+        run: python .github/scripts/vsignal-full-pool-patch-v2.py
+      - name: Run V-SIGNAL full-pool regression
+        run: node tests/vsignal-full-pool.mjs
+      - name: Run V-SIGNAL mixed regression
+        run: node tests/vsignal-mixed-regression.mjs
+      - name: Run theme composition regression
+        run: node tests/theme-mix-simulation.mjs
+      - name: Run all regression suites
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          for test in tests/*.mjs; do
+            echo "==> $test"
+            node "$test"
+            count=$((count+1))
+          done
+          echo "Regression suites passed: $count"
+      - name: Commit V-SIGNAL full pool
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html ROADMAP.md docs/THEME_GROUPS.md docs/THEME_FULL_POOL_PLAN.md tests/theme-mix-simulation.mjs tests/vsignal-full-pool.mjs; then
+            echo 'No project changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md docs/THEME_GROUPS.md docs/THEME_FULL_POOL_PLAN.md tests/theme-mix-simulation.mjs tests/vsignal-full-pool.mjs
+          git commit -m 'feat: complete V-SIGNAL 24-card full pool'
+          git push origin HEAD:main
