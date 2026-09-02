@@ -1,0 +1,27 @@
+name: Diagnostic 60-card reward baselines
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/diagnostic-theme-60-reward-baselines.yml'
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply current integration patch
+        run: python .github/scripts/theme-60-integration-patch-v3.py
+      - name: Print all common-start baselines and continue reward regression
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/m11a-region-rewards.mjs')
+          s=p.read_text(encoding='utf-8')
+          old="assert.deepEqual(ids(baseline),baselinePicks[starterId],starterId+' common-start ranking stays unchanged');"
+          new="console.log('INTEGRATED_BASELINE '+starterId+'='+JSON.stringify(ids(baseline)));"
+          if old not in s: raise SystemExit('missing baseline assertion')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          node tests/m11a-region-rewards.mjs
