@@ -1,3 +1,4 @@
+import {installStatusRuntime} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
@@ -37,7 +38,7 @@ function context(extra = {}) {
   return ctx;
 }
 
-function install(ctx, ...names) {
+function install(ctx, ...names) {installStatusRuntime(ctx,script);
   for (const name of names) vm.runInContext(functionSource(name), ctx);
 }
 

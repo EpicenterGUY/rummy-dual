@@ -41,7 +41,7 @@ ok(html.includes("typeof unlock==='function'&&!!unlock(p)"), 'invalid saved char
 ok(html.includes('같은 종류라면 보호막 12를 얻는다.'), 'Chain Reaction text matches its 12-shield implementation');
 ok(html.includes('jokerLastDetonateReduction=15'), 'Last Laugh DETONATE reduction is implemented');
 ok(html.includes('if(jokerLast&&opts.returned)'), 'Last Laugh bonus cycle requires a returning RUMMY');
-ok(html.includes("addSwitchPower(w,amount,label,other(w))"), 'SWITCH returns evaluate CORE LETHAL against the post-return target');
+ok(html.includes("addSwitchPower(w,statusResult.amount,label,other(w))"), 'SWITCH returns evaluate CORE LETHAL against the post-return target');
 ok(html.includes('회수한 카드는 같은 턴 버스트/체인 반환 재료로 다시 사용할 수 없습니다'), 'rules UI documents the recovery return guard');
 ok(html.includes('recoverReturnOverrideToken'), 'named recovery return exception has an explicit runtime token');
 ok(html.includes('recoveredCardsCanReturn(cards,state.turnToken,m)'), 'attach path checks destination-aware recovered-card return eligibility');

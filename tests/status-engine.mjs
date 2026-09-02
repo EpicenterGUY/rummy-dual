@@ -17,7 +17,7 @@ ctx.state={player:{turnStarts:2,hand:[],deck:[],spent:[],melds:[]},enemy:{turnSt
 ctx.sideObj=w=>ctx.state[w];ctx.meldsOf=w=>ctx.state[w].melds;ctx.switchName=w=>w==='player'?'YOU':'CPU';ctx.log=()=>{};ctx.fxNode=()=>{};
 for(const n of ['blankStatus','blankMeldStatus','officialStatusBag','officialStatusAllowed','officialStatusValue','setOfficialStatus','applyOfficialStatus','consumeOfficialStatus','clearOfficialStatus','fixedStatusActive','cardFixedActive','meldFixedActive','applyMeldFixed','expireOwnerFixedStatuses','meldStatusText'])vm.runInContext(fn(n),ctx);
 
-ok(JSON.stringify(Object.keys(OFFICIAL_STATUS))===JSON.stringify(['vulnerable','seal','fixed','protect','regen']),'official status set is exactly five shared statuses');
+ok(JSON.stringify(Object.keys(OFFICIAL_STATUS))===JSON.stringify(['vulnerable','seal','fixed','protect','regen','loaded','damp','overheat','endure','defer','comeback']),'wave 1 registers eleven implemented shared statuses');
 ok(OFFICIAL_STATUS.vulnerable.scopes.join(',')==='player','vulnerable is player-scoped');
 ok(OFFICIAL_STATUS.seal.scopes.join(',')==='player,meld,card','seal supports player/meld/card scopes');
 ok(OFFICIAL_STATUS.fixed.scopes.includes('meld')&&OFFICIAL_STATUS.fixed.scopes.includes('card'),'fixed supports meld/card scopes');

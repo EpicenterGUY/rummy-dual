@@ -1,3 +1,4 @@
+import {installStatusRuntime} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
@@ -5,7 +6,7 @@ const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 function functionSource(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw new Error(`missing ${name}`);const brace=script.indexOf('{',start);let depth=0;for(let i=brace;i<script.length;i++){if(script[i]==='{')depth++;else if(script[i]==='}'&&--depth===0)return script.slice(start,i+1)}throw new Error(`unterminated ${name}`)}
-function install(ctx,...names){for(const name of names)vm.runInContext(functionSource(name),ctx)}
+function install(ctx,...names){installStatusRuntime(ctx,script);for(const name of names)vm.runInContext(functionSource(name),ctx)}
 function context(extra={}){return vm.createContext({console,Math,Set,Map,Array,Object,Number,String,Boolean,...extra})}
 function card(suit,rank,extra={}){return{uid:`${suit}${rank}-${Math.random()}`,suit,rank:String(rank),owner:'player',originOwner:'player',tag:null,named:false,...extra}}
 

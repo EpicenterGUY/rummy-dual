@@ -2,6 +2,19 @@
 
 Updated: 2026-09-02
 
+## E3 — 효과/카드 대개편 (2026-09-02 시작)
+- [x] 코어 유지: 공개 3개, 턴 생성 2개, 실제 반환 1회 및 기본 회수 제한
+- [x] 상태 3.0 첫 묶음: 장전·감쇠·과열·불굴·유예·귀환 구현. 기존 5종 포함 총 11종
+- [x] 공용 카드 7종(S2/S7/S10/H7/D8/C5B/SAB) 개편, 기존 ID·해금 호환
+- [x] 상태 HUD·귀환 카드 상세·도움말·실제 엔진 회귀 추가
+- [ ] 나머지 7종: 균열·침묵·가변·잔향·불안정·표식·반향
+- [ ] 공용 행동/예약 파이프라인 확장 및 52슬롯 전수 재설계
+- [ ] V-SIGNAL/ZERO-SIGHT/POINT-BLANK 리워크 및 SEASON-BLOOM 신규 구현
+- [ ] 숫자 변형·조합 분할/합병·소유권/덱 침투 고유효과
+- [ ] 신규 상태를 반영한 AI 평가와 인간 실전 밸런스 검증
+
+상세 구현 범위·우선순위·초안 해석은 [효과 시스템 3.0](docs/EFFECT_SYSTEM_3.md)을 따른다. **18종 전체와 전 카드 리워크가 완료된 것은 아니다.**
+
 ## Core direction
 RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITCH bomb through SET/BURST and RUN/CHAIN, including play on the opponent's public melds.
 
