@@ -338,6 +338,22 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] `V-SIGNAL` 등 테마/세계관 고유명은 실제 구현 시 원문 유지 가능
 - [x] 내부 함수/변수명 (`setValid`, `attachCards`, `switchTarget`, `detonate`, `triggerRummy` 등)은 현지화 때문에 일괄 변경하지 않음
 
+
+## M8T — 기존 3테마 60장 통합 · 완료
+V-SIGNAL 24장 + ZERO-SIGHT 18장 + POINT-BLANK 18장의 개별 구현 뒤, 실제 일반 플레이 풀로 승격하는 통합 단계다.
+
+- [x] 60장 전체를 해금 이후 일반 로그라이크 보상 후보로 승격 — 임시 `rewardPool:false` staging 제거
+- [x] POINT-BLANK 일반 카드군 선택 활성화 — V-SIGNAL / ZERO-SIGHT / POINT-BLANK 3테마 모두 일반 빌드 가능
+- [x] 카드 도감의 3테마 탭에서 각 24 / 18 / 18 전체 효과 사전 확인 유지
+- [x] ZERO-SIGHT `관측수 · 표적 지정` 체험전 추가
+- [x] POINT-BLANK `브리치 실드 · 접전 진입` 체험전 추가
+- [x] 테마 체험전 선택 UI 추가 — 여러 라이브 테마를 각각 직접 시작 가능
+- [x] 네온 아크 적 덱을 V-SIGNAL 풀 카드로 재편
+- [x] 레드 존 적 덱을 ZERO-SIGHT + POINT-BLANK 혼합 풀로 재편
+- [x] 기존 해금 단계는 유지해 초반 카드 폭증을 방지하고, 해금된 카드만 보상/덱빌더에 진입
+- [x] 60장 직접 위력 비율·물리 슬롯 유일성·테마 혼합 회귀 유지
+- [x] 전체 `tests/*.mjs` 회귀 통과
+
 ## M9 — Jokers and fields
 - [x] Finalize distinct Joker identities — J1~J5 keep separate wildcard identities for owner-deck return, RUMMY/DETONATE timing, SET/RUN split payoff, vacancy replacement, and opponent-meld rebellion
 - [x] Audit Joker King return-to-owner-deck behavior — public-meld retirement restores `originOwner`, bottoms J1 into that owner deck, and never sends it to spent

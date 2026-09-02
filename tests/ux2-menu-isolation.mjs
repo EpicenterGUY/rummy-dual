@@ -87,12 +87,14 @@ g.setDeveloperMode(false);
 const replacement=g.commitNormalRunStart('pure',normalCompleted.runId);
 assert.ok(replacement);assert.equal(g.loadRoguelikeRunHistory().entries.length,1,'new runs preserve completion records');
 
-// Test the actual renderers against both pools, without adding development cards to normal views.
+// Test the actual renderers against both pools. Completed live themes belong in ordinary views; DEV-only card data still must not leak.
 g.renderProgress();g.renderCodex();
-assert.doesNotMatch(g.document.getElementById('themeGroupGrid').innerHTML,/point-blank/);
+const normalThemeGrid=g.document.getElementById('themeGroupGrid').innerHTML;
+assert.match(normalThemeGrid,/v-signal/);assert.match(normalThemeGrid,/zero-sight/);assert.match(normalThemeGrid,/point-blank/,'completed POINT-BLANK is now ordinary live content');
+assert.doesNotMatch(normalThemeGrid,/개발 중 · DEV 선택 가능/);
 assert.doesNotMatch(g.document.getElementById('codexGrid').innerHTML,/codexDebug|DEV 공개/);
 g.setDeveloperMode(true);g.renderProgress();g.renderCodex();
-assert.match(g.document.getElementById('themeGroupGrid').innerHTML,/개발 중 · DEV 선택 가능/);
+assert.match(g.document.getElementById('themeGroupGrid').innerHTML,/point-blank/,'DEV keeps the same completed live theme visible');
 assert.match(g.document.getElementById('codexGrid').innerHTML,/codexDebug/);
 g.setDeveloperMode(false);
 assert.equal(g.document.getElementById('codexDevFilters').hidden,true);

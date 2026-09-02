@@ -15,7 +15,7 @@ const expected={PBCA:'pbBreachOrder',PBHA:'pbBreachShield',PBC2:'pbSlideStep',PB
 const cards=Object.entries(ctx.NAMED).filter(([,d])=>d?.themeId==='point-blank');
 ok(cards.length===18,`POINT-BLANK full pool has exactly 18 definitions (${cards.length})`);
 ok(new Set(cards.map(([,d])=>d.slot)).size===18,'POINT-BLANK cards occupy 18 distinct physical slots');
-for(const[id,tag]of Object.entries(expected)){const d=ctx.NAMED[id];ok(!!d,`${id} definition exists`);ok(d.themeId==='point-blank'&&d.t===tag,`${id} keeps POINT-BLANK tag ${tag}`);if(!['PBH7','PBDJ'].includes(id))ok(d.rewardPool===false,`${id} is staged out of ordinary roguelike rewards until 60-card integration`)}
+for(const[id,tag]of Object.entries(expected)){const d=ctx.NAMED[id];ok(!!d,`${id} definition exists`);ok(d.themeId==='point-blank'&&d.t===tag,`${id} keeps POINT-BLANK tag ${tag}`);ok(d.rewardPool!==false,`${id} is eligible for ordinary roguelike rewards after 60-card integration`)}
 ok(script.includes("'PBH7':{slot:'H7',themeId:'point-blank',n:'엄폐 교대',t:'pbCoverSwap'")&&script.includes("'PBDJ':{slot:'DJ',themeId:'point-blank',n:'퀵 리로드',t:'pbQuickReload'"),'existing Cover Swap and Quick Reload live definitions remain unchanged');
 ok(!script.includes("pbCoverSwap:['interact','sustain','control']")&&!script.includes("pbQuickReload:['recover','combo','sustain']"),'full-pool expansion preserves legacy PBH7/PBDJ roguelike scoring metadata');
 for(const tag of ['pbBreachOrder','pbBreachShield','pbSlideStep','pbFlashbang','pbBuckshot','pbCrossfire','pbDoorKick','pbReload','pbEmergencyRetreat','pbZeroRange','pbBackdoor','pbRoomClear','pbAdrenaline','pbBreachLeader','pbMagDump'])ok(script.includes(`case'${tag}'`),`${tag} has a live resolver branch`);

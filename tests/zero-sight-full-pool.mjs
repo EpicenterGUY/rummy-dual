@@ -15,7 +15,7 @@ const expected={ZSCA:'zsObserver',ZSC2:'zsScopeAdjust',ZSD2:'zsRangefinder',ZSH3
 const cards=Object.entries(ctx.NAMED).filter(([,d])=>d?.themeId==='zero-sight');
 ok(cards.length===18,`ZERO-SIGHT full pool has exactly 18 definitions (${cards.length})`);
 ok(new Set(cards.map(([,d])=>d.slot)).size===18,'ZERO-SIGHT cards occupy 18 distinct physical slots');
-for(const[id,tag]of Object.entries(expected)){const d=ctx.NAMED[id];ok(!!d,`${id} definition exists`);ok(d.themeId==='zero-sight'&&d.t===tag,`${id} keeps ZERO-SIGHT tag ${tag}`);if(!['ZSCA','ZSC2','ZSD6','ZSSK'].includes(id))ok(d.rewardPool===false,`${id} is staged out of ordinary roguelike rewards until 60-card integration`)}
+for(const[id,tag]of Object.entries(expected)){const d=ctx.NAMED[id];ok(!!d,`${id} definition exists`);ok(d.themeId==='zero-sight'&&d.t===tag,`${id} keeps ZERO-SIGHT tag ${tag}`);ok(d.rewardPool!==false,`${id} is eligible for ordinary roguelike rewards after 60-card integration`)}
 ok(ctx.NAMED.ZSS10.prepRequired===2&&ctx.NAMED.ZSH3.prepRequired===1,'prepared ZERO-SIGHT cards declare shared handPrep requirements');
 for(const tag of ['zsBreathControl','zsSuppressiveFire','zsCamouflage','zsBlindSpot','zsArmorPiercing','zsReserveMag','zsLongShot'])ok(script.includes(`case'${tag}'`),`${tag} has a live resolver branch`);
 for(const tag of ['zsRangefinder','zsObservationLog','zsSafeDistance','zsObserverShift','zsCounterTrace','zsDrone','zsDeadAngle'])ok(script.includes(tag)&&script.includes('function handleZeroSightFullThemeEvent('),`${tag} is wired through the passive target-event handler`);

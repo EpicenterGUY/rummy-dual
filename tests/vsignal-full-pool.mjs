@@ -19,7 +19,7 @@ ok(cards.length===24,`V-SIGNAL full pool has exactly 24 definitions (${cards.len
 ok(new Set(cards.map(([,d])=>d.slot)).size===24,'V-SIGNAL 24 cards occupy 24 distinct physical slots');
 for(const[id,tag]of Object.entries(expected)){
  const d=ctx.NAMED[id];ok(!!d,`${id} definition exists`);ok(d.themeId==='v-signal'&&d.t===tag,`${id} keeps V-SIGNAL tag ${tag}`);
- if(!['VSH5','VSD4','VSCK'].includes(id))ok(d.rewardPool===false,`${id} is staged out of ordinary roguelike rewards until 60-card integration`);
+ok(d.rewardPool!==false,`${id} is eligible for ordinary roguelike rewards after 60-card integration`);
 }
 for(const tag of ['vBroadcastAccident','vBadClip','vLiveControversy','vFlameStreamer','vBanSoon','vFirstBroadcast','vAsmr','vFanService','vRookieSet','vTrioCollab','vManager','vLegendIdol','vOnAir','vGameBroadcast','vRaid','vCollabRequest','vGeniusEditor'])ok(script.includes(`case'${tag}'`),`${tag} has a live common-resolver branch`);
 for(const tag of ['vReverseViral','vSuperchat','vMilestoneBroadcast','vMillionSubs'])ok(script.includes(tag)&&script.includes('function handleVSignalFullThemeEvent('),`${tag} is wired through the passive V-SIGNAL event handler`);
@@ -31,8 +31,7 @@ ok(script.includes("typeof noteVSignalMeldKind==='function'?noteVSignalMeldKind(
 ok(script.includes("if(!packet?.event)return false;if(typeof sideObj!=='function'||typeof other!=='function')return false"),'V-SIGNAL passive subscriber preserves the isolated shared-event foundation');
 ok(script.includes("themeCap=Math.min(4,new Set(preferred.map(namedSlot)).size)"),'automatic theme build caps the selected theme at four physical slots');
 ok(script.includes("(themeId==='mixed'||NAMED[id]?.themeId!==themeId)"),'automatic fill cannot silently exceed the four-card theme cap');
-ok(script.includes('allowStaged=suppliedPool.length<ROGUELIKE_REWARD_ROLES.length'),'ordinary reward calls distinguish scarce caller-supplied pools');
-ok(script.includes("(!allowStaged&&def.rewardPool===false)"),'ordinary roguelike reward ranking excludes staged full-pool cards');
+ok(!script.includes('allowStaged=')&&!script.includes('def.rewardPool===false'),'ordinary roguelike reward ranking no longer stages completed theme cards');
 const unlockBlock=script.slice(script.indexOf('const UNLOCK_GROUPS='),script.indexOf('function unlockedNamed'));
 for(const id of Object.keys(expected))ok(unlockBlock.includes(`'${id}'`),`${id} is reachable through progression unlock groups`);
 ok(unlockBlock.includes("items:['S8','H5','VSH5','D9','C8','D10','C3']"),'full-pool expansion preserves Encore legacy unlock timing');

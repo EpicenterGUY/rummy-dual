@@ -40,5 +40,5 @@ ok(source('newGame').includes("makeSide('enemy',enemyChar,'mixed')"),'player the
 }
 
 ok(source('makeDeck').includes("const buildTheme=themeBuildUnlocked(themeId)?themeId:'mixed'"),'unavailable/development themes fall back safely to mixed at deck build time');
-ok(source('themeBuildLockText').includes("return'개발 중'"),'unfinished theme groups are shown as development-locked');
+ok(script.includes("'point-blank':Object.freeze({id:'point-blank',displayName:'POINT-BLANK'")&&script.includes("themeId:'point-blank',live:true"),'POINT-BLANK is a normal live build profile after 60-card integration');
 console.log('Character theme picker regression passed.');
