@@ -1,0 +1,1128 @@
+{
+  "date": "2026-09-02",
+  "method": "Chromium same-origin iframe CSS viewports; not physical device certification",
+  "measurements": [
+    {
+      "clientHeight": 640,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "home",
+      "scrollDelta": 0,
+      "scrollHeight": 640,
+      "smallestButtonHeight": 60,
+      "surfaceBounds": {
+        "bottom": 640,
+        "left": 0,
+        "right": 360,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        360,
+        640
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 800,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "home",
+      "scrollDelta": 0,
+      "scrollHeight": 800,
+      "smallestButtonHeight": 60,
+      "surfaceBounds": {
+        "bottom": 800,
+        "left": 0,
+        "right": 360,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        360,
+        800
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 844,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "home",
+      "scrollDelta": 0,
+      "scrollHeight": 844,
+      "smallestButtonHeight": 60,
+      "surfaceBounds": {
+        "bottom": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 900,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "home",
+      "scrollDelta": 0,
+      "scrollHeight": 900,
+      "smallestButtonHeight": 60,
+      "surfaceBounds": {
+        "bottom": 900,
+        "left": 0,
+        "right": 480,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        480,
+        900
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 744,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "home",
+      "scrollDelta": 0,
+      "scrollHeight": 744,
+      "smallestButtonHeight": 65,
+      "surfaceBounds": {
+        "bottom": 744,
+        "left": 0,
+        "right": 852,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        852,
+        744
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 1024,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "home",
+      "scrollDelta": 0,
+      "scrollHeight": 1024,
+      "smallestButtonHeight": 65,
+      "surfaceBounds": {
+        "bottom": 1024,
+        "left": 0,
+        "right": 768,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        768,
+        1024
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 768,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "home",
+      "scrollDelta": 0,
+      "scrollHeight": 768,
+      "smallestButtonHeight": 65,
+      "surfaceBounds": {
+        "bottom": 768,
+        "left": 0,
+        "right": 1024,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1024,
+        768
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 768,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "home",
+      "scrollDelta": 0,
+      "scrollHeight": 768,
+      "smallestButtonHeight": 65,
+      "surfaceBounds": {
+        "bottom": 768,
+        "left": 0,
+        "right": 1366,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 1080,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "home",
+      "scrollDelta": 0,
+      "scrollHeight": 1080,
+      "smallestButtonHeight": 65,
+      "surfaceBounds": {
+        "bottom": 1080,
+        "left": 0,
+        "right": 1920,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 640,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "roguelike",
+      "scrollDelta": 0,
+      "scrollHeight": 640,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 640,
+        "left": 0,
+        "right": 360,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        360,
+        640
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 800,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "roguelike",
+      "scrollDelta": 0,
+      "scrollHeight": 800,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 800,
+        "left": 0,
+        "right": 360,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        360,
+        800
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 844,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "roguelike",
+      "scrollDelta": 0,
+      "scrollHeight": 844,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 900,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "roguelike",
+      "scrollDelta": 0,
+      "scrollHeight": 900,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 900,
+        "left": 0,
+        "right": 480,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        480,
+        900
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 744,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "roguelike",
+      "scrollDelta": 0,
+      "scrollHeight": 744,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 744,
+        "left": 0,
+        "right": 852,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        852,
+        744
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 1024,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "roguelike",
+      "scrollDelta": 0,
+      "scrollHeight": 1024,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 1024,
+        "left": 0,
+        "right": 768,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        768,
+        1024
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 768,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "roguelike",
+      "scrollDelta": 0,
+      "scrollHeight": 768,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 768,
+        "left": 0,
+        "right": 1024,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1024,
+        768
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 768,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "roguelike",
+      "scrollDelta": 0,
+      "scrollHeight": 768,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 768,
+        "left": 0,
+        "right": 1366,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 1080,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "roguelike",
+      "scrollDelta": 0,
+      "scrollHeight": 1080,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 1080,
+        "left": 0,
+        "right": 1920,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 606,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "dev",
+      "scrollDelta": 7131,
+      "scrollHeight": 7737,
+      "smallestButtonHeight": 40,
+      "surfaceBounds": {
+        "bottom": 624,
+        "left": 12,
+        "right": 348,
+        "top": 16
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        360,
+        640
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 766,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "dev",
+      "scrollDelta": 6971,
+      "scrollHeight": 7737,
+      "smallestButtonHeight": 40,
+      "surfaceBounds": {
+        "bottom": 784,
+        "left": 12,
+        "right": 348,
+        "top": 16
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        360,
+        800
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 810,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "dev",
+      "scrollDelta": 5844,
+      "scrollHeight": 6654,
+      "smallestButtonHeight": 40,
+      "surfaceBounds": {
+        "bottom": 828,
+        "left": 12,
+        "right": 378,
+        "top": 16
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 866,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "dev",
+      "scrollDelta": 5199,
+      "scrollHeight": 6065,
+      "smallestButtonHeight": 40,
+      "surfaceBounds": {
+        "bottom": 884,
+        "left": 12,
+        "right": 468,
+        "top": 16
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        480,
+        900
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 710,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "dev",
+      "scrollDelta": 4014,
+      "scrollHeight": 4724,
+      "smallestButtonHeight": 40,
+      "surfaceBounds": {
+        "bottom": 728,
+        "left": 18,
+        "right": 834,
+        "top": 16
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        852,
+        744
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 990,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "dev",
+      "scrollDelta": 3844,
+      "scrollHeight": 4834,
+      "smallestButtonHeight": 40,
+      "surfaceBounds": {
+        "bottom": 1008,
+        "left": 18,
+        "right": 750,
+        "top": 16
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        768,
+        1024
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 734,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "dev",
+      "scrollDelta": 3919,
+      "scrollHeight": 4653,
+      "smallestButtonHeight": 40,
+      "surfaceBounds": {
+        "bottom": 752,
+        "left": 18,
+        "right": 1006,
+        "top": 16
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1024,
+        768
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 734,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "dev",
+      "scrollDelta": 3923,
+      "scrollHeight": 4657,
+      "smallestButtonHeight": 40,
+      "surfaceBounds": {
+        "bottom": 752,
+        "left": 173,
+        "right": 1193,
+        "top": 16
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 1046,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "dev",
+      "scrollDelta": 3611,
+      "scrollHeight": 4657,
+      "smallestButtonHeight": 40,
+      "surfaceBounds": {
+        "bottom": 1064,
+        "left": 450,
+        "right": 1470,
+        "top": 16
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 640,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "reward",
+      "scrollDelta": 174,
+      "scrollHeight": 814,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 640,
+        "left": 0,
+        "right": 360,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        360,
+        640
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 844,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "reward",
+      "scrollDelta": 0,
+      "scrollHeight": 844,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 744,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "reward",
+      "scrollDelta": 3,
+      "scrollHeight": 747,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 744,
+        "left": 0,
+        "right": 852,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        852,
+        744
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 768,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "reward",
+      "scrollDelta": 0,
+      "scrollHeight": 768,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 768,
+        "left": 0,
+        "right": 1366,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 640,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "region",
+      "scrollDelta": 0,
+      "scrollHeight": 640,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 640,
+        "left": 0,
+        "right": 360,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        360,
+        640
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 844,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "region",
+      "scrollDelta": 0,
+      "scrollHeight": 844,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 744,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "region",
+      "scrollDelta": 0,
+      "scrollHeight": 744,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 744,
+        "left": 0,
+        "right": 852,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        852,
+        744
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 768,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "region",
+      "scrollDelta": 0,
+      "scrollHeight": 768,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 768,
+        "left": 0,
+        "right": 1366,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 844,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "new",
+      "scrollDelta": 0,
+      "scrollHeight": 844,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 768,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "new",
+      "scrollDelta": 0,
+      "scrollHeight": 768,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 768,
+        "left": 0,
+        "right": 1366,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 844,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "loadout",
+      "scrollDelta": 0,
+      "scrollHeight": 844,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 768,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "loadout",
+      "scrollDelta": 0,
+      "scrollHeight": 768,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 768,
+        "left": 0,
+        "right": 1366,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 711,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "setup",
+      "scrollDelta": 0,
+      "scrollHeight": 711,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 778.4375,
+        "left": 12,
+        "right": 378,
+        "top": 65.546875
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 626,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "setup",
+      "scrollDelta": 0,
+      "scrollHeight": 626,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 697.9375,
+        "left": 353,
+        "right": 1013,
+        "top": 70.046875
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 741,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "deck",
+      "scrollDelta": 102,
+      "scrollHeight": 843,
+      "smallestButtonHeight": 38,
+      "surfaceBounds": {
+        "bottom": 793.359375,
+        "left": 12,
+        "right": 378,
+        "top": 50.640625
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 674,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "deck",
+      "scrollDelta": 40,
+      "scrollHeight": 714,
+      "smallestButtonHeight": 38,
+      "surfaceBounds": {
+        "bottom": 721.90625,
+        "left": 353,
+        "right": 1013,
+        "top": 46.078125
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 844,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "records",
+      "scrollDelta": 0,
+      "scrollHeight": 844,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 768,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "records",
+      "scrollDelta": 0,
+      "scrollHeight": 768,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 768,
+        "left": 0,
+        "right": 1366,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 844,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "tutorial",
+      "scrollDelta": 0,
+      "scrollHeight": 844,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 768,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "tutorial",
+      "scrollDelta": 0,
+      "scrollHeight": 768,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 768,
+        "left": 0,
+        "right": 1366,
+        "top": 0
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 0
+    },
+    {
+      "clientHeight": 381,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "settings",
+      "scrollDelta": 0,
+      "scrollHeight": 381,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 613.28125,
+        "left": 12,
+        "right": 378,
+        "top": 230.71875
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 369,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "settings",
+      "scrollDelta": 0,
+      "scrollHeight": 369,
+      "smallestButtonHeight": 44,
+      "surfaceBounds": {
+        "bottom": 569.6875,
+        "left": 353,
+        "right": 1013,
+        "top": 198.3125
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 741,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "dev-codex",
+      "scrollDelta": 16038,
+      "scrollHeight": 16779,
+      "smallestButtonHeight": 40,
+      "surfaceBounds": {
+        "bottom": 793.359375,
+        "left": 12,
+        "right": 378,
+        "top": 50.640625
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        390,
+        844
+      ],
+      "visiblePrimaryChoices": 5
+    },
+    {
+      "clientHeight": 674,
+      "clippedControls": [],
+      "documentOverflow": 0,
+      "overflowY": "auto",
+      "scenario": "dev-codex",
+      "scrollDelta": 7089,
+      "scrollHeight": 7763,
+      "smallestButtonHeight": 40,
+      "surfaceBounds": {
+        "bottom": 721.90625,
+        "left": 213,
+        "right": 1153,
+        "top": 46.078125
+      },
+      "surfaceOverflow": 0,
+      "viewport": [
+        1366,
+        768
+      ],
+      "visiblePrimaryChoices": 5
+    }
+  ]
+}

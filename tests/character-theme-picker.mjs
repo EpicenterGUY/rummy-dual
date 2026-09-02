@@ -8,15 +8,15 @@ function context(extra={}){return vm.createContext({console,Set,Map,Array,Object
 function install(ctx,...names){for(const n of names)vm.runInContext(source(n),ctx)}
 
 ok(html.includes('id="themeGroupGrid"'),'character/progress screen contains a theme-group picker');
-ok(html.includes('캐릭터군 / 테마'),'theme group picker is visibly labeled');
-ok(html.includes('캐릭터 · 캐릭터군 · 해금'),'progress modal title exposes character groups');
+ok(html.includes('카드군 / 테마'),'theme group picker is visibly labeled');
+ok(html.includes('대전 준비 · 캐릭터'),'battle setup labels the current character step');
 ok(script.includes("'v-signal':Object.freeze({id:'v-signal',displayName:'V-SIGNAL'"),'V-SIGNAL build profile is registered');
 ok(script.includes("'zero-sight':Object.freeze({id:'zero-sight',displayName:'ZERO-SIGHT'"),'ZERO-SIGHT is visible in build profiles');
 ok(script.includes("'point-blank':Object.freeze({id:'point-blank',displayName:'POINT-BLANK'"),'POINT-BLANK is visible in build profiles');
 ok(script.includes("selectedTheme:'mixed'"),'old/new progress defaults safely to mixed theme');
 ok(source('normalizeProgress').includes('selectedTheme:Object.prototype.hasOwnProperty.call(THEME_BUILD_PROFILES'),'saved theme selection is normalized');
 ok(source('renderProgress').includes("data-theme-build")&&source('renderProgress').includes('themeBuildUnlocked(id)'),'theme cards render with selectable/locked state');
-ok(source('renderStartScreen').includes('theme.displayName'),'selected theme is visible on the start screen');
+ok(source('renderProgress').includes('setupSelectionSummary'),'selected character/theme is shown within battle setup');
 ok(source('render').includes('buildTheme.displayName'),'selected theme is visible in the combat HUD');
 ok(source('newGame').includes("makeSide('player',progress.selectedChar,progress.selectedTheme)"),'selected theme reaches the actual player battle deck');
 ok(source('newGame').includes("makeSide('enemy',enemyChar,'mixed')"),'player theme selection does not silently force the enemy deck');

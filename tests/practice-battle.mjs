@@ -7,7 +7,7 @@ function ok(c,m){if(!c)throw new Error(m);console.log(`PASS: ${m}`)}
 function functionSource(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw new Error(`missing ${name}`);const body=script.indexOf('){',start),brace=body+1;let depth=0,end=-1;for(let i=brace;i<script.length;i++){if(script[i]==='{')depth++;else if(script[i]==='}'){depth--;if(depth===0){end=i+1;break}}}if(end<0)throw new Error(`unterminated ${name}`);return script.slice(start,end)}
 function install(ctx,...names){for(const n of names)vm.runInContext(functionSource(n),ctx)}
 new Function(script);
-ok(html.includes('id="practiceStartBtn"')&&html.includes('자유 연습전 · 진행도 영향 없음'),'start screen exposes free practice battle without changing the four primary menu items');
+ok(html.includes('id="practiceStartBtn"')&&html.includes('자유 연습 · 진행도 영향 없음'),'tutorial submenu exposes free practice while the main menu keeps five primary entries');
 ok(html.includes('id="tutorialPracticeBtn"')&&script.includes("practice.hidden=!(state.tutorialSegmentDone&&segmentEnd)"),'completed basic or advanced tutorial segment can continue directly into free practice');
 ok(script.includes("function newGame(mode='battle'){state.sessionMode=mode;")&&functionSource('isLiveCombatSession').includes("state.sessionMode==='practice'")&&functionSource('isLiveCombatSession').includes("state.sessionMode==='roguelike'"),'battle engine has explicit practice and roguelike experiment session modes');
 ok(script.includes("const actionCap=state.sessionMode==='practice'?4:6"),'practice CPU uses a reduced action cap');

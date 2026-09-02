@@ -20,7 +20,7 @@ ok(html.includes('.handZone.rummyFlash,.enemyZone.rummyFlash') && html.includes(
 ok(script.includes("typeof animateRummyFeedback==='function'") && script.includes("else combatBanner('러미!','rummy',40)"), 'triggerRummy uses the richer feedback hook with a non-visual isolation fallback');
 ok(script.includes('function pulseTutorialSuccess()') && script.includes("renderTutorialCoach();if(typeof pulseTutorialSuccess==='function')pulseTutorialSuccess();const battleId=state.battleId") && script.includes('},850);return true}'), 'tutorial success visibly pulses before the guarded 850ms auto-advance');
 ok(html.includes('.tutorialCoach.tutorialSuccessPulse') && html.includes('@keyframes tutorialSuccessPulse'), 'tutorial coach has a dedicated success transition animation');
-ok(script.includes("if(matchMedia('(prefers-reduced-motion: reduce)').matches)return") && html.includes('@media (prefers-reduced-motion:reduce)'), 'new feedback respects reduced-motion preferences');
+ok(script.includes("playerSettings.reducedMotion)||matchMedia('(prefers-reduced-motion: reduce)').matches") && html.includes('@media (prefers-reduced-motion:reduce)'), 'new feedback respects reduced-motion preferences');
 ok(roadmap.includes('- [x] 세부 애니메이션 / 스위치 이동 / 러미 피드백 보강'), 'UX1 P2 roadmap marks detailed feedback polish complete');
 
 console.log('RUMMY//DUEL UX1 feedback regressions passed.');

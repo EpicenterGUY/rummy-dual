@@ -16,7 +16,7 @@ ok(source('roguelikeIssueRewardNode').includes("existing.source==='prototype'"),
 ok(source('showResult').includes('roguelikeCompleteBattleNode(state.roguelikeBattleNodeRequest)'),'only the progression result route commits a battle reward after victory');
 ok(source('showCirculationDraw').includes("state.roguelikeNodeResult='draw'")&&source('showCirculationDraw').includes('보상도 발급되지 않았습니다'),'progression draw remains retryable and reward-free');
 ok(source('setupRoguelikeBattle').includes("log('전투는 런 덱의 독립 복제본")&&source('setupRoguelikeBattle').includes('승리하면 이 전투 자격'),'sandbox isolation and real-node persistence copy remain explicitly separate');
-ok(html.includes("state.roguelikeProgressionBattle?'RUN NODE':'RUN TEST'"),'combat HUD visibly distinguishes real run nodes from RUN TEST');
+ok(html.includes("state.roguelikeProgressionBattle?'로그라이크':'런 덱 실험'"),'combat HUD distinguishes normal progression from development deck experiments');
 ok(source('renderRoguelikeStarterPicker').includes("nodeBattle.id='roguelikeNodeBattleBtn'")&&source('renderRoguelikeStarterPicker').includes('startRoguelikeNodeBattle()'),'progress UI exposes a separate guarded real-node battle control');
 
 const route=[{id:'common-1',label:'1'},{id:'common-2',label:'2'},{id:'common-3',label:'3'}];

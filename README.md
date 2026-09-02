@@ -2,6 +2,12 @@
 
 Single-file mobile-first prototype for GitHub Pages.
 
+## Menus and development sessions
+
+The main menu contains **대전 / 로그라이크 / 튜토리얼 / 카드 도감 / 설정**. Battle setup reveals character and deck choices in two steps. Roguelike opens Continue / New game / Records, then shows only the current starter, battle, reward, or region decision. Free practice and advanced/theme lessons live under Tutorial.
+
+Settings provides reduced motion and larger explanatory text. **설정 → 개발자 작업실** opens the DEV sandbox with character/theme/deck/field controls, manual run rewards and existing experiments. DEV profiles, runs and completion history use separate storage; DEV battles never award normal progress. Returning home or reloading restores normal mode. See `docs/UX2_PROGRESSIVE_DISCLOSURE.md` for the UI and persistence contract.
+
 ## Deploy on GitHub Pages
 1. Create a GitHub repository.
 2. Upload `index.html`, `.nojekyll`, and optionally this `README.md` to the repository root.
@@ -35,3 +41,5 @@ Everything required to run the prototype is embedded in `index.html`.
 ### Local validation
 
 The game remains buildless on GitHub Pages. `npm run dev -- --host 0.0.0.0 --port 4173` starts a dependency-free local preview. `/qa/m0r` is a preview-only layout fixture with selectable CSS viewport sizes and three long RUNs per side. Run `node tests/m0r-meld-expansion.mjs` for the full-engine rule regression and `node experiments/m0r-opening-tempo.mjs` for the paired opening-tempo experiment.
+
+`/qa/ui` previews normal menus, staged run screens and DEV controls at selectable CSS viewport sizes using isolated in-memory saves. `node tests/ux2-menu-isolation.mjs` checks the actual engine's normal/DEV persistence boundaries and complete run flows. Recorded browser measurements are in `docs/UX2_LAYOUT_RESULTS.json`.

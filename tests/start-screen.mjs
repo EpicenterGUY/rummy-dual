@@ -15,8 +15,8 @@ ok(html.includes('세트와 런으로 폭탄을 키워 스위치를 넘기는 1:
 ok(html.includes('id="battleStartBtn"'), 'start screen exposes battle start');
 ok(html.includes('id="tutorialStartBtn"') && html.includes('기본 조작부터 폭발·러미까지 고정 패로 직접 익힙니다.') && !html.includes('고정 패 실습은 순차 추가 중입니다.'), 'tutorial entry advertises the completed core hands-on flow');
 ok(html.includes('id="startCodexBtn"'), 'start screen reuses the card codex entry');
-ok(html.includes('id="settingsBtn"') && html.includes('disabled'), 'settings entry is explicitly disabled until implemented');
-ok(html.includes('id="startProgressBtn"') && html.includes('id="startRulesBtn"'), 'existing progress and rules overlays remain reachable from the start screen');
+ok(html.includes('id="settingsBtn"') && html.includes('id="reducedMotionInput"'), 'settings entry provides real display preferences');
+ok(html.includes('id="setupNextBtn"') && html.includes('id="startRulesBtn"'), 'character setup and tutorial rules remain available through focused submenus');
 ok(html.includes('id="homeBtn"'), 'battle HUD can return to the start screen');
 ok(html.includes('id="resultHomeBtn"'), 'result screen can return to the start screen');
 ok(html.includes('<span class="menuState">시작</span>') && html.includes('<span class="menuState">열기</span>'), 'active start-menu states are Korean');

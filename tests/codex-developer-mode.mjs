@@ -62,7 +62,7 @@ ok(source('renderProgress').includes('개발 중 · DEV 선택 가능'),'develop
 }
 
 ok(script.includes('developerBattle:false'),'battle state owns an explicit developerBattle snapshot flag');
-ok(source('newGame').includes("state.developerBattle=mode==='battle'"),'new battle snapshots DEV status at battle start');
+ok(source('newGame').includes("state.developerBattle=typeof developerModeActive==='function'"),'new battle snapshots DEV status at battle start');
 ok(source('render').includes("state.developerBattle?'<span class=\"gold\"> · DEV</span>'"),'combat HUD marks a non-rewarding DEV battle');
 const grant=source('grantVictoryProgress');
 ok(grant.includes("if(state.developerBattle||state.sessionMode!=='battle'){state.rewarded=true;return[]}"),'progress grant has hard DEV and non-standard-session guards');

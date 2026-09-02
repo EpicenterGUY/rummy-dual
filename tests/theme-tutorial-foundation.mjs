@@ -6,11 +6,11 @@ const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).jo
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 function source(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw new Error(`missing ${name}`);let par=0,brace=-1;for(let i=start+marker.length-1;i<script.length;i++){if(script[i]==='(')par++;else if(script[i]===')')par--;else if(script[i]==='{'&&par===0){brace=i;break}}if(brace<0)throw new Error(`missing body ${name}`);let d=0;for(let i=brace;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)return script.slice(start,i+1)}throw new Error(`unterminated ${name}`)}
 new Function(script);
-ok(html.includes('id="themeTutorialBtn"')&&html.includes('테마 체험전 · 준비 중'),'start screen has a dedicated theme tutorial entry point');
+ok(html.includes('id="themeTutorialBtn"')&&html.includes('테마 체험전 · 준비 중'),'tutorial submenu has a dedicated theme experience entry point');
 ok(script.includes('const THEME_TUTORIALS=Object.freeze(')&&script.includes("'zero-sight':Object.freeze({themeId:'zero-sight',startStep:null,live:false})")&&script.includes("'point-blank':Object.freeze({themeId:'point-blank',startStep:null,live:false})"),'theme tutorial registry stays explicit while unimplemented themes remain non-live');
 ok(script.includes('tutorialThemeId:null'),'tutorial state tracks the active theme independently from battle deck theme');
 ok(script.includes('function themeTutorialAvailable(id)')&&script.includes('function availableThemeTutorials()')&&script.includes('function startThemeTutorial(themeId=null)'),'theme tutorial availability and launcher helpers exist');
-ok(script.includes("progress.tutorialCompleted&&available.length>0")&&script.includes("테마 체험전 · 기본 완료 후"),'start entry requires base tutorial completion and at least one live registered experience');
+ok(script.includes("p.tutorialCompleted&&available.length>0")&&script.includes("테마 체험전 · 기본 완료 후"),'start entry requires base tutorial completion and at least one live registered experience');
 ok(script.includes("if(step?.themeId){const themeSteps=TUTORIAL_STEPS.filter")&&script.includes("label:`${themeDef(step.themeId)?.displayName||step.themeId} 체험`"),'tutorial coach can render an isolated theme-specific segment counter');
 ok(script.includes("step.themeId?`${themeDef(step.themeId)?.displayName||step.themeId} 체험 완료 · 메인으로`"),'theme segment has its own completion copy');
 ok(script.includes("document.getElementById('themeTutorialBtn').onclick=()=>startThemeTutorial()"),'theme tutorial button is wired to the shared launcher');

@@ -35,12 +35,12 @@ function install(ctx, ...names) {
 
 new Function(script);
 
-ok(html.includes('id="deckSlotGrid"') && html.includes('덱 구성 · 52 정규 슬롯'), 'progress UI exposes the 52-slot deckbuilder');
+ok(html.includes('id="deckSlotGrid"') && html.includes('직접 덱 구성 · 선택 사항'), 'progress UI exposes the 52-slot deckbuilder');
 ok(html.includes('id="deckAnalysis"') && html.includes('세트 재료') && html.includes('런 재료'), 'deckbuilder exposes live SET/RUN distribution analysis');
 ok(html.includes('grid.innerHTML=ALL_REGULAR.map(slot=>'), 'deckbuilder renders every canonical regular slot from ALL_REGULAR');
 ok(html.includes('정확히 29개') && html.includes('정규 29 + 조커 1 = 30장'), 'UI preserves the existing 30-card battle-deck size');
 ok(html.includes("const custom=makeCustomBattleDeck(owner);if(custom)return custom;"), 'player custom construction is checked before legacy automatic generation');
-ok(html.includes("progress.deckBuild?.enabled?' · 커스텀 덱':''"), 'start screen reports when a custom deck is active');
+ok(html.includes("progress.deckBuild?.enabled?' · 커스텀 덱':''"), 'battle setup reports when a custom deck is active');
 
 // Save migration and exact-slot normalization.
 {
