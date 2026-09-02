@@ -30,14 +30,14 @@ Status: ACTIVE IMPLEMENTATION POLICY
 
 | 카드군 | 정식 후보 | 현재 main 라이브 | 남은 구현 | 목표 |
 |---|---:|---:|---:|---:|
-| V-SIGNAL | 24 | 3 | 21 | 24/24 |
+| V-SIGNAL | 24 | 24 | 0 | 24/24 |
 | ZERO-SIGHT | 18 | 4 | 14 | 18/18 |
 | POINT-BLANK | 18 | 2 | 16 | 18/18 |
-| **합계** | **60** | **9** | **51** | **60/60** |
+| **합계** | **60** | **30** | **30** | **60/60** |
 
 현재 main의 라이브 기준은 다음과 같다.
 
-- V-SIGNAL: `앙코르`, `전원 집합!`, `24시간 내구방송`
+- V-SIGNAL: **24/24 풀 구현 완료**
 - ZERO-SIGHT: `관측수`, `스코프 조정`, `탄도 계산`, `ONE SHOT`
 - POINT-BLANK: `엄폐 교대`, `퀵 리로드`
 
@@ -54,9 +54,9 @@ Status: ACTIVE IMPLEMENTATION POLICY
 - 2테마 혼합은 각 테마 최대 4장, 최소 1장의 비테마 공간을 유지한다.
 - 기존 로그라이크 보상/지역 적 덱의 고정 결과는 카드 풀 증가만으로 암묵적으로 바꾸지 않는다.
 
-### F1 — V-SIGNAL 24/24
+### F1 — V-SIGNAL 24/24 · 완료
 
-현재 3장 → 24장으로 완성한다.
+24장 전체 정의·실전 효과·해금·도감/덱빌더 연결을 완료했다. 신규 21장은 60장 통합 전까지 기존 로그라이크 지역 적 덱에는 넣지 않고, 일반 랜덤 보상 순위에서도 후보가 충분할 때 우선 제외한다.
 
 우선 구현 축:
 
@@ -73,6 +73,8 @@ Status: ACTIVE IMPLEMENTATION POLICY
 - V-SIGNAL 전용 회귀
 - 일반/다른 테마 카드가 합방·RAID·회수 루프에 참여 가능
 - HYPE 등 전용 숫자 자원 없음
+
+**F1 완료 기록** — 2026-09-02. `tests/vsignal-full-pool.mjs`, 기존 `tests/vsignal-mixed-regression.mjs`, 확장형 `tests/theme-mix-simulation.mjs` 및 전체 회귀를 릴리스 게이트로 사용한다.
 
 ### F2 — ZERO-SIGHT 18/18
 

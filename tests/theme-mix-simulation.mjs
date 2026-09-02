@@ -34,10 +34,14 @@ for(const theme of themeIds){
 // 2) Every two-theme module can coexist under the same slot-exclusive rule and still has ordinary fill.
 const pairs=[['v-signal','zero-sight'],['v-signal','point-blank'],['zero-sight','point-blank']];
 for(const[a,b]of pairs){
-  const themed=[...themeCards(a),...themeCards(b)],ctx=makeCtx(a.length*100+b.length),uniqueCount=uniqueSlots(themed).size;
-  const chosen=[...ctx.weightedVariantSample(themed,uniqueCount,()=>1)],used=new Set(chosen.map(id=>ctx.namedSlot(id)));
-  const ordinary=regularIds.filter(id=>!ctx.NAMED[id]?.themeId&&!used.has(ctx.namedSlot(id)));
+  const ctx=makeCtx(a.length*100+b.length),aPool=themeCards(a),aCap=Math.min(4,uniqueSlots(aPool).size);
+  const first=[...ctx.weightedVariantSample(aPool,aCap,()=>1)],used=new Set(first.map(id=>ctx.namedSlot(id)));
+  const bPool=themeCards(b).filter(id=>!used.has(ctx.namedSlot(id))),bCap=Math.min(4,uniqueSlots(bPool).size);
+  const second=[...ctx.weightedVariantSample(bPool,bCap,()=>1)];for(const id of second)used.add(ctx.namedSlot(id));
+  const chosen=first.concat(second),ordinary=regularIds.filter(id=>!ctx.NAMED[id]?.themeId&&!used.has(ctx.namedSlot(id)));
   const fill=[...ctx.weightedVariantSample(ordinary,Math.max(0,9-chosen.length),()=>1)],build=chosen.concat(fill),slots=build.map(id=>ctx.namedSlot(id));
+  ok(first.length>0&&second.length>0,`${a}+${b} mix represents both theme modules`);
+  ok(first.length<=4&&second.length<=4,`${a}+${b} mix respects the four-card cap per theme`);
   ok(new Set(slots).size===build.length,`${a}+${b} mix resolves all physical-slot conflicts`);
   ok(build.some(id=>ctx.NAMED[id]?.themeId===a)&&build.some(id=>ctx.NAMED[id]?.themeId===b),`${a}+${b} mix represents both themes`);
   ok(build.some(id=>!ctx.NAMED[id]?.themeId),`${a}+${b} mix still leaves ordinary-card space`);
@@ -55,7 +59,7 @@ for(let seed=1;seed<=128;seed++){
 ok(mixedThemeSeen>0&&mixedOrdinarySeen>0,'general mixed simulation samples both theme and ordinary named cards');
 
 // 4) Direct-power cards remain a minority globally and among the currently implemented theme cards.
-const directTags=new Set(['finalUltimatum','blackBullet','fuseRound','zsBallistics','zsOneShot']);
+const directTags=new Set(['finalUltimatum','blackBullet','fuseRound','vBroadcastAccident','vBadClip','vReverseViral','vBanSoon','zsBallistics','zsOneShot']);
 const allDefs=Object.values(NAMED),directAll=allDefs.filter(c=>directTags.has(c.t));
 const allTheme=allDefs.filter(c=>c.themeId),directTheme=allTheme.filter(c=>directTags.has(c.t));
 ok(directAll.length/allDefs.length<0.20,`direct-power tags stay below 20% of all named definitions (${directAll.length}/${allDefs.length})`);
