@@ -20,7 +20,9 @@ jobs:
 
       - name: Add route map
         shell: bash
-        run: python .github/scripts/m11a-route-map-patch.py
+        run: |
+          python .github/scripts/m11a-route-map-patch.py
+          python .github/scripts/m11a-route-map-l10n-fix.py
 
       - name: Run all regression suites
         shell: bash
