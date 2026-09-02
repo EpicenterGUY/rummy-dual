@@ -1,0 +1,52 @@
+name: One-time M11A route map
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m11a-route-map.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-route-map:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add route map
+        shell: bash
+        run: python .github/scripts/m11a-route-map-patch.py
+
+      - name: Run all regression suites
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          for test in tests/*.mjs; do
+            echo "==> $test"
+            node "$test"
+            count=$((count+1))
+          done
+          echo "Regression suites passed: $count"
+
+      - name: Run M11A economy experiment
+        shell: bash
+        run: node experiments/m11a-growth-economy.mjs
+
+      - name: Commit project patch
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html ROADMAP.md docs/ROGUELIKE_MASTER_PLAN.md tests/m11a-route-map.mjs; then
+            echo 'No project changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md docs/ROGUELIKE_MASTER_PLAN.md tests/m11a-route-map.mjs
+          git commit -m 'feat: add roguelike route map'
+          git push origin HEAD:main
