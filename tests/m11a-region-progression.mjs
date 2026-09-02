@@ -36,7 +36,7 @@ const progress={roguelikeStarter:'pure',selectedChar:'collector',selectedTheme:'
 const state={sessionMode:'roguelike',player:{hand:['test-hand'],deck:['test-deck']},rewarded:false};
 const progressBefore=JSON.stringify(progress),battleBefore=JSON.stringify(state);
 const ctx=vm.createContext({console,localStorage,progress,state,charUnlocked:()=>true,SUIT_SYMBOL:{S:'♠',H:'♥',D:'♦',C:'♣'},THEME_BUILD_PROFILES:{}});
-for(const name of ['ROGUELIKE_ROUTE_LIMITS','ROGUELIKE_REGIONS','ROGUELIKE_COMMON_START_ROUTE','NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES','ROGUELIKE_THEME_ENTRY_TAGS'])vm.runInContext(declaration(name),ctx);
+for(const name of ['ROGUELIKE_ROUTE_LIMITS','ROGUELIKE_ENDGAME','ROGUELIKE_REGIONS','ROGUELIKE_COMMON_START_ROUTE','NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES','ROGUELIKE_THEME_ENTRY_TAGS'])vm.runInContext(declaration(name),ctx);
 vm.runInContext("const ROGUELIKE_STARTER_DECK_SIZE=30;const ROGUELIKE_RUN_DRAFT_KEY='rummyDuelRoguelikeRunDraftV1';const ROGUELIKE_COMMON_START_ZONE='common-start';const ROGUELIKE_REWARD_ALGORITHM='action-tags-v1';",ctx);
 for(const name of [...script.matchAll(/function (\w+)\(/g)].map(m=>m[1]).filter(name=>/roguelike/i.test(name)).concat('namedSlot'))vm.runInContext(source(name),ctx);
 const allIds=vm.runInContext('Object.keys(NAMED)',ctx);let pool=[...allIds];
@@ -61,7 +61,7 @@ for(const id of regions){
  }
  const before=current(),legacy=clone(before);legacy.version=5;
  storage.set(KEY,JSON.stringify(legacy));
- ok(current().version===7&&current().rewardNodes.entries.length===3,'v5 common victories survive migration');
+ ok(current().version===8&&current().rewardNodes.entries.length===3,'v5 common victories survive migration');
  const oldRequest={...nextRequest(),regionId:id};
  const extra=issue();skip(extra);
  ok(!ctx.roguelikeChooseRegion(oldRequest),'stale region UI cannot bypass changed reward sequence');

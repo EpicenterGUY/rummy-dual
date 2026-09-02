@@ -36,7 +36,7 @@ const progress={roguelikeStarter:'pure',selectedChar:'collector',selectedTheme:'
 const state={sessionMode:'roguelike',player:{hand:['test-hand'],deck:['test-deck']},rewarded:false};
 const progressBefore=JSON.stringify(progress),battleBefore=JSON.stringify(state);
 const ctx=vm.createContext({console,localStorage,progress,state,charUnlocked:()=>true,SUIT_SYMBOL:{S:'♠',H:'♥',D:'♦',C:'♣'},THEME_BUILD_PROFILES:{}});
-for(const name of ['ROGUELIKE_ROUTE_LIMITS','NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES','ROGUELIKE_THEME_ENTRY_TAGS'])vm.runInContext(declaration(name),ctx);
+for(const name of ['ROGUELIKE_ROUTE_LIMITS','ROGUELIKE_ENDGAME','ROGUELIKE_COMMON_START_ROUTE','ROGUELIKE_REGIONS','NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES','ROGUELIKE_THEME_ENTRY_TAGS'])vm.runInContext(declaration(name),ctx);
 vm.runInContext("const ROGUELIKE_STARTER_DECK_SIZE=30;const ROGUELIKE_RUN_DRAFT_KEY='rummyDuelRoguelikeRunDraftV1';const ROGUELIKE_COMMON_START_ZONE='common-start';const ROGUELIKE_REWARD_ALGORITHM='action-tags-v1';",ctx);
 for(const name of [...script.matchAll(/function (\w+)\(/g)].map(m=>m[1]).filter(name=>/roguelike/i.test(name)).concat('namedSlot'))vm.runInContext(source(name),ctx);
 const allIds=vm.runInContext('Object.keys(NAMED)',ctx);let pool=[...allIds];
@@ -51,7 +51,7 @@ const fresh=()=>{pool=[...allIds];return ctx.prepareRoguelikeRunDraft('pure')};
 ok(ctx.roguelikeIssueRewardNode(null)===null&&!ctx.roguelikeSkipRewardNode(null)&&!ctx.roguelikeApplyRunReplacement(null),'no run cannot issue, skip, or receive a reward');
 for(const starter of ['wanderer','collector','salvager','jester','pure']){
  const draft=ctx.prepareRoguelikeRunDraft(starter);
- ok(draft.version===7&&draft.rewardNodes.version===1&&draft.rewardNodes.baseRevision===0&&draft.rewardNodes.entries.length===0,starter+' starts with a separate empty node ledger');
+ ok(draft.version===8&&draft.rewardNodes.version===1&&draft.rewardNodes.baseRevision===0&&draft.rewardNodes.entries.length===0,starter+' starts with a separate empty node ledger');
 }
 
 // A v4 player may already have many sandbox replacements: do not reset that deck or invent receipts.
@@ -59,13 +59,13 @@ const legacy=fresh();legacy.version=4;delete legacy.rewardNodes;
 legacy.runDeck.cards.find(c=>c.slot==='S3').variantId='S3';legacy.runDeck.revision=7;
 storage.set(KEY,JSON.stringify(legacy));
 const migrated=current();
-ok(migrated.version===7&&migrated.runId===legacy.runId&&migrated.createdAt===legacy.createdAt&&migrated.runDeck.revision===7&&migrated.runDeck.cards.find(c=>c.slot==='S3').variantId==='S3','v4 migration preserves run identity, existing variants, and revision');
+ok(migrated.version===8&&migrated.runId===legacy.runId&&migrated.createdAt===legacy.createdAt&&migrated.runDeck.revision===7&&migrated.runDeck.cards.find(c=>c.slot==='S3').variantId==='S3','v4 migration preserves run identity, existing variants, and revision');
 ok(migrated.rewardNodes.baseRevision===7&&migrated.rewardNodes.entries.length===0,'migration records the old deck revision without fabricating reward nodes');
 let node=issue();ok(ctx.roguelikeApplyRunReplacement(planFor(node))&&current().runDeck.revision===8,'migrated decks can receive new node-bound rewards');
 for(const version of [1,2,3]){
  const old={...legacy,version};delete old.runDeck;
  const clean=ctx.normalizeRoguelikeRunDraft(old);
- ok(clean.version===7&&clean.runDeck.cards.length===30&&clean.runDeck.revision===0&&clean.rewardNodes.entries.length===0,`v${version} blueprints still migrate to a fresh 30-card run deck`);
+ ok(clean.version===8&&clean.runDeck.cards.length===30&&clean.runDeck.revision===0&&clean.rewardNodes.entries.length===0,`v${version} blueprints still migrate to a fresh 30-card run deck`);
 }
 
 // Issuance is idempotent; a pending node blocks a second issue.
@@ -146,7 +146,7 @@ node=issue();ctx.roguelikeSkipRewardNode(token(node));node=issue();
 const valid=current(),validJSON=JSON.stringify(valid);
 const corruptions=[
  ['missing ledger',d=>delete d.rewardNodes],
- ['future schema',d=>d.version=8],
+ ['future schema',d=>d.version=9],
  ['future ledger schema',d=>d.rewardNodes.version=2],
  ['negative base revision',d=>d.rewardNodes.baseRevision=-1],
  ['invalid entries',d=>d.rewardNodes.entries={}],

@@ -647,7 +647,15 @@ const ROGUELIKE_REGIONS=Object.freeze([
  Object.freeze({id:'iron-grave',name:'아이언그레이브',desc:'고철과 버려진 기계가 쌓인 산업폐허',rewardHint:'회수·붙이기 우선',rewardActions:Object.freeze({recover:3,attach:1}),rewardThemes:Object.freeze([])}),
  Object.freeze({id:'old-quarter',name:'올드쿼터',desc:'암시장과 오래된 계약이 얽힌 구시가지',rewardHint:'버림패·상대 방해 우선',rewardActions:Object.freeze({discard:3,opponent:1,status:1}),rewardThemes:Object.freeze([])})
 ]);
-function roguelikeRegionRewardProfile(regionId){return ROGUELIKE_REGIONS.find(r=>r.id===regionId)||null}
+const ROGUELIKE_ENDGAME=Object.freeze({
+ id:'null-ward',name:'널워드',rewardHint:'변칙 판정·상태·상대 조합 우선',rewardActions:Object.freeze({rule:3,status:2,opponent:1}),rewardThemes:Object.freeze([]),
+ nodes:Object.freeze([
+  Object.freeze({id:'null-ward-1',label:'널워드 · 격리 관문',kind:'battle',stage:1}),
+  Object.freeze({id:'null-ward-2',label:'널워드 · 기록 심층',kind:'battle',stage:2}),
+  Object.freeze({id:'null-ward-final',label:'널워드 · 최종 보스',kind:'final-boss',stage:3})
+ ])
+});
+function roguelikeRegionRewardProfile(regionId){return ROGUELIKE_REGIONS.find(r=>r.id===regionId)||(regionId===ROGUELIKE_ENDGAME.id?ROGUELIKE_ENDGAME:null)}
 function roguelikeRegionRewardScore(candidate,region){
  if(!candidate||!region)return candidate;
  // Keep foundation neutral and do not boost a known new-theme payoff before entry.
@@ -660,9 +668,16 @@ function roguelikeRegionRoute(regionPath=[]){
  const regions=regionPath.map(id=>ROGUELIKE_REGIONS.find(r=>r.id===id));if(regions.some(r=>!r))return[];
  return regions.flatMap((region,i)=>[...[1,2,3].map(n=>({id:`${region.id}-${n}`,zone:region.id,label:`${region.name} · ${n}번째 교전`,kind:'battle',stage:n,visit:i+1})),{id:`${region.id}-boss`,zone:region.id,label:`${region.name} · 중간 보스`,kind:'boss',stage:4,visit:i+1}])
 }
+function roguelikeEndgameRoute(){return ROGUELIKE_ENDGAME.nodes.map(n=>({...n,zone:ROGUELIKE_ENDGAME.id}))}
+function roguelikeRunRoute(regionPath=[],includeEndgame=true){
+ if(!Array.isArray(regionPath))return[];
+ const regional=regionPath.length?roguelikeRegionRoute(regionPath):[];if(regionPath.length&&!regional.length)return[];
+ return[...ROGUELIKE_COMMON_START_ROUTE,...regional,...(includeEndgame&&regionPath.length===ROGUELIKE_ROUTE_LIMITS.regionVisits?roguelikeEndgameRoute():[])]
+}
 function roguelikeBattleNodeForRequest(request){
  if(!request||!Number.isSafeInteger(request.battleIndex)||request.battleIndex<0)return null;
  if(request.zone===ROGUELIKE_COMMON_START_ZONE){const node=ROGUELIKE_COMMON_START_ROUTE[request.battleIndex];return node?.id===request.battleNodeId?node:null}
+ if(request.zone===ROGUELIKE_ENDGAME.id){const offset=ROGUELIKE_COMMON_START_ROUTE.length+roguelikeRegionRoute(ROGUELIKE_REGIONS.slice(0,ROGUELIKE_ROUTE_LIMITS.regionVisits).map(r=>r.id)).length,node=roguelikeEndgameRoute()[request.battleIndex-offset];return node?.id===request.battleNodeId?node:null}
  const nodes=roguelikeRegionRoute([request.zone]),offset=request.battleIndex-ROGUELIKE_COMMON_START_ROUTE.length;
  if(!nodes.length||offset<0||offset>=nodes.length*ROGUELIKE_ROUTE_LIMITS.regionVisits)return null;
  const node=nodes[offset%nodes.length];return node.id===request.battleNodeId?{...node,visit:Math.floor(offset/nodes.length)+1}:null
@@ -672,7 +687,7 @@ function roguelikeChooseRegion(request){
  if(!draft||!request||draft.regionPath.length>=ROGUELIKE_ROUTE_LIMITS.regionVisits||draft.regionPath.includes(request.regionId)||roguelikePendingRewardNode(draft)||!ROGUELIKE_REGIONS.some(r=>r.id===request.regionId))return false;
  const next=roguelikeNextRewardNodeRequest(draft),route=roguelikeBattleProgress(draft);
  if(!route.awaitingRegion||!next||request.runId!==next.runId||request.sequence!==next.sequence||request.revision!==next.revision||request.deckSignature!==next.deckSignature)return false;
- draft.version=7;draft.regionPath.push(request.regionId);
+ draft.version=8;draft.regionPath.push(request.regionId);
  return saveRoguelikeRunDraft(draft)
 }
 function renderRoguelikeRegionPicker(draft){
@@ -680,7 +695,7 @@ function renderRoguelikeRegionPicker(draft){
  const route=roguelikeBattleProgress(draft);host.innerHTML='';
  if(!draft||!route.awaitingRegion||route.pending)return;
  const request=roguelikeNextRewardNodeRequest(draft);
- host.innerHTML=`<div class="pickerLabel">다음 지역 선택 · 지역 ${draft.regionPath.length+1}/${ROGUELIKE_ROUTE_LIMITS.regionVisits} · 선택 후 변경 불가</div><div class="themePickerNote">방문하지 않은 지역을 선택합니다. 현재 덱을 이어서 사용하며 각 지역은 일반 교전 3회 뒤 중간 보스에 도전합니다. 현재 강화·새 방향 후보에 지역 성향을 반영하며, 기반 보강은 범용성을 유지합니다. 내 덱 슬롯에 맞는 해금 카드 중에서 고르고 다른 지역 카드도 후보에 남습니다. 상대 덱과 공용 필드는 교전마다 정해져 있습니다. 두 지역 이후의 후반 특수구역과 상점·이벤트는 준비 중입니다.</div><div class="charGrid">`+ROGUELIKE_REGIONS.filter(r=>!draft.regionPath.includes(r.id)).map(r=>`<div class="charCard"><div class="charName">${r.name}</div><div class="charPassive">${r.desc}<br><b>보상 성향:</b> ${r.rewardHint}</div><button type="button" class="pixelBtn primary" data-run-region="${r.id}">${r.name} 진입</button></div>`).join('')+'</div>';
+ host.innerHTML=`<div class="pickerLabel">다음 지역 선택 · 지역 ${draft.regionPath.length+1}/${ROGUELIKE_ROUTE_LIMITS.regionVisits} · 선택 후 변경 불가</div><div class="themePickerNote">방문하지 않은 지역을 선택합니다. 현재 덱을 이어서 사용하며 각 지역은 일반 교전 3회 뒤 중간 보스에 도전합니다. 현재 강화·새 방향 후보에 지역 성향을 반영하며, 기반 보강은 범용성을 유지합니다. 내 덱 슬롯에 맞는 해금 카드 중에서 고르고 다른 지역 카드도 후보에 남습니다. 상대 덱과 공용 필드는 교전마다 정해져 있습니다. 두 지역의 보상을 마치면 널워드의 교전 2회와 최종 보스에 도전합니다. 상점·이벤트는 준비 중입니다.</div><div class="charGrid">`+ROGUELIKE_REGIONS.filter(r=>!draft.regionPath.includes(r.id)).map(r=>`<div class="charCard"><div class="charName">${r.name}</div><div class="charPassive">${r.desc}<br><b>보상 성향:</b> ${r.rewardHint}</div><button type="button" class="pixelBtn primary" data-run-region="${r.id}">${r.name} 진입</button></div>`).join('')+'</div>';
  host.querySelectorAll('[data-run-region]').forEach(b=>b.onclick=()=>{const saved=roguelikeChooseRegion({...request,regionId:b.dataset.runRegion});renderRoguelikeStarterPicker();if(!saved)host.textContent='지역을 저장하지 못했습니다. 런 상태와 저장 공간을 확인하세요.'})
 }
 const ROGUELIKE_STARTER_IDS=Object.freeze(['wanderer','collector','salvager','jester','pure']);
@@ -702,12 +717,13 @@ const ROGUELIKE_ENCOUNTER_PROFILES=Object.freeze({
  'neon-arc':Object.freeze({names:Object.freeze(['송출 안내원','회선 중계원','합방 조율사']),bossName:'앙코르 디렉터',charId:'wanderer',fieldId:'F4',bossFieldId:'F1',joker:'J1',bossJoker:'J2',hint:'회수와 패순환으로 세트·런을 이어갑니다.',slots:Object.freeze('S3 S4 S5 S6 S7 S8 H2 H3 H4 H5 H6 H7 H8 H9 H10 D2 D3 D4 D5 D6 D7 D8 C7 C8 C9 C10 CJ CQ CK'.split(' ')),named:Object.freeze(['VSH5','H2','D2','D8','H10','C10','VSD4','H3','C8','H8','VSCK','CJ'])}),
  'red-zone':Object.freeze({names:Object.freeze(['전방 관측병','돌입 사수','표적 추적자']),bossName:'교전 지휘관',charId:'wanderer',fieldId:'F2',bossFieldId:'F10',joker:'J1',bossJoker:'J5',hint:'표적을 만들고 상대 공개 조합에 붙여 압박합니다.',slots:Object.freeze('S5 S6 S7 S8 S9 S10 SJ SQ SK H4 H5 H6 H7 H8 H9 D4 D5 D6 D7 D8 D9 D10 DJ CA C2 C3 C4 C5 C6'.split(' ')),named:Object.freeze(['ZSCA','ZSC2','S5','S7B','C5B','PBH7','ZSD6','H8','PBDJ','S8','ZSSK','S6'])}),
  'iron-grave':Object.freeze({names:Object.freeze(['부품 수거원','폐기물 정비사','재조립 기사']),bossName:'고철 감독관',charId:'collector',fieldId:'F6',bossFieldId:'F7',joker:'J4',bossJoker:'J3',hint:'회수·소모패 재활용과 보호막으로 조합을 유지합니다.',slots:Object.freeze('S3 S4 S5 S6 H2 H3 H4 H5 H6 H7 H8 H9 D3 D4 D5 D6 D7 D8 D9 D10 DJ C4 C5 C6 C7 C8 C9 C10 CJ'.split(' ')),named:Object.freeze(['H4B','C5','D9','D8','H8','H9','C6','C8','H2','C4','CJ','DJ'])}),
- 'old-quarter':Object.freeze({names:Object.freeze(['골목 중개인','암시장 감정인','계약 추심원']),bossName:'암시장 집행관',charId:'salvager',fieldId:'F3',bossFieldId:'F8',joker:'J1',bossJoker:'J5',hint:'버림패 거래와 상대 조합 간섭으로 이득을 쌓습니다.',slots:Object.freeze('S3 S4 S5 S6 S7 S8 S9 H2 H3 H4 H7 H8 H9 D2 D3 D4 D5 D6 D7 D8 D9 D10 DJ DQ C3 C4 C5 C6 C7'.split(' ')),named:Object.freeze(['S3','S4','H3','D3','D7','D4','S8','D10','DJ','DQ','C7','D6'])})
+ 'old-quarter':Object.freeze({names:Object.freeze(['골목 중개인','암시장 감정인','계약 추심원']),bossName:'암시장 집행관',charId:'salvager',fieldId:'F3',bossFieldId:'F8',joker:'J1',bossJoker:'J5',hint:'버림패 거래와 상대 조합 간섭으로 이득을 쌓습니다.',slots:Object.freeze('S3 S4 S5 S6 S7 S8 S9 H2 H3 H4 H7 H8 H9 D2 D3 D4 D5 D6 D7 D8 D9 D10 DJ DQ C3 C4 C5 C6 C7'.split(' ')),named:Object.freeze(['S3','S4','H3','D3','D7','D4','S8','D10','DJ','DQ','C7','D6'])}),
+ 'null-ward':Object.freeze({names:Object.freeze(['격리 감시자','기록 말소자']),bossName:'공백 관리자',charId:'jester',fieldId:'F5',bossFieldId:'F9',joker:'J4',bossJoker:'J5',hint:'숫자·무늬 판정 변형과 효과 복제를 엮고, 상대 조합을 봉인·절단합니다.',slots:Object.freeze('SA S2 S3 S4 S5 S6 S7 H3 H4 H5 H6 H7 H8 HQ D3 D4 D5 D6 D7 D8 C2 C3 C4 C5 C6 C7 C8 C9 CQ'.split(' ')),namedCounts:Object.freeze([12,14,16]),named:Object.freeze(['D5','C3','C4','CQ','H8','C2','C8','D4','C7','S5','C9','H4','S2','D8','C5','S6'])})
 });
 function roguelikeEncounterForNode(node){
  const profile=node?.zone&&ROGUELIKE_ENCOUNTER_PROFILES[node.zone];if(!profile)return null;
- const routeNode=roguelikeRegionRoute([node.zone]).find(n=>n.id===node.id&&n.kind===node.kind);if(!routeNode)return null;
- const boss=routeNode.kind==='boss',count=[6,8,10,12][routeNode.stage-1],fieldId=boss?profile.bossFieldId:profile.fieldId;
+ const routeNode=(node.zone===ROGUELIKE_ENDGAME.id?roguelikeEndgameRoute():roguelikeRegionRoute([node.zone])).find(n=>n.id===node.id&&n.kind===node.kind);if(!routeNode)return null;
+ const boss=routeNode.kind==='boss'||routeNode.kind==='final-boss',count=(profile.namedCounts||[6,8,10,12])[routeNode.stage-1],fieldId=boss?profile.bossFieldId:profile.fieldId;
  if(!count||!FIELDS[fieldId])return null;
  return{id:`${routeNode.id}:encounter-v1`,nodeId:routeNode.id,kind:routeNode.kind,name:boss?profile.bossName:profile.names[routeNode.stage-1],charId:profile.charId,hint:profile.hint,slots:[...profile.slots],namedIds:profile.named.slice(0,count),jokerId:boss?profile.bossJoker:profile.joker,field:{id:fieldId,...FIELDS[fieldId]}}
 }
@@ -720,7 +736,7 @@ function makeRoguelikeEncounterDeck(encounter){
 }
 function roguelikeEncounterPreview(node){
  const encounter=roguelikeEncounterForNode(node);if(!encounter)return'';
- return`<br><b>${encounter.kind==='boss'?'중간 보스':'다음 상대'} · ${encounter.name}</b> · 30장 / 네임드 ${encounter.namedIds.length+1}장<br>${encounter.hint}<br>공용 필드 · ${encounter.field.name}: ${encounter.field.desc}`
+ return`<br><b>${encounter.kind==='final-boss'?'최종 보스':encounter.kind==='boss'?'중간 보스':'다음 상대'} · ${encounter.name}</b> · 30장 / 네임드 ${encounter.namedIds.length+1}장<br>${encounter.hint}<br>공용 필드 · ${encounter.field.name}: ${encounter.field.desc}`
 }
 function roguelikeStarterLoadout(id){const key=normalizeRoguelikeStarterId(id),base=ROGUELIKE_STARTER_LOADOUTS[key]||ROGUELIKE_STARTER_LOADOUTS.wanderer;return{regular:{...(base.regular||{})},joker:base.joker||null}}
 function roguelikeStarterLoadoutSummary(id){const key=normalizeRoguelikeStarterId(id);if(key==='pure')return'순수 정규 29 + 기본 와일드 조커';const loadout=roguelikeStarterLoadout(key),regular=Object.values(loadout.regular).map(cardId=>NAMED[cardId]?.n||cardId),joker=NAMED[loadout.joker]?.n||loadout.joker;return`${regular.join(' · ')} · ${joker}`}
@@ -750,7 +766,7 @@ function roguelikeBattleDeckFingerprint(draft){const clean=normalizeRoguelikeRun
 function createRoguelikeRewardNodes(baseRevision=0){return{version:1,baseRevision,entries:[]}}
 function roguelikeRunDeckSignature(deck){return deck.cards.map(c=>`${c.slot}=${c.variantId||'PURE'}`).join('|')}
 function roguelikeRewardNodeId(runId,sequence){return`${runId}:reward:${sequence}`}
-function normalizeRoguelikeRewardNodes(rewards,runDeck,runId,regionPath=[]){
+function normalizeRoguelikeRewardNodes(rewards,runDeck,runId,regionPath=[],includeEndgame=true){
  if(!rewards||rewards.version!==1||!Number.isSafeInteger(rewards.baseRevision)||rewards.baseRevision<0||rewards.baseRevision>runDeck.revision||!Array.isArray(rewards.entries))return null;
  const entries=[];let revision=rewards.baseRevision,battleIndex=0;
  for(let i=0;i<rewards.entries.length;i++){
@@ -758,8 +774,10 @@ function normalizeRoguelikeRewardNodes(rewards,runDeck,runId,regionPath=[]){
   if(!raw||raw.sequence!==sequence||raw.id!==roguelikeRewardNodeId(runId,sequence)||!['prototype','battle'].includes(source)||(!regional&&raw.algorithm!==ROGUELIKE_REWARD_ALGORITHM)||raw.revision!==revision||typeof raw.deckSignature!=='string'||!['pending','claimed','skipped'].includes(raw.status)||!Array.isArray(raw.picks)||raw.picks.length>ROGUELIKE_REWARD_ROLES.length)return null;
   if((regional&&(source!=='battle'||typeof raw.regionId!=='string'))||(!regional&&raw.regionId!==undefined))return null;
   if(source==='battle'){
-   const routeNode=ROGUELIKE_COMMON_START_ROUTE[battleIndex]||(regionPath.length?roguelikeRegionRoute(regionPath)[battleIndex-ROGUELIKE_COMMON_START_ROUTE.length]:null);
+   const routeNode=roguelikeRunRoute(regionPath,includeEndgame)[battleIndex];
    if(!routeNode||raw.battleIndex!==battleIndex||raw.battleNodeId!==routeNode.id)return null;
+   if(routeNode.kind==='final-boss'&&i!==rewards.entries.length-1)return null;
+   if(routeNode.zone===ROGUELIKE_ENDGAME.id&&!regional)return null;
    if(regional&&raw.regionId!==routeNode.zone)return null;
    battleIndex++
   }else if(raw.battleIndex!==undefined||raw.battleNodeId!==undefined)return null;
@@ -794,18 +812,18 @@ function roguelikePendingRewardNode(draft){
  return node?.status==='pending'?node:null
 }
 function roguelikeBattleProgress(draft=loadRoguelikeRunDraft()){
- const regionPath=draft?.regionPath||[],battleEntries=draft?.rewardNodes?.entries?.filter(n=>n.source==='battle')||[],completed=battleEntries.length,route=[...ROGUELIKE_COMMON_START_ROUTE,...(regionPath.length?roguelikeRegionRoute(regionPath):[])],current=route[completed]||null,pending=roguelikePendingRewardNode(draft);
- return{zone:current?.zone||regionPath.at(-1)||ROGUELIKE_COMMON_START_ZONE,completed,total:route.length,current,pending,finished:!current,awaitingRegion:!!draft&&!current&&!pending&&regionPath.length<ROGUELIKE_ROUTE_LIMITS.regionVisits,battleEntries}
+ const regionPath=draft?.regionPath||[],battleEntries=draft?.rewardNodes?.entries?.filter(n=>n.source==='battle')||[],completed=battleEntries.length,route=roguelikeRunRoute(regionPath),current=route[completed]||null,pending=roguelikePendingRewardNode(draft),position=pending?.source==='battle'?route[completed-1]:current;
+ return{zone:position?.zone||route.at(-1)?.zone||ROGUELIKE_COMMON_START_ZONE,completed,total:route.length,current,pending,finished:!current,awaitingRegion:!!draft&&!current&&!pending&&regionPath.length<ROGUELIKE_ROUTE_LIMITS.regionVisits,battleEntries}
 }
 function roguelikeCurrentBattleNodeRequest(draft=loadRoguelikeRunDraft()){
- if(!draft||roguelikePendingRewardNode(draft))return null;
+ if(!draft||draft.status==='completed'||roguelikePendingRewardNode(draft))return null;
  const progress=roguelikeBattleProgress(draft),next=roguelikeNextRewardNodeRequest(draft);
  if(!progress.current||!next)return null;
  return{...next,battleIndex:progress.completed,battleNodeId:progress.current.id,zone:progress.zone}
 }
 
 function roguelikeNextRewardNodeRequest(draft){
- if(!draft||roguelikePendingRewardNode(draft))return null;
+ if(!draft||draft.status==='completed'||roguelikePendingRewardNode(draft))return null;
  return{runId:draft.runId,sequence:draft.rewardNodes.entries.length+1,revision:draft.runDeck.revision,deckSignature:roguelikeRunDeckSignature(draft.runDeck)}
 }
 function roguelikeIssueRewardNode(request){
@@ -825,7 +843,7 @@ function roguelikeCompleteBattleNode(request){
  const draft=loadRoguelikeRunDraft();
  if(!draft||!request||request.runId!==draft.runId||!Number.isSafeInteger(request.sequence)||!Number.isSafeInteger(request.battleIndex)||typeof request.battleNodeId!=='string')return null;
  const existing=draft.rewardNodes.entries.find(n=>n.source==='battle'&&n.battleNodeId===request.battleNodeId);
- if(existing){const zone=ROGUELIKE_COMMON_START_ROUTE[existing.battleIndex]?ROGUELIKE_COMMON_START_ZONE:roguelikeRegionRoute(draft.regionPath)[existing.battleIndex-ROGUELIKE_COMMON_START_ROUTE.length]?.zone;return existing.sequence===request.sequence&&existing.battleIndex===request.battleIndex&&existing.revision===request.revision&&existing.deckSignature===request.deckSignature&&request.zone===zone?existing:null}
+ if(existing){const zone=roguelikeRunRoute(draft.regionPath)[existing.battleIndex]?.zone||ROGUELIKE_COMMON_START_ZONE;return existing.sequence===request.sequence&&existing.battleIndex===request.battleIndex&&existing.revision===request.revision&&existing.deckSignature===request.deckSignature&&request.zone===zone?existing:null}
  const next=roguelikeCurrentBattleNodeRequest(draft);
  if(!next||request.sequence!==next.sequence||request.revision!==next.revision||request.deckSignature!==next.deckSignature||request.battleIndex!==next.battleIndex||request.battleNodeId!==next.battleNodeId||request.zone!==next.zone)return null;
  const profile=roguelikeRunDeckProfile(draft),id=roguelikeRewardNodeId(draft.runId,request.sequence);
@@ -839,6 +857,7 @@ function roguelikeSkipRewardNode(request){
  const draft=loadRoguelikeRunDraft(),node=roguelikePendingRewardNode(draft);
  if(!node||!request||request.runId!==draft.runId||request.nodeId!==node.id||request.revision!==node.revision||request.revision!==draft.runDeck.revision||request.deckSignature!==node.deckSignature)return false;
  node.status='skipped';
+ roguelikeFinalizeRunDraft(draft);
  return saveRoguelikeRunDraft(draft)
 }
 function roguelikeApplyRunReplacement(plan){
@@ -850,34 +869,53 @@ function roguelikeApplyRunReplacement(plan){
  if(card.variantId!==pick.fromVariant)return false;
  card.variantId=pick.id;card.pure=false;draft.runDeck.revision++;
  node.status='claimed';node.selectedId=pick.id;
+ roguelikeFinalizeRunDraft(draft);
  // Deck mutation and the one-time receipt commit together under the isolated run key.
  return saveRoguelikeRunDraft(draft)
 }
-function createRoguelikeRunDraft(starterId=progress?.roguelikeStarter||'wanderer'){let id=normalizeRoguelikeStarterId(starterId);if(!roguelikeStarterUnlocked(id))id='wanderer';const profile=roguelikeStarterProfile(id);return{version:7,rewardNodes:createRoguelikeRewardNodes(),runDeck:createRoguelikeRunDeck(id),mode:'roguelike-prototype',status:'prepared',runId:`rg-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,starterId:id,characterId:id==='pure'?null:id,pureStart:id==='pure',startZone:ROGUELIKE_COMMON_START_ZONE,currentZone:ROGUELIKE_COMMON_START_ZONE,regionPath:[],nodeIndex:0,themeLocks:[],allowCrossThemeRewards:true,deckPlan:roguelikeStarterDeckPlan(id),passivePlan:{status:'locked-v1',id:'none',directCombat:false},rewardPlan:{status:'ranking-weights-v1',probabilityStatus:'unresolved',candidateAlgorithm:ROGUELIKE_REWARD_ALGORITHM,roles:ROGUELIKE_REWARD_ROLES.map(x=>x.id),weightingMode:'character-tendency-score-v1',hardLock:false,tendencyHints:{...profile.tendencyHints}},createdAt:new Date().toISOString()}}
+function roguelikeFinalizeRunDraft(draft){
+ const node=draft.rewardNodes.entries.at(-1);
+ if(draft.status==='prepared'&&node?.source==='battle'&&node.battleNodeId===ROGUELIKE_ENDGAME.nodes.at(-1).id&&node.status!=='pending'){
+  draft.status='completed';draft.completedAt=new Date().toISOString()
+ }
+}
+function createRoguelikeRunDraft(starterId=progress?.roguelikeStarter||'wanderer'){let id=normalizeRoguelikeStarterId(starterId);if(!roguelikeStarterUnlocked(id))id='wanderer';const profile=roguelikeStarterProfile(id);return{version:8,rewardNodes:createRoguelikeRewardNodes(),runDeck:createRoguelikeRunDeck(id),mode:'roguelike-prototype',status:'prepared',completedAt:null,runId:`rg-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,starterId:id,characterId:id==='pure'?null:id,pureStart:id==='pure',startZone:ROGUELIKE_COMMON_START_ZONE,currentZone:ROGUELIKE_COMMON_START_ZONE,regionPath:[],nodeIndex:0,themeLocks:[],allowCrossThemeRewards:true,deckPlan:roguelikeStarterDeckPlan(id),passivePlan:{status:'locked-v1',id:'none',directCombat:false},rewardPlan:{status:'ranking-weights-v1',probabilityStatus:'unresolved',candidateAlgorithm:ROGUELIKE_REWARD_ALGORITHM,roles:ROGUELIKE_REWARD_ROLES.map(x=>x.id),weightingMode:'character-tendency-score-v1',hardLock:false,tendencyHints:{...profile.tendencyHints}},createdAt:new Date().toISOString()}}
 function normalizeRoguelikeRunDraft(x){
- if(!x||typeof x!=='object'||x.mode!=='roguelike-prototype'||x.status!=='prepared'||!Number.isInteger(x.version)||x.version<1||x.version>7)return null;
+ if(!x||typeof x!=='object'||x.mode!=='roguelike-prototype'||!Number.isInteger(x.version)||x.version<1||x.version>8||!['prepared','completed'].includes(x.status)||(x.version<8&&x.status!=='prepared'))return null;
  const base=createRoguelikeRunDraft(x.starterId),savedId=normalizeRoguelikeStarterId(x.starterId),runId=typeof x.runId==='string'&&x.runId?x.runId:base.runId,createdAt=typeof x.createdAt==='string'&&x.createdAt?x.createdAt:base.createdAt;
  base.starterId=savedId;base.characterId=savedId==='pure'?null:savedId;base.pureStart=savedId==='pure';base.deckPlan=roguelikeStarterDeckPlan(savedId);base.rewardPlan.tendencyHints={...roguelikeStarterProfile(savedId).tendencyHints};
  const runDeck=x.version<4?createRoguelikeRunDeck(savedId):normalizeRoguelikeRunDeck(x.runDeck,x.starterId);if(!runDeck)return null;
  const regionPath=x.version<6?[]:x.regionPath,maxVisits=x.version<7?1:ROGUELIKE_ROUTE_LIMITS.regionVisits;
  if(!Array.isArray(regionPath)||regionPath.length>maxVisits||new Set(regionPath).size!==regionPath.length||regionPath.some(id=>!ROGUELIKE_REGIONS.some(r=>r.id===id)))return null;
- const rewardNodes=x.version<5?createRoguelikeRewardNodes(runDeck.revision):normalizeRoguelikeRewardNodes(x.rewardNodes,runDeck,runId,regionPath);if(!rewardNodes)return null;
+ const rewardNodes=x.version<5?createRoguelikeRewardNodes(runDeck.revision):normalizeRoguelikeRewardNodes(x.rewardNodes,runDeck,runId,regionPath,x.version>=8);if(!rewardNodes)return null;
  const battles=rewardNodes.entries.filter(n=>n.source==='battle');
  for(let visit=0;visit<regionPath.length;visit++){
   const gate=ROGUELIKE_COMMON_START_ROUTE.length+roguelikeRegionRoute(regionPath.slice(0,visit)).length;
   if(battles.length<gate||battles.slice(0,gate).some(n=>n.status==='pending'))return null;
  }
- return{...base,starterId:savedId,runDeck,rewardNodes,runId,createdAt,themeLocks:[],regionPath:[...regionPath],nodeIndex:battles.length,currentZone:regionPath.at(-1)||ROGUELIKE_COMMON_START_ZONE}
+ const last=rewardNodes.entries.at(-1),completed=last?.source==='battle'&&last.battleNodeId===ROGUELIKE_ENDGAME.nodes.at(-1).id&&last.status!=='pending',completedAt=x.version<8?null:x.completedAt;
+ if((x.status==='completed')!==!!completed)return null;
+ if(completed){if(typeof completedAt!=='string'||!Number.isFinite(Date.parse(completedAt))||new Date(completedAt).toISOString()!==completedAt)return null}
+ else if(completedAt!==null)return null;
+ const position=roguelikeBattleProgress({regionPath,rewardNodes});
+ return{...base,status:x.status,completedAt,starterId:savedId,runDeck,rewardNodes,runId,createdAt,themeLocks:[],regionPath:[...regionPath],nodeIndex:battles.length,currentZone:position.zone}
 }
 function loadRoguelikeRunDraft(){if(typeof localStorage==='undefined')return null;try{return normalizeRoguelikeRunDraft(JSON.parse(localStorage.getItem(ROGUELIKE_RUN_DRAFT_KEY)||'null'))}catch{return null}}
 function saveRoguelikeRunDraft(draft){if(typeof localStorage==='undefined')return false;const clean=normalizeRoguelikeRunDraft(draft);if(!clean)return false;try{localStorage.setItem(ROGUELIKE_RUN_DRAFT_KEY,JSON.stringify(clean));return true}catch{return false}}
 function clearRoguelikeRunDraft(){if(typeof localStorage==='undefined')return false;try{localStorage.removeItem(ROGUELIKE_RUN_DRAFT_KEY);return true}catch{return false}}
 function prepareRoguelikeRunDraft(starterId=progress?.roguelikeStarter||'wanderer'){const draft=createRoguelikeRunDraft(starterId);return saveRoguelikeRunDraft(draft)?draft:null}
+function roguelikeRunCompletionText(draft){
+ if(draft?.status!=='completed')return'';
+ const profile=roguelikeStarterProfile(draft.starterId),entries=draft.rewardNodes.entries,battles=entries.filter(n=>n.source==='battle'),named=draft.runDeck.cards.filter(c=>c.variantId).length,path=['공통 시작',...draft.regionPath.map(id=>roguelikeRegionRewardProfile(id).name),ROGUELIKE_ENDGAME.name].join(' → '),claimed=entries.filter(n=>n.status==='claimed').length,skipped=entries.filter(n=>n.status==='skipped').length;
+ return`<b class="cyan">런 완료 · 널워드 돌파</b><br>${profile.name} · ${battles.length}전투 승리 · 최종 보스 공백 관리자 격파<br>진행 경로 · ${path}<br>최종 덱 · ${draft.runDeck.cards.length}장 · 순수 ${draft.runDeck.cards.length-named}장 / 네임드 ${named}장 · 교체 ${draft.runDeck.revision}회<br>보상 수령 ${claimed}회 · 건너뜀 ${skipped}회<br>완료 시각 · ${new Date(draft.completedAt).toLocaleString('ko-KR')}<br>완료 기록과 최종 덱을 저장했습니다. 최종 덱으로 실험전을 하거나 스타터를 선택해 새 런을 시작할 수 있습니다.`
+}
 function roguelikeRunDraftText(draft=loadRoguelikeRunDraft()){
  if(!draft)return'런 덱 없음 · 스타터를 고른 뒤 새 런 덱을 만드세요.';
+ if(draft.status==='completed')return roguelikeRunCompletionText(draft);
  const profile=roguelikeStarterProfile(draft.starterId),deck=draft.pureStart?'30장 · 순수 정규 29 + 기본 와일드 조커 1 · 효과 0':'30장 · 순수 23 + 네임드 정규 6 + 네임드 조커 1',loadout=roguelikeStarterLoadoutSummary(draft.starterId),route=roguelikeBattleProgress(draft),pending=route.pending;
- const routeText=pending?`런 실전 ${route.completed}/${route.total} · ${pending.source==='battle'?'전투 보상':'테스트 보상'} 선택 대기`:route.finished?(route.awaitingRegion?(draft.regionPath.length?'중간 보스 격파 · 다음 지역을 선택하세요':'공통 시작 완료 · 다음 지역을 선택하세요'):`두 지역 완료 · 런 실전 ${route.total}/${route.total} · 후반 특수구역 준비 중`):`런 실전 ${route.completed}/${route.total} · 다음 ${route.current.label}`;
- const pathText=['공통 시작',...draft.regionPath.map(id=>roguelikeRegionRewardProfile(id).name)].join(' → ');
+ const finalReward=pending?.battleNodeId===ROGUELIKE_ENDGAME.nodes.at(-1).id;
+ const routeText=pending?(finalReward?'최종 보스 격파 · 마지막 보상 수령 또는 건너뛰기 후 런 완료':`런 실전 ${route.completed}/${route.total} · ${pending.source==='battle'?'전투 보상':'테스트 보상'} 선택 대기`):route.finished?(draft.regionPath.length?'중간 보스 격파 · 다음 지역을 선택하세요':'공통 시작 완료 · 다음 지역을 선택하세요'):`런 실전 ${route.completed}/${route.total} · 다음 ${route.current.label}`;
+ const pathText=['공통 시작',...draft.regionPath.map(id=>roguelikeRegionRewardProfile(id).name),...(draft.currentZone===ROGUELIKE_ENDGAME.id?[ROGUELIKE_ENDGAME.name]:[])].join(' → ');
  return`<b>${profile.name}</b> · 출발: 공통 시작 구역 · 시작 ${deck}<br>현재 런 덱 · ${draft.runDeck.cards.length}장 · 네임드 ${draft.runDeck.cards.filter(c=>c.variantId).length}장 · 교체 ${draft.runDeck.revision}회<br>진행 경로 · ${pathText}<br>${routeText}${route.current?.zone?roguelikeEncounterPreview(route.current):''}<br>시작 구성 · ${loadout}<br>카드군 하드 잠금 없음 · 직접 전투 패시브 없음 · 보상 후보 소프트 가중치 · 실제 보상 확률 미확정 · 별도 런 덱 실험전 사용 가능`
 }
 const ROGUELIKE_REWARD_ROLES=Object.freeze([{id:'reinforce',label:'현재 강화'},{id:'branch',label:'새 방향'},{id:'foundation',label:'기반 보강'}]);
@@ -900,6 +938,7 @@ function roguelikeRewardCandidates(input={}){
 }
 function roguelikeRewardPreviewText(draft=loadRoguelikeRunDraft()){
  if(!draft)return'<span class="unlockChip">런 덱을 만든 뒤 테스트 보상 노드를 발급하세요.</span>';
+ if(draft.status==='completed')return'<span class="unlockChip">런 완료 · 마지막 보상 처리와 최종 덱 저장 완료</span>';
  const entries=draft.rewardNodes.entries,node=entries[entries.length-1],done=entries.filter(n=>n.status!=='pending');
  const summary=`<span class="unlockChip">발급 ${entries.length}회 · 수령 ${done.filter(n=>n.status==='claimed').length}회 · 건너뜀 ${done.filter(n=>n.status==='skipped').length}회</span>`;
  const history=done.slice(-5).map(n=>`<span class="unlockChip">#${n.sequence} ${n.status==='claimed'?`수령 · ${NAMED[n.selectedId].n}`:'건너뜀'} · ${n.source==='battle'?'실전':'테스트'}</span>`).join('');
@@ -955,7 +994,7 @@ function renderRoguelikeRewardPanel(draft=loadRoguelikeRunDraft()){
  renderRoguelikeReplacementPreview(null);
  if(issue){
   issue.disabled=!request;
-  issue.textContent=node?'현재 보상 먼저 처리':draft?.rewardNodes.entries.length?'다음 테스트 보상 노드 발급':'테스트 보상 노드 발급';
+  issue.textContent=draft?.status==='completed'?'완료된 런 · 보상 발급 종료':node?'현재 보상 먼저 처리':draft?.rewardNodes.entries.length?'다음 테스트 보상 노드 발급':'테스트 보상 노드 발급';
   issue.onclick=()=>{
    const issued=roguelikeIssueRewardNode(request);renderRoguelikeStarterPicker();
    if(!issued&&notice)notice.textContent='보상 노드를 저장하지 못했습니다. 런 상태와 저장 공간을 확인한 뒤 다시 발급하세요.'
@@ -980,9 +1019,9 @@ function renderRoguelikeStarterPicker(){
  let selected=normalizeRoguelikeStarterId(progress.roguelikeStarter);if(!roguelikeStarterUnlocked(selected))selected='wanderer';progress.roguelikeStarter=selected;
  grid.innerHTML=ROGUELIKE_STARTER_IDS.map(id=>{const p=roguelikeStarterProfile(id),open=roguelikeStarterUnlocked(id),on=id===selected,meta=p.pure?'효과카드 0장 시작 · 이후 네임드 획득 가능':`출발 성향 · ${p.short}`;return`<div class="charCard ${on?'selected':''} ${open?'':'locked'}"><div class="charName">${p.name} ${open?'':'🔒'}</div><div class="charMeta">${meta}${open?'':' · 현재 진행도에서 잠김'}</div><div class="charPassive">${p.desc}<br><b>런 원칙:</b> 다른 카드군 획득을 막지 않음</div><button class="pixelBtn ${on?'primary':''}" data-roguelike-starter="${id}" ${open?'':'disabled'}>${on?'선택됨':'선택'}</button></div>`}).join('');
  grid.querySelectorAll('[data-roguelike-starter]').forEach(b=>b.onclick=()=>{const id=b.dataset.roguelikeStarter;if(!roguelikeStarterUnlocked(id))return;progress.roguelikeStarter=id;saveProgress();renderRoguelikeStarterPicker()});
- const draft=loadRoguelikeRunDraft(),route=typeof roguelikeBattleProgress==='function'?roguelikeBattleProgress(draft):{completed:0,total:3,current:{label:'공통 시작 · 첫 교전'},pending:null,finished:false},nodeRequest=typeof roguelikeCurrentBattleNodeRequest==='function'?roguelikeCurrentBattleNodeRequest(draft):null;if(prepare)prepare.textContent=draft?'새 런 덱으로 초기화':'런 덱 만들기';if(clear)clear.disabled=!draft;
- if(battle){battle.disabled=!draft;battle.onclick=()=>{if(!startRoguelikeBattle()){renderRoguelikeStarterPicker();if(status)status.textContent='런 덱을 불러오지 못했습니다. 새 런 덱을 만들어 주세요.'}}}
- if(nodeBattle){nodeBattle.disabled=!nodeRequest;nodeBattle.textContent=!draft?'실전 노드 전투 · 런 덱 필요':route.pending?'보상 처리 후 다음 실전':route.finished?(route.awaitingRegion?'다음 지역 선택 대기':'두 지역 완료 · 후반 구역 준비 중'):`${route.current.label} 시작`;nodeBattle.onclick=()=>{if(!startRoguelikeNodeBattle()){renderRoguelikeStarterPicker();if(status)status.textContent=route.pending?'현재 보상을 수령하거나 건너뛴 뒤 다음 실전에 도전하세요.':route.finished?'현재 구역을 완료했습니다. 지역 선택 또는 완료 안내를 확인하세요.':'실전 노드를 시작하지 못했습니다. 런 상태를 다시 확인하세요.'}}}
+ const draft=loadRoguelikeRunDraft(),route=typeof roguelikeBattleProgress==='function'?roguelikeBattleProgress(draft):{completed:0,total:3,current:{label:'공통 시작 · 첫 교전'},pending:null,finished:false},nodeRequest=typeof roguelikeCurrentBattleNodeRequest==='function'?roguelikeCurrentBattleNodeRequest(draft):null;if(prepare)prepare.textContent=draft?(draft.status==='completed'?'새 런 시작':'새 런 덱으로 초기화'):'런 덱 만들기';if(clear)clear.disabled=!draft;
+ if(battle){battle.disabled=!draft;battle.textContent=draft?.status==='completed'?'최종 덱 실험전 시작':'런 덱 실험전 시작';battle.onclick=()=>{if(!startRoguelikeBattle()){renderRoguelikeStarterPicker();if(status)status.textContent='런 덱을 불러오지 못했습니다. 새 런 덱을 만들어 주세요.'}}}
+ if(nodeBattle){nodeBattle.disabled=!nodeRequest;nodeBattle.textContent=!draft?'실전 노드 전투 · 런 덱 필요':draft.status==='completed'?'런 완료':route.pending?(route.pending.battleNodeId===ROGUELIKE_ENDGAME.nodes.at(-1).id?'마지막 보상 처리 후 런 완료':'보상 처리 후 다음 실전'):route.finished?'다음 지역 선택 대기':`${route.current.label} 시작`;nodeBattle.onclick=()=>{if(!startRoguelikeNodeBattle()){renderRoguelikeStarterPicker();if(status)status.textContent=draft?.status==='completed'?'완료된 런입니다. 최종 덱으로 실험하거나 새 런을 시작하세요.':route.pending?'현재 보상을 수령하거나 건너뛴 뒤 다음 실전에 도전하세요.':route.finished?'현재 구역을 완료했습니다. 지역 선택 또는 완료 안내를 확인하세요.':'실전 노드를 시작하지 못했습니다. 런 상태를 다시 확인하세요.'}}}
  if(typeof renderRoguelikeRegionPicker==='function')renderRoguelikeRegionPicker(draft);if(status)status.innerHTML=roguelikeRunDraftText(draft);if(prepare)prepare.onclick=()=>{const saved=prepareRoguelikeRunDraft(progress.roguelikeStarter);renderRoguelikeStarterPicker();if(!saved&&status)status.textContent='런 덱을 저장하지 못했습니다. 저장 공간을 확인하세요.'};if(clear)clear.onclick=()=>{clearRoguelikeRunDraft();renderRoguelikeStarterPicker()};renderRoguelikeRewardPanel(draft)
 }
 const TENDENCY_BY_TAG={
@@ -1230,7 +1269,7 @@ function setupRoguelikeBattle(draft,options={}){
  const profile=roguelikeStarterProfile(clean.starterId),named=clean.runDeck.cards.filter(c=>c.variantId).length;
  if(progression){const routeNode=roguelikeBattleProgress(clean).current;log(`로그라이크 실전 노드 · ${routeNode.label} · ${profile.name} · 런 덱 ${clean.runDeck.cards.length}장 · 네임드 ${named}장 · 교체 ${clean.runDeck.revision}회.`,'important');log('승리하면 이 전투 자격과 현재 런 덱 지문을 검증해 보상 노드 1개를 즉시 고정 발급합니다. 패배·무승부는 노드를 소비하지 않으며 일반 클리어·레벨·해금·M12 표본에는 반영되지 않습니다.','important')}
  else{log(`로그라이크 덱 실험전 · ${profile.name} · 런 덱 ${clean.runDeck.cards.length}장 · 네임드 ${named}장 · 교체 ${clean.runDeck.revision}회.`,'important');log('전투는 런 덱의 독립 복제본을 사용합니다. 카드 상태·승패·클리어·해금·M12 표본은 저장되지 않습니다.','important')}
- if(encounter){log(`${encounter.kind==='boss'?'중간 보스':'상대'} [${encounter.name}] · ${encounter.hint} · 30장 / 네임드 ${encounter.namedIds.length+1}장.`,'important');log(`공용 필드 [${encounter.field.name}] · ${encounter.field.desc}`,'important')}
+ if(encounter){log(`${encounter.kind==='final-boss'?'최종 보스':encounter.kind==='boss'?'중간 보스':'상대'} [${encounter.name}] · ${encounter.hint} · 30장 / 네임드 ${encounter.namedIds.length+1}장.`,'important');log(`공용 필드 [${encounter.field.name}] · ${encounter.field.desc}`,'important')}
  render();return true
 }
 function startRoguelikeBattle(){
@@ -1266,7 +1305,7 @@ function renderPracticeCoach(){
  const badge=box.querySelector('.badge'),meta=box.querySelector('.practiceCoachHead b'),run=state.sessionMode==='roguelike',nodeRun=run&&state.roguelikeProgressionBattle;
  if(state.sessionMode!=='practice'&&!run){box.hidden=true;return}box.hidden=false;
  if(badge)badge.textContent=nodeRun?'로그라이크 실전 노드':run?'로그라이크 덱 실험전':'자유 연습전';if(meta)meta.textContent=nodeRun?'승리 시 런 보상 · 일반 진행도/M12 제외':run?'런 덱·진행도·M12 표본 변경 없음':'승패·해금 기록 없음';
- if(nodeRun&&state.roguelikeEncounter){const e=state.roguelikeEncounter;if(badge)badge.textContent=e.kind==='boss'?'중간 보스':'지역 교전';if(meta)meta.textContent=e.name;txt.textContent=state.gameOver?`${e.name} 전투 종료 · 결과창에서 보상 또는 재도전을 확인하세요.`:`${e.hint} 공용 필드: ${e.field.name}. 승리하면 지역 보상을 받고, 패배·무승부는 같은 상대에게 재도전합니다.`;return}
+ if(nodeRun&&state.roguelikeEncounter){const e=state.roguelikeEncounter;if(badge)badge.textContent=e.kind==='final-boss'?'최종 보스':e.kind==='boss'?'중간 보스':'지역 교전';if(meta)meta.textContent=e.name;txt.textContent=state.gameOver?`${e.name} 전투 종료 · 결과창에서 보상 또는 재도전을 확인하세요.`:`${e.hint} 공용 필드: ${e.field.name}. 승리하면 지역 보상을 받고, 패배·무승부는 같은 상대에게 재도전합니다.`;return}
  if(run){const p=roguelikeStarterProfile(state.roguelikeStarterId),route=roguelikeBattleNodeForRequest(state.roguelikeBattleNodeRequest);txt.textContent=nodeRun?(state.gameOver?`${route?.label||'실전 노드'} 종료 · 승리만 검증된 보상 영수증으로 저장됩니다.`:`${p.name} · ${route?.label||'실전 노드'} · 저장 revision ${state.roguelikeRunRevision}의 독립 전투 복제본입니다. 승리 시에만 현재 전투 자격을 검증합니다.`):(state.gameOver?`${p.name} 실험전 종료 · 현재 런 덱은 전투 전 상태 그대로 유지됩니다.`:`${p.name} · 저장 revision ${state.roguelikeRunRevision}의 독립 복제본으로 전투 중입니다. 카드의 위치·상태·효과 마커는 저장 덱으로 돌아가지 않습니다.`);return}
  if(state.gameOver)txt.textContent='연습전 종료 · 결과는 진행도에 반영되지 않습니다.';else if(state.turnNo===1&&state.turn==='player')txt.textContent='첫 손패에는 3♠·3♥·3♦ 세트와 4♣·5♣·6♣ 런 재료가 있습니다. 원하는 쪽부터 만들어 보세요.';else if(state.switchTarget==='player'&&state.switchPower>0)txt.textContent=`스위치가 나를 가리킵니다. 턴 종료 전 버스트/체인으로 반환하지 못하면 ${state.switchPower}이 폭발합니다.`;else if(state.switchTarget==='enemy'&&state.switchPower>0)txt.textContent='스위치가 상대를 가리킵니다. 지금은 새 조합·회수·정비로 다음 반환을 준비해도 좋습니다.';else if(state.phase==='draw')txt.textContent='내 턴 시작 · 개인 덱 또는 공용 버림패에서 1장을 가져온 뒤 자유롭게 조합을 만들어 보세요.';else txt.textContent='세트·런·상대 공개 조합 붙이기·회수·정비를 자유롭게 시험할 수 있습니다. 상대는 연습전에서 행동 수가 줄어듭니다.'
 }
@@ -1636,8 +1675,22 @@ function showResult(win){if(typeof renderCirculationSummary==='function')renderC
   state.rewarded=true;const profile=roguelikeStarterProfile(state.roguelikeStarterId),nodeRun=!!state.roguelikeProgressionBattle;
   if(nodeRun){
    const route=roguelikeBattleNodeForRequest(state.roguelikeBattleNodeRequest);
-   if(win){const issued=roguelikeCompleteBattleNode(state.roguelikeBattleNodeRequest);state.roguelikeNodeResult=issued?'win':'stale';again.textContent='런 진행 보기';if(issued){title.textContent=route?.kind==='boss'?'중간 보스 격파':'로그라이크 노드 승리';title.className='cyan';text.textContent=`${route?.label||'실전 노드'} 완료 · revision ${state.roguelikeRunRevision} 전투 자격을 검증했고 보상 노드 #${issued.sequence} 후보를 고정했습니다. ${route?.kind==='boss'?(route.visit<ROGUELIKE_ROUTE_LIMITS.regionVisits?'보상을 처리하면 방문하지 않은 다음 지역을 선택할 수 있습니다.':'보상을 처리하면 두 지역을 완료합니다. 후반 특수구역은 준비 중입니다.'):'보상을 처리해야 다음 실전을 시작할 수 있습니다.'}`;box.style.display='block';box.innerHTML=`<b>런 보상 발급 완료</b><br>후보 ${issued.picks.length}장 · 수령 또는 건너뛰기 전까지 다음 노드 잠김.`}else{title.textContent='노드 결과 저장 실패';title.className='red';text.textContent='전투 중 런 덱 revision/지문이 바뀌었거나 저장에 실패해 승리 결과를 런에 반영하지 않았습니다. 중복 보상은 발급되지 않았습니다.'}}
-   else{state.roguelikeNodeResult='loss';again.textContent='노드 다시 도전';title.textContent=route?.kind==='boss'?'중간 보스 패배':'로그라이크 노드 패배';title.className='red';text.textContent=`${route?.label||'실전 노드'} 패배 · 런 덱과 노드 진행은 소비되지 않았습니다. 같은 현재 노드에 다시 도전할 수 있습니다.`}
+   if(win){
+    const issued=roguelikeCompleteBattleNode(state.roguelikeBattleNodeRequest);state.roguelikeNodeResult=issued?'win':'stale';again.textContent='런 진행 보기';
+    if(issued){
+     const savedRun=loadRoguelikeRunDraft();title.className='cyan';box.style.display='block';
+     if(route?.kind==='final-boss'&&savedRun?.status==='completed'){
+      title.textContent='런 완료';text.textContent='최종 보스와 마지막 보상을 완료했습니다. 저장된 완료 기록과 최종 덱을 확인하세요.';box.innerHTML=roguelikeRunCompletionText(savedRun);
+     }else{
+      title.textContent=route?.kind==='final-boss'?'최종 보스 격파':route?.kind==='boss'?'중간 보스 격파':'로그라이크 노드 승리';
+      const followup=route?.kind==='final-boss'?'마지막 보상을 수령하거나 건너뛰면 런 완료와 최종 덱을 저장합니다.':route?.kind==='boss'?(route.visit<ROGUELIKE_ROUTE_LIMITS.regionVisits?'보상을 처리하면 방문하지 않은 다음 지역을 선택할 수 있습니다.':'보상을 처리하면 널워드의 교전 2회와 최종 보스에 도전합니다.'):'보상을 처리해야 다음 실전을 시작할 수 있습니다.';
+      text.textContent=`${route?.label||'실전 노드'} 완료 · revision ${state.roguelikeRunRevision} 전투 자격을 검증했고 보상 노드 #${issued.sequence} 후보를 고정했습니다. ${followup}`;
+      box.innerHTML=`<b>런 보상 발급 완료</b><br>후보 ${issued.picks.length}장 · 수령 또는 건너뛰기 전까지 다음 노드 잠김.`;
+      if(route?.kind==='final-boss')again.textContent='마지막 보상 보기';
+     }
+    }else{title.textContent='노드 결과 저장 실패';title.className='red';text.textContent='전투 중 런 덱 revision/지문이 바뀌었거나 저장에 실패해 승리 결과를 런에 반영하지 않았습니다. 중복 보상은 발급되지 않았습니다.'}
+   }
+   else{state.roguelikeNodeResult='loss';again.textContent='노드 다시 도전';title.textContent=route?.kind==='final-boss'?'최종 보스 패배':route?.kind==='boss'?'중간 보스 패배':'로그라이크 노드 패배';title.className='red';text.textContent=`${route?.label||'실전 노드'} 패배 · 런 덱과 노드 진행은 소비되지 않았습니다. 같은 현재 노드에 다시 도전할 수 있습니다.`}
    renderProgress();document.getElementById('overlay').classList.add('show');return
   }
   title.textContent=win?'런 덱 실험전 승리':'런 덱 실험전 패배';title.className=win?'cyan':'red';text.textContent=`${profile.name} · revision ${state.roguelikeRunRevision} 실험 종료. 이 결과와 전투 중 카드 상태는 런 덱·클리어·레벨·해금·M12 전투 표본에 반영되지 않습니다.`;renderProgress();document.getElementById('overlay').classList.add('show');return

@@ -30,7 +30,7 @@ ctx.roguelikeRewardNodeId=(runId,sequence)=>`${runId}:reward:${sequence}`;
 ctx.roguelikeRunDeckProfile=d=>({slots:d.runDeck.cards.map(c=>c.slot),variants:Object.fromEntries(d.runDeck.cards.filter(c=>c.variantId).map(c=>[c.slot,c.variantId]))});
 ctx.unlockedNamed=()=>new Set(['A','B','C']);
 ctx.roguelikeRewardCandidates=()=>({picks:[{id:'A',role:'reinforce',slot:'S3'},{id:'B',role:'branch',slot:'H2'},{id:'C',role:'foundation',slot:'D2'}]});
-for(const name of ['roguelikePendingRewardNode','roguelikeNextRewardNodeRequest','roguelikeBattleProgress','roguelikeCurrentBattleNodeRequest','roguelikeCompleteBattleNode'])vm.runInContext(source(name),ctx);
+for(const name of ['roguelikeRunRoute','roguelikePendingRewardNode','roguelikeNextRewardNodeRequest','roguelikeBattleProgress','roguelikeCurrentBattleNodeRequest','roguelikeCompleteBattleNode'])vm.runInContext(source(name),ctx);
 
 let req=ctx.roguelikeCurrentBattleNodeRequest(saved);
 ok(req.battleIndex===0&&req.battleNodeId==='common-1'&&req.sequence===1,'fresh run receives an identity-bound first common-start combat ticket');

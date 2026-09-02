@@ -34,7 +34,7 @@ const progress={roguelikeStarter:'pure',selectedChar:'collector',selectedTheme:'
 const state={sessionMode:'roguelike',player:{hand:['test-hand'],deck:['test-deck']},rewarded:false};
 const progressBefore=JSON.stringify(progress);
 const ctx=vm.createContext({console,localStorage,progress,state,charUnlocked:()=>true,SUIT_SYMBOL:{S:'♠',H:'♥',D:'♦',C:'♣'},THEME_BUILD_PROFILES:{}});
-for(const name of ['ROGUELIKE_ROUTE_LIMITS','FIELDS','ROGUELIKE_ENCOUNTER_PROFILES','ROGUELIKE_REGIONS','ROGUELIKE_COMMON_START_ROUTE','NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES','ROGUELIKE_THEME_ENTRY_TAGS'])vm.runInContext(declaration(name),ctx);
+for(const name of ['ROGUELIKE_ROUTE_LIMITS','ROGUELIKE_ENDGAME','FIELDS','ROGUELIKE_ENCOUNTER_PROFILES','ROGUELIKE_REGIONS','ROGUELIKE_COMMON_START_ROUTE','NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','ROGUELIKE_STARTER_REGULAR_SLOTS','ROGUELIKE_STARTER_LOADOUTS','ROGUELIKE_REWARD_ROLES','ROGUELIKE_THEME_ENTRY_TAGS'])vm.runInContext(declaration(name),ctx);
 vm.runInContext("const ROGUELIKE_STARTER_DECK_SIZE=30;const ROGUELIKE_RUN_DRAFT_KEY='rummyDuelRoguelikeRunDraftV1';const ROGUELIKE_COMMON_START_ZONE='common-start';const ROGUELIKE_REWARD_ALGORITHM='action-tags-v1';",ctx);
 for(const name of [...script.matchAll(/function (\w+)\(/g)].map(m=>m[1]).filter(name=>/roguelike/i.test(name)).concat('namedSlot'))vm.runInContext(source(name),ctx);
 const allIds=vm.runInContext('Object.keys(NAMED)',ctx);let pool=[...allIds];
@@ -76,7 +76,7 @@ const settle=(node,take=false)=>{assert.ok(take?claim(node):skip(node));render()
 const migrateV6=()=>{
  const before=current(),legacy=clone(before);legacy.version=6;legacy.nodeIndex=999;legacy.currentZone='wrong';
  storage.set(KEY,JSON.stringify(legacy));const raw=saved(),loaded=current();
- assert.equal(loaded.version,7);assert.equal(loaded.runId,before.runId);assert.equal(loaded.createdAt,before.createdAt);
+ assert.equal(loaded.version,8);assert.equal(loaded.runId,before.runId);assert.equal(loaded.createdAt,before.createdAt);
  assert.deepEqual(clone(loaded.runDeck),clone(before.runDeck));assert.deepEqual(clone(loaded.rewardNodes),clone(before.rewardNodes));
  assert.deepEqual(clone(loaded.regionPath),clone(before.regionPath));assert.equal(loaded.nodeIndex,before.nodeIndex);assert.equal(loaded.currentZone,before.currentZone);
  assert.equal(saved(),raw,'loading a legacy run never rewrites the stored file');
@@ -113,11 +113,11 @@ for(const first of regions)for(const second of regions.filter(r=>r.id!==first.id
  const carry=current(),carryDeck=JSON.stringify(carry.runDeck),carryLedger=JSON.stringify(carry.rewardNodes),carryTime=carry.createdAt;
  assert.equal(choose(first.id),false,'a visited region cannot be selected again');
  render();regionButtons.find(b=>b.dataset.runRegion===second.id).onclick();
- assert.deepEqual(clone(current().regionPath),[first.id,second.id]);assert.equal(current().version,7);
+ assert.deepEqual(clone(current().regionPath),[first.id,second.id]);assert.equal(current().version,8);
  assert.equal(current().runId,carry.runId);assert.equal(current().createdAt,carryTime);
  assert.equal(JSON.stringify(current().runDeck),carryDeck);assert.equal(JSON.stringify(current().rewardNodes),carryLedger);
  assert.equal(current().currentZone,second.id);assert.equal(current().nodeIndex,7);
- assert.equal(ctx.roguelikeBattleProgress().total,11);assert.equal(ctx.roguelikeBattleProgress().current.visit,2);
+ assert.equal(ctx.roguelikeBattleProgress().total,14);assert.equal(ctx.roguelikeBattleProgress().current.visit,2);
  assert.equal(regionButtons.length,0);assert.equal(ui.roguelikeNodeBattleBtn.disabled,false);
  assert.ok(ui.roguelikeRunDraftStatus.innerHTML.includes('공통 시작 → '+first.name+' → '+second.name));
  assert.equal(choose(regions.find(r=>r.id!==first.id&&r.id!==second.id).id),false);
@@ -131,7 +131,7 @@ for(const first of regions)for(const second of regions.filter(r=>r.id!==first.id
  for(const mutate of [
   d=>d.regionPath.reverse(),d=>d.regionPath.shift(),d=>d.regionPath[1]=d.regionPath[0],
   d=>d.regionPath[1]='missing',d=>d.regionPath.push(regions.find(r=>!d.regionPath.includes(r.id)).id),
-  d=>d.version=6,d=>d.version=8,
+  d=>d.version=6,d=>d.version=9,
   d=>{d.rewardNodes.entries.find(n=>n.battleNodeId===first.id+'-boss').battleNodeId=second.id+'-boss';}
  ]){const bad=clone(valid);mutate(bad);assert.equal(ctx.normalizeRoguelikeRunDraft(bad),null,'invalid or reordered route is rejected without resetting growth');}
  assert.equal(saved(),afterChoice);
@@ -159,7 +159,7 @@ for(const first of regions)for(const second of regions.filter(r=>r.id!==first.id
   assert.equal(current().runDeck.revision,beforeRevision);assert.equal(ctx.roguelikeCurrentBattleNodeRequest(),null);
   assert.equal(regionButtons.length,0);assert.equal(ui.roguelikeNodeBattleBtn.disabled,true);
   assert.ok(ui.resultText.textContent.includes(second.name));
-  if(stage===3){assert.equal(ui.resultTitle.textContent,'중간 보스 격파');assert.ok(ui.resultText.textContent.includes('후반 특수구역은 준비 중'));}
+  if(stage===3){assert.equal(ui.resultTitle.textContent,'중간 보스 격파');assert.ok(ui.resultText.textContent.includes('널워드의 교전 2회와 최종 보스'));}
   ctx.showResult(true);assert.equal(saved(),issued,'repeated second-region result preserves its frozen reward');
   const badProvenance=current();badProvenance.rewardNodes.entries.at(-1).regionId=first.id;
   assert.equal(ctx.normalizeRoguelikeRunDraft(badProvenance),null,'second-region rewards cannot retain the old region bias');
@@ -167,15 +167,15 @@ for(const first of regions)for(const second of regions.filter(r=>r.id!==first.id
  }
  const end=current(),allReceipts=end.rewardNodes.entries;
  assert.equal(end.nodeIndex,11);assert.equal(allReceipts.filter(n=>n.source==='battle').length,11);
- assert.equal(allReceipts.filter(n=>n.source==='prototype').length,1);assert.equal(end.currentZone,second.id);
+ assert.equal(allReceipts.filter(n=>n.source==='prototype').length,1);assert.equal(end.currentZone,'null-ward');
  assert.deepEqual(clone(allReceipts.slice(0,carry.rewardNodes.entries.length)),clone(carry.rewardNodes.entries));
- assert.equal(ctx.roguelikeBattleProgress().finished,true);assert.equal(ctx.roguelikeBattleProgress().awaitingRegion,false);
- assert.equal(ctx.roguelikeCurrentBattleNodeRequest(),null);assert.equal(regionButtons.length,0);assert.equal(ui.roguelikeNodeBattleBtn.disabled,true);
- assert.ok(ui.roguelikeRunDraftStatus.innerHTML.includes('두 지역 완료 · 런 실전 11/11 · 후반 특수구역 준비 중'));
- assert.ok(ui.roguelikeNodeBattleBtn.textContent.includes('후반 구역 준비 중'));
+ assert.equal(ctx.roguelikeBattleProgress().finished,false);assert.equal(ctx.roguelikeBattleProgress().awaitingRegion,false);
+ assert.equal(ctx.roguelikeCurrentBattleNodeRequest().battleNodeId,'null-ward-1');assert.equal(regionButtons.length,0);assert.equal(ui.roguelikeNodeBattleBtn.disabled,false);
+ assert.ok(ui.roguelikeRunDraftStatus.innerHTML.includes('런 실전 11/14 · 다음 널워드 · 격리 관문'));
+ assert.ok(ui.roguelikeNodeBattleBtn.textContent.includes('널워드 · 격리 관문 시작'));
  const finalJSON=saved();assert.equal(choose(regions.find(r=>!end.regionPath.includes(r.id)).id),false);assert.equal(saved(),finalJSON);
  const caches=clone(end);caches.nodeIndex=123;caches.currentZone=first.id;storage.set(KEY,JSON.stringify(caches));
- assert.equal(current().nodeIndex,11);assert.equal(current().currentZone,second.id);
+ assert.equal(current().nodeIndex,11);assert.equal(current().currentZone,'null-ward');
  paths++;ok(true,first.name+' → '+second.name+' carries growth through the second boss');
 }
 assert.equal(paths,12);assert.equal(secondRegionBattles,48);
