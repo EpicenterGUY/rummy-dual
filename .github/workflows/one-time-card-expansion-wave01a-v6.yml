@@ -1,0 +1,52 @@
+name: One-time card expansion Wave 01A v6
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-card-expansion-wave01a-v6.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-card-expansion-wave01a:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply six-card expansion
+        shell: bash
+        run: python .github/scripts/card-expansion-wave01a-patch-v6.py
+
+      - name: Run Wave 01A regression
+        shell: bash
+        run: node tests/card-expansion-wave01a.mjs
+
+      - name: Run all regression suites
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          for test in tests/*.mjs; do
+            echo "==> $test"
+            node "$test"
+            count=$((count+1))
+          done
+          echo "Regression suites passed: $count"
+
+      - name: Commit project patch
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html ROADMAP.md docs/CARD_EXPANSION_WAVE_01.md tests/card-expansion-wave01a.mjs; then
+            echo 'No project changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md docs/CARD_EXPANSION_WAVE_01.md tests/card-expansion-wave01a.mjs
+          git commit -m 'feat: add six theme cards in expansion Wave 01A'
+          git push origin HEAD:main
