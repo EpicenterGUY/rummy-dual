@@ -23,6 +23,7 @@ jobs:
         run: |
           python .github/scripts/m11a-run-history-patch.py
           python .github/scripts/m11a-run-history-compat-fix.py
+          python .github/scripts/m11a-run-history-test-fix.py
 
       - name: Run all regression suites
         shell: bash
