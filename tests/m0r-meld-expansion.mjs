@@ -69,7 +69,7 @@ console.log('PASS recovered card may prepare but cannot return; two-meld RUMMY r
 {
  const g=fresh(),s=g.state.enemy,first=cards(g,'enemy',['SK','HK','DK']),second=cards(g,'enemy',['C4','C5','C6']);first[0]=g.makeCard('S','K',true,'enemy');s.hand=[...first,...second,...cards(g,'enemy',['H9'])];
  const events=[];g.subscribeEffectEvent(e=>{if(e.event==='onMeldCreate')events.push(e)});
- g.submitNewMeld('enemy',first);const shield=s.shield;assert.equal(shield,20);
+ g.submitNewMeld('enemy',first);const shield=s.shield;assert.equal(shield,12);assert.equal(s.effectReservations.length,1);
  g.submitNewMeld('enemy',second);assert.equal(s.shield,shield,'first-meld named card does not react to the second action');assert.equal(events.length,2);assert.equal(events[1].extraNewMeld,false);
 }
 {

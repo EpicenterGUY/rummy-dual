@@ -38,7 +38,7 @@ ok(html.includes('function acquireDiscardCard(w,indexFromTop=0)'), 'discard acqu
 ok(html.includes("c=acquireDiscardCard('player',0)"), 'player Black Market second-card path uses shared acquisition');
 ok(html.includes("c=acquireDiscardCard('enemy',0)"), 'AI Black Market second-card path uses shared acquisition');
 ok(html.includes("typeof unlock==='function'&&!!unlock(p)"), 'invalid saved character IDs cannot crash char unlock checks');
-ok(html.includes('같은 종류라면 보호막 12를 얻는다.'), 'Chain Reaction text matches its 12-shield implementation');
+ok(html.includes('같은 종류라면 장전 8을 얻어 이번 반환에 사용한다.'), 'Chain Reaction documents its shared loaded status');
 ok(html.includes('jokerLastDetonateReduction=15'), 'Last Laugh DETONATE reduction is implemented');
 ok(html.includes('if(jokerLast&&opts.returned)'), 'Last Laugh bonus cycle requires a returning RUMMY');
 ok(html.includes("addSwitchPower(w,statusResult.amount,label,other(w))"), 'SWITCH returns evaluate CORE LETHAL against the post-return target');

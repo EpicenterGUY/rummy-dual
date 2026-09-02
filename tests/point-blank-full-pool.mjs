@@ -1,3 +1,4 @@
+import {makeGame} from './helpers/live-game.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
@@ -41,10 +42,11 @@ for(const id of Object.keys(expected))ok(unlock.includes(`'${id}'`),`${id} is re
 {
  const resolve=source('resolveEffects');
  const base={turnToken:8,switchPower:20};
- function run(meld,cards){const p={hand:[]},e={hand:[]},box={globalThis:null,state:{...base},sideObj:()=>p,other:()=> 'enemy',consumeOfficialStatus:()=>0,isPointBlankClash:()=>true,notePointBlankTurnAction:()=>({attach:true,recover:false,discard:false,maintenance:false})};box.globalThis=box;vm.runInNewContext(`${resolve};globalThis.r=resolveEffects;`,box);return box.r('player',cards,'RUN',{meld,effectSeen:new Set(),willReturn:true,isAttach:true,targetOwner:'enemy',totalLength:4})}
+ function run(meld,cards){const g=makeGame();meld.type='RUN';meld.status=g.blankMeldStatus();g.state.enemy.melds=[meld];g.setPointBlankClash('player',meld);g.resolveEffects('player',cards,'RUN',{meld,effectSeen:new Set(),willReturn:true,isAttach:true,targetOwner:'enemy',totalLength:4});return {loaded:g.state.player.status.loaded}}
+
  const buck={uid:'b',owner:'player',named:true,tag:'pbBuckshot',name:'벅샷'};
- ok(run({cards:[buck,{uid:'e1',owner:'enemy'},{uid:'e2',owner:'enemy'}]},[buck]).bonus===8,'Buckshot adds 8 when it is the only owned card in the clash action');
- const ally={uid:'a',owner:'player'};ok(run({cards:[buck,ally,{uid:'e',owner:'enemy'}]},[buck]).bonus===12,'Buckshot adds 12 when another owned card already occupies the clash');
+ ok(run({cards:[buck,{uid:'e1',owner:'enemy'},{uid:'e2',owner:'enemy'}]},[buck]).loaded===8,'Buckshot loads 8 when it is the only owned card in the clash action');
+ const ally={uid:'a',owner:'player'};ok(run({cards:[buck,ally,{uid:'e',owner:'enemy'}]},[buck]).loaded===12,'Buckshot loads 12 when another owned card already occupies the clash');
 }
 
 ok(!script.includes('pointBlankCount')&&!script.includes('POINT_BLANK_COUNT')&&!script.includes('pointBlankResource'),'POINT-BLANK creates no dedicated numeric resource');
