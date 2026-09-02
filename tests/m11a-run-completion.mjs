@@ -171,8 +171,11 @@ for(const first of regions)for(const second of regions.filter(r=>r.id!==first.id
  assert.equal(saved(),pendingJSON);assert.equal(current().status,'prepared');assert.equal(current().completedAt,null);
  const beforeCompletionWrites=writeCount;finishFromUI();
  const completed=current(),completedJSON=saved(),timestamp=completed.completedAt;
- assert.equal(writeCount,beforeCompletionWrites+1,'completion and its last reward use exactly one successful write');
+ assert.equal(writeCount,beforeCompletionWrites+2,'completion saves run state and one archive record');
  assert.equal(completed.status,'completed');assert.equal(completed.version,8);assert.equal(completed.runId,created.runId);
+ const archive=JSON.parse(storage.get('rummyDuelRoguelikeRunHistoryV1'));const archived=archive.entries.find(x=>x.runId===completed.runId);
+ assert.ok(archived,'completed run is archived');assert.equal(archived.finalDeckSignature,ctx.roguelikeRunDeckSignature(completed.runDeck));assert.equal(archived.rewards.filter(x=>x.source==='battle').length,14);assert.equal(JSON.stringify(archived.regionPath),JSON.stringify(completed.regionPath));
+ const archiveWrites=writeCount;render();assert.equal(writeCount,archiveWrites,'rerender does not duplicate an archived run');
  assert.equal(new Date(timestamp).toISOString(),timestamp);assert.equal(completed.currentZone,endgame.id);assert.equal(completed.nodeIndex,14);
  assert.equal(completed.rewardNodes.entries.filter(n=>n.source==='battle').length,14);assert.equal(completed.rewardNodes.entries.length,15);
  assert.equal(completed.rewardNodes.entries.at(-1).status,claimFinal?'claimed':'skipped');assert.equal(completed.runDeck.revision,beforeRevision+(claimFinal?1:0));
