@@ -12,13 +12,17 @@ Updated: 2026-09-02
 - [x] SEASON-BLOOM 24종 신규 설계와 계절/전환/혼합 재료 계약 확정 — `docs/SEASON_BLOOM_3.md`, 런타임 미구현
 - [x] 공용 예약 1차 구현 — 다음 자기 턴 종료까지 회수/재배치 완료에 장전·불굴·귀환 1회, 출처별 중복 방지·선소비
 - [x] 카드 16종 추가 적용 — 총 개편 23종. 공용/3테마에 예약·화력/방어 상태를 분산
-- [ ] 나머지 7종 런타임: 균열·침묵·가변·잔향·불안정·표식·반향
-- [ ] 공용 행동/예약 확장 및 설계표의 기존 카드 46종 추가 구현
+- [x] 3차 상태: 균열·조합 표식 추가 — 공식 13종. 실제 이탈 완료 후 피해 6, 부여자별 표식 소비
+- [x] 17종 추가 개편 — 누적 40종. ZERO-SIGHT 11종, 공용 5종, V-SIGNAL 매니저
+- [x] 절단선의 런 분할/합병 — 합법 후보 선택, 카드/상태 보존, 슬롯·생성·반환 우회 방지
+- [x] 시장 조작자의 버림패 상단 최대 3장 임의 순서 선택
+- [ ] 나머지 5종 런타임: 침묵·가변·잔향·불안정·반향 및 표식 카드 범위
+- [ ] 공용 행동/예약 확장 및 설계표의 기존 카드 29종 추가 구현
 - [ ] V-SIGNAL/ZERO-SIGHT/POINT-BLANK 리워크 및 SEASON-BLOOM 신규 구현
-- [ ] 숫자 변형·조합 분할/합병·소유권/덱 침투 고유효과
+- [ ] 숫자 변형·소유권/덱 침투 등 후속 고유효과
 - [ ] 신규 상태를 반영한 AI 평가와 인간 실전 밸런스 검증
 
-상세 구현 범위·우선순위·초안 해석은 [효과 시스템 3.0](docs/EFFECT_SYSTEM_3.md)을 따른다. **18종 전체와 전 카드 리워크가 완료된 것은 아니다.**
+상세 구현 범위·우선순위·초안 해석은 [효과 시스템 3.0](docs/EFFECT_SYSTEM_3.md)과 [3차 구현 계약](docs/EFFECT_SYSTEM_3_WAVE3.md)을 따른다. **18종 전체와 전 카드 리워크가 완료된 것은 아니다.**
 
 ## Core direction
 RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITCH bomb through SET/BURST and RUN/CHAIN, including play on the opponent's public melds.

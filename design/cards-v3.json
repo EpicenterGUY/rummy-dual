@@ -66,7 +66,7 @@
       "theme": "common",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "상대가 직전 턴 버림패를 이용했다면 상대 공개 조합에 붙일 때 그 조합의 내 카드 1장을 무료 회수할 수 있다.",
       "targetEffect": "상대가 직전 턴 버림패를 이용했다면, 상대 공개 조합에 붙일 때 그 조합에 균열을 부여한다.",
       "capabilities": [
@@ -123,7 +123,7 @@
       "theme": "common",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "상대 공개 조합에 붙이면 무장한다. 다음 내 턴 이후 이 카드를 회수하면 누적 위력이 16 증가한다.",
       "targetEffect": "상대 공개 조합에 붙이면 그 조합에 균열을 부여한다. 다음 내 턴 이후 이 카드를 회수하면 장전 12를 얻는다.",
       "capabilities": [
@@ -279,7 +279,7 @@
       "theme": "common",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "상대 공개 조합에서 회수하면 체력 8을 회복하고 보호막 8을 얻는다. 내 조합에서 회수하면 체력 8을 회복한다.",
       "targetEffect": "이 카드를 회수하면 체력 8을 회복한다. 상대 공개 조합에서 회수했다면 추가로 불굴 8을 얻는다.",
       "capabilities": [
@@ -593,7 +593,7 @@
       "theme": "common",
       "category": "괴짜형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "새 조합으로 내면 공용 버림패 위 3장의 순서를 뒤집는다.",
       "targetEffect": "새 조합으로 내면 공용 버림패 위 최대 3장의 순서를 원하는 대로 정한다. 원래 소유권은 바뀌지 않는다.",
       "capabilities": [
@@ -750,9 +750,9 @@
       "theme": "common",
       "category": "조작형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "상대 4장 이상 런의 끝 카드 1장을 소모한다. 제거 후에도 런은 유효해야 하고 체인도 1 감소한다.",
-      "targetEffect": "내 6장 이상 런 1개를 각각 3장 이상인 유효한 두 런으로 분할하거나, 합치면 유효한 내 두 런을 합병할 수 있다. 빈 공개 슬롯이 필요하며 각 결과 체인은 기존 최솟값을 따른다.",
+      "targetEffect": "내 6장 이상 런을 유효한 두 런(각 3장 이상)으로 분할하거나, 합치면 유효한 내 두 런을 합병할 수 있다. 분할에만 빈 슬롯이 필요하다. 체인은 분할 시 유지되며 합병 시 두 원본의 최솟값을 따른다. 결과 조합에는 이번 턴 붙일 수 없다.",
       "capabilities": [
         "split-merge"
       ]
@@ -1052,9 +1052,9 @@
       "theme": "v-signal",
       "category": "조작형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "내 공개 조합에 이 카드를 사용하면 그 조합의 봉인 1을 먼저 제거하고, 봉인이 없으면 고정 1을 제거한다. 둘 다 없으면 그 조합에 보호 1을 부여한다.",
-      "targetEffect": "내 조합에 사용하면 그 조합의 봉인·고정·균열 중 하나를 골라 전부 제거한다. 제거할 상태가 없으면 보호 1을 부여한다.",
+      "targetEffect": "내 조합에 사용하면 그 조합의 봉인·고정·균열 중 하나를 골라 전부 제거한다. 이 효과는 그 조합의 봉인에 막히지 않는다. 제거할 상태가 없으면 보호 1을 부여한다.",
       "capabilities": [
         "cleanse"
       ]
@@ -1168,7 +1168,7 @@
       "theme": "zero-sight",
       "category": "조작형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "이 카드를 사용한 공개 조합을 내 표적으로 지정한다. 지정 후 남은 손패가 있으면 그중 1장을 덱 아래로 보내고 1장 뽑아 무료 패순환한다.",
       "targetEffect": "사용한 공개 조합을 내 표적으로 지정하고 그 조합에 내 표식 1을 부여한다. 남은 손패 1장을 순환할 수 있다.",
       "capabilities": [
@@ -1183,9 +1183,9 @@
       "theme": "zero-sight",
       "category": "조작형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "내 표적이 있으면 다른 공개 조합으로 이전한다. 표적이 없거나 옮길 다른 조합이 없으면 남은 손패 1장을 덱 아래로 보내고 1장 뽑아 패순환한다.",
-      "targetEffect": "내 표적을 다른 공개 조합으로 옮기고 새 표적에 내 표식을 부여한다. 다른 조합이 없으면 순환 1을 한다.",
+      "targetEffect": "내 표적을 다른 공개 조합으로 옮기고 새 표적에 내 표식을 부여한다. 현재 표적이나 옮길 다른 조합이 없으면 순환 1을 한다.",
       "capabilities": [
         "mark",
         "cycle"
@@ -1198,7 +1198,7 @@
       "theme": "zero-sight",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "내 카드가 이미 들어간 상대 공개 조합에 붙이면 그 조합으로 표적을 이전한다. 이번 턴 먼저 회수했다면 남은 손패 1장을 무료 정비한다.",
       "targetEffect": "내 카드가 이미 있는 상대 조합에 붙이면 그 조합으로 표적을 옮긴다. 이번 턴 회수했다면 그 조합에 내 표식을 부여한다.",
       "capabilities": [
@@ -1212,7 +1212,7 @@
       "theme": "zero-sight",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "이 카드가 있는 내 표적을 다음 턴까지 유지한 뒤 그 표적에 내가 처음 붙이면 남은 손패 1장을 무료 정비한다. 이 효과는 턴당 1회만 발동한다.",
       "targetEffect": "이 카드가 있는 내 표적을 내 다음 턴까지 유지하면, 그 턴 해당 조합에 내 카드가 처음 붙을 때 장전 8을 얻는다. 카드당 내 턴 1회만 발동한다.",
       "capabilities": [
@@ -1240,9 +1240,9 @@
       "theme": "zero-sight",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "이 카드가 공개된 동안 상대가 새 공개 조합을 만들면 턴당 1회 그 조합으로 내 표적을 자동 이전하고 남은 손패 1장을 무료 정비한다.",
-      "targetEffect": "공개된 동안 상대가 새 조합을 만들면 턴당 1회 그 조합으로 표적을 옮기고 내 표식을 부여한다. 추가 패순환은 하지 않는다.",
+      "targetEffect": "공개된 동안 상대가 새 조합을 만들면 턴당 1회 그 조합으로 내 표적을 옮기고 내 표식을 부여한다.",
       "capabilities": [
         "mark"
       ]
@@ -1268,9 +1268,9 @@
       "theme": "zero-sight",
       "category": "조작형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "내 표적 조합을 이용해 스위치를 반환할 때, 이번 반환까지 반영한 상대 현재 코어+보호막 부족분만큼 누적 위력을 최대 12까지 보정한다.",
-      "targetEffect": "내 표적으로 반환하면 그 조합의 내 표식을 소비하고, 장전·감쇠·과열까지 반영한 반환 위력의 상대 코어+보호막+불굴 부족분을 최대 12만큼 추가한다.",
+      "targetEffect": "내 표적으로 일반 반환하면 그 조합의 내 표식을 소비하고, 장전·감쇠·과열까지 반영한 누적 위력의 상대 코어+보호막+불굴 부족분을 최대 12만큼 추가한다.",
       "capabilities": [
         "mark",
         "precision"
@@ -1328,7 +1328,7 @@
       "theme": "zero-sight",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "이 카드가 공개된 동안 내 표적에서 내가 카드를 회수하면 턴당 1회 보호막 12를 얻는다.",
       "targetEffect": "공개된 동안 내가 내 표적에서 회수하면 불굴 8을 얻는다. 카드당 내 턴 1회만 발동한다.",
       "capabilities": [
@@ -1370,7 +1370,7 @@
       "theme": "zero-sight",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "이 카드가 공개된 동안 상대가 내 표적 조합으로 스위치를 반환하면 충전한다. 공개 상태를 유지한 채 내가 다음 스위치를 반환하면 누적 위력이 12 증가하고 충전을 해제한다.",
       "targetEffect": "공개된 동안 상대가 내 표적으로 반환하면 장전 12를 얻는다. 카드당 상대 턴 1회만 발동한다.",
       "capabilities": [
@@ -1384,7 +1384,7 @@
       "theme": "zero-sight",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "손에서 내 턴 종료 2회를 준비한 뒤 내 표적 조합을 이용해 스위치를 반환하면 누적 위력이 16 증가한다.",
       "targetEffect": "손에서 내 턴 종료 2회를 준비한 뒤 내 표적으로 반환하면 장전 16을 얻는다. 해당 조합에 내 표식이 있으면 소비하고 감쇠를 최대 8 제거한다.",
       "capabilities": [
@@ -1399,7 +1399,7 @@
       "theme": "zero-sight",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "이 카드가 내 표적에 있는 동안 상대가 그 표적에서 카드를 회수하거나 밖으로 이동시키면 상대에게 취약 1을 주고 남은 내 카드 1장에 보호 1을 부여한다. 이 효과는 턴당 1회만 발동한다.",
       "targetEffect": "내 표적에 공개된 동안 상대가 그 조합에서 회수하거나 재배치하면 상대에게 감쇠 8을 부여한다. 그 조합에 균열이 있으면 대신 취약 1을 부여한다. 카드당 턴 1회만 발동한다.",
       "capabilities": [
@@ -1414,9 +1414,9 @@
       "theme": "zero-sight",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave3",
       "previousEffect": "상대 표적 조합에 붙여 스위치를 반환할 때, 이 행동 전 기존 누적 위력이 50 이상이면 누적 위력이 18 증가한 뒤 표적을 해제한다. 50 미만이면 반환 후 자신에게 봉인 1을 부여한다.",
-      "targetEffect": "기존 누적 위력이 50 이상인 내 상대 표적으로 반환하면 내 표식을 소비해 위력 18을 더한다. 표식이 없으면 대신 자신에게 과열 10을 부여해 이번 반환에 적용한다.",
+      "targetEffect": "행동 전 누적 위력이 50 이상일 때, 상대 보드의 내 표적으로 일반 반환하면 내 표식을 소비해 위력 18을 더한다. 표식이 없으면 과열 10을 이번 반환에 적용한다.",
       "capabilities": [
         "mark",
         "overheat"

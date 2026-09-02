@@ -6,7 +6,7 @@ const doc=fs.readFileSync(new URL('../docs/ASYMMETRIC_RANK_PROTOTYPE.md',import.
 const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 function source(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw new Error(`missing ${name}`);let par=0,brace=-1;for(let i=start+marker.length-1;i<script.length;i++){if(script[i]==='(')par++;else if(script[i]===')')par--;else if(script[i]==='{'&&par===0){brace=i;break}}if(brace<0)throw new Error(`missing body ${name}`);let d=0;for(let i=brace;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)return script.slice(start,i+1)}throw new Error(`unterminated ${name}`)}
-function install(ctx,...names){for(const n of names)vm.runInContext(source(n),ctx)}
+function install(ctx,...names){if(names.includes('submitNewMeld')||names.includes('attachCards'))names.unshift('finishMeldAction');for(const n of names)vm.runInContext(source(n),ctx)}
 new Function(script);
 
 for(const name of ['normalizeRequestedRankPlan','rankChoicePlanEquivalent','rankChoiceActionPlan','applyRankChoicePlan','rankResolutionPriority'])ok(script.includes(`function ${name}(`),`M11B action helper exists: ${name}`);
@@ -16,7 +16,7 @@ ok(source('attachCards').includes('rankChoiceActionPlan(cards,m,rankPlan)'),'att
   const src=source('submitNewMeld');
   ok(src.indexOf('applyRankChoicePlan(cards,rankAction.plan)')<src.indexOf('removeFromHand(w,cards)'),'new meld commits active ranks before cards leave hand');
   ok(src.indexOf('removeFromHand(w,cards)')<src.indexOf('resolveEffects(w,cards,type,ctx)'),'new meld preserves existing action/effect order after rank commit');
-  ok(src.includes('const willRummy=s.hand.length===0')&&src.includes('triggerRummy(w,cards,{returned:false})'),'new meld keeps RUMMY in the post-effect finish phase; runtime regression below verifies the execution order');
+  ok(src.includes('finishMeldAction(w,cards,false,ctx.fxState||{})')&&source('finishMeldAction').includes('triggerRummy(w,cards,{returned})'),'new meld keeps RUMMY in the post-effect finish phase; runtime regression below verifies the execution order');
 }
 {
   const src=source('attachCards');

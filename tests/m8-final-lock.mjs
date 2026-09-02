@@ -11,7 +11,7 @@ ok(new Set(defs.map(x=>x.id)).size===defs.length,'named IDs are unique in the lo
 
 const resolve=source('resolveEffects'),onDraw=source('onDiscardDraw'),triggerRummy=source('triggerRummy');
 const requiredChoiceSignatures=[
- ['S4/SJ/H5/C5/CJ/J3 free recovery','requestFreeRecoverChoice'],
+ ['SJ/H5/C5/CJ/J3 free recovery','requestFreeRecoverChoice'],
  ['S9 opponent meld target','requestOpponentMeldChoice'],
  ['D9 spent recycle','requestSpentRecycleChoice'],
  ['DJ exact extortion card','requestExtortChoice'],
@@ -25,7 +25,7 @@ ok(source('playerDiscard').includes("c.tag==='topDeckChoice'")&&source('playerDi
 
 ok(html.includes("'D7':{n:'황금손'")&&html.includes('가장 오래 든 1장을 덱 아래로 보낸다.'),'Golden Hand explicitly documents deterministic oldest-card cycling');
 ok(html.includes("'D8':{n:'환전상'")&&html.includes('현재 스위치 누적 위력에서 최대 8을 투자한다.'),'Money Changer documents its capped power investment');
-ok(html.includes("'DQ':{n:'시장 조작자'")&&html.includes('공용 버림패 위 3장의 순서를 뒤집는다.'),'Market Maker explicitly documents deterministic reversal rather than a missing reorder choice');
+ok(html.includes("'DQ':{n:'시장 조작자'")&&html.includes('공용 버림패 위 최대 3장의 순서를 원하는 대로 정한다.')&&resolve.includes('requestDiscardOrder(w,c,resume)'),'Market Maker exposes arbitrary discard ordering through the resumable choice');
 ok(html.includes("'C6':{n:'중간관리자'")&&script.includes('function middleManagerReturnPlaceholder('),'Middle Manager keeps deterministic legal placeholder cleanup matching its one-placeholder wording');
 
 ok(!script.includes('function autoExtortToNewMeld('),'legacy first-candidate Extortion path cannot return');

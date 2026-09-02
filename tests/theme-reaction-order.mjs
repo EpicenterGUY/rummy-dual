@@ -46,7 +46,7 @@ ok(script.includes("move:Object.freeze(['onMeldMove','onTargetMeldChange:source'
  const base=attach.indexOf("emitEffectEvent('onAttach'");
  const target=attach.indexOf("emitZeroSightTargetChange('attach'",base);
  const clash=attach.indexOf("refreshPointBlankClashMeld(m",target);
- const post=attach.indexOf("resolveZeroSightPostReturn(w,m,ctx.fxState||{})",clash);
+ const post=attach.indexOf("resolvePointBlankPostReturn(w,m,ctx.fxState||{})",clash);
  ok(base>=0&&target>base&&clash>target&&post>clash,'attach executes base event → target change → clash change → deferred post-return cleanup');
 }
 

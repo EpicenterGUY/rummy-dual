@@ -7,9 +7,11 @@ assert.deepEqual(p.existingCards.map(r=>r.id).sort(),Object.keys(g.NAMED).sort()
 assert.equal(new Set([...p.existingCards,...p.newThemeCards].map(r=>r.id)).size,146);
 assert.equal(p.existingCards.filter(r=>r.implementation==='preserved').length,53);
 assert.equal(p.existingCards.filter(r=>r.implementation==='implemented-wave2').length,16);
-assert.equal(p.existingCards.filter(r=>r.implementation==='planned').length,46);
+assert.equal(p.existingCards.filter(r=>r.implementation==='implemented-wave3').length,17);
+assert.equal(p.existingCards.filter(r=>r.implementation==='planned').length,29);
 for(const r of p.existingCards){
  const c=g.NAMED[r.id];assert.equal(r.slot,c.slot||r.id);assert.equal(r.name,c.n);
+ if(!['common','joker'].includes(r.theme))assert.equal(c.themeId,r.theme,`${r.id}: preserve theme identity`);
  assert.ok(r.targetEffect&&r.capabilities.length);
  if(r.implementation==='planned')assert.notEqual(c.d,r.targetEffect,`${r.id}: don't falsely mark implemented text as pending`);
  else assert.equal(c.d,r.targetEffect,`${r.id}: shipped and designed text agree`);

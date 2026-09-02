@@ -1,3 +1,4 @@
+import {fresh,named,plain,meld,run,nextTurn} from './helpers/v3-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
@@ -21,36 +22,22 @@ for(const tag of ['zsBreathControl','zsSuppressiveFire','zsCamouflage','zsBlindS
 for(const tag of ['zsRangefinder','zsObservationLog','zsSafeDistance','zsObserverShift','zsCounterTrace','zsDrone','zsDeadAngle'])ok(script.includes(tag)&&script.includes('function handleZeroSightFullThemeEvent('),`${tag} is wired through the passive target-event handler`);
 ok(script.includes('function requestZeroSightTopOrder(')&&script.includes('function requestZeroSightRetargetOnly('),'information and recovery target choices use shared resumable helpers');
 ok(script.includes('subscribeEffectEvent(handleZeroSightFullThemeEvent);'),'ZERO-SIGHT passive effects subscribe to the shared event bus');
-ok(script.includes("typeof zeroSightPublicCards==='function'"),'resolver/event additions remain safe for isolated legacy regression extraction');
+ok(script.includes('function prepareTargetReturnEffects('),'precision effects share the guarded return pipeline');
 const unlock=script.slice(script.indexOf('const UNLOCK_GROUPS='),script.indexOf('function unlockedNamed'));
 for(const id of Object.keys(expected))ok(unlock.includes(`'${id}'`),`${id} is reachable through progression unlock groups`);
 ok(unlock.includes("items:['S6','H7','D8','C2','ZSCA','ZSC2','DA','D3']"),'existing ZERO-SIGHT starter timing stays untouched');
 ok(unlock.includes("items:['ZSD6']")&&unlock.includes("items:['ZSSK']"),'Ballistics and ONE SHOT legacy unlock timings stay untouched');
 
-// Counter Trace: opponent target return charges a public card, next owner return consumes +12.
+// Counter Trace now grants shared loading; it survives the source leaving the board.
 {
- const handler=source('handleZeroSightFullThemeEvent'),resolve=source('resolveEffects');
- const trace={uid:1,owner:'player',themeId:'zero-sight',tag:'zsCounterTrace',name:'역추적',named:true,zsCounterTraceCharged:false,themeTurnGates:{}};
- const meld={cards:[trace]},player={melds:[meld],hand:[]},enemy={melds:[],hand:[]},state={turnToken:9,turnNo:9,player,enemy};
- const box={globalThis:null,state,sideObj:w=>w==='player'?player:enemy,other:w=>w==='player'?'enemy':'player',meldsOf:w=>w==='player'?player.melds:enemy.melds,themeTurnGateUsed:()=>false,claimThemeTurnGate:()=>true,log:()=>{},consumeOfficialStatus:()=>0};box.globalThis=box;
- box.zeroSightPublicCards=(actor,tag)=>actor==='player'&&tag==='zsCounterTrace'?[trace]:[];
- vm.runInNewContext(`${handler};globalThis.__h=handleZeroSightFullThemeEvent;`,box);
- box.__h({event:'onAttach',actor:'enemy',returned:true,targetedBy:['player'],turnToken:9,meld});
- ok(trace.zsCounterTraceCharged===true,'opponent return through player target charges Counter Trace');
- vm.runInNewContext(`${resolve};globalThis.__r=resolveEffects;`,box);
- const action={meld,effectSeen:new Set(),willReturn:true,isAttach:true,targetOwner:'enemy',totalLength:4};
- const out=box.__r('player',[],'RUN',action);
- ok(out.bonus===12&&!trace.zsCounterTraceCharged,'next owner return consumes Counter Trace for exactly +12');
+ const g=fresh(),trace=named(g,'ZSS9');meld(g,'player',[plain(g,'S',7),plain(g,'S',8),trace]);const target=run(g,'enemy','H',[3,4,5]);g.setZeroSightTarget('player',target);g.state.turn='enemy';g.state.switchTarget='enemy';
+ const extra=plain(g,'H',6,'enemy');g.state.enemy.hand.push(extra);g.attachCards('enemy',[extra],'enemy',0);
+ ok(g.state.player.status.loaded===12,'opponent target return grants loading 12');g.retireMeld('player',0);nextTurn(g);g.returnSwitch('player',10);ok(g.state.switchPower===52,'loading survives retirement and joins the next actual return');
 }
-
-// Long Shot uses shared hand preparation rather than a theme counter.
+// Long Shot uses shared hand preparation and consumes an owned mark to cleanse damping.
 {
- const resolve=source('resolveEffects'),state={turnToken:12,switchPower:20};
- const box={globalThis:null,state,sideObj:()=>({hand:[]}),other:()=> 'enemy',consumeOfficialStatus:()=>0,isZeroSightTarget:()=>true,handPreparationReady:(c,n)=>c.ready===n};box.globalThis=box;
- vm.runInNewContext(`${resolve};globalThis.__r=resolveEffects;`,box);
- const c={uid:2,named:true,tag:'zsLongShot',name:'장거리 사격',ready:2};
- const out=box.__r('player',[c],'RUN',{meld:{},effectSeen:new Set(),willReturn:true,isAttach:true,targetOwner:'enemy',totalLength:4});
- ok(out.bonus===16,'two-turn prepared Long Shot adds exactly +16 on a target return');
+ const g=fresh(),c=named(g,'ZSS10'),target=run(g,'enemy','S',[7,8,9]);g.state.player.hand.push(c);g.setZeroSightTarget('player',target);g.applyOfficialStatus('meld',target,'mark',1,{actor:'player'});g.state.player.status.damp=8;g.advanceHandPreparation('player');g.advanceHandPreparation('player');g.attachCards('player',[c],'enemy',0);
+ ok(g.state.switchPower===46,'prepared Long Shot loads 16 and cleanses damping 8 before returning');ok(g.meldMarkValue(target,'player')===0,'only its own mark is spent');
 }
 
 ok(!script.includes('zeroSightResource')&&!script.includes('ZERO_SIGHT_COUNT'),'ZERO-SIGHT adds no dedicated numeric resource');
