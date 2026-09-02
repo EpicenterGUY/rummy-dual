@@ -141,7 +141,8 @@ for(const region of regions){
   d=>{d.rewardNodes.entries[3].algorithm='action-tags-region-v1';d.rewardNodes.entries[3].regionId=region.id;}
  ]){const invalid=clone(valid);mutate(invalid);assert.equal(ctx.normalizeRoguelikeRunDraft(invalid),null,'region provenance must match a real regional battle');}
  assert.equal(saved(),validJSON,'invalid records never rewrite the stored run');
- assert.ok(skip(finalNode));assert.ok(ctx.roguelikeBattleProgress().finished);
+ assert.ok(skip(finalNode));assert.equal(ctx.roguelikeCurrentBattleNodeRequest().battleNodeId,region.id+'-boss');
+ const bossReward=win();assert.equal(bossReward.regionId,region.id);assert.ok(skip(bossReward));assert.ok(ctx.roguelikeBattleProgress().finished);
 }
 ok(true,'all regions preserve issuance, migration, claim, skip, and corruption safeguards');
 assert.equal(JSON.stringify(progress),progressBefore);assert.equal(JSON.stringify(state),battleBefore);

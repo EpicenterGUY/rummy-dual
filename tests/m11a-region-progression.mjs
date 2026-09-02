@@ -79,12 +79,14 @@ for(const id of regions){
   ok(ctx.roguelikeCompleteBattleNode({...req,zone:'wrong'})===null,'wrong region callback rejected');
   const n=ctx.roguelikeCompleteBattleNode(req);assert.ok(n);assert.ok(skip(n));
  }
- ok(current().nodeIndex===6&&ctx.roguelikeBattleProgress().finished&&!ctx.roguelikeBattleProgress().awaitingRegion,'region slice finishes after six real wins');
+ ok(current().nodeIndex===6&&ctx.roguelikeCurrentBattleNodeRequest().battleNodeId===id+'-boss','existing six-win save continues at its new boss');
+ assert.ok(skip(win()));
+ ok(current().nodeIndex===7&&ctx.roguelikeBattleProgress().finished&&!ctx.roguelikeBattleProgress().awaitingRegion,'region slice finishes after the boss and its reward');
  ok(ctx.roguelikeCurrentBattleNodeRequest()===null,'completed slice has no phantom next battle');
  const good=saved(),bad=current();bad.regionPath=[regions.find(x=>x!==id)];
  storage.set(KEY,JSON.stringify(bad));ok(current()===null,'receipts from another region are rejected');storage.set(KEY,good);
  const position=current();position.nodeIndex=999;position.currentZone='wrong';storage.set(KEY,JSON.stringify(position));
- ok(current().nodeIndex===6&&current().currentZone===id,'position cannot override validated receipts');
+ ok(current().nodeIndex===7&&current().currentZone===id,'position cannot override validated receipts');
 }
 fresh();const bad=current();bad.regionPath=['red-zone'];storage.set(KEY,JSON.stringify(bad));
 ok(current()===null,'v6 route cannot be injected before common completion');
