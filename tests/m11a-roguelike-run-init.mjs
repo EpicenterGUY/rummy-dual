@@ -48,7 +48,7 @@ ok(source('roguelikeRunDraftText').includes('별도 런 덱 실험전 사용 가
   ok(locked.starterId==='wanderer','locked character starter safely falls back instead of bypassing progression');
   const saved=ctx.prepareRoguelikeRunDraft('pure');
   ok(store.has('rummyDuelRoguelikeRunDraftV1')&&ctx.loadRoguelikeRunDraft().runId===saved.runId,'prepared run draft persists under an isolated storage key');
-  store.set('rummyDuelRoguelikeRunDraftV1',JSON.stringify({...saved,themeLocks:['v-signal'],regionPath:['NEON//ARC'],nodeIndex:9,currentZone:'NEON//ARC'}));
+  store.set('rummyDuelRoguelikeRunDraftV1',JSON.stringify({...saved,version:5,themeLocks:['v-signal'],regionPath:['NEON//ARC'],nodeIndex:9,currentZone:'NEON//ARC'}));
   const normalized=ctx.loadRoguelikeRunDraft();
   ok(normalized.themeLocks.length===0&&normalized.regionPath.length===0&&normalized.nodeIndex===0&&normalized.currentZone==='common-start','draft normalization strips premature theme locks and route progress');
   ok(ctx.clearRoguelikeRunDraft()===true&&!store.has('rummyDuelRoguelikeRunDraftV1'),'run draft can be cleared without touching normal progress');

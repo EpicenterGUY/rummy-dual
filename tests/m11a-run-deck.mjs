@@ -18,7 +18,7 @@ for(const n of ['NAMED','CHARACTERS','TENDENCY_BY_TAG','ROGUELIKE_STARTER_IDS','
 vm.runInContext("const ROGUELIKE_STARTER_DECK_SIZE=30;const ROGUELIKE_RUN_DRAFT_KEY='rummyDuelRoguelikeRunDraftV1';const ROGUELIKE_COMMON_START_ZONE='common-start';const ROGUELIKE_REWARD_ALGORITHM='action-tags-v1';function unlockedNamed(){return new Set(Object.keys(NAMED))}",ctx);
 for(const n of [...script.matchAll(/function (\w+)\(/g)].map(m=>m[1]).filter(n=>/roguelike/i.test(n)).concat('namedSlot'))vm.runInContext(source(n),ctx);
 for(const starter of ['wanderer','collector','salvager','jester','pure']){
- const d=ctx.prepareRoguelikeRunDraft(starter);ok(d.version===5&&d.runDeck.cards.length===30,starter+' creates persistent 30-card deck');
+ const d=ctx.prepareRoguelikeRunDraft(starter);ok(d.version===6&&d.runDeck.cards.length===30,starter+' creates persistent 30-card deck');
  ok(ctx.loadRoguelikeRunDraft().runDeck.cards.filter(c=>c.variantId).length===(starter==='pure'?0:7),starter+' retains correct identities on reload');
 }
 const draft=ctx.prepareRoguelikeRunDraft('pure');

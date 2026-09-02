@@ -51,7 +51,7 @@ const fresh=()=>{pool=[...allIds];return ctx.prepareRoguelikeRunDraft('pure')};
 ok(ctx.roguelikeIssueRewardNode(null)===null&&!ctx.roguelikeSkipRewardNode(null)&&!ctx.roguelikeApplyRunReplacement(null),'no run cannot issue, skip, or receive a reward');
 for(const starter of ['wanderer','collector','salvager','jester','pure']){
  const draft=ctx.prepareRoguelikeRunDraft(starter);
- ok(draft.version===5&&draft.rewardNodes.version===1&&draft.rewardNodes.baseRevision===0&&draft.rewardNodes.entries.length===0,starter+' starts with a separate empty node ledger');
+ ok(draft.version===6&&draft.rewardNodes.version===1&&draft.rewardNodes.baseRevision===0&&draft.rewardNodes.entries.length===0,starter+' starts with a separate empty node ledger');
 }
 
 // A v4 player may already have many sandbox replacements: do not reset that deck or invent receipts.
@@ -59,13 +59,13 @@ const legacy=fresh();legacy.version=4;delete legacy.rewardNodes;
 legacy.runDeck.cards.find(c=>c.slot==='S3').variantId='S3';legacy.runDeck.revision=7;
 storage.set(KEY,JSON.stringify(legacy));
 const migrated=current();
-ok(migrated.version===5&&migrated.runId===legacy.runId&&migrated.createdAt===legacy.createdAt&&migrated.runDeck.revision===7&&migrated.runDeck.cards.find(c=>c.slot==='S3').variantId==='S3','v4 migration preserves run identity, existing variants, and revision');
+ok(migrated.version===6&&migrated.runId===legacy.runId&&migrated.createdAt===legacy.createdAt&&migrated.runDeck.revision===7&&migrated.runDeck.cards.find(c=>c.slot==='S3').variantId==='S3','v4 migration preserves run identity, existing variants, and revision');
 ok(migrated.rewardNodes.baseRevision===7&&migrated.rewardNodes.entries.length===0,'migration records the old deck revision without fabricating reward nodes');
 let node=issue();ok(ctx.roguelikeApplyRunReplacement(planFor(node))&&current().runDeck.revision===8,'migrated decks can receive new node-bound rewards');
 for(const version of [1,2,3]){
  const old={...legacy,version};delete old.runDeck;
  const clean=ctx.normalizeRoguelikeRunDraft(old);
- ok(clean.version===5&&clean.runDeck.cards.length===30&&clean.runDeck.revision===0&&clean.rewardNodes.entries.length===0,`v${version} blueprints still migrate to a fresh 30-card run deck`);
+ ok(clean.version===6&&clean.runDeck.cards.length===30&&clean.runDeck.revision===0&&clean.rewardNodes.entries.length===0,`v${version} blueprints still migrate to a fresh 30-card run deck`);
 }
 
 // Issuance is idempotent; a pending node blocks a second issue.
@@ -146,7 +146,7 @@ node=issue();ctx.roguelikeSkipRewardNode(token(node));node=issue();
 const valid=current(),validJSON=JSON.stringify(valid);
 const corruptions=[
  ['missing ledger',d=>delete d.rewardNodes],
- ['future schema',d=>d.version=6],
+ ['future schema',d=>d.version=7],
  ['future ledger schema',d=>d.rewardNodes.version=2],
  ['negative base revision',d=>d.rewardNodes.baseRevision=-1],
  ['invalid entries',d=>d.rewardNodes.entries={}],
