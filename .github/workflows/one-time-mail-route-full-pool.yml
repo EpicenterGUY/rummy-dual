@@ -1,0 +1,65 @@
+name: One-time MAIL-ROUTE full-pool
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/mail-route-full-pool-patch.py'
+      - '.github/workflows/one-time-mail-route-full-pool.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  implement:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply MAIL-ROUTE full-pool patch
+        run: python .github/scripts/mail-route-full-pool-patch.py
+      - name: Syntax gate
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const h=fs.readFileSync('index.html','utf8');
+          const s=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+          new Function(s);
+          console.log('PASS: combined game script parses');
+          NODE
+      - name: Run MAIL-ROUTE release gates
+        run: |
+          set -euo pipefail
+          node tests/mail-route-full-pool.mjs
+          node tests/theme-tutorial-foundation.mjs
+          node tests/character-theme-picker.mjs
+          node tests/theme-mix-simulation.mjs
+          node tests/m11-slot-invariant.mjs
+          node tests/named-card-audit.mjs
+          node tests/m11a-region-rewards.mjs
+          node tests/ux2-menu-isolation.mjs
+      - name: Run all regression suites with first-failure diagnostic
+        run: |
+          set -u
+          count=0
+          for test in tests/*.mjs; do
+            if ! node "$test" >/tmp/mailroute-test.log 2>&1; then
+              echo "FAILED_TEST=$test"
+              echo '--- FAILURE TAIL ---'
+              tail -n 220 /tmp/mailroute-test.log
+              exit 1
+            fi
+            count=$((count+1))
+          done
+          echo "ALL_TESTS_PASSED=$count"
+      - name: Commit MAIL-ROUTE full pool
+        run: |
+          git add index.html ROADMAP.md docs/THEME_GROUPS.md docs/THEME_FULL_POOL_PLAN.md tests/mail-route-full-pool.mjs tests/theme-mix-simulation.mjs tests/named-card-audit.mjs
+          if git diff --cached --quiet; then echo 'No feature changes to commit.'; exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat: complete MAIL-ROUTE 28-card full pool'
+          git pull --rebase origin main
+          git push origin HEAD:main
