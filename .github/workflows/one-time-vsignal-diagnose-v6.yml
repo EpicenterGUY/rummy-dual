@@ -1,0 +1,36 @@
+name: One-time V-SIGNAL regression diagnose v6
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-vsignal-diagnose-v6.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply V-SIGNAL v5 patch
+        run: python .github/scripts/vsignal-full-pool-patch-v5.py
+      - name: Diagnose first failing regression
+        shell: bash
+        run: |
+          set -u
+          count=0
+          for test in tests/*.mjs; do
+            if ! node "$test" >/tmp/vsignal-test.log 2>&1; then
+              echo "FAILED_TEST=$test"
+              echo '--- FAILURE TAIL ---'
+              tail -n 100 /tmp/vsignal-test.log
+              exit 1
+            fi
+            count=$((count+1))
+          done
+          echo "ALL_TESTS_PASSED=$count"
