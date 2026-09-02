@@ -21,6 +21,20 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Shield has no base hard cap and normally expires at the owner's next turn start
 - [x] Recovery rule refinement: a card recovered this turn may still be used for a new 3-card meld, maintenance, discard, or non-return effects, but cannot be reused that same turn as material for a BURST/CHAIN/SWITCH-returning attach unless a named effect explicitly grants that exception.
 
+## M0R — 공개 조합 전개 속도 개편 후보
+현재 라이브 규칙의 `공개 조합 2개 / 새 3장 조합 턴당 1개`가 초반 전개와 테마 시동을 지나치게 늦추는지 재검토한다. 아래 항목은 이정표에 등록된 개편 후보이며, 코드·튜토리얼·AI·밸런스 검증이 끝나기 전까지 라이브 확정으로 간주하지 않는다.
+
+- [ ] 자기 공개 조합 한도 `2 → 3` 검토 및 구현 — 세트/런 합산 최대 3개. 4개 이상은 허용하지 않아 모바일 가독성·보드 과밀·장기 고착을 억제
+- [ ] 새 정확히 3장 조합 생성 제한 `턴당 총 1개 → 최대 2개` 검토 및 구현 — 세트+런, 세트+세트, 런+런 모두 가능하되 빈 공개 슬롯 수를 넘을 수 없음
+- [ ] 같은 턴 새로 만든 자신의 조합은 그 턴 붙이기로 확장할 수 없는 기존 안전장치 유지 — `3장 생성 → 즉시 체인/버스트 연속 공격` 폭발을 차단
+- [ ] 시작 손패 8 + 턴 획득 1 기준 첫 턴 전개 속도 검증 — 최대 2조합이면 6장 소모 후 손패 3장이 남아 기본적으로 즉시 러미가 발생하지 않는 구조 확인
+- [ ] 새 조합 생성 반응 카드 전수 감사 — `새 조합을 만들 때`가 2회 발동해 과도해지는 효과는 `이번 턴 처음 새 조합을 만들 때` 또는 카드별 턴당 1회로 제한
+- [ ] AI 행동 상한/새 조합 선택/3슬롯 가치평가 갱신 — 빈 슬롯 3개와 턴당 새 조합 2개를 고려해 세트·런 배치, 기존 조합 확장, 회수 우선순위를 재조정
+- [ ] UI/반응형 갱신 — 모바일·Fold·태블릿·PC에서 각 진영 공개 조합 3개가 길어진 런과 함께 겹치거나 과도하게 축소되지 않는지 실기기 확인
+- [ ] 튜토리얼/도움말/규칙 문구 갱신 — `새 조합 턴당 1개`, `공개 조합 최대 2개` 전제 문구를 모두 제거하고 새 제한을 명시
+- [ ] HWA-TU 및 후속 테마 재평가 — 여러 공개 카드의 랭크·수트를 참조하는 테마가 3슬롯/2회 전개에서 지나치게 빨라지거나 오히려 자연스러워지는지 혼합덱 기준으로 검증
+- [ ] 실행 회귀 테스트 추가 — 3슬롯 상한, 한 턴 새 조합 2개 허용/3번째 거부, 신규 조합 당턴 확장 거부, 러미/회수/반환/조합 정리 후 슬롯 재사용을 잠금
+
 ## M1 — Final rules ↔ live code sync
 - [x] Remove free RUN retirement
 - [x] Remove free public-meld disposal
