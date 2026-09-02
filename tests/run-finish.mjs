@@ -38,7 +38,7 @@ function run(chain = 4, count = 7) {
 
 // Availability: CHAIN 4+, controller turn only, and fixed cards/melds cannot be voluntarily moved.
 {
-  const player = { melds: [run(3)], newMeldUsed: false, actedThisTurn: false };
+  const player = { melds: [run(3)], newMeldCount:0, actedThisTurn: false };
   const enemy = { melds: [] };
   const state = { player, enemy, gameOver: false, turn: 'player', phase: 'action' };
   const ctx = makeContext({ state });
@@ -59,7 +59,7 @@ function run(chain = 4, count = 7) {
 
 // Completion frees the slot without touching SWITCH/power and counts as an action.
 {
-  const player = { melds: [run(4)], newMeldUsed: false, actedThisTurn: false };
+  const player = { melds: [run(4)], newMeldCount:0, actedThisTurn: false };
   const enemy = { melds: [] };
   const state = {
     player, enemy, gameOver: false, turn: 'player', phase: 'action',
@@ -86,7 +86,7 @@ function run(chain = 4, count = 7) {
 
 // A finishable RUN prevents the game from misclassifying the turn as completely stuck.
 {
-  const player = { melds: [run(4), { type: 'SET', chain: 0, cards: [{}, {}, {}] }], newMeldUsed: false };
+  const player = { melds: [run(4), { type: 'SET', chain: 0, cards: [{}, {}, {}] }], newMeldCount:0 };
   const enemy = { melds: [] };
   const state = { player, enemy, gameOver: false, turn: 'player', phase: 'action' };
   const ctx = makeContext({ state });
@@ -102,7 +102,7 @@ function run(chain = 4, count = 7) {
 
 // CPU only gives up a mature RUN when a full board is blocking a playable new meld; prefer the longest mature RUN.
 {
-  const enemy = { melds: [run(4, 7), run(4, 9)], newMeldUsed: false };
+  const enemy = { melds: [run(4, 7), run(4, 9), run(0, 3)], newMeldCount:0 };
   const player = { melds: [] };
   const state = { player, enemy, gameOver: false, turn: 'enemy', phase: 'wait' };
   const ctx = makeContext({ state });
@@ -113,7 +113,7 @@ function run(chain = 4, count = 7) {
   ctx.bestNewMeldForTurn = () => ({ type: 'SET' });
   install(ctx, 'canFinishRun', 'bestFinishRunAI');
   ok(ctx.bestFinishRunAI('enemy')?.index === 1, 'CPU chooses the longer mature RUN to free a blocked slot');
-  enemy.newMeldUsed = true;
+  enemy.newMeldCount = 2;
   ok(ctx.bestFinishRunAI('enemy') === null, 'CPU does not complete a RUN after its new-meld action is already spent');
 }
 

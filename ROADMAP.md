@@ -11,8 +11,8 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] RUN CHAIN +10 / +15 / +20 / +25; CHAIN 4+ RUN may be voluntarily `런 완주`ed by its controller on their own turn to free the slot, while keeping it allows continued +25 extensions
 - [x] One central uncapped SWITCH; 100+ is display-only OVERLOAD
 - [x] One normal SWITCH return per turn
-- [x] Base new-meld limit: SET/RUN combined, at most one new exact 3-card meld per turn unless a named effect explicitly grants an extra new meld
-- [x] Public meld cap 2 per player; no free base meld/RUN disposal
+- [x] Base new-meld limit: SET/RUN combined, at most two new exact 3-card melds per turn; retirement does not refund this allowance
+- [x] Public meld cap 3 per player; no free base meld/RUN disposal
 - [x] Shared discard has no size cap; base take is top only
 - [x] When a personal deck empties, recycle that player’s spent pile plus cards in the shared discard currently owned by that player; opponent-owned discard and public meld cards stay in place
 - [x] Zero-source circulation safety: one-sided stalls skip acquisition / use legal recovery / release one owned public meld as needed; simultaneous two-sided stalls perform one full current-owner recirculation while preserving CORE and SWITCH state, with a second stall resolved by CORE → current HP → draw
@@ -21,25 +21,27 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Shield has no base hard cap and normally expires at the owner's next turn start
 - [x] Recovery rule refinement: a card recovered this turn may still be used for a new 3-card meld, maintenance, discard, or non-return effects, but cannot be reused that same turn as material for a BURST/CHAIN/SWITCH-returning attach unless a named effect explicitly grants that exception.
 
-## M0R — 공개 조합 전개 속도 개편 후보
-현재 라이브 규칙의 `공개 조합 2개 / 새 3장 조합 턴당 1개`가 초반 전개와 테마 시동을 지나치게 늦추는지 재검토한다. 아래 항목은 이정표에 등록된 개편 후보이며, 코드·튜토리얼·AI·밸런스 검증이 끝나기 전까지 라이브 확정으로 간주하지 않는다.
+## M0R — 공개 조합 전개 속도 개편: 구현 및 검증
+이번 작업은 `ab8578b`를 기준으로 시작했다. 새 라이브 규칙은 공개 최대 3개 / 세트·런 합산 정확히 3장 조합 턴당 최대 2개이며, 생성 횟수를 카드 효과나 슬롯 정리로 늘리지 않는다. **기능 회귀와 CSS viewport 검증을 잠그되 최종 밸런스 확정은 보류**한다. 상세 감사·방법·한계는 `docs/M0R_MELD_EXPANSION.md`를 따른다.
 
-- [ ] 자기 공개 조합 한도 `2 → 3` 검토 및 구현 — 세트/런 합산 최대 3개. 4개 이상은 허용하지 않아 모바일 가독성·보드 과밀·장기 고착을 억제
-- [ ] 새 정확히 3장 조합 생성 제한 `턴당 총 1개 → 최대 2개` 검토 및 구현 — 세트+런, 세트+세트, 런+런 모두 가능하되 빈 공개 슬롯 수를 넘을 수 없음
-- [ ] 같은 턴 새로 만든 자신의 조합은 그 턴 붙이기로 확장할 수 없는 기존 안전장치 유지 — `3장 생성 → 즉시 체인/버스트 연속 공격` 폭발을 차단
-- [ ] 시작 손패 8 + 턴 획득 1 기준 첫 턴 전개 속도 검증 — 최대 2조합이면 6장 소모 후 손패 3장이 남아 기본적으로 즉시 러미가 발생하지 않는 구조 확인
-- [ ] 새 조합 생성 반응 카드 전수 감사 — `새 조합을 만들 때`가 2회 발동해 과도해지는 효과는 `이번 턴 처음 새 조합을 만들 때` 또는 카드별 턴당 1회로 제한
-- [ ] AI 행동 상한/새 조합 선택/3슬롯 가치평가 갱신 — 빈 슬롯 3개와 턴당 새 조합 2개를 고려해 세트·런 배치, 기존 조합 확장, 회수 우선순위를 재조정
-- [ ] UI/반응형 갱신 — 모바일·Fold·태블릿·PC에서 각 진영 공개 조합 3개가 길어진 런과 함께 겹치거나 과도하게 축소되지 않는지 실기기 확인
-- [ ] 튜토리얼/도움말/규칙 문구 갱신 — `새 조합 턴당 1개`, `공개 조합 최대 2개` 전제 문구를 모두 제거하고 새 제한을 명시
-- [ ] HWA-TU 및 후속 테마 재평가 — 여러 공개 카드의 랭크·수트를 참조하는 테마가 3슬롯/2회 전개에서 지나치게 빨라지거나 오히려 자연스러워지는지 혼합덱 기준으로 검증
-- [ ] 실행 회귀 테스트 추가 — 3슬롯 상한, 한 턴 새 조합 2개 허용/3번째 거부, 신규 조합 당턴 확장 거부, 러미/회수/반환/조합 정리 후 슬롯 재사용을 잠금
+- [x] 공개 조합 3슬롯 구현 — 플레이어/상대 모두 네 번째 생성 거부, 정리된 슬롯 즉시 재사용
+- [x] 턴당 새 조합 2개 구현 — 세트+세트, 세트+런, 런+런 허용; 세 번째 거부; 빈 슬롯과 턴 생성 횟수는 별도 제약
+- [x] 신규 자기 조합 당턴 붙이기 확장 금지 유지 — 단일/다중 붙이기, AI 탐색, 합법 행동 판정 모두 검사
+- [x] 시작 손패 8 + 획득 1 및 첫 2조합 후 3장 유지 실행 검증; 비교 시드 초반 전투 시뮬레이션은 `experiments/m0r-opening-tempo.mjs` 및 `docs/M0R_TEMPO_RESULTS.json`
+- [x] 런타임 네임드 71종(개발자 전용 포함)의 다음 일반 조합 이벤트 비재발동 감사; 겁쟁이 왕/카지노 첫 조합·턴 게이트 검증; 퀵 리로드는 추가 생성 대신 회수 후 합법 새 조합에서 보호막 8·카드당 턴당 1회로 개편
+- [x] AI 3슬롯/2생성 반영 — 두 조합을 보존하는 제한된 선행 탐색, 긴급 반환 우선, 빈 슬롯이 있을 때 회수→재편성 평가, 만원일 때 런 완주; 행동 예산 연습 4/일반 6
+- [x] 360×800 / 390×844 / 430×932 / 768×1024 / 852×744 / 1024×768 / 1366×768 / 1920×1080 Chromium CSS viewport 검사 — 양쪽 각 13장 런 3개, 가로 viewport 이탈 없음; 긴 런 로컬 스크롤, 1·2·3 바로 보기, Fold 카드 최소 44px. `docs/M0R_LAYOUT_RESULTS.json`
+- [x] 튜토리얼·도움말·버튼·README의 생성/슬롯 문구 갱신; 카드군 이름은 하이픈 사용
+- [x] 실행 회귀 — 전체 `tests/*.mjs` 125개 파일 통과. 생성 1·2 허용/3 거부, 슬롯 3 허용/4 거부, 당턴 확장 금지, 기존 확장·회수·러미·버스트·체인·반환·런 완주·퀵 리로드 포함
+- [x] HWA-TU 영향 1차 검토 — 후보의 계절맞춤만 일반/테마 혼합 공개 카드에서 관측; 추가 생성 보너스 금지. 실제 효과·윤달·그림맞춤이 미구현이므로 카드군 밸런스 완료를 뜻하지 않음
+- [ ] Android/iOS/Fold 실기기 터치·안전영역 확인
+- [ ] 인간 실전/M12 및 실제 HWA-TU 효과 구현 후 최종 밸런스 잠금 판단 — 초기 시뮬레이션만으로 확정하지 않음
 
 ## M1 — Final rules ↔ live code sync
 - [x] Remove free RUN retirement
 - [x] Remove free public-meld disposal
 - [x] Remove discard five-card cap
-- [x] Make AI respect the two-meld cap
+- [x] Make AI respect the three-meld cap
 - [x] Audit remaining code-only base rules: remove the hidden shield-40 cap, obsolete retire/draw-preview routes, and superseded generic RUMMY flags; clarify Roundabout against the recovery-return guard
 - [x] Add conditional RUN completion: controller-only at CHAIN 4+, no bonus power/SWITCH movement, slot opens immediately, continuation remains +25 if not completed; AI and stuck-state logic respect it
 
@@ -167,16 +169,16 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 현재 정식 후보 18장 설계 확정 — 봉인/고정/무료 회수/대상 교대/필드 이동/회수 카드 재배치/근거리 피니시 포함
 - [x] 상대 공개 조합 단위 접전 메타데이터 / 1개 제한 / 지연 해제 구현 — 접전은 표적과 분리된 `themeMeta.pointBlank`로 관리하고 상대 공개 조합만 지정 가능; 새 접전은 기존 접전을 이전하며, 자신의 카드가 모두 빠지면 다음 자기 턴 종료를 해제 시점으로 예약하고 그 전에 재돌입하면 예약을 취소함
 - [x] 무료 회수와 기본 회수 횟수를 명확히 구분 — 공용 `recoveryAccess`가 `free / reason / consumesBasic`을 반환하고 플레이어·AI·합법성 판정·`onRecover` 이벤트가 이를 공유; 기본 회수를 이미 쓴 뒤에도 조건부 무료 회수는 가능하며 UI도 `무료 회수`와 `기본 회수 사용함`을 구분
-- [x] `퀵 리로드` 회수 후 추가 새 조합 예외 구현 — 기존 기본 규칙이 이미 회수 카드를 같은 턴 첫 새 조합에 허용하므로 죽은 효과를 수정; J♦ 변형 `퀵 리로드`는 접전에서 회수했을 때 그 카드를 포함하는 새 3장 조합을 이번 턴 1회 추가로 허용하며, `recoverReturnOverrideToken`은 부여하지 않아 버스트/체인 반환 재사용 금지는 그대로 유지
+- [x] `퀵 리로드` 회수 후 재편성 보상 — M0R에서 추가 새 조합 예외를 제거하고, 접전에서 회수한 턴 합법적인 새 조합에 쓰면 보호막 8·카드당 턴당 1회로 변경. 생성 최대 2회·공개 최대 3개·반환 재사용 제한 유지
 - [x] 이동 효과 전투 중립 원칙 잠금 — `onMeldMove`는 `combatNeutral / powerDelta:0 / returnsSwitch:false`를 명시하고 공용 `moveCardBetweenMelds`는 조합/CHAIN/메타데이터만 갱신하며 이동 자체로 BURST·CHAIN 위력·SWITCH 반환·자동 정리를 만들지 않음
 - [x] 7♥ `엄폐 교대` 적대 대상 교체/fallback 구현 — 접전의 자기 카드가 상대의 직접 간섭 대상일 때 턴당 1회 같은 효과의 다른 합법적인 자기 카드로 교대; 대체 대상이 없으면 보호막 12를 얻고 원래 간섭은 계속 해결
 - [x] POINT-BLANK ↔ 일반/V-SIGNAL/ZERO-SIGHT 혼합 회귀 테스트 — 접전/표적 동시 메타데이터, 테마 비의존 이동, V-SIGNAL·일반 카드 대상 교대, 이동 전투 중립을 실행 회귀로 잠금
 
 ### 후속 테마 후보 — 아직 상세 확정 전
-- [x] `MAIL//ROUTE` 작업안 기록 — 편지/우편 테마, `우편 → 목적지 → 도착 → 반송 → 재배송` 엔진. 일반 카드에도 우편 표식을 붙여 혼합덱 허브로 쓰는 방향
-- [x] `SCRAP//SHIFT` 작업안 기록 — 폐품/해체/재조립 테마, 다른 카드도 `부품`으로 바꾸고 회수·소모·이동을 자원화하는 방향
-- [x] MAIL//ROUTE 카드 수 / 우편 표식 수명 / 목적지 규칙 / 반송 타이밍 최종 확정 — 28장(수트별 7), 일반 카드에도 붙는 비중첩 `우편`, 손패·공개 조합 사이 유지 후 버림패/소모패/기본 덱 복귀 시 해제, 플레이어당 목적지 1개, 손패→조합·조합→다른 조합을 도착으로 판정, 공개 조합→자기 손 회수를 반송으로 판정, 반송 후 재배송 가능, 동일 카드/효과의 도착·지정 도착·반송은 기본 턴당 1회
-- [x] SCRAP//SHIFT 카드 풀과 부품 규칙 상세 재설계 — 24장(수트별 6) 후보 풀, 일반/타 테마의 내 소유 카드에도 붙는 비중첩 `부품`, 손패·공개 조합·소모패 유지 후 버림패/덱 진입 시 해제, 유효성을 보존하는 공개 조합→소모패 `해체`, 전투 중립 공개 조합→공개 조합 `이식`, 소모패→손패 시 표식을 소비하고 당턴 사용을 막는 `재조립`, 기본 턴당 1회 게이트와 RUMMY 선해결 규칙까지 잠금
+- [x] `MAIL-ROUTE` 작업안 기록 — 편지/우편 테마, `우편 → 목적지 → 도착 → 반송 → 재배송` 엔진. 일반 카드에도 우편 표식을 붙여 혼합덱 허브로 쓰는 방향
+- [x] `SCRAP-SHIFT` 작업안 기록 — 폐품/해체/재조립 테마, 다른 카드도 `부품`으로 바꾸고 회수·소모·이동을 자원화하는 방향
+- [x] MAIL-ROUTE 카드 수 / 우편 표식 수명 / 목적지 규칙 / 반송 타이밍 최종 확정 — 28장(수트별 7), 일반 카드에도 붙는 비중첩 `우편`, 손패·공개 조합 사이 유지 후 버림패/소모패/기본 덱 복귀 시 해제, 플레이어당 목적지 1개, 손패→조합·조합→다른 조합을 도착으로 판정, 공개 조합→자기 손 회수를 반송으로 판정, 반송 후 재배송 가능, 동일 카드/효과의 도착·지정 도착·반송은 기본 턴당 1회
+- [x] SCRAP-SHIFT 카드 풀과 부품 규칙 상세 재설계 — 24장(수트별 6) 후보 풀, 일반/타 테마의 내 소유 카드에도 붙는 비중첩 `부품`, 손패·공개 조합·소모패 유지 후 버림패/덱 진입 시 해제, 유효성을 보존하는 공개 조합→소모패 `해체`, 전투 중립 공개 조합→공개 조합 `이식`, 소모패→손패 시 표식을 소비하고 당턴 사용을 막는 `재조립`, 기본 턴당 1회 게이트와 RUMMY 선해결 규칙까지 잠금
 - [ ] `HWA-TU` 정식 후보 정비 — 화투 모티브는 유지하되 `홍단/청단/고도리/피/열끗`처럼 사전지식을 요구하는 용어를 전면에 두지 않고, `달 / 계절맞춤 / 붉은 띠 / 풀빛 띠 / 푸른 띠 / 새 셋 / 빛 셋`처럼 효과문만 읽어도 이해되는 한국어 구조로 재구성
 - [ ] HWA-TU 기본 판정 잠금 — A~Q를 1~12월로 읽고 K는 `윤달` 후보로 검토하되 실제 세트/런의 랭크·수트 판정은 전혀 바꾸지 않는다. 윤달/조커의 달·그림 대체 범위, 한 맞춤 내 대체 최대치, 재지정 타이밍을 확정
 - [ ] 계절맞춤 / 그림맞춤 구조 재평가 — `1·2·3 / 4·5·6 / 7·8·9 / 10·J·Q` 계절맞춤은 넓은 초동·엔진 조건으로, 정확한 랭크+수트 그림맞춤은 선택형 고급 보상으로 두어 숨은 족보 과밀과 보드 계산 부담을 억제
@@ -189,7 +191,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 ### 구현 전 공통 검증
 - [x] M8 첫 ~50 네임드 선택/복사/타이밍 안정화 후 대규모 테마 구현 시작
 - [x] 테마 ID/표시명/전용 조합 메타데이터 ↔ 동일 랭크+무늬 슬롯 불변식 검증 — `themeId`는 카드의 정체성 메타데이터일 뿐 `namedSlot`/52슬롯 키를 바꾸지 않으며, 모든 라이브 테마 변형은 정규 슬롯에 귀속됨. ZERO-SIGHT `themeMeta.zeroSight`와 POINT-BLANK `themeMeta.pointBlank`는 같은 공개 조합에서 독립 공존하고 카드 슬롯/소유권을 변경하지 않음을 실행 회귀로 잠금
-- [x] 한 행동의 테마 반응 순서 + 턴당 1회 게이트 명문화 — 공용 순서는 `기본 행동 이벤트 → ZERO-SIGHT 표적 변화 → POINT-BLANK 접전 변화 → 반환 후 지연 처리`로 잠금. 이동은 표적 source→target 뒤 접전 source→target 순서. 카드 단위 `themeTurnGates` / `claimThemeTurnGate`가 같은 `turnToken`의 중복 테마 반응을 차단하고 기존 앙코르/퀵 리로드/엄폐 교대 토큰은 호환용으로 유지
+- [x] 한 행동의 테마 반응 순서 + 턴당 1회 게이트 명문화 — 공용 순서는 `기본 행동 이벤트 → ZERO-SIGHT 표적 변화 → POINT-BLANK 접전 변화 → 반환 후 지연 처리`로 잠금. 이동은 표적 source→target 뒤 접전 source→target 순서. 카드 단위 `themeTurnGates` / `claimThemeTurnGate`가 같은 `turnToken`의 중복 테마 반응을 차단하고 기존 앙코르/퀵 리로드/엄폐 교대 토큰은 각 카드의 회수/보상/교대 게이트로 유지
 - [x] AI 표적·접전·상대 조합 사용·회수 최소 휴리스틱 추가 — 기존 M10 합법성/보드 위험 점수는 그대로 두고 `themeAIAttachBias` / `themeAIRecoveryBias`를 가산층으로 추가. 내 표적 활용, 탄도 계산의 실제 부족분, ONE SHOT 50+ 성공/실패, 내 접전 재진입, V-SIGNAL의 상대 조합 사용(RAID형 진입), 무료 회수·앙코르 재진입·접전 회수 가치를 판단하며 테마 점수가 행동 합법성을 우회하지 않음
 - [x] 테마 최대밀도 / 2테마 / 일반 혼합 구성 시뮬레이션 + 직접 위력 비율 검사 — `tests/theme-mix-simulation.mjs`가 라이브/개발 테마별 최대 4장 우선 편성 오픈형 9네임드 빌드, 모든 2테마 조합의 슬롯 충돌 해소, 일반 mixed 다중 시드 표본을 실행 검증. 모든 구성은 `namedSlot` 중복 0을 유지하며 테마 외 카드가 남고, 직접 누적 위력 태그는 전체 네임드 풀 20% 미만·현재 테마 카드 풀 과반 미만으로 잠금
 
@@ -404,9 +406,9 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [ ] 고정 시작 29슬롯에서 테마 초동의 진입 가능성 검토 — ZERO-SIGHT 초동 CA/C2 등 덱 밖 슬롯은 현재 동일 슬롯 교체 보상에 들어올 수 없다. 지역 성향은 이 자격을 우회하지 않으며 새 슬롯 진입 수단은 별도 설계한다.
 
 ### 현재 지역 후보 — 4개 분기 지역 + 널워드 후반 구역 프로토타입, 상세 콘텐츠 후속 설계
-- [x] `NEON//ARC 네온아크` — 미디어/방송/SNS/배송/정보 도시. V-SIGNAL + MAIL//ROUTE 중심 후보
+- [x] `NEON//ARC 네온아크` — 미디어/방송/SNS/배송/정보 도시. V-SIGNAL + MAIL-ROUTE 중심 후보
 - [x] `RED//ZONE 레드존` — 도시전/용병/정찰/돌입 분쟁구역. ZERO-SIGHT + POINT-BLANK 중심
-- [x] `IRON//GRAVE 아이언그레이브` — 폐공장/고철/기계 산업폐허. SCRAP//SHIFT 중심 후보
+- [x] `IRON//GRAVE 아이언그레이브` — 폐공장/고철/기계 산업폐허. SCRAP-SHIFT 중심 후보
 - [x] `OLD//QUARTER 올드쿼터` — 구시가지/탐정/범죄조직/암시장/계약. 향후 탐정·마피아·도둑·밀수·거래 테마 후보
 - [x] `NULL//WARD 널워드` — 기록에서 삭제된 격리구역/실험/괴이/변이. 두 지역 뒤 교전 2회·최종 보스가 있는 후반 구역 프로토타입으로 연결. 실험체·초능력·저주 계열 상세 콘텐츠는 후속 설계
 - [ ] 각 지역 세계관 / 지역 공용 카드 / 이벤트 / 엘리트 / 보스 상세 설계

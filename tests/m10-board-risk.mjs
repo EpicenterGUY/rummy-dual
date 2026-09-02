@@ -81,7 +81,7 @@ new Function(script);
 }
 
 ok(html.includes('sc+=opponentMeldAttachBias(w,targetSide,m,combined,k)'), 'extension scoring consumes the opponent-meld context bias');
-ok(html.includes("bestNewMeld(hand.filter(c=>c.blockedUntilTurn!==state.turnNo),w)"), 'turn-aware AI new-meld scoring receives the acting side');
+ok(html.includes("bestNewMeld(usable,w)"), 'turn-aware AI new-meld scoring receives the acting side');
 ok(road.includes('- [x] Improve opponent-meld and future-BURST risk evaluation'), 'ROADMAP marks M10 opponent-board risk evaluation complete');
 
 console.log('RUMMY//DUEL M10 board-risk regression tests passed.');

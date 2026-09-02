@@ -79,7 +79,7 @@ function card(suit, rank, extra = {}) {
 
 // submitNewMeld: exactly three cards only.
 {
-  const player = { hand: [], melds: [], newMeldUsed: false, actedThisTurn: false };
+  const player = { hand: [], melds: [], newMeldCount:0, actedThisTurn: false };
   const enemy = { hand: [], melds: [] };
   const state = { player, enemy, turnNo: 1, turnToken: 3, gameOver: false };
   const ctx = makeContext({ state });
@@ -109,7 +109,7 @@ function card(suit, rank, extra = {}) {
 
   const three = [card('S',7), card('H',7), card('D',7)];
   player.hand = [...three, card('C',2)];
-  player.newMeldUsed = false;
+  player.newMeldCount = 0;
   ok(ctx.submitNewMeld('player', three) === true, 'new meld accepts exact three-card SET');
   ok(player.melds.length === 1 && player.melds[0].cards.length === 3, 'accepted 3SET enters public board as three cards');
 }

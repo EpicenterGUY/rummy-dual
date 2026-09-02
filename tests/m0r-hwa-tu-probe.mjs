@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {hwaTuSeasonMatches} from '../experiments/m0r-opening-tempo.mjs';
+const c=(rank,owner='player',suit='H')=>({rank,owner,suit});
+const st={player:{melds:[{cards:[c('A'),c('2'),c('3')]}]},enemy:{melds:[]}};
+assert.equal(hwaTuSeasonMatches(st,'player'),1);
+st.player.melds=[{cards:[c('A'),c('A'),c('A')]}];assert.equal(hwaTuSeasonMatches(st,'player'),0,'three same-rank suits are not three months');
+st.enemy.melds=[{cards:[c('2'),c('3'),c('4','enemy')]}];assert.equal(hwaTuSeasonMatches(st,'player'),1,'own cards on opponent board count without requiring a theme');
+st.player.melds=[{cards:[c('10'),c('J'),c('Q')]}];assert.equal(hwaTuSeasonMatches(st,'player'),1,'October-November-December');
+st.player.melds=[{cards:[c('10'),c('J'),c('K'),c('J1','player','J')]}];assert.equal(hwaTuSeasonMatches(st,'player'),0,'no unapproved K/Joker substitution');
+console.log('PASS design-only HWA-TU seasonal probe: distinct months, mixed ownership, no speculative wild replacement');

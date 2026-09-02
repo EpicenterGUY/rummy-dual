@@ -41,7 +41,7 @@ ok(ext.includes("sc+=opponentMeldAttachBias(w,targetSide,m,combined,k)"),'M10 op
 ok(ext.includes('const powerGain=sc')&&(ext.includes('themeAIAttachBias(w,targetSide,m,cs,powerGain)')||ext.includes('themeAIAttachBias(w,targetSide,m,projected,powerGain)')),'extension scoring adds theme context only after preserving raw power gain, using the live or rank-projected cards');
 ok(ext.indexOf('opponentMeldAttachBias')<ext.indexOf('themeAIAttachBias'),'theme AI bias is additive after the established M10 board-risk layer');
 ok(rec.includes('themeAIRecoveryBias(w,targetSide,m,c)'),'recovery planning consumes the shared theme recovery bias');
-ok(rec.includes("c.tag==='pbQuickReload'")&&rec.includes('bestNewMeldForTurn(w,hyp)'),'existing Quick Reload and new-meld recovery logic remain present');
+ok(rec.includes('(s.newMeldCount||0)<2&&s.melds.length<3')&&rec.includes('bestNewMeldForTurn(w,hyp)'),'recovery prepares a new meld only with remaining allowance and a free slot');
 ok(road.includes('AI 표적·접전·상대 조합 사용·회수 최소 휴리스틱 추가'),'ROADMAP closes the minimum theme-aware AI item');
 ok(themeDoc.includes('AI는 테마 전용 별도 규칙을 만들지 않고 이미 합법인 행동의 점수에만 작은 테마 보정을 더한다'),'canonical design locks additive-only theme AI policy');
 console.log('Cross-theme AI heuristic regression passed.');

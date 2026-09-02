@@ -67,7 +67,7 @@ const rankCore=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRanks
 // Real submitNewMeld path: chosen rank is locked before effects and RUMMY.
 {
   const a=card('S','7','3','7'),b=card('H','3'),c=card('D','3'),cards=[a,b,c];
-  const player={hand:[...cards],melds:[],newMeldUsed:false,actedThisTurn:false,turnStarts:1},enemy={hand:[],melds:[],turnStarts:1};
+  const player={hand:[...cards],melds:[],newMeldCount:0,actedThisTurn:false,turnStarts:1},enemy={hand:[],melds:[],turnStarts:1};
   const state={player,enemy,field:null,turnNo:1,turnToken:11,gameOver:false,lastPlayerMeldType:null,lastEnemyMeldType:null};
   const capture={effectRanks:null,rummyRanks:null};
   const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});

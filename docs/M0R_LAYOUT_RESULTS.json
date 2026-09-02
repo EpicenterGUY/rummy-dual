@@ -1,0 +1,597 @@
+{
+  "method": "Chromium same-origin iframe CSS viewports; three 13-card RUNs per side; not physical-device testing",
+  "results": [
+    {
+      "viewport": [
+        360,
+        800
+      ],
+      "documentOverflow": -15,
+      "slots": [
+        3,
+        3
+      ],
+      "panels": [
+        {
+          "left": 6,
+          "right": 339,
+          "width": 333
+        },
+        {
+          "left": 6,
+          "right": 339,
+          "width": 333
+        }
+      ],
+      "cardWidth": 48,
+      "rows": [
+        {
+          "cards": 13,
+          "width": 291,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 291,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 291,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 291,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 291,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 291,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        }
+      ],
+      "sides": [
+        {
+          "height": 666,
+          "scrollHeight": 666,
+          "overflow": "visible"
+        },
+        {
+          "height": 756,
+          "scrollHeight": 756,
+          "overflow": "visible"
+        }
+      ]
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "documentOverflow": -15,
+      "slots": [
+        3,
+        3
+      ],
+      "panels": [
+        {
+          "left": 6,
+          "right": 369,
+          "width": 363
+        },
+        {
+          "left": 6,
+          "right": 369,
+          "width": 363
+        }
+      ],
+      "cardWidth": 48,
+      "rows": [
+        {
+          "cards": 13,
+          "width": 321,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 321,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 321,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 321,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 321,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 321,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        }
+      ],
+      "sides": [
+        {
+          "height": 666,
+          "scrollHeight": 666,
+          "overflow": "visible"
+        },
+        {
+          "height": 756,
+          "scrollHeight": 756,
+          "overflow": "visible"
+        }
+      ]
+    },
+    {
+      "viewport": [
+        430,
+        932
+      ],
+      "documentOverflow": -15,
+      "slots": [
+        3,
+        3
+      ],
+      "panels": [
+        {
+          "left": 7,
+          "right": 408,
+          "width": 401
+        },
+        {
+          "left": 7,
+          "right": 408,
+          "width": 401
+        }
+      ],
+      "cardWidth": 48,
+      "rows": [
+        {
+          "cards": 13,
+          "width": 359,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 359,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 359,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 359,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 359,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 359,
+          "scrollWidth": 674,
+          "overflow": "auto"
+        }
+      ],
+      "sides": [
+        {
+          "height": 666,
+          "scrollHeight": 666,
+          "overflow": "visible"
+        },
+        {
+          "height": 756,
+          "scrollHeight": 756,
+          "overflow": "visible"
+        }
+      ]
+    },
+    {
+      "viewport": [
+        768,
+        1024
+      ],
+      "documentOverflow": 0,
+      "slots": [
+        3,
+        3
+      ],
+      "panels": [
+        {
+          "left": 228.53125,
+          "right": 594.984375,
+          "width": 366.453125
+        },
+        {
+          "left": 7,
+          "right": 761,
+          "width": 754
+        }
+      ],
+      "cardWidth": 44,
+      "rows": [
+        {
+          "cards": 13,
+          "width": 144,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 144,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 144,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 144,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 144,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 144,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        }
+      ],
+      "sides": [
+        {
+          "height": 560,
+          "scrollHeight": 691,
+          "overflow": "auto"
+        },
+        {
+          "height": 560,
+          "scrollHeight": 781,
+          "overflow": "auto"
+        }
+      ]
+    },
+    {
+      "viewport": [
+        852,
+        744
+      ],
+      "documentOverflow": 0,
+      "slots": [
+        3,
+        3
+      ],
+      "panels": [
+        {
+          "left": 252.984375,
+          "right": 660.796875,
+          "width": 407.8125
+        },
+        {
+          "left": 7,
+          "right": 845,
+          "width": 838
+        }
+      ],
+      "cardWidth": 44,
+      "rows": [
+        {
+          "cards": 13,
+          "width": 164,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 164,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 164,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 164,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 164,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 164,
+          "scrollWidth": 584,
+          "overflow": "auto"
+        }
+      ],
+      "sides": [
+        {
+          "height": 280,
+          "scrollHeight": 676,
+          "overflow": "auto"
+        },
+        {
+          "height": 280,
+          "scrollHeight": 720,
+          "overflow": "auto"
+        }
+      ]
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "documentOverflow": -15,
+      "slots": [
+        3,
+        3
+      ],
+      "panels": [
+        {
+          "left": 8,
+          "right": 1001,
+          "width": 993
+        },
+        {
+          "left": 8,
+          "right": 1001,
+          "width": 993
+        }
+      ],
+      "cardWidth": 50,
+      "rows": [
+        {
+          "cards": 13,
+          "width": 460,
+          "scrollWidth": 700,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 460,
+          "scrollWidth": 700,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 460,
+          "scrollWidth": 700,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 460,
+          "scrollWidth": 700,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 460,
+          "scrollWidth": 700,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 460,
+          "scrollWidth": 700,
+          "overflow": "auto"
+        }
+      ],
+      "sides": [
+        {
+          "height": 732,
+          "scrollHeight": 732,
+          "overflow": "visible"
+        },
+        {
+          "height": 732,
+          "scrollHeight": 732,
+          "overflow": "visible"
+        }
+      ]
+    },
+    {
+      "viewport": [
+        1366,
+        768
+      ],
+      "documentOverflow": 0,
+      "slots": [
+        3,
+        3
+      ],
+      "panels": [
+        {
+          "left": 344.296875,
+          "right": 1004.640625,
+          "width": 660.34375
+        },
+        {
+          "left": 7,
+          "right": 1359,
+          "width": 1352
+        }
+      ],
+      "cardWidth": 47.609375,
+      "rows": [
+        {
+          "cards": 13,
+          "width": 284,
+          "scrollWidth": 669,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 284,
+          "scrollWidth": 669,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 284,
+          "scrollWidth": 669,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 284,
+          "scrollWidth": 669,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 284,
+          "scrollWidth": 669,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 284,
+          "scrollWidth": 669,
+          "overflow": "auto"
+        }
+      ],
+      "sides": [
+        {
+          "height": 227,
+          "scrollHeight": 679,
+          "overflow": "auto"
+        },
+        {
+          "height": 227,
+          "scrollHeight": 769,
+          "overflow": "auto"
+        }
+      ]
+    },
+    {
+      "viewport": [
+        1920,
+        1080
+      ],
+      "documentOverflow": 0,
+      "slots": [
+        3,
+        3
+      ],
+      "panels": [
+        {
+          "left": 481.484375,
+          "right": 1414.4375,
+          "width": 932.953125
+        },
+        {
+          "left": 7,
+          "right": 1913,
+          "width": 1906
+        }
+      ],
+      "cardWidth": 52,
+      "rows": [
+        {
+          "cards": 13,
+          "width": 420,
+          "scrollWidth": 726,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 420,
+          "scrollWidth": 726,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 420,
+          "scrollWidth": 726,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 420,
+          "scrollWidth": 726,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 420,
+          "scrollWidth": 726,
+          "overflow": "auto"
+        },
+        {
+          "cards": 13,
+          "width": 420,
+          "scrollWidth": 726,
+          "overflow": "auto"
+        }
+      ],
+      "sides": [
+        {
+          "height": 431,
+          "scrollHeight": 699,
+          "overflow": "auto"
+        },
+        {
+          "height": 431,
+          "scrollHeight": 789,
+          "overflow": "auto"
+        }
+      ]
+    }
+  ]
+}

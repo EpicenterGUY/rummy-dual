@@ -13,8 +13,8 @@ Single-file mobile-first prototype for GitHub Pages.
 - 3 CORE × 60 HP; DETONATE overkill never penetrates to the next CORE.
 - 3-card SET → BURST READY; 4th suit → BURST +24 and the 4SET retires immediately.
 - RUN extensions use CHAIN +10 / +15 / +20 / +25. At CHAIN 4+, the meld controller may voluntarily **complete the RUN** on their own turn to free that public-meld slot; if kept, later extensions remain +25. Completing a RUN adds no power and does not move SWITCH.
-- Each player may keep up to 2 public melds. A full board blocks creating another meld until normal play or a card effect changes the board; there is no free base meld disposal action.
-- Each player may create at most one new exact 3-card meld (SET or RUN combined) per turn unless a named effect explicitly grants an extra new meld.
+- Each player may keep up to 3 public melds. A full board blocks creating another meld until normal play or a card effect changes the board; there is no free base meld disposal action.
+- Each player may create at most two new exact 3-card melds (SET or RUN combined) per turn.
 - Cards may be attached to the opponent's public melds, and the player who actually completes BURST/CHAIN performs the SWITCH return.
 - SWITCH physically moves at most once per player turn. After a RUN returns SWITCH, that **same RUN may still be extended again during the same turn**; each later extension adds its next CHAIN power but does not move SWITCH a second time. A different RUN/SET cannot create another return that turn. This makes split play such as 9♠ then 10♠ equivalent in core power flow to selecting both for one multi-attach.
 - A card recovered this turn may still be used for a new 3-card meld, maintenance, discard, or other non-return play, but it cannot be reused that same turn as material for a BURST/CHAIN/SWITCH-returning attach unless a named effect explicitly allows it, and that exception is bound to the destination meld(s) allowed by that effect.
@@ -31,3 +31,7 @@ Single-file mobile-first prototype for GitHub Pages.
 See `ROADMAP.md` for current implementation milestones.
 
 Everything required to run the prototype is embedded in `index.html`.
+
+### Local validation
+
+The game remains buildless on GitHub Pages. `npm run dev -- --host 0.0.0.0 --port 4173` starts a dependency-free local preview. `/qa/m0r` is a preview-only layout fixture with selectable CSS viewport sizes and three long RUNs per side. Run `node tests/m0r-meld-expansion.mjs` for the full-engine rule regression and `node experiments/m0r-opening-tempo.mjs` for the paired opening-tempo experiment.

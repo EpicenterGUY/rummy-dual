@@ -20,8 +20,8 @@ function c(uid,owner='player',extra={}){return{uid,owner,suit:'C',rank:'4',age:0
 
 {
  const card={uid:'8',suit:'H',rank:'8',owner:'player',blockedUntilTurn:null,recoveredToken:null,recoverReturnOverrideToken:null};
- const player={hand:[card],deck:[c('d')],spent:[],melds:[],newMeldUsed:false,returnedSwitchThisTurn:true,maintenanceUsed:false};
- const enemy={hand:[],deck:[],spent:[],melds:[],newMeldUsed:false,returnedSwitchThisTurn:false};
+ const player={hand:[card],deck:[c('d')],spent:[],melds:[],newMeldCount:0,returnedSwitchThisTurn:true,maintenanceUsed:false};
+ const enemy={hand:[],deck:[],spent:[],melds:[],newMeldCount:0,returnedSwitchThisTurn:false};
  const m={type:'RUN',cards:[{suit:'H',rank:'5'},{suit:'H',rank:'6'},{suit:'H',rank:'7'}],chain:1,lastAttachToken:9,returnAttachToken:9,createdToken:null};enemy.melds=[m];
  const state={player,enemy,discard:[],turnNo:2,turnToken:9,switchTarget:'enemy',gameOver:false,turn:'player',phase:'action'};
  const ctx=vm.createContext({console,Set,Map,Array,Math,state});ctx.sideObj=w=>w==='player'?player:enemy;ctx.other=w=>w==='player'?'enemy':'player';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=w=>state.switchTarget==='neutral'||state.switchTarget===w;ctx.canContinueReturnedRun=(w,x)=>w==='player'&&x===m;ctx.meldType=cards=>cards.every(x=>x.suit==='H')&&new Set(cards.map(x=>Number(x.rank))).size===cards.length?'RUN':null;ctx.meldFixedActive=()=>false;ctx.cardFixedActive=()=>false;install(ctx,'combinations','bestNewMeld','bestNewMeldForTurn','recoveredCardCanReturn','recoveredCardsCanReturn','anyAttachOption','canFinishRun','hasAnyLegalAction','ownedRecycleCount','maintenanceLimit');

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 const doc=fs.readFileSync(new URL('../docs/THEME_GROUPS.md',import.meta.url),'utf8');
 const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
-ok(doc.includes('# SCRAP//SHIFT')&&doc.includes('아직 라이브 카드군은 아니다'),'SCRAP//SHIFT is design-locked without pretending to be live');
+ok(doc.includes('# SCRAP-SHIFT')&&doc.includes('아직 라이브 카드군은 아니다'),'SCRAP-SHIFT is design-locked without pretending to be live');
 ok(doc.includes('24장, 수트별 6장'),'candidate pool is locked to 24 cards with six per suit');
 ok(doc.includes('내가 소유한 일반/다른 테마 카드에도 `부품` 표식'),'parts remain mixed-deck compatible');
 ok(doc.includes('숫자·무늬·네임드·테마 ID·소유권·현재 조합 판정을 바꾸지 않는다'),'part marker never rewrites card identity or meld legality');
@@ -15,6 +15,6 @@ ok(doc.includes('재조립하는 순간 그 카드의 `부품` 표식을 소비�
 ok(doc.includes('재조립은 `뽑기`도 `회수`도 아니다')&&doc.includes('RUMMY 판정보다 먼저 해결'),'reassembly has explicit acquisition and RUMMY timing semantics');
 ok(doc.includes('onPartSet')&&doc.includes('onDismantle')&&doc.includes('onReassemble')&&doc.includes('이식은 기존 `onMeldMove`'),'event surface stays minimal and reuses onMeldMove');
 ok(doc.includes('K♠ `스크랩 폭주`')&&doc.includes('이번 반환 +14'),'only a narrow finisher lane uses direct SWITCH power');
-ok(!doc.includes('SCRAP_POINT')&&!doc.includes('고철 포인트를 쌓'),'SCRAP//SHIFT creates no dedicated numeric resource');
-ok(road.includes('- [x] SCRAP//SHIFT 카드 풀과 부품 규칙 상세 재설계'),'ROADMAP marks SCRAP//SHIFT detailed redesign complete');
-console.log('SCRAP//SHIFT design lock regression passed.');
+ok(!doc.includes('SCRAP_POINT')&&!doc.includes('고철 포인트를 쌓'),'SCRAP-SHIFT creates no dedicated numeric resource');
+ok(road.includes('- [x] SCRAP-SHIFT 카드 풀과 부품 규칙 상세 재설계'),'ROADMAP marks SCRAP-SHIFT detailed redesign complete');
+console.log('SCRAP-SHIFT design lock regression passed.');
