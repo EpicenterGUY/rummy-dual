@@ -20,7 +20,9 @@ jobs:
 
       - name: Add completed-run archive
         shell: bash
-        run: python .github/scripts/m11a-run-history-patch.py
+        run: |
+          python .github/scripts/m11a-run-history-patch.py
+          python .github/scripts/m11a-run-history-compat-fix.py
 
       - name: Run all regression suites
         shell: bash
