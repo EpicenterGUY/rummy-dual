@@ -76,6 +76,20 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Reset transient discard-contract state whenever a card is freshly acquired from deck/discard before source-specific effects are applied
 - [x] Add per-battle circulation telemetry at result time: average hand, low-hand rate/skips, RUMMY, maintenance, and full-recirculation counts
 
+
+## M4B — 덱 조합 구조 축: 세트 / 런 / 혼합
+테마 카드군은 **효과 빌드**, 조합 구조는 **숫자·무늬 골격 빌드**로 분리한다. 자동 덱은 먼저 29개 물리 슬롯의 조합 골격을 만든 뒤 그 안에 해금 네임드/테마 변형을 배치한다. 자세한 기준은 `docs/DECK_STRUCTURE_PROFILES.md`를 따른다.
+
+- [x] 대전 준비에 `세트형 / 런형 / 혼합형` 독립 선택 축 추가 — 카드군 선택과 별개로 저장
+- [x] 세트형 29슬롯 골격 — 7개 중심 랭크를 4무늬로 겹치고 1장 보조 슬롯을 더해 세트/버스트 재료 밀도 우선
+- [x] 런형 29슬롯 골격 — 2개 무늬 13연속 + 제3무늬 3연속으로 런/체인 재료 밀도 우선
+- [x] 혼합형 29슬롯 골격 — 1개 무늬 13연속 + 4개 교차 랭크의 타 무늬 + 보조 연속 구간으로 세트/런 전환점 확보
+- [x] 골격 → 네임드/테마 변형 순서로 자동 덱 생성 변경 — 선택 테마는 최대 4장, 물리 슬롯 중복 금지 유지
+- [x] 커스텀 덱 `추천 29슬롯 복원`이 현재 선택 조합 구조를 사용하도록 연결
+- [x] 6장 손패 표본 기반 세트/런/둘 중 하나 성립률을 덱 분석에 표시
+- [x] 구조별 자동 덱·테마 혼합·진행도 저장·전체 회귀 테스트 추가
+- [ ] 인간 실전 및 M12 전투 기록으로 구조별 승률/러미율/저손패 정체율을 비교해 최종 골격 수치 조정
+
 ## M5 — Multi-attach UX
 - [x] Preserve explicit hand-card selection order and pass that order into attach resolution
 - [x] Allow a public meld to be targeted first and highlight only legal next cards for that target
