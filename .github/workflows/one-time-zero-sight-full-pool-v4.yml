@@ -1,0 +1,68 @@
+name: One-time ZERO-SIGHT full pool v4
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-zero-sight-full-pool-v4.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  zero-sight-full-pool:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply ZERO-SIGHT 18-card full pool v4
+        run: python .github/scripts/zero-sight-full-pool-patch-v4.py
+      - name: Run dedicated regression gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/zero-sight-full-pool.mjs
+          node tests/l10n-card-style.mjs
+          node tests/zero-sight-target-foundation.mjs
+          node tests/zero-sight-target-events.mjs
+          node tests/zero-sight-hand-prep.mjs
+          node tests/zero-sight-starter-fallback.mjs
+          node tests/zero-sight-ballistics.mjs
+          node tests/zero-sight-one-shot.mjs
+          node tests/zero-sight-mixed-regression.mjs
+          node tests/theme-mix-simulation.mjs
+          node tests/theme-event-foundation.mjs
+          node tests/rummy-grace-joker.mjs
+          node tests/m11a-region-rewards.mjs
+          node tests/named-card-audit.mjs
+      - name: Run all regression suites with failure diagnostic
+        shell: bash
+        run: |
+          set -u
+          count=0
+          for test in tests/*.mjs; do
+            if ! node "$test" >/tmp/zero-sight-test.log 2>&1; then
+              echo "FAILED_TEST=$test"
+              echo '--- FAILURE TAIL ---'
+              tail -n 140 /tmp/zero-sight-test.log
+              exit 1
+            fi
+            count=$((count+1))
+          done
+          echo "ALL_TESTS_PASSED=$count"
+      - name: Commit ZERO-SIGHT full pool
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- index.html ROADMAP.md docs/THEME_GROUPS.md docs/THEME_FULL_POOL_PLAN.md tests/named-card-audit.mjs tests/zero-sight-full-pool.mjs; then
+            echo 'No project changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md docs/THEME_GROUPS.md docs/THEME_FULL_POOL_PLAN.md tests/named-card-audit.mjs tests/zero-sight-full-pool.mjs
+          git commit -m 'feat: complete ZERO-SIGHT 18-card full pool'
+          git pull --rebase origin main
+          git push origin HEAD:main
