@@ -1,0 +1,77 @@
+name: One-time deck structure profiles v4
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-deck-structure-profiles-v4.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  deck-structure-profiles:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply deck structure profiles v4
+        run: python .github/scripts/deck-structure-profiles-patch-v4.py
+      - name: Syntax gate
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const h=fs.readFileSync('index.html','utf8');
+          const s=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+          new Function(s);
+          console.log('PASS: combined game script parses');
+          NODE
+      - name: Run structure invariant gates first
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/l10n-legacy-terms.mjs
+          node tests/deck-structure-profiles.mjs
+          node tests/m11-slot-invariant.mjs
+      - name: Run theme and build compatibility gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/theme-mix-simulation.mjs
+          node tests/vsignal-full-pool.mjs
+          node tests/zero-sight-full-pool.mjs
+          node tests/point-blank-full-pool.mjs
+          node tests/m11a-region-rewards.mjs
+          node tests/named-card-audit.mjs
+      - name: Run all regression suites with failure diagnostic
+        shell: bash
+        run: |
+          set -u
+          count=0
+          for test in tests/*.mjs; do
+            if ! node "$test" >/tmp/deck-structure-test.log 2>&1; then
+              echo "FAILED_TEST=$test"
+              echo '--- FAILURE TAIL ---'
+              tail -n 180 /tmp/deck-structure-test.log
+              exit 1
+            fi
+            count=$((count+1))
+          done
+          echo "ALL_TESTS_PASSED=$count"
+      - name: Commit deck structure profiles
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- index.html ROADMAP.md docs/DECK_STRUCTURE_PROFILES.md tests/deck-structure-profiles.mjs; then
+            echo 'No project changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md docs/DECK_STRUCTURE_PROFILES.md tests/deck-structure-profiles.mjs
+          git commit -m 'feat: add SET RUN mixed deck structure profiles'
+          git pull --rebase origin main
+          git push origin HEAD:main
