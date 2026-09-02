@@ -1,0 +1,30 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const src=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
+function fn(name,next){const start=src.indexOf(`function ${name}(`);if(start<0)throw new Error(`missing ${name}`);const end=src.indexOf(`function ${next}(`,start);if(end<0)throw new Error(`missing next ${next}`);return src.slice(start,end)}
+ok(src.includes('id="roguelikeRouteMap"'),'route map mount exists in the run UI');
+ok(src.includes('.roguelikeMapNode.pending')&&src.includes('.roguelikeMapNode.current')&&src.includes('.roguelikeMapGate.ready'),'route map has distinct pending/current/route-choice visuals');
+ok(src.includes("if(typeof renderRoguelikeRouteMap==='function')renderRoguelikeRouteMap(draft)"),'starter picker renders the route map through a compatibility guard');
+const stateSrc=fn('roguelikeRouteMapState','roguelikeRouteMapGate');
+const ctx={};vm.createContext(ctx);vm.runInContext(`${stateSrc};this.state=roguelikeRouteMapState`,ctx);
+const current={completed:0,pending:null,current:{id:'common-1'}};
+assert.equal(ctx.state(0,current,{status:'prepared'}),'current');assert.equal(ctx.state(1,current,{status:'prepared'}),'locked');
+const pending={completed:3,pending:{source:'battle'},current:{id:'region-1'}};
+assert.equal(ctx.state(0,pending,{status:'prepared'}),'done');assert.equal(ctx.state(1,pending,{status:'prepared'}),'done');assert.equal(ctx.state(2,pending,{status:'prepared'}),'pending');assert.equal(ctx.state(3,pending,{status:'prepared'}),'locked');
+const gateWait={completed:3,pending:null,current:null,awaitingRegion:true};
+assert.equal(ctx.state(0,gateWait,{status:'prepared'}),'done');assert.equal(ctx.state(2,gateWait,{status:'prepared'}),'done');
+assert.equal(ctx.state(13,{completed:14,pending:null,current:null},{status:'completed'}),'done');
+ok(true,'route map state distinguishes completed, reward-pending, current, and locked nodes');
+const gateSrc=fn('roguelikeRouteMapGate','roguelikeRouteMapZoneName');
+const gateCtx={ROGUELIKE_ROUTE_LIMITS:{regionVisits:2}};vm.createContext(gateCtx);vm.runInContext(`${gateSrc};this.gate=roguelikeRouteMapGate`,gateCtx);
+let gate=gateCtx.gate({status:'prepared',regionPath:[]},{awaitingRegion:false});assert.equal(gate.visit,1);assert.equal(gate.ready,false);assert.match(gate.detail,/공통 시작/);
+gate=gateCtx.gate({status:'prepared',regionPath:['neon-arc']},{awaitingRegion:true});assert.equal(gate.visit,2);assert.equal(gate.ready,true);assert.equal(gate.detail,'선택 가능');
+assert.equal(gateCtx.gate({status:'prepared',regionPath:['neon-arc','red-zone']},{awaitingRegion:false}),null);assert.equal(gateCtx.gate({status:'completed',regionPath:['neon-arc','red-zone']},{awaitingRegion:false}),null);
+ok(true,'route-choice gate appears only before each unresolved region choice');
+const renderSrc=fn('renderRoguelikeRouteMap','renderRoguelikeRegionPicker');
+ok(renderSrc.includes('roguelikeBattleProgress(draft)')&&renderSrc.includes('roguelikeRunRoute(draft.regionPath||[])'),'route map reads the canonical progress and route helpers');
+ok(renderSrc.includes("'승리 · 보상 대기'")&&renderSrc.includes("'다음 전투'")&&renderSrc.includes('런 완료'),'route map exposes the required player-facing states');
+ok(!renderSrc.includes('saveRoguelikeRunDraft')&&!renderSrc.includes('localStorage.setItem'),'route map is read-only and cannot mutate run progress');
+console.log('M11A route map regression passed.');
