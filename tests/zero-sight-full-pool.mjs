@@ -56,6 +56,6 @@ ok(unlock.includes("items:['ZSD6']")&&unlock.includes("items:['ZSSK']"),'Ballist
 ok(!script.includes('zeroSightResource')&&!script.includes('ZERO_SIGHT_COUNT'),'ZERO-SIGHT adds no dedicated numeric resource');
 ok(audit.includes("'zsArmorPiercing','zsCounterTrace','zsLongShot'"),'direct-power minority audit counts the new precision modifiers');
 ok(theme.includes('ZERO-SIGHT 18/18 풀 카드군 라이브 구현'),'canonical theme document records full implementation');
-ok(plan.includes('| ZERO-SIGHT | 18 | 18 | 0 | 18/18 |')&&plan.includes('| **합계** | **60** | **44** | **16** |'),'full-pool plan advances to 44/60 live cards');
+ok(plan.includes('| ZERO-SIGHT | 18 | 18 | 0 | 18/18 |')&&plan.includes('- ZERO-SIGHT: **18/18 풀 구현 완료**'),'full-pool plan keeps ZERO-SIGHT at 18/18 after later theme integration');
 ok(road.includes('ZERO-SIGHT 18/18 풀 카드군 구현'),'ROADMAP records ZERO-SIGHT completion');
 console.log('ZERO-SIGHT 18/18 full-pool regression passed.');
