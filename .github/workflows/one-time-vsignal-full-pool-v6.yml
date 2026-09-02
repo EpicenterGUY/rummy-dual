@@ -1,0 +1,61 @@
+name: One-time V-SIGNAL full pool v6
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-vsignal-full-pool-v6.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  vsignal-full-pool:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply V-SIGNAL 24-card full pool v6
+        run: python .github/scripts/vsignal-full-pool-patch-v6.py
+      - name: Run dedicated regression gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/vsignal-full-pool.mjs
+          node tests/vsignal-mixed-regression.mjs
+          node tests/theme-mix-simulation.mjs
+          node tests/m11a-region-rewards.mjs
+          node tests/rummy-grace-joker.mjs
+          node tests/theme-event-foundation.mjs
+          node tests/vsignal-encore.mjs
+      - name: Run all regression suites with failure diagnostic
+        shell: bash
+        run: |
+          set -u
+          count=0
+          for test in tests/*.mjs; do
+            if ! node "$test" >/tmp/vsignal-test.log 2>&1; then
+              echo "FAILED_TEST=$test"
+              echo '--- FAILURE TAIL ---'
+              tail -n 120 /tmp/vsignal-test.log
+              exit 1
+            fi
+            count=$((count+1))
+          done
+          echo "ALL_TESTS_PASSED=$count"
+      - name: Commit V-SIGNAL full pool
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- index.html ROADMAP.md docs/THEME_GROUPS.md docs/THEME_FULL_POOL_PLAN.md tests/theme-mix-simulation.mjs tests/vsignal-full-pool.mjs; then
+            echo 'No project changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html ROADMAP.md docs/THEME_GROUPS.md docs/THEME_FULL_POOL_PLAN.md tests/theme-mix-simulation.mjs tests/vsignal-full-pool.mjs
+          git commit -m 'feat: complete V-SIGNAL 24-card full pool'
+          git pull --rebase origin main
+          git push origin HEAD:main
