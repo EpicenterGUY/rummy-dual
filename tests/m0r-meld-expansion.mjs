@@ -94,8 +94,11 @@ for(const [id,def] of Object.entries(makeGame().NAMED)){
  const g=fresh(),w='enemy',s=g.state[w],slot=def.slot||id;
  const c=slot[0]==='J'?g.makeCard('J',id,true,w,id):g.makeCard(slot[0],slot.slice(1),true,w,id);
  const companions=c.suit==='J'?cards(g,w,['S8','S9']):cards(g,w,['S','H','D','C'].filter(suit=>suit!==c.suit).slice(0,2).map(suit=>suit+c.rank));
- const first=[c,...companions],second=cards(g,w,['C2','C3','C4']);s.hand=[...first,...second,...cards(g,w,['DK'])];
+ const first=[c,...companions],second=cards(g,w,['C2','C3','C4']);s.hand=[...first,...cards(g,w,['DK','SJ','HQ','D6'])];
  assert.equal(g.submitNewMeld(w,first),true,id+' first create');
+ // First-use cycling/flexible may alter remaining cards. Supply a fresh ordinary
+ // hand group so this audit measures effect replay, not stale references/choices.
+ s.hand.push(...second);
  const values=()=>JSON.stringify({hp:s.hp,shield:s.shield,deck:s.deck.map(c=>c.uid),spent:s.spent.map(c=>c.uid),switch:g.state.switchPower,target:g.state.switchTarget});
  const after=values();assert.equal(g.submitNewMeld(w,second),true,id+' second create');assert.equal(values(),after,id+' does not trigger again from the next ordinary new meld');audited++;
 }

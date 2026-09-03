@@ -23,7 +23,7 @@ ok(source('handleSharedCombatCardEvent').includes("cardHasAbility(c,'parasite')"
 ok(triggerRummy.includes("title:'마지막 웃음'")&&triggerRummy.includes('requestHandBottomChoice'),'J2 Last Laugh uses exact post-RUMMY bottom choice');
 ok(source('playerDiscard').includes("cardHasAbility(c,'topDeckChoice')")&&source('playerDiscard').includes('requestEffectChoice'),'D6 Reserved Shipping uses the shared decision modal');
 
-ok(html.includes("'D7':{n:'황금손'")&&html.includes('가장 오래 든 1장을 덱 아래로 보낸다.'),'Golden Hand explicitly documents deterministic oldest-card cycling');
+ok(html.includes("'D7':{n:'황금손'")&&html.includes('같은 행동에 사용하면 그 카드에 가변을 부여한다.'),'Golden Hand documents its same-action flexible grant');
 ok(html.includes("'D8':{n:'환전상'")&&html.includes('현재 스위치 누적 위력에서 최대 8을 투자한다.'),'Money Changer documents its capped power investment');
 ok(html.includes("'DQ':{n:'시장 조작자'")&&html.includes('공용 버림패 위 최대 3장의 순서를 원하는 대로 정한다.')&&resolve.includes('requestDiscardOrder(w,c,resume)'),'Market Maker exposes arbitrary discard ordering through the resumable choice');
 ok(html.includes("'C6':{n:'중간관리자'")&&script.includes('function middleManagerReturnPlaceholder('),'Middle Manager keeps deterministic legal placeholder cleanup matching its one-placeholder wording');

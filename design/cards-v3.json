@@ -508,7 +508,7 @@
       "theme": "common",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave7",
       "previousEffect": "버림패에서 가져온 카드와 같은 조합 행동에 들어가면 1장 뽑고, 남은 손패가 있으면 그중 가장 오래 든 1장을 덱 아래로 보낸다.",
       "targetEffect": "버림패에서 가져온 카드와 같은 행동에 사용하면 그 카드에 가변을 부여한다. 이미 공개된 카드는 다음 손패 복귀 후의 배치에 사용한다.",
       "capabilities": [
@@ -994,7 +994,7 @@
       "theme": "v-signal",
       "category": "조작형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave7",
       "previousEffect": "이 카드로 새 3장 세트를 만들면 남은 손패 1장을 덱 아래로 보내고 1장 뽑는 무료 정비를 할 수 있다.",
       "targetEffect": "이 카드로 새 세트를 만들면 남은 손패 1장에 가변을 부여한다.",
       "capabilities": [
@@ -1096,7 +1096,7 @@
       "theme": "v-signal",
       "category": "조작형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave7",
       "previousEffect": "체인 1 이하인 런에 이 카드를 붙이면 남은 손패 1장을 덱 아래로 보내고 1장 뽑는 무료 정비를 할 수 있다.",
       "targetEffect": "체인 1 이하인 런에 붙이면 내 손패 1장에 가변을 부여한다. 이 행동의 이미 정해진 사용값은 바꾸지 않는다.",
       "capabilities": [

@@ -10,7 +10,7 @@ ok(script.includes("cardHasAbility(c,'heal2')&&!c.phoenixReturned"),'Phoenix spe
 ok(script.includes('ph.phoenixReturned=true'),'Phoenix marks its one spent return as consumed');
 ok(script.includes('function simpleGapMissingRank('),'Gap Run records the exact simple one-card hole before recovery');
 ok(script.includes('function recoverRedundantGapRun('),'Gap Run has an explicit redundant-card recovery resolver');
-ok(script.includes('missing==null||!newCards.some(n=>n.suit===c.suit&&RANK_VALUE[n.rank]===missing)'),'Gap Run only auto-recovers when a newly attached card fills the recorded missing rank');
+ok(script.includes('missing==null||!newCards.some(n=>materialSuit(n)===materialSuit(c)&&RANK_VALUE[materialRank(n)]===missing)'),'Gap Run only auto-recovers when a newly attached card fills the recorded missing rank');
 ok(script.includes('function middleManagerReturnPlaceholder('),'Middle Manager has an explicit placeholder-return resolver');
 const gapCleanup=script.indexOf('recoverRedundantGapRun(targetSide,m,beforeCards,cards);');
 const middleCleanup=script.indexOf('middleManagerReturnPlaceholder(targetSide,m,cards);',gapCleanup);

@@ -9,5 +9,5 @@ ok(fx.includes("list[i]?.tag!=='goldenHand'")&&fx.includes("x?.tag==='sameDiscar
 ok(fx.includes('const[dep]=list.splice(j,1);list.splice(i,0,dep)'),'Buyout King is moved immediately before the dependent Golden Hand without globally sorting unrelated effects');
 ok(fx.includes('const effectCards=fx.effectCards')&&fx.includes('for(let i=fx.index;i<effectCards.length;i++)'),'named effects resume from the minimally adjusted action order without replaying prior effects');
 ok(!fx.includes('orderedNamedEffectCards'),'resolveEffects has no external ordering-helper dependency');
-ok(fx.includes("case'sameDiscardRank':{const lr=")&&fx.includes("case'goldenHand':if(cards.some(x=>x.fromDiscard))"),'Buyout King classification and Golden Hand dependency remain active in the same resolver');
+ok(fx.includes("case'sameDiscardRank':{const lr=")&&fx.includes("case'goldenHand':{const paused=requestFlexibleGrant(w,c,()=>cards.filter(x=>x.fromDiscard)"),'Buyout King classification and Golden Hand dependency remain active in the same resolver');
 console.log('M8 dependent effect-order regression passed.');
