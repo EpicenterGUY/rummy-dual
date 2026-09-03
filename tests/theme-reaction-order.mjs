@@ -9,9 +9,16 @@ function source(name){const marker=`function ${name}(`,start=script.indexOf(mark
 function context(extra={}){return vm.createContext({console,Set,Map,Array,Object,Number,String,Boolean,Math,...extra})}
 function install(ctx,...names){for(const n of names)vm.runInContext(source(n),ctx)}
 
-ok(script.includes("const THEME_REACTION_ORDER=Object.freeze({attach:Object.freeze(['onAttach','onTargetMeldChange','onClashMeldChange','postReturn'])"),'attach reaction order is explicitly declared');
-ok(script.includes("recover:Object.freeze(['onRecover','onTargetMeldChange','onClashMeldChange'])"),'recovery reaction order is explicitly declared');
-ok(script.includes("move:Object.freeze(['onMeldMove','onTargetMeldChange:source','onTargetMeldChange:target','onClashMeldChange:source','onClashMeldChange:target'])"),'movement source/target ordering is explicitly declared');
+const oldAttach="attach:Object.freeze(['onAttach','onTargetMeldChange','onClashMeldChange','postReturn'])";
+const mailAttach="attach:Object.freeze(['onAttach','onTargetMeldChange','onClashMeldChange','onArrival','postReturn'])";
+const oldRecover="recover:Object.freeze(['onRecover','onTargetMeldChange','onClashMeldChange'])";
+const mailRecover="recover:Object.freeze(['onRecover','onTargetMeldChange','onClashMeldChange','onReturnMail'])";
+const oldMove="move:Object.freeze(['onMeldMove','onTargetMeldChange:source','onTargetMeldChange:target','onClashMeldChange:source','onClashMeldChange:target'])";
+const mailMove="move:Object.freeze(['onMeldMove','onTargetMeldChange:source','onTargetMeldChange:target','onClashMeldChange:source','onClashMeldChange:target','onArrival'])";
+const mailRouteLive=script.includes("id:'mail-route'")&&script.includes("'onArrival'")&&script.includes("'onReturnMail'");
+ok(script.includes(mailRouteLive?mailAttach:oldAttach),'attach reaction order is explicitly declared');
+ok(script.includes(mailRouteLive?mailRecover:oldRecover),'recovery reaction order is explicitly declared');
+ok(script.includes(mailRouteLive?mailMove:oldMove),'movement source/target ordering is explicitly declared');
 
 // Shared card-bound turn gate: one claim per key per turn token, independent keys coexist.
 {
@@ -24,13 +31,15 @@ ok(script.includes("move:Object.freeze(['onMeldMove','onTargetMeldChange:source'
  ok(ctx.claimThemeTurnGate(card,'alpha',8)===true,'same reaction key becomes available on a later turn token');
 }
 
-// Runtime source order matches the declared contract.
+// Runtime source order matches the declared contract. MAIL-ROUTE extends each chain after
+// existing ZERO-SIGHT / POINT-BLANK reactions, never before them.
 {
  const recover=source('emitRecoveryEvent');
  const base=recover.indexOf("emitEffectEvent('onRecover'");
  const target=recover.indexOf("emitZeroSightTargetChange('recover'",base);
  const clash=recover.indexOf("refreshPointBlankClashMeld(meld",target);
- ok(base>=0&&target>base&&clash>target,'recovery executes base event → target change → clash change');
+ const mail=recover.indexOf('emitMailRouteReturn(actor,card,meld',clash);
+ ok(base>=0&&target>base&&clash>target&&(!mailRouteLive||mail>clash),'recovery executes base event → target change → clash change → return-mail');
 }
 {
  const move=source('emitMeldMoveEvent');
@@ -39,15 +48,17 @@ ok(script.includes("move:Object.freeze(['onMeldMove','onTargetMeldChange:source'
  const targetIn=move.indexOf("emitZeroSightTargetChange('moveIn'",targetOut);
  const clash=move.indexOf("refreshPointBlankClashMeld(sourceMeld",targetIn);
  const clashTarget=move.indexOf("refreshPointBlankClashMeld(targetMeld",clash);
- ok(base>=0&&targetOut>base&&targetIn>targetOut&&clash>targetIn&&clashTarget>clash,'movement executes base → target source/target → clash source/target');
+ const mail=move.indexOf('emitMailRouteArrivals(actor,[card],targetMeld',clashTarget);
+ ok(base>=0&&targetOut>base&&targetIn>targetOut&&clash>targetIn&&clashTarget>clash&&(!mailRouteLive||mail>clashTarget),'movement executes base → target source/target → clash source/target → arrival');
 }
 {
  const attach=source('attachCards');
  const base=attach.indexOf("emitEffectEvent('onAttach'");
  const target=attach.indexOf("emitZeroSightTargetChange('attach'",base);
  const clash=attach.indexOf("refreshPointBlankClashMeld(m",target);
+ const mail=attach.indexOf('emitMailRouteArrivals(w,cards,m',clash);
  const post=attach.indexOf("resolveZeroSightPostReturn(w,m,ctx.fxState||{})",clash);
- ok(base>=0&&target>base&&clash>target&&post>clash,'attach executes base event → target change → clash change → deferred post-return cleanup');
+ ok(base>=0&&target>base&&clash>target&&(!mailRouteLive||mail>clash)&&post>(mailRouteLive?mail:clash),'attach executes base event → target change → clash change → arrival → deferred post-return cleanup');
 }
 
 // Encore: generic gate blocks a second grant even if its legacy compatibility token is cleared.
