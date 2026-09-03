@@ -57,6 +57,7 @@ jobs:
           node tests/theme-tutorial-foundation.mjs
           node tests/character-theme-picker.mjs
           node tests/theme-mix-simulation.mjs
+          node tests/theme-reaction-order.mjs
           node tests/m9-jokers-fields.mjs
           node tests/m11-slot-invariant.mjs
           node tests/named-card-audit.mjs
