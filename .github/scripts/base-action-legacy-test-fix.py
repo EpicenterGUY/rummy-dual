@@ -1,0 +1,15 @@
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[2]
+p=ROOT/'tests'/'core-behavior.mjs'
+s=p.read_text(encoding='utf-8')
+fixes=[
+("    returnedSwitchThisTurn: false,\n    actedThisTurn: false,\n    turnStarts: 1,","    returnedSwitchThisTurn: false,\n    actedThisTurn: false,\n    attachCount: 0,\n    extraAttachRemaining: 0,\n    turnStarts: 1,"),
+("      chain,\n      lastAttachToken: null,\n      createdToken: null,","      chain,\n      createdToken: null,"),
+("  install(ctx, 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'chainDamage', 'canContinueReturnedRun', 'attachCards');","  install(ctx, 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'chainDamage', 'attachAccess', 'consumeAttachUse', 'grantExtraAttach', 'attachCards');"),
+("// Sequential same-RUN extension: split 8 then 9 is equivalent to one multi-attach for SWITCH movement.\n{\n  const c8 = card('H',8);\n  const c9 = card('H',9);\n  const setup = makeAttachContext({\n    type: 'RUN',\n    baseCards: [card('H',5), card('H',6), card('H',7)],\n    handCards: [c8, c9],\n    chain: 0,\n  });\n  ok(setup.ctx.attachCards('player', [c8], 'enemy', 0) === true, 'first RUN extension returns SWITCH normally');\n  ok(setup.ctx.attachCards('player', [c9], 'enemy', 0) === true, 'same RUN can be extended again later in the same turn');\n  ok(setup.capture.attacks.length === 1, 'split same-RUN extension moves SWITCH only once');\n  ok(setup.capture.powerAdds.length === 1 && setup.capture.powerAdds[0].amount === 15, 'second split extension adds next CHAIN power without another return');\n  ok(setup.state.switchPower === 25, 'split 8 then 9 produces total +10 +15 power');\n  ok(setup.enemy.melds[0].chain === 2 && setup.enemy.melds[0].cards.length === 5, 'split extension advances the same RUN to CHAIN 2');\n}\n","// Base attach is one action: split extension is rejected; multi-attach above is the normal way to add several cards.\n{\n  const c8 = card('H',8);\n  const c9 = card('H',9);\n  const setup = makeAttachContext({\n    type: 'RUN',\n    baseCards: [card('H',5), card('H',6), card('H',7)],\n    handCards: [c8, c9],\n    chain: 0,\n  });\n  ok(setup.ctx.attachCards('player', [c8], 'enemy', 0) === true, 'first RUN extension consumes the base attach and returns SWITCH normally');\n  ok(setup.ctx.attachCards('player', [c9], 'enemy', 0) === false, 'second base attach is rejected even on the same RUN');\n  ok(setup.capture.attacks.length === 1, 'one base attach produces one SWITCH-returning attack');\n  ok(setup.capture.powerAdds.length === 0, 'base rules do not add a hidden continuation power path');\n  ok(setup.state.switchPower === 10, 'split attempt keeps only the first +10 CHAIN power');\n  ok(setup.enemy.melds[0].chain === 1 && setup.enemy.melds[0].cards.length === 4, 'rejected second attach leaves the RUN at CHAIN 1');\n}\n")
+]
+for old,new in fixes:
+    if old in s:s=s.replace(old,new,1)
+    elif new not in s:raise SystemExit(f'missing core-behavior migration anchor: {old[:80]}')
+p.write_text(s,encoding='utf-8')
+print('core behavior migrated to global attach contract')
