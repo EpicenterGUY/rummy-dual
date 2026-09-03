@@ -65,3 +65,5 @@ jobs:
           git commit -m 'feat: add SCRAP-SHIFT engine foundation'
           git pull --rebase origin main
           git push origin HEAD:main
+
+      # rerun marker: 2026-09-04 KST
