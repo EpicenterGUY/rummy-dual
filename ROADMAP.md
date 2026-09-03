@@ -367,6 +367,21 @@ V-SIGNAL 24장 + ZERO-SIGHT 18장 + POINT-BLANK 18장의 개별 구현 뒤, 실�
 - [x] 일반 로그라이크 보상 해금 후 허용, 기존 고정 지역 적 덱은 유지
 - [x] MAIL-ROUTE 단일/2테마/일반 혼합 + 전체 회귀
 
+## M8SS — SCRAP-SHIFT 24/24 풀 카드군 · 개발 중
+부품 표식을 일반/다른 테마의 내 소유 카드에도 붙여 해체·이식·재조립하는 순환형 오픈 테마. 24장 전체가 끝날 때까지 일반 카드군 선택/보상에는 노출하지 않는다.
+
+- [x] `SCRAP-SHIFT` 테마 레지스트리 추가 — 아직 `live:false`
+- [x] `부품` 비중첩 카드 표식 + 손패/공개 조합/소모패 유지 + 버림패/개인 덱 진입 시 정리 기반 구현
+- [x] 공용 파생 이벤트 `onPartSet` / `onDismantle` / `onReassemble` 추가
+- [x] 해체 공용 헬퍼 — 조합 유효성 유지, RUN 체인 -1, 회수와 분리, 전투 중립, 표적→접전 갱신
+- [x] 재조립 공용 헬퍼 — 소모패 부품→손패, 표식 소비, 같은 턴 조합/버리기/정비 금지
+- [x] 부품 표식 UI 추가 — 테마 카드 여부와 무관하게 실제 카드에 `부품` 표시
+- [x] AI 기본 버리기/정비가 재조립 잠금 카드를 자발적으로 소비하지 않도록 공용 잠금 적용
+- [ ] 24장 / 수트별 6장 정의 및 실제 효과 구현
+- [ ] 이식 카드군 효과를 기존 `onMeldMove` 공용 이동과 연결
+- [ ] 해금·도감·자동 테마 빌드·체험전 연결 후 일반 보상 승격
+- [ ] SCRAP-SHIFT 단일/모든 2테마/일반 mixed + 전체 회귀
+
 ## M9 — Jokers and fields
 - [x] Finalize distinct Joker identities — J1~J5 keep separate wildcard identities for owner-deck return, RUMMY/DETONATE timing, SET/RUN split payoff, vacancy replacement, and opponent-meld rebellion
 - [x] Audit Joker King return-to-owner-deck behavior — public-meld retirement restores `originOwner`, bottoms J1 into that owner deck, and never sends it to spent
