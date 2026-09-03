@@ -1,0 +1,32 @@
+name: One-time MAIL-ROUTE baseline diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-mail-route-baseline-diagnostic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Apply MAIL-ROUTE full-pool patch
+        run: python .github/scripts/mail-route-full-pool-patch.py
+      - name: Print post-MAIL-ROUTE regional baselines
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('tests/m11a-region-rewards.mjs')
+          s=p.read_text(encoding='utf-8')
+          old="assert.deepEqual(ids(baseline),baselinePicks[starterId],starterId+' integrated 60-card common-start ranking stays deterministic');"
+          new="console.log('MAIL_ROUTE_BASELINE '+starterId+' '+JSON.stringify(ids(baseline)));"
+          if old not in s:
+              raise SystemExit('baseline assertion anchor missing')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          node tests/m11a-region-rewards.mjs
