@@ -1,3 +1,4 @@
+# rerun: stable attach fixtures
 name: One-time base action simplification
 
 on:
