@@ -66,4 +66,4 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD:main
 
-      # rerun marker: reaction-order-doc-sync
+      # rerun marker: foundation-aware-design-lock
