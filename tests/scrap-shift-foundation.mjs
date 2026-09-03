@@ -18,9 +18,8 @@ ok(script.includes("'scrap-shift':Object.freeze({id:'scrap-shift',name:'SCRAP-SH
 for(const event of ['onPartSet','onDismantle','onReassemble'])ok(script.includes(`'${event}'`),`${event} is a shared effect event`);
 ok(script.includes("dismantle:Object.freeze(['onDismantle','onTargetMeldChange','onClashMeldChange'])"),'dismantle reaction order is explicitly locked');
 ok(source('makeCard').includes('scrapShiftPart:false')&&source('makeCard').includes('scrapShiftReassembledToken:null'),'new cards initialize part and reassembly state');
-ok(script.includes('class=\"scrapPartMark\">부품</div>')&&script.includes('.scrapPartMark{'),'part state has a physical card marker independent of theme identity');
+ok(script.includes('class=\"scrapPartMark\">부품</div>')&&html.includes('.scrapPartMark{'),'part state has a physical card marker independent of theme identity');
 
-// Part setting is open to any owned card in hand/public meld, non-stacking, and cannot start from spent.
 {
  const events=[];const card={uid:1,owner:'player',name:'일반 카드',scrapShiftPart:false};
  const player={hand:[card],spent:[],deck:[],melds:[]},enemy={hand:[],spent:[],deck:[],melds:[]};
@@ -34,7 +33,6 @@ ok(script.includes('class=\"scrapPartMark\">부품</div>')&&script.includes('.sc
  ok(ctx.setScrapShiftPart('player',card,{silent:true})===false&&card.scrapShiftPart===false,'spent card cannot be newly designated as a part');
 }
 
-// Dismantle keeps the part in spent, requires source legality, lowers RUN chain, and resolves part -> target -> clash.
 {
  const order=[];const part={uid:4,owner:'player',name:'부품',scrapShiftPart:true},a={uid:1,owner:'player'},b={uid:2,owner:'player'},c={uid:3,owner:'player'};
  const meld={type:'RUN',cards:[a,b,c,part],chain:3};
@@ -50,7 +48,6 @@ ok(script.includes('class=\"scrapPartMark\">부품</div>')&&script.includes('.sc
  ok(ctx.scrapShiftDismantleAccess('player',tiny,part).allowed===false,'dismantle cannot invalidate a 3-card source meld');
 }
 
-// Reassembly consumes the part mark and returns it to hand with a same-turn action lock.
 {
  const events=[];const part={uid:9,owner:'player',name:'재조립 대상',scrapShiftPart:true,scrapShiftPartSetToken:2,scrapShiftReassembledToken:null,blockedUntilTurn:null};
  const player={hand:[],spent:[part],deck:[],melds:[]},enemy={hand:[],spent:[],deck:[],melds:[]};
@@ -64,7 +61,6 @@ ok(script.includes('class=\"scrapPartMark\">부품</div>')&&script.includes('.sc
  state.turnToken=31;ok(ctx.scrapShiftCardTurnLocked(part)===false,'reassembly token lock expires on the next action turn token');
 }
 
-// Lifecycle: discard/deck entry clears part. Safety clears also exist on draw/acquire.
 for(const [fn,needle,label] of [
  ['pushDiscard',"clearScrapShiftPart(c,'공용 버림패',true)",'public discard clears part'],
  ['recycleIfNeeded',"clearScrapShiftPart(c,'개인 덱 재순환',true)",'spent/discard recycle into personal deck clears part'],
