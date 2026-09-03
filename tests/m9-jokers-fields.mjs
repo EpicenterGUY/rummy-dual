@@ -16,14 +16,13 @@ for (const [id, tag] of [
   ok(new RegExp(`'${id}':\\{[^\\n]*t:'${tag}'`).test(html), `${id} keeps distinct Joker identity ${tag}`);
 }
 
+const retireMeldBlock = html.match(/function retireMeld\([\s\S]*?\nfunction recoveredCardCanReturn/)?.[0] || '';
 ok(
-  html.includes("if(c.tag==='jokerKing'){const home=c.originOwner||c.owner;c.owner=home;") &&
-  html.includes('sideObj(home).deck.unshift(c)') &&
-  html.includes("else{if(c.tag==='smuggledSuit')"),
+  /if\(c\.tag==='jokerKing'\)\{[\s\S]*?const home=c\.originOwner\|\|c\.owner;c\.owner=home;[\s\S]*?sideObj\(home\)\.deck\.unshift\(c\)[\s\S]*?\}else if\(c\.tag==='flexSuit'/.test(retireMeldBlock),
   'Joker King retirement restores origin owner and returns to owner deck instead of spent'
 );
 ok(
-  html.includes('const home=c.originOwner||c.owner') && html.includes('sideObj(home).deck.unshift(c)'),
+  retireMeldBlock.includes('const home=c.originOwner||c.owner') && retireMeldBlock.includes('sideObj(home).deck.unshift(c)'),
   'discard-control changes cannot steal Joker King permanently'
 );
 
