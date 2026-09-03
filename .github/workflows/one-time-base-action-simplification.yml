@@ -19,7 +19,9 @@ jobs:
           fetch-depth: 0
 
       - name: Apply base action simplification patch
-        run: python .github/scripts/base-action-simplification-runner.py
+        run: |
+          python .github/scripts/base-action-simplification-runner.py
+          python .github/scripts/base-action-test-fix.py
 
       - name: Syntax and source gates
         run: |
@@ -66,7 +68,7 @@ jobs:
 
       - name: Commit base action simplification
         run: |
-          git add index.html README.md ROADMAP.md docs/M0R_MELD_EXPANSION.md docs/NEW_USER_UX_TERMS.md tests/m0r-meld-expansion.mjs tests/final-rule-audit.mjs
+          git add index.html README.md ROADMAP.md docs/M0R_MELD_EXPANSION.md docs/NEW_USER_UX_TERMS.md tests/base-action-simplification.mjs tests/m0r-meld-expansion.mjs tests/final-rule-audit.mjs
           if git diff --cached --quiet; then echo 'No feature changes to commit.'; exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
