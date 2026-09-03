@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0
 
       - name: Apply base action simplification patch
-        run: python .github/scripts/base-action-simplification-patch.py
+        run: python .github/scripts/base-action-simplification-runner.py
 
       - name: Syntax and source gates
         run: |
