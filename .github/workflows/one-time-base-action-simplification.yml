@@ -1,4 +1,4 @@
-# rerun: full-board cleanup legality
+# rerun: localized attach preview
 name: One-time base action simplification
 
 on:
@@ -25,6 +25,7 @@ jobs:
           python .github/scripts/base-action-test-fix.py
           python .github/scripts/base-action-legacy-test-fix.py
           python .github/scripts/base-action-followup.py
+          python .github/scripts/base-action-more-test-fix.py
 
       - name: Syntax and source gates
         run: |
@@ -34,11 +35,11 @@ jobs:
           const h=fs.readFileSync('index.html','utf8');
           const s=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
           new Function(s);
-          for(const legacy of ['function canContinueReturnedRun(','returnAttachToken','extraAttachGrantedToken']){
+          for(const legacy of ['function canContinueReturnedRun(','lastAttachToken','returnAttachToken','extraAttachGrantedToken','rebelReturnBlockedToken']){
             if(h.includes(legacy))throw new Error(`legacy attach exception remains: ${legacy}`);
           }
           if(!h.includes('function attachAccess(')||!h.includes('function canCleanupMeld(')||!h.includes('id="cleanupBtn"'))throw new Error('simplified action surface incomplete');
-          console.log('PASS: combined game script parses and legacy attach-continuation state is gone');
+          console.log('PASS: combined game script parses and target-specific attach continuation state is gone');
           NODE
           git diff --check
 
@@ -50,6 +51,7 @@ jobs:
           node tests/final-rule-audit.mjs
           node tests/core-behavior.mjs
           node tests/hand-circulation.mjs
+          node tests/korean-terms.mjs
           node tests/theme-reaction-order.mjs
           node tests/theme-mix-simulation.mjs
           node tests/l10n-card-style.mjs
@@ -72,7 +74,7 @@ jobs:
 
       - name: Commit base action simplification
         run: |
-          git add index.html README.md ROADMAP.md docs/M0R_MELD_EXPANSION.md docs/NEW_USER_UX_TERMS.md tests/base-action-simplification.mjs tests/m0r-meld-expansion.mjs tests/final-rule-audit.mjs tests/core-behavior.mjs tests/hand-circulation.mjs
+          git add index.html README.md ROADMAP.md docs/M0R_MELD_EXPANSION.md docs/NEW_USER_UX_TERMS.md tests/base-action-simplification.mjs tests/m0r-meld-expansion.mjs tests/final-rule-audit.mjs tests/core-behavior.mjs tests/hand-circulation.mjs tests/korean-terms.mjs
           if git diff --cached --quiet; then echo 'No feature changes to commit.'; exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
