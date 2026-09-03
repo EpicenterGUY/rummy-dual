@@ -28,7 +28,7 @@ ok(script.includes('function requestVSignalEditorChoice('),'Genius Editor uses a
 ok(script.includes('function requestVSignalLegendChoice('),'Legend Idol uses a resumable reward choice');
 ok(script.includes('function noteVSignalMeldKind('),'SET/RUN cross-play is tracked without a new numeric resource');
 ok(script.includes("typeof noteVSignalMeldKind==='function'?noteVSignalMeldKind(w,type):{before:false,both:false,completedPair:false}"),'common resolver keeps isolated legacy tests compatible when V-SIGNAL helper is not loaded');
-ok(script.includes("if(!packet?.event)return false;if(typeof sideObj!=='function'||typeof other!=='function')return false"),'V-SIGNAL passive subscriber preserves the isolated shared-event foundation');
+ok(script.includes("if(!packet?.event||state.gameOver)return false;if(typeof sideObj!=='function'||typeof other!=='function')return false"),'V-SIGNAL passive subscriber preserves the isolated shared-event foundation');
 ok(script.includes("themeCap=Math.min(4,new Set(preferred.map(namedSlot)).size)"),'automatic theme build caps the selected theme at four physical slots');
 ok(script.includes("(themeId==='mixed'||NAMED[id]?.themeId!==themeId)"),'automatic fill cannot silently exceed the four-card theme cap');
 ok(!script.includes('allowStaged=')&&!script.includes('def.rewardPool===false'),'ordinary roguelike reward ranking no longer stages completed theme cards');

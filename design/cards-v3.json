@@ -152,7 +152,7 @@
       "theme": "common",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave6",
       "previousEffect": "손에서 자기 턴을 2회 넘기면 충전된다. 충전 상태로 사용하면 상대 공개 조합 하나를 다음 턴까지 고정한다.",
       "targetEffect": "손에서 자기 턴을 2회 넘긴 뒤 사용하면 상대 공개 카드 1장에 침묵을 부여한다. 그 카드가 이미 침묵이면 대신 상대에게 감쇠 12를 부여한다.",
       "capabilities": [
@@ -1037,7 +1037,7 @@
       "theme": "v-signal",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave6",
       "previousEffect": "이 카드가 있는 공개 조합에 상대가 카드를 붙이면 턴당 1회 카드 1장을 뽑는다.",
       "targetEffect": "이 카드의 공개 조합에 상대가 붙이면 카드 1장을 뽑고 이 카드에 침묵을 부여한다. 자기 다음 턴 종료 후 다시 반응할 수 있다.",
       "capabilities": [
@@ -1630,7 +1630,7 @@
       "theme": "point-blank",
       "category": "조작형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave6",
       "previousEffect": "이 카드를 내 접전에 붙이면 그 조합에 봉인 1을 부여한다. 이미 봉인이 있다면 대신 그 조합을 고정한다.",
       "targetEffect": "내 접전에 붙이면 그 조합의 상대 카드 1장에 침묵을 부여한다. 그 카드가 이미 침묵이면 대신 조합에 균열을 부여한다.",
       "capabilities": [

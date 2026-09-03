@@ -1,3 +1,4 @@
+import {createStatusContext} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
@@ -11,7 +12,7 @@ for(const name of ['rankChoiceOptions','rankChoicePlans','projectRankChoiceCards
 
 const RANK_VALUE={A:1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13};
 const state={field:null,turnToken:1};
-const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});
+const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});
 for(const name of ['normalizePrototypeRank','ensureRankPrototype','cardPrintedRanks','isAsymmetricRankCard','isJoker','isSuitFlexible','rankChoiceOptions','rankChoicePlans','projectRankChoiceCards','rankChoicePlanLabel','runSequenceOK','setValid','runValid','meldType','legalRankChoicePlansForNewMeld','legalRankChoicePlansForAttach','rankChoicePreview'])vm.runInContext(source(name),ctx);
 let uid=1;
 const card=(suit,base,top=base,bottom=base,tag=null)=>({uid:uid++,suit,rank:base,baseRank:base,topRank:top,bottomRank:bottom,activeRank:null,rankOrientation:null,tag,owner:'player'});

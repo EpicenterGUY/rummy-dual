@@ -1,3 +1,4 @@
+import {createStatusContext} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
@@ -33,7 +34,7 @@ const rankCore=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRanks
 // Atomic plan validation and explicit-choice requirement.
 {
   const state={field:null,turnToken:1};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});install(ctx,...rankCore);
+  const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});install(ctx,...rankCore);
   const a=card('S','7','3','7'),b=card('H','3'),c=card('D','3'),cards=[a,b,c],before=JSON.stringify(cards);
   let action=ctx.rankChoiceActionPlan(cards);
   ok(!action.ok&&action.reason==='choice-required'&&action.legalCount===1,'unresolved asymmetric action refuses to guess a direction even when only one plan is legal');
@@ -50,7 +51,7 @@ const rankCore=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRanks
 // Priority: Joker wildcard > printed choice > local rank modifiers.
 {
   const state={field:null,turnToken:2};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});install(ctx,...rankCore);
+  const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});install(ctx,...rankCore);
   const joker={uid:uid++,suit:'J',rank:'J1',baseRank:null,topRank:null,bottomRank:null,activeRank:null,rankOrientation:null,tag:'jokerKing'};
   ok(ctx.rankResolutionPriority(joker,'RUN').join('>')==='joker-wild','Joker keeps independent wildcard priority and never enters activeRank selection');
   const cf=card('S','9','3','9',{tag:'counterfeiter'}),r4=card('S','4'),r5=card('S','5');
@@ -70,7 +71,7 @@ const rankCore=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRanks
   const player={hand:[...cards],melds:[],newMeldCount:0,actedThisTurn:false,turnStarts:1},enemy={hand:[],melds:[],turnStarts:1};
   const state={player,enemy,field:null,turnNo:1,turnToken:11,gameOver:false,lastPlayerMeldType:null,lastEnemyMeldType:null};
   const capture={effectRanks:null,rummyRanks:null};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});
+  const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});
   ctx.sideObj=w=>w==='player'?player:enemy;ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.newMeldAccess=()=>({allowed:true,extra:false,quickReloadCard:null});ctx.beforeNewMeld=()=>true;
   ctx.removeFromHand=(w,list)=>{const ids=new Set(list.map(x=>x.uid));ctx.sideObj(w).hand=ctx.sideObj(w).hand.filter(x=>!ids.has(x.uid))};
   ctx.markSetCompletion=()=>{};ctx.fieldAction=()=>{};ctx.resolveEffects=(w,list,type)=>{capture.effectRanks=list.map(x=>x.rank);return{bonus:0,flatReturn:false,forceReturn:false,pending:false}};ctx.characterActionBonus=()=>{};ctx.triggerOpponentHandTraps=()=>{};ctx.log=()=>{};ctx.blankMeldStatus=()=>({});
@@ -87,7 +88,7 @@ function makeAttachContext(type,baseCards,handCards,chain=0){
   const enemy={hand:[],melds:[{type,cards:[...baseCards],chain,lastAttachToken:null,createdToken:null,lastTouchedOwnerStart:0,status:{}}],returnedSwitchThisTurn:false,turnStarts:1};
   const state={player,enemy,field:null,turnNo:1,turnToken:21,gameOver:false,switchTarget:'neutral',switchPower:0,pendingTrapReduction:0,lastPlayerReturnType:null,lastEnemyReturnType:null};
   const capture={attacks:[],retired:[],effectRanks:[]};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});
+  const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});
   ctx.sideObj=w=>w==='player'?player:enemy;ctx.other=w=>w==='player'?'enemy':'player';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;
   ctx.removeFromHand=(w,list)=>{const ids=new Set(list.map(x=>x.uid));ctx.sideObj(w).hand=ctx.sideObj(w).hand.filter(x=>!ids.has(x.uid))};
   ctx.markSetCompletion=m=>{if(m.type==='RUN')m.chain=Math.max(0,Math.min(4,m.chain??Math.max(0,m.cards.length-3)))};ctx.fieldAction=()=>{};
@@ -121,7 +122,7 @@ function makeAttachContext(type,baseCards,handCards,chain=0){
   const a=card('S','9','8','10');a.activeRank='8';a.rankOrientation='top';a.rank='8';
   const player={melds:[{type:'RUN',cards:[card('S','5'),card('S','6'),card('S','7'),a],chain:4,status:{}}],actedThisTurn:false},enemy={melds:[]};
   const state={player,enemy,turn:'player',phase:'action',gameOver:false,target:null,boardSelected:new Set(),selected:new Set(),selectionOrder:[]};
-  const seen=[];const ctx=vm.createContext({console,Set,state});ctx.sideObj=w=>w==='player'?player:enemy;ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.meldFixedActive=()=>false;ctx.cardFixedActive=()=>false;ctx.emitEffectEvent=(name,p)=>seen.push({name,ranks:p.cards.map(x=>x.rank),active:p.cards.map(x=>x.activeRank)});ctx.retireMeld=(w,i)=>ctx.meldsOf(w).splice(i,1);ctx.combatBanner=()=>{};ctx.log=()=>{};ctx.switchName=()=> '나';
+  const seen=[];const ctx=createStatusContext(script,{console,Set,state});ctx.sideObj=w=>w==='player'?player:enemy;ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.meldFixedActive=()=>false;ctx.cardFixedActive=()=>false;ctx.emitEffectEvent=(name,p)=>seen.push({name,ranks:p.cards.map(x=>x.rank),active:p.cards.map(x=>x.activeRank)});ctx.retireMeld=(w,i)=>ctx.meldsOf(w).splice(i,1);ctx.combatBanner=()=>{};ctx.log=()=>{};ctx.switchName=()=> '나';
   install(ctx,'canFinishRun','finishRun');
   ok(ctx.finishRun('player',0)===true,'RUN completion executes with a locked asymmetric card');
   ok(seen[0]?.name==='onRunFinish'&&seen[0].ranks.includes('8')&&seen[0].active.includes('8'),'RUN finish event observes selected active rank before retirement reset');

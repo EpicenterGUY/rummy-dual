@@ -11,10 +11,10 @@ ok(script.includes("'VSCK':{slot:'CK',themeId:'v-signal',n:'24시간 내구방�
 ok(script.includes("items:['S9','H10','D2','VSD4','C6','SJ','H3']")&&script.includes("items:['SA','S2','H9','C9','VSCK','J4']"),'both preservation variants are reachable through progression');
 ok(script.includes("vGatherAll:['hold','combo','cycle']")&&script.includes("vEndurance:['extend','sustain','cycle']"),'preservation cards use shared tendencies rather than a dedicated resource');
 const offerSrc=source('retirePreservationOffer');
-ok(offerSrc.includes("kind==='burst'")&&offerSrc.includes("c.tag==='vGatherAll'")&&offerSrc.includes("kind==='runFinish'")&&offerSrc.includes("c.tag==='vEndurance'"),'common planner distinguishes BURST and RUN-finish sources');
+ok(offerSrc.includes("kind==='burst'")&&offerSrc.includes("cardHasAbility(c,'vGatherAll')")&&offerSrc.includes("kind==='runFinish'")&&offerSrc.includes("cardHasAbility(c,'vEndurance')"),'common planner distinguishes BURST and RUN-finish sources');
 ok(offerSrc.includes('m.cards.filter(c=>c.owner===actor)'),'preservation candidates are all actor-controlled cards, not only V-SIGNAL cards');
 const planner=source('retirePreservationOffer');
-const box={globalThis:null};box.globalThis=box;vm.runInNewContext(`${planner};globalThis.__offer=retirePreservationOffer;`,box);
+const box={globalThis:null};box.globalThis=box;vm.runInNewContext(`${source('canTrigger')};${source('cardHasAbility')};${planner};globalThis.__offer=retirePreservationOffer;`,box);
 const gather={uid:1,owner:'player',themeId:'v-signal',tag:'vGatherAll'};
 const ordinary={uid:2,owner:'player',themeId:null,tag:null};
 const foe={uid:3,owner:'enemy',themeId:null,tag:null};

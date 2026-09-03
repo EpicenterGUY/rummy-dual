@@ -6,7 +6,7 @@ function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 
 ok(!script.includes('typelog('),'CPU new-meld path no longer calls undefined typelog');
 ok((script.match(/freeSwapRecover'\)\&\&targetSide===w\)freeRecoverFromMeld/g)||[]).length===0,'CJ has no duplicate post-resolve free recovery');
-ok(script.includes("c.tag==='heal2'&&!c.phoenixReturned"),'Phoenix spent return is gated to one combat use');
+ok(script.includes("cardHasAbility(c,'heal2')&&!c.phoenixReturned"),'Phoenix spent return is gated to one combat use');
 ok(script.includes('ph.phoenixReturned=true'),'Phoenix marks its one spent return as consumed');
 ok(script.includes('function simpleGapMissingRank('),'Gap Run records the exact simple one-card hole before recovery');
 ok(script.includes('function recoverRedundantGapRun('),'Gap Run has an explicit redundant-card recovery resolver');

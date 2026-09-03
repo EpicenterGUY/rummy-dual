@@ -10,7 +10,7 @@ ok(!submit.includes('autoExtortToNewMeld')&&!html.includes('function autoExtortT
 ok(extCandidates.includes('meldFixedActive(om)')&&extCandidates.includes('protectedByConstruction(om,c)')&&extCandidates.includes("meldType(remain)!==om.type")&&extCandidates.includes("meldType(added)!==m.type"),'Extortion only offers legal movable cards that preserve both melds');
 ok(extMove.includes('insuranceBlocks(w,foe,om,c)')&&extMove.indexOf('insuranceBlocks(w,foe,om,c)')<extMove.indexOf('om.cards.splice'),'interference protection resolves before the chosen Extortion card moves');
 ok(extReq.includes("candidates.length>1")&&extReq.includes('requestEffectChoice')&&!extReq.includes('allowSkip:true'),'human Extortion chooses among multiple legal cards and the mandatory move cannot be skipped');
-ok(resolve.includes("case'heldBonus':if(c.age>=2)")&&resolve.includes('requestOpponentMeldChoice'),'charged Sleeper routes its opponent-meld target through shared choice handling');
+ok(resolve.includes("case'heldBonus':if(handPreparationReady(c,2,w))")&&resolve.includes('requestSilenceChoice'),'prepared Sleeper routes its opponent-card silence target through shared choice handling');
 ok(meldReq.includes("candidates.length>1")&&meldReq.includes('requestEffectChoice')&&meldReq.includes('lockMeldRecovery(m,foe)'),'Sleeper presents multiple opponent melds to the human and fixes the exact chosen meld');
 ok(html.includes("'DJ':{n:'강탈자'")&&html.includes("'S9':{n:'잠복자'"),'target-choice cards remain in the live named-card pool');
 ok(fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8').includes('Target-choice pass: Extortion'),'roadmap records the target-choice pass');

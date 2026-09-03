@@ -1,3 +1,4 @@
+import {createStatusContext} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
@@ -19,7 +20,7 @@ ok(script.includes("step.id==='jokerKing'?")&&script.includes("step.id==='jokerD
 ok(html.includes("고급 튜토리얼 · 회수/정비/상태/조커"),'start screen advertises the completed advanced Joker section after unlock');
 ok(road.includes('- [x] 조커 고급 튜토리얼'),'UX1 P3 roadmap records Joker tutorial complete');
 {
- const ctx=vm.createContext({console,state:{field:null},RANK_VALUE:{A:1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13}});
+ const ctx=createStatusContext(script,{console,state:{field:null},RANK_VALUE:{A:1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13}});
  ctx.isJoker=c=>c.suit==='J';ctx.isSuitFlexible=()=>false;
  install(ctx,'setValid','runSequenceOK','runValid','meldType');
  const joker={suit:'J',rank:'J',tag:'jokerKing'},cards=[{suit:'S',rank:'9'},{suit:'H',rank:'9'},{suit:'D',rank:'9'},joker];

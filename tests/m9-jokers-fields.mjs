@@ -17,7 +17,7 @@ for (const [id, tag] of [
 }
 
 ok(
-  html.includes("if(c.tag==='jokerKing'){const home=c.originOwner||c.owner;c.owner=home;") &&
+  html.includes("if(cardHasAbility(c,'jokerKing')){const home=c.originOwner||c.owner;c.owner=home;") &&
   html.includes('sideObj(home).deck.unshift(c)') &&
   html.includes("else{if(c.tag==='smuggledSuit')"),
   'Joker King retirement restores origin owner and returns to owner deck instead of spent'
@@ -33,7 +33,7 @@ ok(fieldIds.length === 10, 'shared field pool contains exactly 10 stabilized fie
 ok(fieldIds.every((n,i)=>n===i+1), 'shared field IDs are contiguous F1-F10');
 
 ok(html.includes("F9:{name:'교차 선로'") && html.includes("tag:'crossLane'"), 'Cross Lane field is defined');
-ok(html.includes("crossLane=state.field?.tag==='crossLane'") && html.includes('if(offSuit>((bridge||crossLane)?1:0))return false'), 'Cross Lane grants at most one off-suit RUN slot and does not stack above one');
+ok(html.includes("crossLane=state.field?.tag==='crossLane'") && html.includes('if(offSuit.length>1||(offSuit.length&&!bridge&&!crossLane&&!frozenBridge))return null'), 'Cross Lane grants at most one off-suit RUN slot and does not stack above one');
 
 ok(html.includes("F10:{name:'환승 터미널'") && html.includes("tag:'crossTraffic'"), 'Cross Traffic field is defined');
 ok(html.includes("state.field.tag==='crossTraffic'&&ctx.isAttach&&ctx.targetOwner===other(w)&&!s.flags.crossTraffic"), 'Cross Traffic triggers only on first opponent-meld attach');

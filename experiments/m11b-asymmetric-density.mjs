@@ -1,3 +1,4 @@
+import {createStatusContext} from '../tests/helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {fileURLToPath} from 'node:url';
@@ -14,7 +15,7 @@ export const CORE_IDS=['S3','S4','S5','S6','S7','S8','S9','H2','H3','H4','H7','H
 export const SYNTHETIC={H4:['4','6'],S5:['5','8'],D4:['4','9'],C5:['5','K'],D6:['6','8'],C3:['3','6'],H7:['7','10'],C6:['6','J'],S8:['8','K'],D3:['3','Q']};
 export const DENSITIES={zero:[],few:['H4','S5','D4','C5'],many:Object.keys(SYNTHETIC)};
 const state={field:null,turnToken:1};
-const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});
+const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});
 for(const name of ['normalizePrototypeRank','ensureRankPrototype','cardPrintedRanks','isAsymmetricRankCard','isJoker','isSuitFlexible','rankChoiceOptions','rankChoicePlans','projectRankChoiceCards','rankChoicePlanLabel','runSequenceOK','setValid','runValid','meldType','legalRankChoicePlansForNewMeld'])vm.runInContext(source(name),ctx);
 
 function makeCard(slot,asymSet,uid){if(slot==='J1')return{uid,suit:'J',rank:'J1',baseRank:null,topRank:null,bottomRank:null,activeRank:null,rankOrientation:null,owner:'player'};const suit=slot[0],base=slot.slice(1),pair=asymSet.has(slot)?SYNTHETIC[slot]:null;return{uid,suit,rank:base,baseRank:base,topRank:pair?.[0]||base,bottomRank:pair?.[1]||base,activeRank:null,rankOrientation:null,owner:'player'}}

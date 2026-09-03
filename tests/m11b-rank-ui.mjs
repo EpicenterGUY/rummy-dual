@@ -1,3 +1,4 @@
+import {createStatusContext} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
@@ -19,7 +20,7 @@ ok(source('renderDetail').includes("rankPrototypeDetailText(c)"),'card detail co
 
 const RANK_VALUE={A:1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13};
 const SUIT_SYMBOL={S:'♠',H:'♥',D:'♦',C:'♣',J:'★'};
-const ctx=vm.createContext({console,Object,Array,Math,RANK_VALUE,SUIT_SYMBOL});
+const ctx=createStatusContext(script,{console,Object,Array,Math,RANK_VALUE,SUIT_SYMBOL});
 ctx.isJoker=c=>c?.suit==='J';
 install(ctx,'normalizePrototypeRank','ensureRankPrototype','cardPrintedRanks','isAsymmetricRankCard','cardRankPresentation','rankPrototypeDetailText','rankPrototypeDemoCards','cardHTML');
 

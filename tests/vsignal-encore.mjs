@@ -17,8 +17,8 @@ ok(source('makeCard').includes('encoreGrantToken:null')&&source('makeCard').incl
 const handler=source('handleVSignalThemeEvent');
 ok(script.includes('subscribeEffectEvent(handleVSignalThemeEvent);'),'V-SIGNAL behavior is wired through the shared event bus');
 let calls=0;const sourceMeld={id:'source'},targetMeld={id:'target'};
-const sandbox={globalThis:null,grantRecoveryReturnOverride:(actor,c,m)=>{calls++;ok(actor==='player','Encore grants permission to the recovering controller');ok(m===sourceMeld,'Encore excludes from the exact recovered source meld via the shared target helper');c.recoverReturnOverrideToken=77;c.recoverReturnTargets=[targetMeld];return 1},log:()=>{}};sandbox.globalThis=sandbox;
-vm.runInNewContext(`${handler};globalThis.__handle=handleVSignalThemeEvent;`,sandbox);
+const sandbox={state:{gameOver:false},globalThis:null,grantRecoveryReturnOverride:(actor,c,m)=>{calls++;ok(actor==='player','Encore grants permission to the recovering controller');ok(m===sourceMeld,'Encore excludes from the exact recovered source meld via the shared target helper');c.recoverReturnOverrideToken=77;c.recoverReturnTargets=[targetMeld];return 1},log:()=>{}};sandbox.globalThis=sandbox;
+vm.runInNewContext(`${source('canTrigger')};${source('cardHasAbility')};${handler};globalThis.__handle=handleVSignalThemeEvent;`,sandbox);
 const encore={themeId:'v-signal',tag:'vEncore',name:'앙코르',encoreGrantToken:null};
 ok(sandbox.__handle({event:'onRecover',actor:'player',card:encore,meld:sourceMeld,turnToken:77})===true,'recovering Encore grants its return exception');
 ok(encore.encoreGrantToken===77&&calls===1,'Encore records that its once-per-turn grant was spent');
