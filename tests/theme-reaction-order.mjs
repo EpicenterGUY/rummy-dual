@@ -20,7 +20,6 @@ ok(script.includes(mailRouteLive?mailAttach:oldAttach),'attach reaction order is
 ok(script.includes(mailRouteLive?mailRecover:oldRecover),'recovery reaction order is explicitly declared');
 ok(script.includes(mailRouteLive?mailMove:oldMove),'movement source/target ordering is explicitly declared');
 
-// Shared card-bound turn gate: one claim per key per turn token, independent keys coexist.
 {
  const state={turnToken:7};const card={};
  const ctx=context({state});install(ctx,'ensureThemeTurnGates','themeTurnGateUsed','claimThemeTurnGate');
@@ -31,8 +30,6 @@ ok(script.includes(mailRouteLive?mailMove:oldMove),'movement source/target order
  ok(ctx.claimThemeTurnGate(card,'alpha',8)===true,'same reaction key becomes available on a later turn token');
 }
 
-// Runtime source order matches the declared contract. MAIL-ROUTE extends each chain after
-// existing ZERO-SIGHT / POINT-BLANK reactions, never before them.
 {
  const recover=source('emitRecoveryEvent');
  const base=recover.indexOf("emitEffectEvent('onRecover'");
@@ -61,7 +58,6 @@ ok(script.includes(mailRouteLive?mailMove:oldMove),'movement source/target order
  ok(base>=0&&target>base&&clash>target&&(!mailRouteLive||mail>clash)&&post>(mailRouteLive?mail:clash),'attach executes base event → target change → clash change → arrival → deferred post-return cleanup');
 }
 
-// Encore: generic gate blocks a second grant even if its legacy compatibility token is cleared.
 {
  const state={turnToken:31};const c={themeId:'v-signal',tag:'vEncore',name:'앙코르',encoreGrantToken:null};let grants=0;
  const ctx=context({state,grantRecoveryReturnOverride:()=>{grants++;return 1},log:()=>{}});install(ctx,'ensureThemeTurnGates','themeTurnGateUsed','claimThemeTurnGate','handleVSignalThemeEvent');
@@ -70,7 +66,6 @@ ok(script.includes(mailRouteLive?mailMove:oldMove),'movement source/target order
  ok(ctx.handleVSignalThemeEvent({event:'onRecover',actor:'player',card:c,meld:{},turnToken:31})===false&&grants===1,'shared gate blocks duplicate Encore even if legacy token is absent');
 }
 
-// Quick Reload: same shared gate, while the legacy token remains populated for compatibility.
 {
  const state={turnToken:41};const c={themeId:'point-blank',tag:'pbQuickReload',name:'퀵 리로드',quickReloadNewMeldToken:null};
  const ctx=context({state,isPointBlankClash:()=>true,log:()=>{}});install(ctx,'ensureThemeTurnGates','themeTurnGateUsed','claimThemeTurnGate','handlePointBlankThemeEvent');
@@ -80,7 +75,6 @@ ok(script.includes(mailRouteLive?mailMove:oldMove),'movement source/target order
  ok(ctx.handlePointBlankThemeEvent({event:'onRecover',actor:'player',card:c,meld:{},turnToken:41})===false,'shared gate blocks duplicate Quick Reload even if legacy token is cleared');
 }
 
-// Cover Swap shares the gate but still records the old used token expected by existing UI/tests.
 {
  const state={turnToken:51};const target={uid:'t',owner:'player'},alt={uid:'a',owner:'player'};
  const cover={uid:'c',owner:'player',themeId:'point-blank',tag:'pbCoverSwap',name:'엄폐 교대',coverSwapUsedToken:null};
@@ -96,5 +90,9 @@ ok(script.includes(mailRouteLive?mailMove:oldMove),'movement source/target order
 ok(source('makeCard').includes('themeTurnGates:{}'),'new cards explicitly initialize shared theme-turn gate storage');
 ok(road.includes('한 행동의 테마 반응 순서 + 턴당 1회 게이트 명문화'),'ROADMAP closes the shared reaction-order gate');
 ok(themeDoc.includes('테마 반응의 턴당 1회 처리 공통화'),'canonical V-SIGNAL checklist closes common once-per-turn handling');
-ok(themeDoc.includes('기본 행동 이벤트 → 표적 변화 반응 → 접전 변화 반응 → 반환 후 지연 처리'),'canonical theme principles document cross-theme ordering');
+const scrapFoundation=script.includes("id:'scrap-shift'")&&script.includes("'onDismantle'");
+const legacyDocOrder='기본 행동 이벤트 → 표적 변화 반응 → 접전 변화 반응 → 반환 후 지연 처리';
+const scrapDocOrder='기본 행동 이벤트 → 부품 파생 반응(해당 시) → 표적 변화 반응 → 접전 변화 반응 → 우편 도착/반송 → 반환 후 지연 처리';
+ok(themeDoc.includes(scrapFoundation?scrapDocOrder:legacyDocOrder),'canonical theme principles document current cross-theme ordering');
+if(scrapFoundation)ok(themeDoc.includes('해체는 `onDismantle → 표적 변화 → 접전 변화`를 따른다.'),'canonical theme principles lock dismantle derived ordering');
 console.log('Theme reaction order and once-per-turn gate regression passed.');
