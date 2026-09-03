@@ -6,7 +6,7 @@ function source(name){const marker=`function ${name}(`,start=script.indexOf(mark
 const finish=source('finishMeldAction'),rummy=source('triggerRummy'),submit=source('submitNewMeld'),attach=source('attachCards');
 ok(rummy.includes("typeof requestHandBottomChoice==='function'")&&rummy.includes("title:'마지막 웃음'"),'live Last Laugh uses the shared exact-card bottom choice when available');
 ok(rummy.includes("if(paused)return'choice'")&&rummy.includes('const finishRummy=()=>'),'returning Last Laugh can pause RUMMY finalization for the mandatory choice');
-ok(rummy.includes("onAsyncResolved:()=>{log(`${switchName(w)} 마지막 웃음 · 반환 러미 후 1장 추가 순환.`,'good');finishRummy()}")&&rummy.includes("if(paused)return'choice'"),'player RUMMY finalization is resumed from the Last Laugh selection callback rather than before the choice');
+ok(rummy.includes("onAsyncResolved:()=>{log(`${switchName(w)} 마지막 웃음 · 반환 러미 후 1장 추가 순환.`,'good');finishEcho()}")&&rummy.includes("if(paused)return'choice'"),'player RUMMY finalization is resumed from the Last Laugh selection callback rather than before the choice');
 ok(rummy.includes("else{const cand=[...s.hand].sort")&&rummy.includes('cand.contractActive=false'),'isolated/CPU fallback stays deterministic and normalizes the bottomed card');
 ok(submit.includes("finishMeldAction(w,cards,false,ctx.fxState||{})")&&finish.includes("rr==='choice'?'choice':'rummy'"),'new-meld RUMMY propagates an async Last Laugh choice');
 ok(attach.includes("finishMeldAction(w,cards,returning||forceReturn,ctx.fxState||{})")&&finish.includes("rr==='choice'?'choice':'rummy'"),'attach RUMMY propagates an async Last Laugh choice');

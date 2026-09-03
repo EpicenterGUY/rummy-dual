@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 const root=new URL('../',import.meta.url),plan=JSON.parse(fs.readFileSync(new URL('design/cards-v3.json',root),'utf8'));
 const names={common:'공용 네임드','v-signal':'V-SIGNAL','zero-sight':'ZERO-SIGHT','point-blank':'POINT-BLANK',joker:'조커','season-bloom':'SEASON-BLOOM 신규 설계'};
-const statuses={preserved:'유지','implemented-wave1':'1차 구현','implemented-wave2':'2차 구현','implemented-wave3':'3차 구현','implemented-wave4':'4차 구현','implemented-wave5':'5차 구현','implemented-wave6':'6차 구현','implemented-wave7':'7차 구현',planned:'구현 대기'};
+const statuses={preserved:'유지','implemented-wave1':'1차 구현','implemented-wave2':'2차 구현','implemented-wave3':'3차 구현','implemented-wave4':'4차 구현','implemented-wave5':'5차 구현','implemented-wave6':'6차 구현','implemented-wave7':'7차 구현','implemented-wave8':'8차 구현',planned:'구현 대기'};
 const escape=s=>String(s).replaceAll('|','\\|').replaceAll('\n',' ');
 export function render(){
  const implemented=plan.existingCards.filter(r=>r.implementation.startsWith('implemented-')).length,pending=plan.existingCards.filter(r=>r.implementation==='planned').length;
