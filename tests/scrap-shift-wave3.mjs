@@ -37,13 +37,13 @@ ok(script.includes("themeId:'scrap-shift',live:false"),'wave3 remains DEV-only a
 
 {
  const a={uid:10,owner:'enemy',name:'A'},b={uid:11,owner:'enemy',name:'B'},part={uid:12,owner:'enemy',name:'부품',scrapShiftPart:true};
- const meld={type:'RUN',cards:[a,b,part]};let protected=null;
+ const meld={type:'RUN',cards:[a,b,part]};let protection=null;
  const state={turn:'enemy'};
- const ctx=context({state,applyOfficialStatus:(scope,target,key,n)=>{protected={scope,target,key,n}},log:()=>{},cardText:c=>c.name});
+ const ctx=context({state,applyOfficialStatus:(scope,target,key,n)=>{protection={scope,target,key,n}},log:()=>{},cardText:c=>c.name});
  install(ctx,'scrapShiftProtectCandidates','requestScrapShiftProtectChoice');
  ok(ctx.scrapShiftProtectCandidates('enemy',meld).length===3,'temporary weld only offers owned cards from its run');
  ctx.requestScrapShiftProtectChoice('enemy',{name:'임시 용접'},meld);
- ok(protected?.scope==='card'&&protected?.target===a&&protected?.key==='protect'&&protected?.n===1,'temporary weld applies protect 1 to one owned run card');
+ ok(protection?.scope==='card'&&protection?.target===a&&protection?.key==='protect'&&protection?.n===1,'temporary weld applies protect 1 to one owned run card');
 }
 
 {
