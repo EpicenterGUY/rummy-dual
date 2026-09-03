@@ -1,0 +1,75 @@
+name: One-time base action simplification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-base-action-simplification.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  implement:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply base action simplification patch
+        run: python .github/scripts/base-action-simplification-patch.py
+
+      - name: Syntax and source gates
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs=require('fs');
+          const h=fs.readFileSync('index.html','utf8');
+          const s=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+          new Function(s);
+          for(const legacy of ['function canContinueReturnedRun(','returnAttachToken','extraAttachGrantedToken']){
+            if(h.includes(legacy))throw new Error(`legacy attach exception remains: ${legacy}`);
+          }
+          if(!h.includes('function attachAccess(')||!h.includes('function canCleanupMeld(')||!h.includes('id="cleanupBtn"'))throw new Error('simplified action surface incomplete');
+          console.log('PASS: combined game script parses and legacy attach-continuation state is gone');
+          NODE
+          git diff --check
+
+      - name: Run focused base-rule gates
+        run: |
+          set -euo pipefail
+          node tests/base-action-simplification.mjs
+          node tests/m0r-meld-expansion.mjs
+          node tests/final-rule-audit.mjs
+          node tests/core-behavior.mjs
+          node tests/theme-reaction-order.mjs
+          node tests/theme-mix-simulation.mjs
+          node tests/l10n-card-style.mjs
+          node tests/l10n-card-text.mjs
+
+      - name: Run full regression suite
+        run: |
+          set -u
+          count=0
+          for test in tests/*.mjs; do
+            if ! node "$test" >/tmp/base-action-test.log 2>&1; then
+              echo "FAILED_TEST=$test"
+              echo '--- FAILURE TAIL ---'
+              tail -n 350 /tmp/base-action-test.log
+              exit 1
+            fi
+            count=$((count+1))
+          done
+          echo "ALL_TESTS_PASSED=$count"
+
+      - name: Commit base action simplification
+        run: |
+          git add index.html README.md ROADMAP.md docs/M0R_MELD_EXPANSION.md docs/NEW_USER_UX_TERMS.md tests/m0r-meld-expansion.mjs tests/final-rule-audit.mjs
+          if git diff --cached --quiet; then echo 'No feature changes to commit.'; exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat: simplify base actions and add full-board cleanup'
+          git pull --rebase origin main
+          git push origin HEAD:main
