@@ -31,7 +31,7 @@ ok(script.includes("typeof noteVSignalMeldKind==='function'?noteVSignalMeldKind(
 ok(script.includes("if(!packet?.event)return false;if(typeof sideObj!=='function'||typeof other!=='function')return false"),'V-SIGNAL passive subscriber preserves the isolated shared-event foundation');
 ok(script.includes("themeCap=Math.min(4,new Set(preferred.map(namedSlot)).size)"),'automatic theme build caps the selected theme at four physical slots');
 ok(script.includes("(themeId==='mixed'||NAMED[id]?.themeId!==themeId)"),'automatic fill cannot silently exceed the four-card theme cap');
-ok(!script.includes('allowStaged=')&&!script.includes('def.rewardPool===false'),'ordinary roguelike reward ranking no longer stages completed theme cards');
+ok(!script.includes('allowStaged=')&&cards.every(([,d])=>d.rewardPool!==false),'ordinary roguelike reward ranking no longer stages completed theme cards');
 const unlockBlock=script.slice(script.indexOf('const UNLOCK_GROUPS='),script.indexOf('function unlockedNamed'));
 for(const id of Object.keys(expected))ok(unlockBlock.includes(`'${id}'`),`${id} is reachable through progression unlock groups`);
 ok(unlockBlock.includes("items:['S8','H5','VSH5','D9','C8','D10','C3']"),'full-pool expansion preserves Encore legacy unlock timing');

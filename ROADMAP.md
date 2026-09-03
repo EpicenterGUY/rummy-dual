@@ -354,6 +354,19 @@ V-SIGNAL 24장 + ZERO-SIGHT 18장 + POINT-BLANK 18장의 개별 구현 뒤, 실�
 - [x] 60장 직접 위력 비율·물리 슬롯 유일성·테마 혼합 회귀 유지
 - [x] 전체 `tests/*.mjs` 회귀 통과
 
+## M8MR — MAIL-ROUTE 28/28 풀 카드군 · 출시 검증 중
+우편 표식과 공개 조합 목적지를 이용하는 이동·회수형 오픈 테마. 일반/다른 테마 카드도 발송할 수 있고 전용 숫자 자원은 만들지 않는다.
+
+- [x] 28장 / 수트별 7장 정식 후보 명단 잠금
+- [x] `우편` 비중첩 표식 + 발송자 기록 + 수명 주기 구현
+- [x] 플레이어당 목적지 1개 + 표적/접전 독립 공존
+- [x] 새 조합·붙이기·조합 이동의 도착/지정 도착 파생 이벤트 구현
+- [x] 공개 조합→자기 손 회수의 반송 이벤트 + 재배송 예외 구현
+- [x] 28장 전체 정의/효과/해금/도감/덱빌더/체험전 연결
+- [ ] 선택 재개 경계 전체 검증 — 단일 후보/건너뛰기 수정 완료, 이동 도착·목적지 정리는 추가 검증
+- [ ] 일반 로그라이크 보상 편입 — rewardPool:false로 제외, 기존 60장 보상과 고정 지역 적 덱 유지
+- [x] MAIL-ROUTE 단일/2테마/일반 혼합 + 전체 회귀
+
 ## M9 — Jokers and fields
 - [x] Finalize distinct Joker identities — J1~J5 keep separate wildcard identities for owner-deck return, RUMMY/DETONATE timing, SET/RUN split payoff, vacancy replacement, and opponent-meld rebellion
 - [x] Audit Joker King return-to-owner-deck behavior — public-meld retirement restores `originOwner`, bottoms J1 into that owner deck, and never sends it to spent
@@ -550,3 +563,12 @@ Only after rules and tests are stable. Keep GitHub Pages buildless.
 - [x] 접전 1개·지연 해제·전투 중립 이동·기본/무료 회수 계약 유지
 - [x] 붙이기/회수/버리기/정비 공용 행동 이력을 전용 숫자 자원 없이 재사용
 - [x] 신규 16장 로그라이크 보상은 60장 통합 전까지 staged 처리
+
+## 2026-09-03 · MAIL-ROUTE 검증 실패 복구
+- [x] 실패한 패치를 별도 작업 브랜치에 적용하고 기존 회귀 실패를 재현
+- [x] 선택 없는 발송 경로의 동기 재개 중복 제거, 후보 1장도 선택/건너뛰기 허용
+- [x] 도착/반송 개별 카드 턴 게이트, 이동한 등기 우편의 보호, 상대 조합 목적지의 우체국장 반응 수정
+- [x] 우편 발송 종료 시 오래된 도착 참조 제거, 조커 원소유자 귀환 실제 엔진 검증
+- [x] MAIL-ROUTE 보상 후보 제외로 기존 60장 보상 유지 — 행동 태그 없는 신규 카드가 순위를 바꾸던 현상 차단
+- [ ] 출시 전 라스트 마일 이동 도착 및 보관 우편함 선택 재개, 28장 실전 경계 감사. 상세 게이트는 THEME_FULL_POOL_PLAN.md
+- [ ] main 반영/배포 — 이 복구는 출시 완료를 뜻하지 않음

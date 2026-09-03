@@ -4,6 +4,11 @@ import re
 index=Path('index.html')
 text=index.read_text(encoding='utf-8')
 
+# Once integrated, runtime/tests/docs are maintained directly; never replay this historical generator.
+if "'MRDA':" in text:
+    print('MAIL-ROUTE definitions already present; preserving reviewed runtime and tests')
+    raise SystemExit(0)
+
 def once(old,new,label):
     global text
     if new in text:

@@ -12,7 +12,7 @@ function makeCtx(seed=1){const math=Object.create(Math);math.random=rng(seed);co
 
 const base=makeCtx(1),NAMED=base.NAMED;
 const regularIds=Object.keys(NAMED).filter(id=>id[0]!=='J');
-const themeIds=['v-signal','zero-sight','point-blank'];
+const themeIds=['v-signal','zero-sight','point-blank','mail-route'];
 const themeCards=id=>regularIds.filter(cid=>NAMED[cid]?.themeId===id);
 const slotOf=id=>base.namedSlot(id);
 function uniqueSlots(ids){return new Set(ids.map(slotOf))}
@@ -32,7 +32,7 @@ for(const theme of themeIds){
 }
 
 // 2) Every two-theme module can coexist under the same slot-exclusive rule and still has ordinary fill.
-const pairs=[['v-signal','zero-sight'],['v-signal','point-blank'],['zero-sight','point-blank']];
+const pairs=[];for(let i=0;i<themeIds.length;i++)for(let j=i+1;j<themeIds.length;j++)pairs.push([themeIds[i],themeIds[j]]);
 for(const[a,b]of pairs){
   const ctx=makeCtx(a.length*100+b.length),aPool=themeCards(a),aCap=Math.min(4,uniqueSlots(aPool).size);
   const first=[...ctx.weightedVariantSample(aPool,aCap,()=>1)],used=new Set(first.map(id=>ctx.namedSlot(id)));
@@ -59,7 +59,7 @@ for(let seed=1;seed<=128;seed++){
 ok(mixedThemeSeen>0&&mixedOrdinarySeen>0,'general mixed simulation samples both theme and ordinary named cards');
 
 // 4) Direct-power cards remain a minority globally and among the currently implemented theme cards.
-const directTags=new Set(['finalUltimatum','blackBullet','fuseRound','vBroadcastAccident','vBadClip','vReverseViral','vBanSoon','zsBallistics','zsOneShot']);
+const directTags=new Set(['finalUltimatum','blackBullet','fuseRound','vBroadcastAccident','vBadClip','vReverseViral','vBanSoon','mrHazardMail','mrFinalNotice','zsBallistics','zsOneShot']);
 const allDefs=Object.values(NAMED),directAll=allDefs.filter(c=>directTags.has(c.t));
 const allTheme=allDefs.filter(c=>c.themeId),directTheme=allTheme.filter(c=>directTags.has(c.t));
 ok(directAll.length/allDefs.length<0.20,`direct-power tags stay below 20% of all named definitions (${directAll.length}/${allDefs.length})`);
