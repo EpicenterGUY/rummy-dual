@@ -1,4 +1,4 @@
-# rerun: migrate legacy core attach regression
+# rerun: full-board cleanup legality
 name: One-time base action simplification
 
 on:
@@ -24,6 +24,7 @@ jobs:
           python .github/scripts/base-action-simplification-runner.py
           python .github/scripts/base-action-test-fix.py
           python .github/scripts/base-action-legacy-test-fix.py
+          python .github/scripts/base-action-followup.py
 
       - name: Syntax and source gates
         run: |
@@ -48,6 +49,7 @@ jobs:
           node tests/m0r-meld-expansion.mjs
           node tests/final-rule-audit.mjs
           node tests/core-behavior.mjs
+          node tests/hand-circulation.mjs
           node tests/theme-reaction-order.mjs
           node tests/theme-mix-simulation.mjs
           node tests/l10n-card-style.mjs
@@ -70,7 +72,7 @@ jobs:
 
       - name: Commit base action simplification
         run: |
-          git add index.html README.md ROADMAP.md docs/M0R_MELD_EXPANSION.md docs/NEW_USER_UX_TERMS.md tests/base-action-simplification.mjs tests/m0r-meld-expansion.mjs tests/final-rule-audit.mjs tests/core-behavior.mjs
+          git add index.html README.md ROADMAP.md docs/M0R_MELD_EXPANSION.md docs/NEW_USER_UX_TERMS.md tests/base-action-simplification.mjs tests/m0r-meld-expansion.mjs tests/final-rule-audit.mjs tests/core-behavior.mjs tests/hand-circulation.mjs
           if git diff --cached --quiet; then echo 'No feature changes to commit.'; exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
