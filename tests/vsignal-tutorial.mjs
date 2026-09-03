@@ -1,3 +1,4 @@
+import {createStatusContext} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
@@ -23,7 +24,7 @@ ok(script.includes('V-SIGNAL 체험 완료! 전용 자원 없이 회수 → 다�
  const destSet={type:'SET',cards:[card('S','5',{owner:'enemy'}),card('D','5',{owner:'enemy'}),card('C','5',{owner:'enemy'})],chain:0,createdToken:null,lastAttachToken:null};
  const player={melds:[sourceRun],returnedSwitchThisTurn:false},enemy={melds:[destSet],returnedSwitchThisTurn:false};
  const state={turnNo:5,turnToken:41,switchTarget:'neutral',player,enemy,field:null};
- const ctx=vm.createContext({console,Math,Set,Map,Array,Object,Number,state,RANK_VALUE:rank});
+ const ctx=createStatusContext(script,{console,Math,Set,Map,Array,Object,Number,state,RANK_VALUE:rank});
  ctx.sideObj=w=>w==='player'?player:enemy;ctx.other=w=>w==='player'?'enemy':'player';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.log=()=>{};
  install(ctx,'isJoker','isSuitFlexible','setValid','runSequenceOK','runValid','meldType','legalRecoveryReturnTargets','grantRecoveryReturnOverride','handleVSignalThemeEvent','recoveredCardCanReturn');
  ok(ctx.runValid(sourceRun.cards)&&ctx.setValid(destSet.cards),'tutorial source RUN and ordinary destination SET are both real legal melds');

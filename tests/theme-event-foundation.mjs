@@ -1,3 +1,4 @@
+import {makeGame} from './helpers/live-game.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
@@ -16,9 +17,8 @@ ok(script.includes("'onRunFinish','onRetire'"),'shared effect vocabulary exposes
 const defsStart=script.indexOf('const EFFECT_EVENTS=');
 const defsEnd=script.indexOf('const TUTORIAL_STEPS=',defsStart);
 ok(defsStart>=0&&defsEnd>defsStart,'event foundation block is extractable');
-const sandbox={state:{turnNo:12,turnToken:34},meldsOf:()=>[],globalThis:null};
-sandbox.globalThis=sandbox;
-vm.runInNewContext(script.slice(defsStart,defsEnd)+`;globalThis.__eventApi={THEME_GROUPS,themeDef,subscribeEffectEvent,emitEffectEvent};`,sandbox);
+const game=makeGame();Object.assign(game.state,{turnNo:12,turnToken:34});
+const sandbox={__eventApi:{themeDef:game.themeDef,subscribeEffectEvent:game.subscribeEffectEvent,emitEffectEvent:game.emitEffectEvent}};
 const seen=[];
 const off=sandbox.__eventApi.subscribeEffectEvent(e=>seen.push(e));
 const packet=sandbox.__eventApi.emitEffectEvent('onMeldCreate',{actor:'player',value:7});
@@ -31,7 +31,7 @@ ok(sandbox.__eventApi.emitEffectEvent('not-a-real-event',{})===null,'unknown eve
 ok(sandbox.__eventApi.themeDef('v-signal')?.displayName==='V-SIGNAL','theme metadata is queryable by stable id');
 
 const meld=source('submitNewMeld');
-ok(meld.includes("emitEffectEvent('onMeldCreate'")&&meld.indexOf("emitEffectEvent('onMeldCreate'")<meld.indexOf('triggerRummy('),'new-meld event fires before possible RUMMY finalization');
+ok(meld.includes("emitEffectEvent('onMeldCreate'")&&meld.indexOf("emitEffectEvent('onMeldCreate'")<meld.indexOf('finishMeldAction(w,cards,false'),'new-meld event fires before possible RUMMY finalization');
 ok(meld.includes("typeof emitEffectEvent==='function'"),'new-meld hook preserves isolated-function regression compatibility');
 const attach=source('attachCards');
 ok(attach.includes("emitEffectEvent('onAttach'")&&attach.indexOf("emitEffectEvent('onAttach'")<attach.indexOf('retireMeld(targetSide'),'attach event sees a completed 4SET before automatic retirement');

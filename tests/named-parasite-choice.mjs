@@ -1,15 +1,22 @@
-import fs from 'node:fs';
-const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
-const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
-function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
-function source(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw new Error(`missing ${name}`);let par=0,brace=-1;for(let i=start+marker.length-1;i<script.length;i++){if(script[i]==='(')par++;else if(script[i]===')')par--;else if(script[i]==='{'&&par===0){brace=i;break}}if(brace<0)throw new Error(`missing body ${name}`);let d=0;for(let i=brace;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)return script.slice(start,i+1)}throw new Error(`unterminated ${name}`)}
-const parasite=source('requestParasiteReturnCycles'),resolve=source('resolveEffects'),attach=source('attachCards'),ai=source('continueAITurnAfterAcquisition'),choice=source('resolveEffectChoice');
-ok(parasite.includes("owner==='player'")&&parasite.includes('requestEffectChoice')&&parasite.includes('candidates.length>1'),'human Parasite owner chooses the exact discard after the forced draw');
-ok(!parasite.includes('allowSkip:true'),'Parasite discard remains mandatory');
-ok(resolve.includes('fx.parasiteChecked=true')&&resolve.includes('requestParasiteReturnCycles(w,ctx.meld'),'Parasite return reaction is part of resumable pre-finalization effect resolution');
-ok(!attach.includes("for(const pz of m.cards)if(pz.tag==='parasite'"),'legacy oldest-card Parasite auto-discard path is removed');
-ok(ai.includes('resumeState.actionsUsed')&&ai.includes('resumeState.skipMaintenance')&&ai.includes("if(r==='choice')"),'CPU action loop preserves its action budget and skips duplicate maintenance across a choice pause');
-ok(choice.includes('state.aiChoiceResume')&&choice.includes('state.aiAsyncActionResult'),'shared choice completion resumes a paused CPU action with its final action result');
-ok(script.includes("if(w==='enemy')state.aiAsyncActionResult=result"),'async enemy meld/attach completion reports RUMMY or success before CPU continuation');
-ok(fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8').includes('Final choice pass B'),'roadmap records Parasite choice stabilization');
-console.log('M8 Parasite choice regression passed.');
+import assert from 'node:assert/strict';
+import {fresh,named,plain,run,nextTurn} from './helpers/v3-fixture.mjs';
+// Parasite now rewards its owner after a real return from the opponent's board.
+for(const parasiteOwner of ['player','enemy']){
+ const g=fresh(),attacker=g.other(parasiteOwner),p=g.state[parasiteOwner],foe=g.state[attacker];g.state.turn=attacker;g.state.switchTarget=attacker;
+ const m=run(g,attacker,'C',['5','6']),c=named(g,'C7',parasiteOwner);m.cards.push(c);const a=plain(g,'C','8',attacker),b=plain(g,'C','9',attacker);foe.hand.push(a,b);
+ const hands=[p.hand.length,foe.hand.length],decks=[p.deck.length,foe.deck.length];
+ assert.equal(g.attachCards(attacker,[a],attacker,0),true);assert.equal(p.status.loaded||0,8);assert.equal(g.state.pendingEffectChoice,null);assert.deepEqual([p.deck.length,foe.deck.length],decks);assert.equal(p.hand.length,hands[0]);
+ assert.equal(g.attachCards(attacker,[b],attacker,0),true);assert.equal(p.status.loaded||0,8,'same-RUN continuation cannot trigger another reaction');
+ g.emitEffectEvent('onAttach',{actor:attacker,meld:m,returned:true});assert.equal(p.status.loaded||0,8,'duplicate packet cannot award twice');
+ g.retireMeld(attacker,0);assert.equal(p.status.loaded||0,8,'prepared loaded survives source retirement');
+ nextTurn(g,parasiteOwner);g.state.switchTarget=parasiteOwner;g.returnSwitch(parasiteOwner,10);assert.equal(p.status.loaded||0,0);
+}
+{
+ const g=fresh(),m=run(g,'player','C',['5','6']),c=named(g,'C7');m.cards.push(c);const a=plain(g,'C','8','enemy');g.state.enemy.hand.push(a);g.state.turn='enemy';g.state.switchTarget='enemy';
+ assert.equal(g.attachCards('enemy',[a],'player',0),true);assert.equal(g.state.player.status.loaded||0,0,'own board is not the opponent board');
+}
+{
+ const g=fresh(),m=run(g,'enemy','C',['5','6']),c=named(g,'C7');m.cards.push(c);const a=plain(g,'C','8','enemy');g.state.enemy.hand.push(a);g.state.turn='enemy';g.state.switchTarget='player';
+ assert.equal(g.attachCards('enemy',[a],'enemy',0),false);assert.equal(g.state.player.status.loaded||0,0,'failed return cannot react');
+}
+console.log('PASS Parasite: post-return loaded 8, both sides, no draw/discard choice, continuation/duplicate guard and source lifetime');

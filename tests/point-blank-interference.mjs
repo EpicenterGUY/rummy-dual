@@ -1,3 +1,4 @@
+import {createStatusContext} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
@@ -19,7 +20,7 @@ ok(script.includes('대체 대상이 없으면 보호막 12')&&script.includes('
   const events=[],targetChanges=[],clashChanges=[];
   const sourceMeld={type:'RUN',cards:[],themeMeta:{zeroSight:{targetedBy:{player:true,enemy:false}},pointBlank:{clashBy:{player:true,enemy:false}}}};
   const targetMeld={type:'RUN',cards:[],themeMeta:{zeroSight:{targetedBy:{player:false,enemy:false}},pointBlank:{clashBy:{player:false,enemy:false}}}};
-  const ctx=vm.createContext({console,Object,Array,state});
+  const ctx=createStatusContext(script,{console,Object,Array,state});
   ctx.emitEffectEvent=(event,payload)=>{const p={event,...payload};events.push(p);return p};
   ctx.zeroSightTargetActors=m=>['player','enemy'].filter(w=>m?.themeMeta?.zeroSight?.targetedBy?.[w]);
   ctx.meldOwnerSide=m=>m===sourceMeld?'enemy':'player';
@@ -41,7 +42,7 @@ ok(script.includes('대체 대상이 없으면 보호막 12')&&script.includes('
   const mk=(uid)=>({uid,owner:'player',group:'r',meldType:'RUN'});
   const moving=mk('move'),sourceMeld={type:'RUN',cards:[moving,mk('s2'),mk('s3'),mk('s4')],chain:3},targetMeld={type:'RUN',cards:[mk('t1'),mk('t2'),mk('t3')],chain:1};
   const movedEvents=[];
-  const ctx=vm.createContext({console,Object,Array,state});
+  const ctx=createStatusContext(script,{console,Object,Array,state});
   ctx.meldOwnerSide=m=>m===sourceMeld?'enemy':'player';ctx.sideObj=()=>({turnStarts:5});
   ctx.meldType=cards=>cards.length>=3&&cards.every(c=>c.group==='r')?'RUN':null;
   ctx.markSetCompletion=()=>{};ctx.emitMeldMoveEvent=(actor,card,src,dst,opts)=>{const p={actor,card,src,dst,...opts,combatNeutral:true,powerDelta:0,returnsSwitch:false};movedEvents.push(p);return p};
@@ -67,7 +68,7 @@ ok(!extMove.includes('addSwitchPower')&&!extMove.includes('returnSwitch')&&!extM
   const alt={uid:'encore',owner:'player',themeId:'v-signal',name:'앙코르'};
   const meld={cards:[target,cover,alt],themeMeta:{pointBlank:{clashBy:{player:true,enemy:false}}}};
   const shields=[];
-  const ctx=vm.createContext({console,Object,Array,state});ctx.log=()=>{};ctx.cardText=c=>c.name||c.uid;ctx.addShield=(w,n)=>shields.push({w,n});
+  const ctx=createStatusContext(script,{console,Object,Array,state});ctx.log=()=>{};ctx.cardText=c=>c.name||c.uid;ctx.addShield=(w,n)=>shields.push({w,n});
   install(ctx,'isPointBlankClash','pointBlankCoverSwapSource','pointBlankCoverSwapTarget');
   const r=ctx.pointBlankCoverSwapTarget('enemy',meld,target,[alt]);
   ok(r.redirected===true&&r.card===alt&&r.source===cover,'Cover Swap redirects hostile targeting to another legal own card');
@@ -85,9 +86,9 @@ ok(!extMove.includes('addSwitchPower')&&!extMove.includes('returnSwitch')&&!extM
 }
 
 const cutSrc=source('cutOppositeEnd');
-ok(extMove.includes('insuranceBlocks(w,foe,om,c)')&&extMove.indexOf('insuranceBlocks(w,foe,om,c)')<extMove.indexOf('om.cards.splice'),'existing Insurance Agent/protect resolution still happens before Extortion movement');
+ok(extMove.includes("insuranceBlocks(w,foe,om,c,'extort')")&&extMove.indexOf("insuranceBlocks(w,foe,om,c,'extort')")<extMove.indexOf('om.cards.splice'),'existing Insurance Agent/protect resolution still happens before Extortion movement');
 ok(extMove.includes('pointBlankCoverSwapTarget')&&extMove.includes('extortionCandidates(w,m).filter'),'Extortion supplies only same-effect legal alternatives to Cover Swap');
-ok(cutSrc.includes('insuranceBlocks(w,targetSide,m,cand)')&&cutSrc.includes('pointBlankCoverSwapTarget(w,m,cand,[])'),'Cut Line preserves protection first and uses shield fallback because its opposite-end target has no alternate legal target');
+ok(cutSrc.includes("insuranceBlocks(w,targetSide,m,cand,'cut')")&&cutSrc.includes('pointBlankCoverSwapTarget(w,m,cand,[])'),'Cut Line preserves protection first and uses shield fallback because its opposite-end target has no alternate legal target');
 
 ok(road.includes('- [x] 이동 효과 전투 중립 원칙 잠금'),'ROADMAP marks movement combat-neutral rule complete');
 ok(road.includes('- [x] 7♥ `엄폐 교대` 적대 대상 교체/fallback 구현'),'ROADMAP marks Cover Swap complete');

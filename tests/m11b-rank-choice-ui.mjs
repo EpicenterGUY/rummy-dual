@@ -1,3 +1,4 @@
+import {createStatusContext} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
@@ -25,7 +26,7 @@ const SUIT_SYMBOL={S:'♠',H:'♥',D:'♦',C:'♣',J:'★'};
 let uid=1;
 const card=(suit,base,top=base,bottom=base)=>({uid:uid++,suit,rank:base,baseRank:base,topRank:top,bottomRank:bottom,activeRank:null,rankOrientation:null,named:false,name:'시험',themeId:null,tag:null});
 const state={field:null,battleId:9,turnToken:5,turn:'player',phase:'action',turnNo:2,player:{hand:[],melds:[],returnedSwitchThisTurn:false},enemy:{hand:[],melds:[],returnedSwitchThisTurn:false}};
-const ctx=vm.createContext({console,Math,Number,Object,Array,Set,Map,RANK_VALUE,SUIT_SYMBOL,state});
+const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,Map,RANK_VALUE,SUIT_SYMBOL,state});
 ctx.isJoker=c=>c?.suit==='J';ctx.isSuitFlexible=()=>false;ctx.sideObj=w=>w==='player'?state.player:state.enemy;ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.cardText=c=>`${c.rank}${SUIT_SYMBOL[c.suit]}`;
 install(ctx,'normalizePrototypeRank','ensureRankPrototype','cardPrintedRanks','isAsymmetricRankCard','rankChoiceOptions','rankChoicePlans','projectRankChoiceCards','rankChoicePlanLabel','runSequenceOK','setValid','runValid','meldType','legalRankChoicePlansForNewMeld','legalRankChoicePlansForAttach','rankChoicePreview','playerRankChoiceRequired','playerLegalRankPlans','playerRankChoiceHint','requestPlayerRankChoice');
 

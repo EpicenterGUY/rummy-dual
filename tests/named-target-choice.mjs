@@ -8,9 +8,9 @@ const resolve=source('resolveEffects'),submit=source('submitNewMeld'),extReq=sou
 ok(resolve.includes("case'extortion':if(ctx.isNew)")&&resolve.includes('requestExtortChoice(w,ctx.meld,resume)'),'Extortion target selection lives inside resumable named-effect resolution');
 ok(!submit.includes('autoExtortToNewMeld')&&!html.includes('function autoExtortToNewMeld('),'legacy eager first-candidate Extortion path is removed');
 ok(extCandidates.includes('meldFixedActive(om)')&&extCandidates.includes('protectedByConstruction(om,c)')&&extCandidates.includes("meldType(remain)!==om.type")&&extCandidates.includes("meldType(added)!==m.type"),'Extortion only offers legal movable cards that preserve both melds');
-ok(extMove.includes('insuranceBlocks(w,foe,om,c)')&&extMove.indexOf('insuranceBlocks(w,foe,om,c)')<extMove.indexOf('om.cards.splice'),'interference protection resolves before the chosen Extortion card moves');
+ok(extMove.includes("insuranceBlocks(w,foe,om,c,'extort')")&&extMove.indexOf("insuranceBlocks(w,foe,om,c,'extort')")<extMove.indexOf('om.cards.splice'),'interference protection resolves before the chosen Extortion card moves');
 ok(extReq.includes("candidates.length>1")&&extReq.includes('requestEffectChoice')&&!extReq.includes('allowSkip:true'),'human Extortion chooses among multiple legal cards and the mandatory move cannot be skipped');
-ok(resolve.includes("case'heldBonus':if(c.age>=2)")&&resolve.includes('requestOpponentMeldChoice'),'charged Sleeper routes its opponent-meld target through shared choice handling');
+ok(resolve.includes("case'heldBonus':if(handPreparationReady(c,2,w))")&&resolve.includes('requestSilenceChoice'),'prepared Sleeper routes its opponent-card silence target through shared choice handling');
 ok(meldReq.includes("candidates.length>1")&&meldReq.includes('requestEffectChoice')&&meldReq.includes('lockMeldRecovery(m,foe)'),'Sleeper presents multiple opponent melds to the human and fixes the exact chosen meld');
 ok(html.includes("'DJ':{n:'강탈자'")&&html.includes("'S9':{n:'잠복자'"),'target-choice cards remain in the live named-card pool');
 ok(fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8').includes('Target-choice pass: Extortion'),'roadmap records the target-choice pass');

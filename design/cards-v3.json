@@ -1,0 +1,2090 @@
+{
+  "version": 1,
+  "sourceCommit": "c7b8286d739ccc3456546b963b18187acdeedebb",
+  "scope": "122 existing runtime definitions plus 24 proposed SEASON-BLOOM cards; not a runtime card loader",
+  "existingCards": [
+    {
+      "id": "SA",
+      "slot": "SA",
+      "name": "최후통첩",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "손패의 마지막 카드로 이 카드를 사용해 스위치를 반환하면, 이번 반환의 누적 위력이 18 증가한다.",
+      "targetEffect": "손패의 마지막 카드로 이 카드를 사용해 스위치를 반환하면 장전 18을 얻는다. 이번 반환에도 적용된다.",
+      "capabilities": [
+        "loaded"
+      ]
+    },
+    {
+      "id": "SAB",
+      "slot": "SA",
+      "name": "안전핀",
+      "theme": "common",
+      "category": "기본형",
+      "decision": "keep",
+      "implementation": "implemented-wave1",
+      "previousEffect": "스위치가 자신을 향할 때 턴 종료 버리기로 이 카드를 버리면 유예를 얻는다. 이번 턴 종료 폭발을 한 번 미룬다. 양쪽 합산 한 폭탄 사이클당 1회만 발동한다.",
+      "targetEffect": "스위치가 자신을 향할 때 턴 종료 버리기로 이 카드를 버리면 유예를 얻는다. 이번 턴 종료 폭발을 한 번 미룬다. 양쪽 합산 한 폭탄 사이클당 1회만 발동한다.",
+      "capabilities": [
+        "defer"
+      ]
+    },
+    {
+      "id": "S2",
+      "slot": "S2",
+      "name": "압류 딱지",
+      "theme": "common",
+      "category": "기본형",
+      "decision": "keep",
+      "implementation": "implemented-wave1",
+      "previousEffect": "상대 공개 조합에 붙이면 상대에게 감쇠 10을 부여한다. 다음 위력을 더하는 반환의 추가 위력이 10 감소하고 소모된다.",
+      "targetEffect": "상대 공개 조합에 붙이면 상대에게 감쇠 10을 부여한다. 다음 위력을 더하는 반환의 추가 위력이 10 감소하고 소모된다.",
+      "capabilities": [
+        "damp"
+      ]
+    },
+    {
+      "id": "S3",
+      "slot": "S3",
+      "name": "쥐구멍",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "버렸는데 다음 내 턴까지 버림패에 남아 있으면 손으로 돌아온다. 상대가 가져가면 그 턴에는 조합에 사용할 수 없다.",
+      "targetEffect": "버렸는데 다음 내 턴까지 버림패에 남아 있으면 손으로 돌아온다. 상대가 가져가면 그 턴에는 조합에 사용할 수 없다.",
+      "capabilities": [
+        "discard-return"
+      ]
+    },
+    {
+      "id": "S4",
+      "slot": "S4",
+      "name": "미끼 사냥꾼",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "상대가 직전 턴 버림패를 이용했다면 상대 공개 조합에 붙일 때 그 조합의 내 카드 1장을 무료 회수할 수 있다.",
+      "targetEffect": "상대가 직전 턴 버림패를 이용했다면, 상대 공개 조합에 붙일 때 그 조합에 균열을 부여한다.",
+      "capabilities": [
+        "fracture"
+      ]
+    },
+    {
+      "id": "S5",
+      "slot": "S5",
+      "name": "독침",
+      "theme": "common",
+      "category": "기본형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "상대 공개 조합에 붙이면 그 조합의 다음 네임드 효과 하나를 봉인한다.",
+      "targetEffect": "상대 공개 조합에 붙이면 그 조합의 다음 네임드 효과 하나를 봉인한다.",
+      "capabilities": [
+        "seal"
+      ]
+    },
+    {
+      "id": "S6",
+      "slot": "S6",
+      "name": "복수의 칼날",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "직전 폭발을 내가 맞았다면 전투당 1회, 이 카드를 사용할 때 보호막 16을 얻고 카드 1장을 뽑는다.",
+      "targetEffect": "직전 폭발을 내가 맞았다면 전투당 1회, 사용 시 불굴 8을 얻고 다음 내 턴 종료까지 내 다음 회수에 장전 12를 예약한다.",
+      "capabilities": [
+        "endure",
+        "reserve"
+      ]
+    },
+    {
+      "id": "S7",
+      "slot": "S7",
+      "name": "검은 탄환",
+      "theme": "common",
+      "category": "기본형",
+      "decision": "keep",
+      "implementation": "implemented-wave1",
+      "previousEffect": "상대 공개 조합에 붙이면 장전 10을 얻는다. 다음 위력을 더하는 스위치 반환에 위력 10을 더하고 소모한다. 이번 행동의 반환에도 적용된다.",
+      "targetEffect": "상대 공개 조합에 붙이면 장전 10을 얻는다. 다음 위력을 더하는 스위치 반환에 위력 10을 더하고 소모한다. 이번 행동의 반환에도 적용된다.",
+      "capabilities": [
+        "loaded"
+      ]
+    },
+    {
+      "id": "S7B",
+      "slot": "S7",
+      "name": "도화선",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "상대 공개 조합에 붙이면 무장한다. 다음 내 턴 이후 이 카드를 회수하면 누적 위력이 16 증가한다.",
+      "targetEffect": "상대 공개 조합에 붙이면 그 조합에 균열을 부여한다. 다음 내 턴 이후 이 카드를 회수하면 장전 12를 얻는다.",
+      "capabilities": [
+        "fracture",
+        "loaded"
+      ]
+    },
+    {
+      "id": "S8",
+      "slot": "S8",
+      "name": "매복",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "손에 있는 동안 상대가 버림패에서 가져온 카드로 스위치를 반환하면 그 반환의 추가 위력을 10 줄인다. 상대 턴당 1회만 발동한다.",
+      "targetEffect": "손에 있는 동안 상대가 버림패에서 가져온 카드로 스위치를 반환하면 그 반환의 추가 위력을 10 줄인다. 상대 턴당 1회만 발동한다.",
+      "capabilities": [
+        "return-intercept"
+      ]
+    },
+    {
+      "id": "S9",
+      "slot": "S9",
+      "name": "잠복자",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave6",
+      "previousEffect": "손에서 자기 턴을 2회 넘기면 충전된다. 충전 상태로 사용하면 상대 공개 조합 하나를 다음 턴까지 고정한다.",
+      "targetEffect": "손에서 자기 턴을 2회 넘긴 뒤 사용하면 상대 공개 카드 1장에 침묵을 부여한다. 그 카드가 이미 침묵이면 대신 상대에게 감쇠 12를 부여한다.",
+      "capabilities": [
+        "silence",
+        "damp"
+      ]
+    },
+    {
+      "id": "S10",
+      "slot": "S10",
+      "name": "폭주기관차",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "implemented-wave1",
+      "previousEffect": "5장 이상 런에 한 행동으로 2장 이상 붙이면 과열 12를 얻는다. 다음 위력을 더하는 반환에 12를 더하고, 반환 직후 자신에게 피해 6을 준다. 과열은 소모된다.",
+      "targetEffect": "5장 이상 런에 한 행동으로 2장 이상 붙이면 과열 12를 얻는다. 다음 위력을 더하는 반환에 12를 더하고, 반환 직후 자신에게 피해 6을 준다. 과열은 소모된다.",
+      "capabilities": [
+        "overheat"
+      ]
+    },
+    {
+      "id": "SJ",
+      "slot": "SJ",
+      "name": "갈고리",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "상대 런에 붙일 때 그 런에 있는 내 소유 카드 1장을 무료 회수할 수 있다.",
+      "targetEffect": "상대 런에 붙일 때 그 런에 있는 내 소유 카드 1장을 무료 회수할 수 있다.",
+      "capabilities": [
+        "recover"
+      ]
+    },
+    {
+      "id": "SQ",
+      "slot": "SQ",
+      "name": "사형선고",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "change",
+      "implementation": "implemented-wave5",
+      "previousEffect": "이 카드가 포함된 3장 세트은 부족한 마지막 무늬를 추적한다. 그 정확한 카드가 공용 버림패 맨 위면 사형선고 목표로 표시된다.",
+      "targetEffect": "이 카드가 포함된 3장 세트의 부족한 마지막 무늬를 추적한다. 내 기본 버림패 획득 때 상단 3장 안에 정확한 카드가 있으면 맨 위 대신 그 카드를 가져올 수 있다.",
+      "capabilities": [
+        "discard-search"
+      ]
+    },
+    {
+      "id": "SK",
+      "slot": "SK",
+      "name": "겁쟁이 왕",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "내 공개 조합이 없을 때 이 카드로 첫 조합을 만들면 보호막 20을 얻는다.",
+      "targetEffect": "내 첫 공개 조합을 만들면 보호막 12를 얻고, 다음 내 턴 종료까지 내 다음 회수에 불굴 8을 예약한다.",
+      "capabilities": [
+        "reserve"
+      ]
+    },
+    {
+      "id": "HA",
+      "slot": "HA",
+      "name": "두 번째 심장",
+      "theme": "common",
+      "category": "기본형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드로 러미하면 새 손패를 7장 받는다. 스위치가 나를 향하고 있으면 보호막 16도 얻는다.",
+      "targetEffect": "이 카드로 러미하면 새 손패를 7장 받는다. 스위치가 나를 향하고 있으면 보호막 16도 얻는다.",
+      "capabilities": [
+        "rummy"
+      ]
+    },
+    {
+      "id": "H2",
+      "slot": "H2",
+      "name": "귀환자",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "러미 이후 처음 하는 회수는 회수 횟수를 소모하지 않는다.",
+      "targetEffect": "러미 이후 처음 하는 회수는 회수 횟수를 소모하지 않는다.",
+      "capabilities": [
+        "rummy-recover"
+      ]
+    },
+    {
+      "id": "H3",
+      "slot": "H3",
+      "name": "미끼",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "상대가 버림패에서 가져가면 원래 주인은 1장 뽑고 손패 1장을 덱 아래로 보낸다.",
+      "targetEffect": "상대가 버림패에서 가져가면 원래 주인은 1장 뽑고 손패 1장을 덱 아래로 보낸다.",
+      "capabilities": [
+        "gift"
+      ]
+    },
+    {
+      "id": "H4",
+      "slot": "H4",
+      "name": "불사조",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "폭발을 맞은 다음 자기 턴에 사용하면 체력 12를 회복한다. 소모패에 있다면 한 번 손으로 되돌아올 수 있다.",
+      "targetEffect": "폭발을 맞은 다음 자기 턴에 사용하면 체력 12를 회복한다. 소모패에 있다면 한 번 손으로 되돌아올 수 있다.",
+      "capabilities": [
+        "spent-return"
+      ]
+    },
+    {
+      "id": "H4B",
+      "slot": "H4",
+      "name": "구급차",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "상대 공개 조합에서 회수하면 체력 8을 회복하고 보호막 8을 얻는다. 내 조합에서 회수하면 체력 8을 회복한다.",
+      "targetEffect": "이 카드를 회수하면 체력 8을 회복한다. 상대 공개 조합에서 회수했다면 추가로 불굴 8을 얻는다.",
+      "capabilities": [
+        "heal",
+        "endure"
+      ]
+    },
+    {
+      "id": "H5",
+      "slot": "H5",
+      "name": "온기",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave5",
+      "previousEffect": "런에 들어갈 때 그 런에 ♥가 3장 이상이면 같은 런의 내 카드 1장을 무료 회수할 수 있다.",
+      "targetEffect": "런에 들어갈 때 그 런의 내 다른 카드 1장에 귀환을 부여한다. 그 카드가 하트면 자신의 체력을 4 회복한다.",
+      "capabilities": [
+        "comeback",
+        "heal"
+      ]
+    },
+    {
+      "id": "H6",
+      "slot": "H6",
+      "name": "수혈",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave4",
+      "previousEffect": "이번 턴 회복했다면 보호막을 얻을 때 그 회복량의 절반만큼 추가 보호막을 얻는다.",
+      "targetEffect": "공개된 동안 내 회복이 실제 발생하면 그 회복량의 절반만큼 불굴을 얻는다. 내 턴당 1회, 최대 8을 얻는다.",
+      "capabilities": [
+        "endure"
+      ]
+    },
+    {
+      "id": "H7",
+      "slot": "H7",
+      "name": "행운의 일곱",
+      "theme": "common",
+      "category": "기본형",
+      "decision": "keep",
+      "implementation": "implemented-wave1",
+      "previousEffect": "세트에 들어가면 불굴 12를 얻는다. 직접 버스트를 완성하면 대신 불굴 24를 얻는다. 다음 보호막을 통과한 코어 피해를 줄인 뒤 전부 소모되며, 턴이 지나도 유지된다.",
+      "targetEffect": "세트에 들어가면 불굴 12를 얻는다. 직접 버스트를 완성하면 대신 불굴 24를 얻는다. 다음 보호막을 통과한 코어 피해를 줄인 뒤 전부 소모되며, 턴이 지나도 유지된다.",
+      "capabilities": [
+        "endure"
+      ]
+    },
+    {
+      "id": "H8",
+      "slot": "H8",
+      "name": "응급 보호구",
+      "theme": "common",
+      "category": "기본형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "조합에 들어갈 때 보호막 20을 얻는다. 스위치가 나를 향하면 보호막 32를 얻는다.",
+      "targetEffect": "조합에 들어갈 때 보호막 20을 얻는다. 스위치가 나를 향하면 보호막 32를 얻는다.",
+      "capabilities": [
+        "shield"
+      ]
+    },
+    {
+      "id": "H9",
+      "slot": "H9",
+      "name": "보험설계사",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "change",
+      "implementation": "implemented-wave9",
+      "previousEffect": "같은 공개 조합의 내 카드가 절단·탈취될 때 처음 한 번 그 효과를 무효로 하고 이 카드를 소모한다.",
+      "targetEffect": "같은 조합의 내 카드가 상대의 절단·탈취 대상이 되면, 이 카드에 귀환이 없을 때 해당 간섭을 1회 무효로 하고 자신에게 불안정 1을 부여한다. 카드당 전투 1회만 발동한다.",
+      "capabilities": [
+        "intercept",
+        "unstable"
+      ]
+    },
+    {
+      "id": "H10",
+      "slot": "H10",
+      "name": "연명",
+      "theme": "common",
+      "category": "기본형",
+      "decision": "change",
+      "implementation": "implemented-wave4",
+      "previousEffect": "이 카드로 러미하면 체력 16을 회복하고 재생 1을 얻는다. 누적 위력이 60 이상이면 보호막 16도 얻는다.",
+      "targetEffect": "이 카드로 러미하면 체력 12를 회복하고 재생 1을 얻는다. 누적 위력이 60 이상이면 추가로 불굴 12를 얻는다.",
+      "capabilities": [
+        "regen",
+        "endure"
+      ]
+    },
+    {
+      "id": "HJ",
+      "slot": "HJ",
+      "name": "앙코르",
+      "theme": "common",
+      "category": "규칙파괴형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "러미 후 첫 반환은 누적 위력을 추가하지 않고 현재 폭탄만 그대로 상대에게 넘길 수 있다.",
+      "targetEffect": "러미 후 첫 반환은 누적 위력을 추가하지 않고 현재 폭탄만 그대로 상대에게 넘길 수 있다.",
+      "capabilities": [
+        "flat-return"
+      ]
+    },
+    {
+      "id": "HQ",
+      "slot": "HQ",
+      "name": "대역 배우",
+      "theme": "common",
+      "category": "규칙파괴형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "런에서 원하는 무늬처럼 취급할 수 있다. 실제 ♥가 아닌 무늬 역할을 한 상태로 조합이 정리되면 현재 제어자의 손으로 돌아온다.",
+      "targetEffect": "런에서 원하는 무늬처럼 취급할 수 있다. 실제 ♥가 아닌 무늬 역할을 한 상태로 조합이 정리되면 현재 제어자의 손으로 돌아온다.",
+      "capabilities": [
+        "suit",
+        "return"
+      ]
+    },
+    {
+      "id": "HK",
+      "slot": "HK",
+      "name": "심장왕",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "손에 있는 동안 회복할 때 심장을 최대 3개 저장한다. 폭발 직전 저장한 심장을 모두 제거하고, 심장 1개당 피해 8을 막는다.",
+      "targetEffect": "손에 있는 동안 회복할 때 심장을 최대 3개 저장한다. 폭발 직전 저장한 심장을 모두 제거하고, 심장 1개당 피해 8을 막는다.",
+      "capabilities": [
+        "heal-storage"
+      ]
+    },
+    {
+      "id": "DA",
+      "slot": "DA",
+      "name": "장물아비",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave5",
+      "previousEffect": "버림패에서 가져올 때 바로 아래 카드도 함께 확인한다.",
+      "targetEffect": "내 기본 버림패 획득 때 이 카드를 손에 가지고 있으면 맨 위와 바로 아래 중 1장을 고를 수 있다. 추가 획득은 하지 않는다.",
+      "capabilities": [
+        "discard-choice"
+      ]
+    },
+    {
+      "id": "D2",
+      "slot": "D2",
+      "name": "외상 거래",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "조합에 들어갈 때 카드 2장을 뽑는다. 이번 턴 스위치를 반환하지 못하면 버리기 횟수가 1 증가한다.",
+      "targetEffect": "조합에 들어갈 때 카드 2장을 뽑는다. 이번 턴 스위치를 반환하지 못하면 버리기 횟수가 1 증가한다.",
+      "capabilities": [
+        "debt"
+      ]
+    },
+    {
+      "id": "D3",
+      "slot": "D3",
+      "name": "사기 계약서",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "버림패에서 가져온 턴에 조합에 사용하면 카드 1장을 뽑는다. 사용하지 못하면 턴 종료에 버림패 맨 위로 돌아간다.",
+      "targetEffect": "버림패에서 가져온 턴에 조합에 사용하면 카드 1장을 뽑는다. 사용하지 못하면 턴 종료에 버림패 맨 위로 돌아간다.",
+      "capabilities": [
+        "contract"
+      ]
+    },
+    {
+      "id": "D4",
+      "slot": "D4",
+      "name": "밀수품",
+      "theme": "common",
+      "category": "규칙파괴형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "버림패에서 가져온 턴에 한해 런에서 원하는 무늬로 취급한다.",
+      "targetEffect": "버림패에서 가져온 턴에 한해 런에서 원하는 무늬로 취급한다.",
+      "capabilities": [
+        "suit"
+      ]
+    },
+    {
+      "id": "D5",
+      "slot": "D5",
+      "name": "위조범",
+      "theme": "common",
+      "category": "규칙파괴형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "런 판정에서 랭크를 ±1로 취급할 수 있다.",
+      "targetEffect": "런 판정에서 랭크를 ±1로 취급할 수 있다.",
+      "capabilities": [
+        "rank"
+      ]
+    },
+    {
+      "id": "D6",
+      "slot": "D6",
+      "name": "예약 발송",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "버릴 때 버림패 대신 자기 덱 맨 위에 놓을 수 있다.",
+      "targetEffect": "버릴 때 버림패 대신 자기 덱 맨 위에 놓을 수 있다.",
+      "capabilities": [
+        "topdeck"
+      ]
+    },
+    {
+      "id": "D7",
+      "slot": "D7",
+      "name": "황금손",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave7",
+      "previousEffect": "버림패에서 가져온 카드와 같은 조합 행동에 들어가면 1장 뽑고, 남은 손패가 있으면 그중 가장 오래 든 1장을 덱 아래로 보낸다.",
+      "targetEffect": "버림패에서 가져온 카드와 같은 행동에 사용하면 그 카드에 가변을 부여한다. 이미 공개된 카드는 다음 손패 복귀 후의 배치에 사용한다.",
+      "capabilities": [
+        "flexible"
+      ]
+    },
+    {
+      "id": "D7B",
+      "slot": "D7",
+      "name": "감정사",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave5",
+      "previousEffect": "버림패에서 가져온 카드가 현재 공개 조합 2곳 이상에 붙을 수 있으면 보호막 12를 얻는다.",
+      "targetEffect": "이 카드를 버림패에서 가져왔을 때 공개 조합 2곳 이상에 합법적으로 붙일 수 있으면, 이 카드에 귀환을 부여하고 불굴 8을 얻는다. 카드당 턴 1회만 발동한다.",
+      "capabilities": [
+        "comeback",
+        "endure"
+      ]
+    },
+    {
+      "id": "D8",
+      "slot": "D8",
+      "name": "환전상",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "implemented-wave1",
+      "previousEffect": "세트에 사용하면 현재 스위치 누적 위력에서 최대 8을 투자한다. 투자한 만큼 불굴을 얻는다. 방향은 바뀌지 않으며, 위력이 0이면 발동하지 않는다.",
+      "targetEffect": "세트에 사용하면 현재 스위치 누적 위력에서 최대 8을 투자한다. 투자한 만큼 불굴을 얻는다. 방향은 바뀌지 않으며, 위력이 0이면 발동하지 않는다.",
+      "capabilities": [
+        "power-investment"
+      ]
+    },
+    {
+      "id": "D9",
+      "slot": "D9",
+      "name": "재활용업자",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "조합에 들어갈 때 소모패 카드 1장을 덱 아래로 되돌리고 1장 뽑는다.",
+      "targetEffect": "조합에 들어갈 때 소모패 카드 1장을 덱 아래로 되돌리고 1장 뽑는다.",
+      "capabilities": [
+        "spent-recycle"
+      ]
+    },
+    {
+      "id": "D10",
+      "slot": "D10",
+      "name": "매입왕",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "상대가 직전에 버린 카드와 같은 랭크라면 이 카드는 이번 턴 버림패에서 가져온 카드로도 취급된다.",
+      "targetEffect": "상대가 직전에 버린 카드와 같은 랭크라면 이 카드는 이번 턴 버림패에서 가져온 카드로도 취급된다.",
+      "capabilities": [
+        "acquisition-alias"
+      ]
+    },
+    {
+      "id": "DJ",
+      "slot": "DJ",
+      "name": "강탈자",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "상대 공개 조합에서 빼도 유지되는 카드 1장을 내 공개 조합으로 직접 옮긴다. 이동 후 양쪽 조합 모두 유효해야 한다.",
+      "targetEffect": "상대 공개 조합에서 빼도 유지되는 카드 1장을 내 공개 조합으로 직접 옮긴다. 이동 후 양쪽 조합 모두 유효해야 한다.",
+      "capabilities": [
+        "relocate"
+      ]
+    },
+    {
+      "id": "DQ",
+      "slot": "DQ",
+      "name": "시장 조작자",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "새 조합으로 내면 공용 버림패 위 3장의 순서를 뒤집는다.",
+      "targetEffect": "새 조합으로 내면 공용 버림패 위 최대 3장의 순서를 원하는 대로 정한다. 원래 소유권은 바뀌지 않는다.",
+      "capabilities": [
+        "discard-order"
+      ]
+    },
+    {
+      "id": "DK",
+      "slot": "DK",
+      "name": "독점상",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave5",
+      "previousEffect": "이 카드가 포함된 4세트으로 버스트를 반환하면 상대는 다음 턴 버림패에서 가져올 수 없다.",
+      "targetEffect": "이 카드로 버스트를 반환하면 상대는 다음 자기 턴의 기본 획득 때 버림패를 사용할 수 없다. 그 턴에는 개인 덱 획득 후 순환 1을 할 수 있다.",
+      "capabilities": [
+        "acquisition-block",
+        "cycle"
+      ]
+    },
+    {
+      "id": "CA",
+      "slot": "CA",
+      "name": "재귀 함수",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "change",
+      "implementation": "implemented-wave8",
+      "previousEffect": "같은 행동의 다른 네임드 중 실제 발동 조건을 만족한 효과 하나를 복제한다. 연결자 효과면 카드 1장을 뽑고, 응급 보호구 효과면 보호막 12를 얻으며, 갈아끼우기 효과면 무료 회수 1회를 얻는다. 누적 위력은 복사하지 않는다.",
+      "targetEffect": "같은 행동에서 이 카드보다 먼저 해결된 다른 내 네임드의 복제 가능한 수치 효과 1개를 절반으로 복제한다. 복제·비용·드로우·상태 부여·직접 반환은 복제하지 않는다.",
+      "capabilities": [
+        "numeric-copy"
+      ]
+    },
+    {
+      "id": "C2",
+      "slot": "C2",
+      "name": "연결자",
+      "theme": "common",
+      "category": "기본형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드로 런이 4장 이상이 되면 카드 1장을 뽑는다. 6장 이상이면 뽑은 뒤 손패 1장을 덱 아래로 보낼 수 있다.",
+      "targetEffect": "이 카드로 런이 4장 이상이 되면 카드 1장을 뽑는다. 6장 이상이면 뽑은 뒤 손패 1장을 덱 아래로 보낼 수 있다.",
+      "capabilities": [
+        "draw"
+      ]
+    },
+    {
+      "id": "C3",
+      "slot": "C3",
+      "name": "밀수업자",
+      "theme": "common",
+      "category": "규칙파괴형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "런 판정에서 이 카드는 원하는 무늬처럼 취급하고 같은 런의 다른 카드 1장도 무늬가 달라도 허용한다.",
+      "targetEffect": "런 판정에서 이 카드는 원하는 무늬처럼 취급하고 같은 런의 다른 카드 1장도 무늬가 달라도 허용한다.",
+      "capabilities": [
+        "suit-bridge"
+      ]
+    },
+    {
+      "id": "C4",
+      "slot": "C4",
+      "name": "샛길",
+      "theme": "common",
+      "category": "규칙파괴형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드가 포함된 런은 숫자 한 칸을 건너뛸 수 있다. 빠진 실제 카드가 나중에 들어오면 샛길을 무료 회수할 수 있다.",
+      "targetEffect": "이 카드가 포함된 런은 숫자 한 칸을 건너뛸 수 있다. 빠진 실제 카드가 나중에 들어오면 샛길을 무료 회수할 수 있다.",
+      "capabilities": [
+        "gap"
+      ]
+    },
+    {
+      "id": "C5",
+      "slot": "C5",
+      "name": "연결고리",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "런에 붙일 때 그 런의 내 제어 카드 1장을 무료 회수할 수 있다. 빼도 런은 유효해야 하며, 그 런에는 이번 턴 한 번 더 붙일 수 있다.",
+      "targetEffect": "런에 붙일 때 그 런의 내 제어 카드 1장을 무료 회수할 수 있다. 빼도 런은 유효해야 하며, 그 런에는 이번 턴 한 번 더 붙일 수 있다.",
+      "capabilities": [
+        "recover",
+        "extend"
+      ]
+    },
+    {
+      "id": "C5B",
+      "slot": "C5",
+      "name": "분기점",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "implemented-wave1",
+      "previousEffect": "런에 들어가면 그 런에 보호 1, 이 카드에 귀환을 부여한다. 정리되어 소모될 때 대신 원주인 손패로 돌아가며 그 턴에는 사용할 수 없다.",
+      "targetEffect": "런에 들어가면 그 런에 보호 1, 이 카드에 귀환을 부여한다. 정리되어 소모될 때 대신 원주인 손패로 돌아가며 그 턴에는 사용할 수 없다.",
+      "capabilities": [
+        "comeback",
+        "protect"
+      ]
+    },
+    {
+      "id": "C6",
+      "slot": "C6",
+      "name": "중간관리자",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "샛길·조커가 대신하던 실제 카드로 들어가면 대체재 1장을 원주인 손으로 돌려보낸다.",
+      "targetEffect": "샛길·조커가 대신하던 실제 카드로 들어가면 대체재 1장을 원주인 손으로 돌려보낸다.",
+      "capabilities": [
+        "replace"
+      ]
+    },
+    {
+      "id": "C7",
+      "slot": "C7",
+      "name": "기생충",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave4",
+      "previousEffect": "상대 공개 조합에 붙어 있는 동안 상대가 그 조합으로 스위치를 반환할 때마다 나는 1장 뽑고 1장 버린다.",
+      "targetEffect": "상대 공개 조합에 공개된 동안 상대가 그 조합으로 실제 반환하면 내 장전 8을 얻는다. 카드당 상대 턴 1회만 발동한다.",
+      "capabilities": [
+        "loaded"
+      ]
+    },
+    {
+      "id": "C8",
+      "slot": "C8",
+      "name": "복사기",
+      "theme": "common",
+      "category": "괴짜형",
+      "decision": "change",
+      "implementation": "implemented-wave8",
+      "previousEffect": "같은 행동의 다른 네임드 중 실제 발동 조건을 만족한 효과 하나를 복제한다. 응급 보호구 효과면 보호막 20을 얻고, 연결자 효과면 카드 1장을 뽑는다.",
+      "targetEffect": "사용 시 같은 조합의 내 다른 네임드 1장에 잔향을 부여한다. 이미 해결된 효과는 반복하지 않으며 다음 복제 가능한 효과에 사용한다.",
+      "capabilities": [
+        "echo"
+      ]
+    },
+    {
+      "id": "C9",
+      "slot": "C9",
+      "name": "절단선",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "상대 4장 이상 런의 끝 카드 1장을 소모한다. 제거 후에도 런은 유효해야 하고 체인도 1 감소한다.",
+      "targetEffect": "내 6장 이상 런을 유효한 두 런(각 3장 이상)으로 분할하거나, 합치면 유효한 내 두 런을 합병할 수 있다. 분할에만 빈 슬롯이 필요하다. 체인은 분할 시 유지되며 합병 시 두 원본의 최솟값을 따른다. 결과 조합에는 이번 턴 붙일 수 없다.",
+      "capabilities": [
+        "split-merge"
+      ]
+    },
+    {
+      "id": "C10",
+      "slot": "C10",
+      "name": "연쇄반응",
+      "theme": "common",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "직전 반환과 다른 종류의 조합으로 반환하면 카드 1장을 뽑는다. 같은 종류라면 보호막 12를 얻는다.",
+      "targetEffect": "직전 반환과 다른 종류의 조합으로 반환하면 카드 1장을 뽑는다. 같은 종류라면 장전 8을 얻어 이번 반환에 사용한다.",
+      "capabilities": [
+        "loaded"
+      ]
+    },
+    {
+      "id": "CJ",
+      "slot": "CJ",
+      "name": "갈아끼우기",
+      "theme": "common",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "내 공개 조합에 붙일 때 그 조합의 내 카드 1장을 무료로 회수할 수 있다. 회수한 카드가 다른 공개 조합에 붙을 수 있으면 즉시 이어붙일 수 있다. 이 효과로 회수한 카드는 이번 턴 회수 재사용 제한을 무시한다.",
+      "targetEffect": "내 공개 조합에 붙일 때 그 조합의 내 카드 1장을 무료로 회수할 수 있다. 회수한 카드가 다른 공개 조합에 붙을 수 있으면 즉시 이어붙일 수 있다. 이 효과로 회수한 카드는 이번 턴 회수 재사용 제한을 무시한다.",
+      "capabilities": [
+        "recover-exception"
+      ]
+    },
+    {
+      "id": "CQ",
+      "slot": "CQ",
+      "name": "도플갱어",
+      "theme": "common",
+      "category": "규칙파괴형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "세트 판정에서 같은 조합의 다른 카드 랭크를 복사할 수 있다. 무늬는 ♣로 유지한다.",
+      "targetEffect": "세트 판정에서 같은 조합의 다른 카드 랭크를 복사할 수 있다. 무늬는 ♣로 유지한다.",
+      "capabilities": [
+        "rank-copy"
+      ]
+    },
+    {
+      "id": "CK",
+      "slot": "CK",
+      "name": "조율자",
+      "theme": "common",
+      "category": "규칙파괴형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "조율자가 내 공개 조합에 있고 세트와 런이 모두 있으면, 다른 종류 조합에 바로 붙을 수 있는 내 카드 1장을 턴당 1회 무료로 회수하고 같은 턴 즉시 이어붙일 수 있다.",
+      "targetEffect": "조율자가 내 공개 조합에 있고 세트와 런이 모두 있으면, 다른 종류 조합에 바로 붙을 수 있는 내 카드 1장을 턴당 1회 무료로 회수하고 같은 턴 즉시 이어붙일 수 있다.",
+      "capabilities": [
+        "cross-meld"
+      ]
+    },
+    {
+      "id": "VSSA",
+      "slot": "SA",
+      "name": "초방송사고",
+      "theme": "v-signal",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "스위치가 나를 향할 때 이 카드를 사용하면 보호막 12를 얻는다. 그 행동으로 스위치를 반환하면 이번 반환의 누적 위력이 6 증가한다.",
+      "targetEffect": "스위치가 나를 향할 때 사용하면 불굴 8을 얻는다. 다음 내 턴 종료까지 내 다음 회수에 장전 6을 예약한다.",
+      "capabilities": [
+        "endure",
+        "reserve"
+      ]
+    },
+    {
+      "id": "VSS5",
+      "slot": "S5",
+      "name": "악질 클립",
+      "theme": "v-signal",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "다른 네임드 카드와 같은 행동으로 상대 공개 조합에 붙이면, 스위치를 반환할 때 누적 위력이 6 증가한다. 반환하지 않았다면 그 조합에 봉인 1을 부여한다.",
+      "targetEffect": "다른 네임드와 같은 행동으로 상대 공개 조합에 붙이면 상대에게 감쇠 8을 부여한다. 테마는 묻지 않는다.",
+      "capabilities": [
+        "damp"
+      ]
+    },
+    {
+      "id": "VSS7",
+      "slot": "S7",
+      "name": "실시간 논란",
+      "theme": "v-signal",
+      "category": "반응형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "상대가 직전 턴에 카드를 회수했다면, 이 카드를 상대 공개 조합에 붙일 때 상대에게 취약 1을 부여한다.",
+      "targetEffect": "상대가 직전 턴에 카드를 회수했다면, 이 카드를 상대 공개 조합에 붙일 때 상대에게 취약 1을 부여한다.",
+      "capabilities": [
+        "vulnerable"
+      ]
+    },
+    {
+      "id": "VSS9",
+      "slot": "S9",
+      "name": "역바이럴",
+      "theme": "v-signal",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave5",
+      "previousEffect": "이 카드가 들어간 내 공개 조합을 상대가 이용하면 반격을 준비한다. 준비된 조합으로 내가 스위치를 반환하면 누적 위력이 10 증가하고 준비를 해제한다.",
+      "targetEffect": "이 카드가 공개된 조합에 상대가 붙이면 내 다음 반환에 장전 10을 예약한다. 카드당 상대 턴 1회이며 같은 출처의 미해결 예약은 중첩하지 않는다.",
+      "capabilities": [
+        "reserve",
+        "loaded"
+      ]
+    },
+    {
+      "id": "VSSQ",
+      "slot": "SQ",
+      "name": "염상 스트리머",
+      "theme": "v-signal",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave4",
+      "previousEffect": "스위치 누적 위력이 40 이상일 때 이 카드로 스위치를 반환하면 상대에게 취약 1을 부여한다.",
+      "targetEffect": "이 카드로 스위치를 반환할 때 상대에게 감쇠가 있으면 그 감쇠를 전부 제거하고 상대에게 취약 1을 부여한다.",
+      "capabilities": [
+        "status-consume"
+      ]
+    },
+    {
+      "id": "VSSK",
+      "slot": "SK",
+      "name": "BAN 직전",
+      "theme": "v-signal",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "스위치 누적 위력이 60 이상일 때 이 카드로 스위치를 반환하면 이번 반환의 누적 위력이 16 증가한다.",
+      "targetEffect": "누적 위력이 60 이상일 때 이 카드로 반환하면 과열 16을 얻는다. 이번 반환에 적용되어 반환 직후 자신에게 피해 8을 준다.",
+      "capabilities": [
+        "overheat"
+      ]
+    },
+    {
+      "id": "VSHA",
+      "slot": "HA",
+      "name": "첫 방송",
+      "theme": "v-signal",
+      "category": "기본형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드로 새 3장 세트 또는 런을 만들면 남은 손패 1장을 덱 아래로 보내고 1장 뽑는 무료 정비를 할 수 있다. 새 조합 생성 횟수는 늘지 않는다.",
+      "targetEffect": "이 카드로 새 3장 세트 또는 런을 만들면 남은 손패 1장을 덱 아래로 보내고 1장 뽑는 무료 정비를 할 수 있다. 새 조합 생성 횟수는 늘지 않는다.",
+      "capabilities": [
+        "cycle"
+      ]
+    },
+    {
+      "id": "VSH3",
+      "slot": "H3",
+      "name": "ASMR",
+      "theme": "v-signal",
+      "category": "기본형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "이 카드가 공개 조합에 들어갈 때 보호막 8을 얻는다. 행동 시작 시 스위치가 나를 향하고 있었다면 대신 보호막 16을 얻는다.",
+      "targetEffect": "공개 조합에 들어가면 불굴 8을 얻는다. 이미 불굴이 있다면 대신 체력 8을 회복한다.",
+      "capabilities": [
+        "endure",
+        "heal"
+      ]
+    },
+    {
+      "id": "VSH5",
+      "slot": "H5",
+      "name": "앙코르",
+      "theme": "v-signal",
+      "category": "규칙파괴형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드를 회수한 턴에도 한 번, 회수한 조합과 다른 합법적인 공개 조합의 버스트/체인 반환 재료로 다시 사용할 수 있다.",
+      "targetEffect": "이 카드를 회수한 턴에도 한 번, 회수한 조합과 다른 합법적인 공개 조합의 버스트/체인 반환 재료로 다시 사용할 수 있다.",
+      "capabilities": [
+        "recover-exception"
+      ]
+    },
+    {
+      "id": "VSH7",
+      "slot": "H7",
+      "name": "팬 서비스",
+      "theme": "v-signal",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "이 카드가 들어간 공개 조합에 양쪽 소유 카드가 모두 있으면 보호막 12를 얻는다. 그 행동으로 스위치를 반환하면 체력 4를 회복한다.",
+      "targetEffect": "이 카드가 들어간 조합에 양쪽 소유 카드가 모두 있으면 불굴 8을 얻는다. 그 행동으로 반환하면 체력 4를 회복한다.",
+      "capabilities": [
+        "endure",
+        "heal"
+      ]
+    },
+    {
+      "id": "VSH10",
+      "slot": "H10",
+      "name": "기념 방송",
+      "theme": "v-signal",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave8",
+      "previousEffect": "이 카드 사용으로 러미하면 재생 1과 보호막 12를 얻는다.",
+      "targetEffect": "이 카드로 러미하면 재생 1을 얻고, 새 손패의 네임드 1장에 잔향을 부여할 수 있다.",
+      "capabilities": [
+        "regen",
+        "echo"
+      ]
+    },
+    {
+      "id": "VSHK",
+      "slot": "HK",
+      "name": "100만 구독",
+      "theme": "v-signal",
+      "category": "괴짜형",
+      "decision": "change",
+      "implementation": "implemented-wave5",
+      "previousEffect": "이 카드 사용으로 러미하면 다음에 공개 조합에 내는 내 카드 1장에 보호 1을 부여하고 보호막 8을 얻는다.",
+      "targetEffect": "이 카드로 러미하면 다음 내 턴 종료까지 내가 다음에 공개하는 카드 1장에 귀환과 보호 1을 예약한다. 순수 카드도 대상이 된다.",
+      "capabilities": [
+        "reserve",
+        "comeback"
+      ]
+    },
+    {
+      "id": "VSD2",
+      "slot": "D2",
+      "name": "신인 2기생",
+      "theme": "v-signal",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave7",
+      "previousEffect": "이 카드로 새 3장 세트를 만들면 남은 손패 1장을 덱 아래로 보내고 1장 뽑는 무료 정비를 할 수 있다.",
+      "targetEffect": "이 카드로 새 세트를 만들면 남은 손패 1장에 가변을 부여한다.",
+      "capabilities": [
+        "flexible"
+      ]
+    },
+    {
+      "id": "VSD3",
+      "slot": "D3",
+      "name": "3인 합방",
+      "theme": "v-signal",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "이 카드로 정확히 3장인 새 세트를 만들면 그 세트에 보호 1을 부여한다.",
+      "targetEffect": "이 카드로 새 3장 세트를 만들면 그 조합에 보호 1을 부여하고, 다음 내 턴 종료까지 내 다음 회수 카드에 귀환을 예약한다.",
+      "capabilities": [
+        "protect",
+        "reserve"
+      ]
+    },
+    {
+      "id": "VSD4",
+      "slot": "D4",
+      "name": "전원 집합!",
+      "theme": "v-signal",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드가 들어간 세트를 내가 버스트로 완성해 정리할 때, 그 세트에서 내가 제어하는 카드 1장을 손패로 보존할 수 있다. 보존한 카드는 이번 턴 사용할 수 없다.",
+      "targetEffect": "이 카드가 들어간 세트를 내가 버스트로 완성해 정리할 때, 그 세트에서 내가 제어하는 카드 1장을 손패로 보존할 수 있다. 보존한 카드는 이번 턴 사용할 수 없다.",
+      "capabilities": [
+        "preserve"
+      ]
+    },
+    {
+      "id": "VSD6",
+      "slot": "D6",
+      "name": "슈퍼챗",
+      "theme": "v-signal",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave6",
+      "previousEffect": "이 카드가 있는 공개 조합에 상대가 카드를 붙이면 턴당 1회 카드 1장을 뽑는다.",
+      "targetEffect": "이 카드의 공개 조합에 상대가 붙이면 카드 1장을 뽑고 이 카드에 침묵을 부여한다. 자기 다음 턴 종료 후 다시 반응할 수 있다.",
+      "capabilities": [
+        "silence",
+        "draw"
+      ]
+    },
+    {
+      "id": "VSDJ",
+      "slot": "DJ",
+      "name": "매니저",
+      "theme": "v-signal",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "내 공개 조합에 이 카드를 사용하면 그 조합의 봉인 1을 먼저 제거하고, 봉인이 없으면 고정 1을 제거한다. 둘 다 없으면 그 조합에 보호 1을 부여한다.",
+      "targetEffect": "내 조합에 사용하면 그 조합의 봉인·고정·균열 중 하나를 골라 전부 제거한다. 이 효과는 그 조합의 봉인에 막히지 않는다. 제거할 상태가 없으면 보호 1을 부여한다.",
+      "capabilities": [
+        "cleanse"
+      ]
+    },
+    {
+      "id": "VSDK",
+      "slot": "DK",
+      "name": "전설의 아이돌",
+      "theme": "v-signal",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "이 카드로 4장 세트의 버스트를 완성하면 카드 1장을 뽑거나 보호막 16을 얻을 수 있다.",
+      "targetEffect": "이 카드로 버스트를 완성하면 카드 1장을 뽑거나 불굴 16을 얻는 것 중 하나를 고른다.",
+      "capabilities": [
+        "choice",
+        "endure"
+      ]
+    },
+    {
+      "id": "VSCA",
+      "slot": "CA",
+      "name": "ON AIR",
+      "theme": "v-signal",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave5",
+      "previousEffect": "이 카드로 새 3장 런을 만들면 그 런의 체인을 1부터 시작한다.",
+      "targetEffect": "이 카드로 새 런을 만들면, 다음 내 턴 종료까지 그 런에 내 카드를 처음 붙인 뒤 장전 8을 얻도록 예약한다.",
+      "capabilities": [
+        "reserve",
+        "loaded"
+      ]
+    },
+    {
+      "id": "VSC4",
+      "slot": "C4",
+      "name": "게임 방송",
+      "theme": "v-signal",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave7",
+      "previousEffect": "체인 1 이하인 런에 이 카드를 붙이면 남은 손패 1장을 덱 아래로 보내고 1장 뽑는 무료 정비를 할 수 있다.",
+      "targetEffect": "체인 1 이하인 런에 붙이면 내 손패 1장에 가변을 부여한다. 이 행동의 이미 정해진 사용값은 바꾸지 않는다.",
+      "capabilities": [
+        "flexible"
+      ]
+    },
+    {
+      "id": "VSC6",
+      "slot": "C6",
+      "name": "RAID",
+      "theme": "v-signal",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드를 상대 공개 조합에 붙인 뒤 내 다른 공개 조합에서 내가 제어하는 카드 1장을 무료 회수할 수 있다. 회수한 카드의 같은 턴 버스트·체인 반환 재사용 제한은 유지한다.",
+      "targetEffect": "이 카드를 상대 공개 조합에 붙인 뒤 내 다른 공개 조합에서 내가 제어하는 카드 1장을 무료 회수할 수 있다. 회수한 카드의 같은 턴 버스트·체인 반환 재사용 제한은 유지한다.",
+      "capabilities": [
+        "recover"
+      ]
+    },
+    {
+      "id": "VSC8",
+      "slot": "C8",
+      "name": "콜라보 신청",
+      "theme": "v-signal",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave5",
+      "previousEffect": "이번 턴에 세트와 런 양쪽에 모두 카드를 사용하게 되는 행동에 이 카드가 들어가면 카드 1장을 뽑는다. 카드당 턴당 1회만 발동한다.",
+      "targetEffect": "이 카드를 사용한 행동까지 포함해 이번 턴에 세트와 런을 모두 사용했다면 장전 6과 순환 1을 얻는다. 카드당 턴 1회만 발동한다.",
+      "capabilities": [
+        "loaded",
+        "cycle"
+      ]
+    },
+    {
+      "id": "VSCJ",
+      "slot": "CJ",
+      "name": "천재 편집자",
+      "theme": "v-signal",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드를 사용할 때 현재 행동의 조합이 아닌 공개 조합에서 내가 제어하는 카드 1장을 합법적인 다른 런으로 이동할 수 있다. 이동 자체는 버스트·체인 위력이나 스위치 반환을 만들지 않는다.",
+      "targetEffect": "이 카드를 사용할 때 현재 행동의 조합이 아닌 공개 조합에서 내가 제어하는 카드 1장을 합법적인 다른 런으로 이동할 수 있다. 이동 자체는 버스트·체인 위력이나 스위치 반환을 만들지 않는다.",
+      "capabilities": [
+        "relocate"
+      ]
+    },
+    {
+      "id": "VSCK",
+      "slot": "CK",
+      "name": "24시간 내구방송",
+      "theme": "v-signal",
+      "category": "괴짜형",
+      "decision": "change",
+      "implementation": "implemented-wave8",
+      "previousEffect": "이 카드가 들어간 체인 4 이상 런을 내가 완주할 때, 그 런에서 내가 제어하는 카드 1장을 손패로 보존할 수 있다. 보존한 카드는 이번 턴 사용할 수 없다.",
+      "targetEffect": "이 카드가 들어간 체인 4 이상 런을 완주하면 내 카드 1장을 보존하고, 그 카드의 다음 배치에 잔향을 부여한다. 보존한 턴에는 사용할 수 없다.",
+      "capabilities": [
+        "preserve",
+        "echo"
+      ]
+    },
+    {
+      "id": "ZSCA",
+      "slot": "CA",
+      "name": "관측수",
+      "theme": "zero-sight",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "이 카드를 사용한 공개 조합을 내 표적으로 지정한다. 지정 후 남은 손패가 있으면 그중 1장을 덱 아래로 보내고 1장 뽑아 무료 패순환한다.",
+      "targetEffect": "사용한 공개 조합을 내 표적으로 지정하고 그 조합에 내 표식 1을 부여한다. 남은 손패 1장을 순환할 수 있다.",
+      "capabilities": [
+        "mark",
+        "cycle"
+      ]
+    },
+    {
+      "id": "ZSC2",
+      "slot": "C2",
+      "name": "스코프 조정",
+      "theme": "zero-sight",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "내 표적이 있으면 다른 공개 조합으로 이전한다. 표적이 없거나 옮길 다른 조합이 없으면 남은 손패 1장을 덱 아래로 보내고 1장 뽑아 패순환한다.",
+      "targetEffect": "내 표적을 다른 공개 조합으로 옮기고 새 표적에 내 표식을 부여한다. 현재 표적이나 옮길 다른 조합이 없으면 순환 1을 한다.",
+      "capabilities": [
+        "mark",
+        "cycle"
+      ]
+    },
+    {
+      "id": "ZSC5",
+      "slot": "C5",
+      "name": "사각지대",
+      "theme": "zero-sight",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "내 카드가 이미 들어간 상대 공개 조합에 붙이면 그 조합으로 표적을 이전한다. 이번 턴 먼저 회수했다면 남은 손패 1장을 무료 정비한다.",
+      "targetEffect": "내 카드가 이미 있는 상대 조합에 붙이면 그 조합으로 표적을 옮긴다. 이번 턴 회수했다면 그 조합에 내 표식을 부여한다.",
+      "capabilities": [
+        "mark"
+      ]
+    },
+    {
+      "id": "ZSC6",
+      "slot": "C6",
+      "name": "관측 기록",
+      "theme": "zero-sight",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "이 카드가 있는 내 표적을 다음 턴까지 유지한 뒤 그 표적에 내가 처음 붙이면 남은 손패 1장을 무료 정비한다. 이 효과는 턴당 1회만 발동한다.",
+      "targetEffect": "이 카드가 있는 내 표적을 내 다음 턴까지 유지하면, 그 턴 해당 조합에 내 카드가 처음 붙을 때 장전 8을 얻는다. 카드당 내 턴 1회만 발동한다.",
+      "capabilities": [
+        "loaded"
+      ]
+    },
+    {
+      "id": "ZSC8",
+      "slot": "C8",
+      "name": "관측 교대",
+      "theme": "zero-sight",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드를 내 표적 조합에서 회수하면 그 표적을 다른 공개 조합으로 이전할 수 있다.",
+      "targetEffect": "이 카드를 내 표적 조합에서 회수하면 그 표적을 다른 공개 조합으로 이전할 수 있다.",
+      "capabilities": [
+        "target-relocate"
+      ]
+    },
+    {
+      "id": "ZSCJ",
+      "slot": "CJ",
+      "name": "관측 드론",
+      "theme": "zero-sight",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "이 카드가 공개된 동안 상대가 새 공개 조합을 만들면 턴당 1회 그 조합으로 내 표적을 자동 이전하고 남은 손패 1장을 무료 정비한다.",
+      "targetEffect": "공개된 동안 상대가 새 조합을 만들면 턴당 1회 그 조합으로 내 표적을 옮기고 내 표식을 부여한다.",
+      "capabilities": [
+        "mark"
+      ]
+    },
+    {
+      "id": "ZSD2",
+      "slot": "D2",
+      "name": "거리측정기",
+      "theme": "zero-sight",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드가 공개된 동안 내 표적을 새로 지정하거나 이전하면 턴당 1회 덱 위 3장의 다음 획득 순서를 정한다.",
+      "targetEffect": "이 카드가 공개된 동안 내 표적을 새로 지정하거나 이전하면 턴당 1회 덱 위 3장의 다음 획득 순서를 정한다.",
+      "capabilities": [
+        "deck-order"
+      ]
+    },
+    {
+      "id": "ZSD6",
+      "slot": "D6",
+      "name": "탄도 계산",
+      "theme": "zero-sight",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "내 표적 조합을 이용해 스위치를 반환할 때, 이번 반환까지 반영한 상대 현재 코어+보호막 부족분만큼 누적 위력을 최대 12까지 보정한다.",
+      "targetEffect": "내 표적으로 일반 반환하면 그 조합의 내 표식을 소비하고, 장전·감쇠·과열까지 반영한 누적 위력의 상대 코어+보호막+불굴 부족분을 최대 12만큼 추가한다.",
+      "capabilities": [
+        "mark",
+        "precision"
+      ]
+    },
+    {
+      "id": "ZSD8",
+      "slot": "D8",
+      "name": "예비 탄창",
+      "theme": "zero-sight",
+      "category": "괴짜형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "내 표적 조합에 이 카드를 붙이면 덱 위 2장의 다음 획득 순서를 정한다.",
+      "targetEffect": "내 표적에 붙이면 덱 위 2장 순서를 정한다. 다음 내 턴 종료까지 내 다음 재배치에 불굴 8을 예약한다.",
+      "capabilities": [
+        "deck-order",
+        "reserve"
+      ]
+    },
+    {
+      "id": "ZSH3",
+      "slot": "H3",
+      "name": "호흡 조절",
+      "theme": "zero-sight",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "손에서 내 턴 종료 1회를 준비하고 내 표적이 있는 상태로 사용하면 보호막 12를 얻고 남은 손패 1장을 무료 정비한다.",
+      "targetEffect": "손에서 내 턴 종료 1회를 준비하고 내 표적이 있을 때 사용하면 불굴 12를 얻고 남은 손패 1장을 무료 정비한다.",
+      "capabilities": [
+        "endure",
+        "cycle"
+      ]
+    },
+    {
+      "id": "ZSH4",
+      "slot": "H4",
+      "name": "위장망",
+      "theme": "zero-sight",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드를 사용한 공개 조합을 내 표적으로 지정한다. 그 조합에 내가 제어하는 카드가 2장 이상이면 보호 1도 부여한다.",
+      "targetEffect": "이 카드를 사용한 공개 조합을 내 표적으로 지정한다. 그 조합에 내가 제어하는 카드가 2장 이상이면 보호 1도 부여한다.",
+      "capabilities": [
+        "protect",
+        "target"
+      ]
+    },
+    {
+      "id": "ZSH7",
+      "slot": "H7",
+      "name": "안전거리",
+      "theme": "zero-sight",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "이 카드가 공개된 동안 내 표적에서 내가 카드를 회수하면 턴당 1회 보호막 12를 얻는다.",
+      "targetEffect": "공개된 동안 내가 내 표적에서 회수하면 불굴 8을 얻는다. 카드당 내 턴 1회만 발동한다.",
+      "capabilities": [
+        "endure"
+      ]
+    },
+    {
+      "id": "ZSS4",
+      "slot": "S4",
+      "name": "제압 사격",
+      "theme": "zero-sight",
+      "category": "기본형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "내 상대 표적 조합에 붙이면 봉인이 없을 때 봉인 1을 부여하고, 이미 봉인이 있으면 그 조합을 고정한다.",
+      "targetEffect": "내 상대 표적 조합에 붙이면 상대에게 감쇠 12를 부여한다.",
+      "capabilities": [
+        "damp"
+      ]
+    },
+    {
+      "id": "ZSS7",
+      "slot": "S7",
+      "name": "철갑탄",
+      "theme": "zero-sight",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "내 상대 표적 조합에 붙여 스위치를 반환하면 누적 위력이 10 증가한다. 그 조합의 보호 1을 제거할 수 있었다면 대신 누적 위력이 14 증가한다.",
+      "targetEffect": "내 상대 표적 조합에 붙여 스위치를 반환하면 누적 위력이 10 증가한다. 그 조합의 보호 1을 제거할 수 있었다면 대신 누적 위력이 14 증가한다.",
+      "capabilities": [
+        "protect-pierce"
+      ]
+    },
+    {
+      "id": "ZSS9",
+      "slot": "S9",
+      "name": "역추적",
+      "theme": "zero-sight",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "이 카드가 공개된 동안 상대가 내 표적 조합으로 스위치를 반환하면 충전한다. 공개 상태를 유지한 채 내가 다음 스위치를 반환하면 누적 위력이 12 증가하고 충전을 해제한다.",
+      "targetEffect": "공개된 동안 상대가 내 표적으로 반환하면 장전 12를 얻는다. 카드당 상대 턴 1회만 발동한다.",
+      "capabilities": [
+        "loaded"
+      ]
+    },
+    {
+      "id": "ZSS10",
+      "slot": "S10",
+      "name": "장거리 사격",
+      "theme": "zero-sight",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "손에서 내 턴 종료 2회를 준비한 뒤 내 표적 조합을 이용해 스위치를 반환하면 누적 위력이 16 증가한다.",
+      "targetEffect": "손에서 내 턴 종료 2회를 준비한 뒤 내 표적으로 반환하면 장전 16을 얻는다. 해당 조합에 내 표식이 있으면 소비하고 감쇠를 최대 8 제거한다.",
+      "capabilities": [
+        "loaded",
+        "mark"
+      ]
+    },
+    {
+      "id": "ZSSQ",
+      "slot": "SQ",
+      "name": "데드 앵글",
+      "theme": "zero-sight",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "이 카드가 내 표적에 있는 동안 상대가 그 표적에서 카드를 회수하거나 밖으로 이동시키면 상대에게 취약 1을 주고 남은 내 카드 1장에 보호 1을 부여한다. 이 효과는 턴당 1회만 발동한다.",
+      "targetEffect": "내 표적에 공개된 동안 상대가 그 조합에서 회수하거나 재배치하면 상대에게 감쇠 8을 부여한다. 그 조합에 균열이 있으면 대신 취약 1을 부여한다. 카드당 턴 1회만 발동한다.",
+      "capabilities": [
+        "damp",
+        "fracture"
+      ]
+    },
+    {
+      "id": "ZSSK",
+      "slot": "SK",
+      "name": "ONE SHOT",
+      "theme": "zero-sight",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave3",
+      "previousEffect": "상대 표적 조합에 붙여 스위치를 반환할 때, 이 행동 전 기존 누적 위력이 50 이상이면 누적 위력이 18 증가한 뒤 표적을 해제한다. 50 미만이면 반환 후 자신에게 봉인 1을 부여한다.",
+      "targetEffect": "행동 전 누적 위력이 50 이상일 때, 상대 보드의 내 표적으로 일반 반환하면 내 표식을 소비해 위력 18을 더한다. 표식이 없으면 과열 10을 이번 반환에 적용한다.",
+      "capabilities": [
+        "mark",
+        "overheat"
+      ]
+    },
+    {
+      "id": "PBCA",
+      "slot": "CA",
+      "name": "돌입 명령",
+      "theme": "point-blank",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드를 상대 공개 조합에 붙이면 그 조합을 내 접전으로 지정한다. 이미 같은 조합이 내 접전이면 남은 손패 1장을 무료 정비한다.",
+      "targetEffect": "이 카드를 상대 공개 조합에 붙이면 그 조합을 내 접전으로 지정한다. 이미 같은 조합이 내 접전이면 남은 손패 1장을 무료 정비한다.",
+      "capabilities": [
+        "clash"
+      ]
+    },
+    {
+      "id": "PBC2",
+      "slot": "C2",
+      "name": "슬라이드 스텝",
+      "theme": "point-blank",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드를 상대 공개 조합에 붙이면 그 조합으로 내 접전을 이전하고 남은 손패 1장을 무료 정비한다.",
+      "targetEffect": "이 카드를 상대 공개 조합에 붙이면 그 조합으로 내 접전을 이전하고 남은 손패 1장을 무료 정비한다.",
+      "capabilities": [
+        "clash",
+        "cycle"
+      ]
+    },
+    {
+      "id": "PBC5",
+      "slot": "C5",
+      "name": "문 걷어차기",
+      "theme": "point-blank",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드가 내 접전에 처음 들어가는 내 카드라면, 붙인 뒤 다른 공개 조합에서 내가 제어하는 카드 1장을 무료 회수할 수 있다. 회수 카드의 같은 턴 반환 제한은 유지한다.",
+      "targetEffect": "이 카드가 내 접전에 처음 들어가는 내 카드라면, 붙인 뒤 다른 공개 조합에서 내가 제어하는 카드 1장을 무료 회수할 수 있다. 회수 카드의 같은 턴 반환 제한은 유지한다.",
+      "capabilities": [
+        "recover"
+      ]
+    },
+    {
+      "id": "PBC8",
+      "slot": "C8",
+      "name": "백도어",
+      "theme": "point-blank",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "내 상대 런 접전과 내 다른 런 사이에서 내가 제어하는 카드 1장을 합법적으로 이동시킬 수 있다. 이동 자체는 체인 위력이나 스위치 반환을 만들지 않는다.",
+      "targetEffect": "내 상대 런 접전과 내 다른 런 사이에서 내가 제어하는 카드 1장을 합법적으로 이동시킬 수 있다. 이동 자체는 체인 위력이나 스위치 반환을 만들지 않는다.",
+      "capabilities": [
+        "relocate"
+      ]
+    },
+    {
+      "id": "PBC9",
+      "slot": "C9",
+      "name": "룸 클리어",
+      "theme": "point-blank",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "내 접전에서 내가 제어하는 카드 1장을 무료 회수하고, 다른 내 카드 1장을 합법적인 다른 공개 조합으로 이동시킬 수 있다. 두 행동 뒤 모든 조합은 유효해야 하며 이동은 전투 중립이다.",
+      "targetEffect": "내 접전에서 내가 제어하는 카드 1장을 무료 회수하고, 다른 내 카드 1장을 합법적인 다른 공개 조합으로 이동시킬 수 있다. 두 행동 뒤 모든 조합은 유효해야 하며 이동은 전투 중립이다.",
+      "capabilities": [
+        "recover",
+        "relocate"
+      ]
+    },
+    {
+      "id": "PBCQ",
+      "slot": "CQ",
+      "name": "돌입대장",
+      "theme": "point-blank",
+      "category": "반응형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드를 사용하면 이번 턴 다음에 내 접전에 붙는 아무 내 카드 1회에 카드 보호 1, 무료 정비, 무료 회수 중 하나를 선택해 부여한다.",
+      "targetEffect": "이 카드를 사용하면 이번 턴 다음에 내 접전에 붙는 아무 내 카드 1회에 카드 보호 1, 무료 정비, 무료 회수 중 하나를 선택해 부여한다.",
+      "capabilities": [
+        "reserve-choice"
+      ]
+    },
+    {
+      "id": "PBD4",
+      "slot": "D4",
+      "name": "크로스파이어",
+      "theme": "point-blank",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave5",
+      "previousEffect": "이 카드로 내 접전 세트의 버스트를 완성할 때 내 다른 공개 세트가 있으면 카드 1장을 뽑는다.",
+      "targetEffect": "내 접전에서 버스트하면 다른 내 공개 세트가 있을 때 그 세트의 내 카드 1장에 귀환을 부여한다.",
+      "capabilities": [
+        "comeback"
+      ]
+    },
+    {
+      "id": "PBD6",
+      "slot": "D6",
+      "name": "탄창 교체",
+      "theme": "point-blank",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이번 턴 붙이기, 회수, 버리기, 정비 중 서로 다른 행동을 2종류 이상 수행한 뒤 이 카드를 사용하면 카드 2장을 뽑고 손패 1장을 덱 아래로 보낸다. 카드당 턴당 1회만 발동한다.",
+      "targetEffect": "이번 턴 붙이기, 회수, 버리기, 정비 중 서로 다른 행동을 2종류 이상 수행한 뒤 이 카드를 사용하면 카드 2장을 뽑고 손패 1장을 덱 아래로 보낸다. 카드당 턴당 1회만 발동한다.",
+      "capabilities": [
+        "action-history"
+      ]
+    },
+    {
+      "id": "PBDJ",
+      "slot": "DJ",
+      "name": "퀵 리로드",
+      "theme": "point-blank",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave4",
+      "previousEffect": "접전에서 회수한 이번 턴, 이 카드를 포함해 새 3장 세트/런을 만들면 보호막 8을 얻는다. 이 효과는 카드당 턴당 1회만 발동한다. 새 조합 생성 횟수와 회수 카드의 버스트/체인 반환 제한은 유지한다.",
+      "targetEffect": "접전에서 회수한 턴 이 카드로 새 조합을 만들면 불굴 8을 얻는다. 카드당 턴 1회이며 생성·반환 제한은 유지한다.",
+      "capabilities": [
+        "endure"
+      ]
+    },
+    {
+      "id": "PBHA",
+      "slot": "HA",
+      "name": "브리치 실드",
+      "theme": "point-blank",
+      "category": "조작형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드를 상대 공개 조합에 붙이면 그 조합을 내 접전으로 지정하고 보호막 12를 얻는다. 붙이기 전부터 그 조합에 내 카드가 있었다면 대신 보호막 20을 얻는다.",
+      "targetEffect": "이 카드를 상대 공개 조합에 붙이면 그 조합을 내 접전으로 지정하고 보호막 12를 얻는다. 붙이기 전부터 그 조합에 내 카드가 있었다면 대신 보호막 20을 얻는다.",
+      "capabilities": [
+        "clash",
+        "shield"
+      ]
+    },
+    {
+      "id": "PBH2",
+      "slot": "H2",
+      "name": "사이드암",
+      "theme": "point-blank",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "이 카드를 상대 공개 조합에서 회수하면 이 카드를 소모패로 보내는 것을 선택할 수 있다. 그렇게 하면 카드 2장을 뽑은 뒤 손패 1장을 버린다.",
+      "targetEffect": "이 카드를 상대 공개 조합에서 회수하면 이 카드를 소모패로 보내는 것을 선택할 수 있다. 그렇게 하면 카드 2장을 뽑은 뒤 손패 1장을 버린다.",
+      "capabilities": [
+        "spend-draw"
+      ]
+    },
+    {
+      "id": "PBH6",
+      "slot": "H6",
+      "name": "응급 후퇴",
+      "theme": "point-blank",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave4",
+      "previousEffect": "스위치가 나를 향할 때 이 카드를 사용하면 보호막 16을 얻고 내 접전에서 내가 제어하는 카드 1장을 무료 회수할 수 있다. 회수 카드의 같은 턴 반환 제한은 유지한다.",
+      "targetEffect": "스위치가 나를 향할 때 사용하면 불굴 12를 얻고 내 접전의 내 카드 1장을 무료 회수할 수 있다. 회수 카드의 당턴 반환 제한은 유지한다.",
+      "capabilities": [
+        "endure",
+        "recover"
+      ]
+    },
+    {
+      "id": "PBH7",
+      "slot": "H7",
+      "name": "엄폐 교대",
+      "theme": "point-blank",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "접전의 내 카드가 상대 효과의 직접 대상이 될 때 턴당 1회, 같은 효과의 다른 합법적인 내 카드로 대상을 교대한다. 대체 대상이 없으면 보호막 12를 얻고 원래 효과는 계속 해결한다.",
+      "targetEffect": "접전의 내 카드가 상대 효과의 직접 대상이 될 때 턴당 1회, 같은 효과의 다른 합법적인 내 카드로 대상을 교대한다. 대체 대상이 없으면 보호막 12를 얻고 원래 효과는 계속 해결한다.",
+      "capabilities": [
+        "redirect"
+      ]
+    },
+    {
+      "id": "PBH10",
+      "slot": "H10",
+      "name": "아드레날린",
+      "theme": "point-blank",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "내 접전에서 스위치를 반환하면 보호막 12를 얻는다. 이번 턴에 회수도 했다면 그 접전에 보호 1을 추가로 부여한다.",
+      "targetEffect": "내 접전에서 반환하면 불굴 12를 얻는다. 이번 턴 회수했다면 그 접전에 보호 1도 부여한다.",
+      "capabilities": [
+        "endure",
+        "protect"
+      ]
+    },
+    {
+      "id": "PBS3",
+      "slot": "S3",
+      "name": "플래시뱅",
+      "theme": "point-blank",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave6",
+      "previousEffect": "이 카드를 내 접전에 붙이면 그 조합에 봉인 1을 부여한다. 이미 봉인이 있다면 대신 그 조합을 고정한다.",
+      "targetEffect": "내 접전에 붙이면 그 조합의 상대 카드 1장에 침묵을 부여한다. 그 카드가 이미 침묵이면 대신 조합에 균열을 부여한다.",
+      "capabilities": [
+        "silence",
+        "fracture"
+      ]
+    },
+    {
+      "id": "PBS4",
+      "slot": "S4",
+      "name": "벅샷",
+      "theme": "point-blank",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave2",
+      "previousEffect": "이 카드로 내 접전에서 스위치를 반환하면 누적 위력이 8 증가한다. 같은 조합에 이 카드 외의 내 카드가 있으면 대신 12 증가한다.",
+      "targetEffect": "내 접전에서 반환하면 장전 8을 얻는다. 같은 조합에 다른 내 카드가 있으면 대신 12를 얻는다. 이번 반환에도 적용된다.",
+      "capabilities": [
+        "loaded"
+      ]
+    },
+    {
+      "id": "PBS8",
+      "slot": "S8",
+      "name": "영거리 사격",
+      "theme": "point-blank",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "내 접전에 내 카드가 2장 이상 있을 때 이 카드로 스위치를 반환하면 누적 위력이 14 증가한다. 런이면 반환 뒤 빼도 유지되는 내 카드 1장을 소모하고, 세트 버스트면 그 세트의 자동 정리가 비용을 대신한다.",
+      "targetEffect": "내 접전에 내 카드가 2장 이상 있을 때 이 카드로 스위치를 반환하면 누적 위력이 14 증가한다. 런이면 반환 뒤 빼도 유지되는 내 카드 1장을 소모하고, 세트 버스트면 그 세트의 자동 정리가 비용을 대신한다.",
+      "capabilities": [
+        "spend-power"
+      ]
+    },
+    {
+      "id": "PBSK",
+      "slot": "SK",
+      "name": "탄창 비우기",
+      "theme": "point-blank",
+      "category": "반응형",
+      "decision": "change",
+      "implementation": "implemented-wave4",
+      "previousEffect": "이번 턴 내 접전에 붙이기와 회수를 했고 버리기 또는 정비도 했다면, 이 카드로 내 접전에서 스위치를 반환할 때 누적 위력이 16 증가하고 카드 1장을 뽑는다. 카드당 턴당 1회만 발동한다.",
+      "targetEffect": "이번 턴 접전 붙이기·회수와 버리기 또는 정비를 했다면, 접전에서 반환할 때 과열 16과 불굴 8을 얻는다. 카드당 턴 1회만 발동한다.",
+      "capabilities": [
+        "overheat",
+        "endure"
+      ]
+    },
+    {
+      "id": "J1",
+      "slot": "J1",
+      "name": "광대왕 조커",
+      "theme": "joker",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "완전 와일드로 취급한다. 세트/런에서 필요한 자리를 자동으로 대신한다. 이 카드가 포함된 공개 조합이 정리될 때 소모되지 않고 원주인의 덱 맨 아래로 돌아간다.",
+      "targetEffect": "완전 와일드로 취급한다. 세트/런에서 필요한 자리를 자동으로 대신한다. 이 카드가 포함된 공개 조합이 정리될 때 소모되지 않고 원주인의 덱 맨 아래로 돌아간다.",
+      "capabilities": [
+        "wild",
+        "deck-return"
+      ]
+    },
+    {
+      "id": "J2",
+      "slot": "J2",
+      "name": "마지막 웃음",
+      "theme": "joker",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "완전 와일드로 취급한다. 이 카드로 러미하면서 반환하면 새 손패를 받은 뒤 카드 1장을 추가로 뽑고 1장을 덱 아래로 보낸다. 폭발을 맞으며 러미했다면 피해를 15 줄인다.",
+      "targetEffect": "완전 와일드로 취급한다. 이 카드로 러미하면서 반환하면 새 손패를 받은 뒤 카드 1장을 추가로 뽑고 1장을 덱 아래로 보낸다. 폭발을 맞으며 러미했다면 피해를 15 줄인다.",
+      "capabilities": [
+        "wild",
+        "rummy"
+      ]
+    },
+    {
+      "id": "J3",
+      "slot": "J3",
+      "name": "쌍면 조커",
+      "theme": "joker",
+      "category": "조작형",
+      "decision": "change",
+      "implementation": "implemented-wave4",
+      "previousEffect": "세트에 붙여 버스트하면 보호막 20을 얻는다. 런에 붙이면 그 런에서 내가 제어하는 카드 1장을 무료로 회수할 수 있다.",
+      "targetEffect": "완전 와일드로 취급한다. 세트 버스트에 사용하면 불굴 16을 얻는다. 런에 붙이면 그 런의 내 다른 카드 1장을 무료 회수할 수 있다.",
+      "capabilities": [
+        "wild",
+        "endure",
+        "recover"
+      ]
+    },
+    {
+      "id": "J4",
+      "slot": "J4",
+      "name": "빈자리 조커",
+      "theme": "joker",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "완전 와일드로 취급한다. 실제 카드가 채워져 조커 없이 조합이 유지되면 자동으로 회수된다. 기본 회수를 소모하지 않는다.",
+      "targetEffect": "완전 와일드로 취급한다. 실제 카드가 채워져 조커 없이 조합이 유지되면 자동으로 회수된다. 기본 회수를 소모하지 않는다.",
+      "capabilities": [
+        "wild",
+        "auto-recover"
+      ]
+    },
+    {
+      "id": "J5",
+      "slot": "J5",
+      "name": "반역자 조커",
+      "theme": "joker",
+      "category": "괴짜형",
+      "decision": "keep",
+      "implementation": "preserved",
+      "previousEffect": "상대 공개 조합에도 와일드로 붙일 수 있다. 실제 카드로 교체되면 원주인 손으로 돌아오고 그 조합은 그 턴 다시 스위치를 반환할 수 없다.",
+      "targetEffect": "상대 공개 조합에도 와일드로 붙일 수 있다. 실제 카드로 교체되면 원주인 손으로 돌아오고 그 조합은 그 턴 다시 스위치를 반환할 수 없다.",
+      "capabilities": [
+        "wild",
+        "return-lock"
+      ]
+    }
+  ],
+  "newThemeCards": [
+    {
+      "id": "SBCA",
+      "slot": "CA",
+      "name": "봄 길잡이",
+      "theme": "season-bloom",
+      "category": "조작형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 순환 1을 한다. 이번 행동으로 봄을 완성하면 남은 손패 1장에 가변을 부여한다.",
+      "capabilities": [
+        "cycle",
+        "flexible"
+      ]
+    },
+    {
+      "id": "SBC2",
+      "slot": "C2",
+      "name": "새순",
+      "theme": "season-bloom",
+      "category": "조작형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 내 공개 카드 1장을 합법적으로 재배치할 수 있다. 재배치로 봄을 새로 완성하면 그 카드에 귀환을 부여한다.",
+      "capabilities": [
+        "relocate",
+        "comeback"
+      ]
+    },
+    {
+      "id": "SBC3",
+      "slot": "C3",
+      "name": "꽃길",
+      "theme": "season-bloom",
+      "category": "반응형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "이 카드가 공개된 동안 내가 봄을 새로 완성하면 참여 카드 중 내 카드 1장에 보호 1을 부여한다. 카드당 턴 1회만 발동한다.",
+      "capabilities": [
+        "protect"
+      ]
+    },
+    {
+      "id": "SBHA",
+      "slot": "HA",
+      "name": "매화 꾀꼬리",
+      "theme": "season-bloom",
+      "category": "반응형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 보호막 8을 얻는다. 이번 행동으로 봄을 완성하면 봄 참여 카드 중 내 카드 1장에 귀환을 부여한다.",
+      "capabilities": [
+        "shield",
+        "comeback"
+      ]
+    },
+    {
+      "id": "SBH2",
+      "slot": "H2",
+      "name": "봄비",
+      "theme": "season-bloom",
+      "category": "조작형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 내 카드 1장의 고정 또는 침묵을 제거한다. 봄이 완성되어 있으면 재생 1도 얻는다.",
+      "capabilities": [
+        "cleanse",
+        "regen"
+      ]
+    },
+    {
+      "id": "SBDA",
+      "slot": "DA",
+      "name": "꽃소식",
+      "theme": "season-bloom",
+      "category": "괴짜형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 덱 위 3장을 보고 원래 숫자가 A·2·3인 카드 1장을 덱 맨 위로 옮길 수 있다. 나머지 순서는 유지한다.",
+      "capabilities": [
+        "deck-order"
+      ]
+    },
+    {
+      "id": "SBC4",
+      "slot": "C4",
+      "name": "여름 길잡이",
+      "theme": "season-bloom",
+      "category": "조작형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 순환 1을 한다. 이번 행동으로 여름을 완성하면 내 공개 카드 1장을 합법적으로 재배치할 수 있다.",
+      "capabilities": [
+        "cycle",
+        "relocate"
+      ]
+    },
+    {
+      "id": "SBC5",
+      "slot": "C5",
+      "name": "장마 다리",
+      "theme": "season-bloom",
+      "category": "규칙파괴형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "런 배치 때 자신의 숫자를 4·5·6 중 하나로 선언할 수 있다. 계절 판정에는 원래 숫자 5만 사용한다.",
+      "capabilities": [
+        "rank"
+      ]
+    },
+    {
+      "id": "SBH4",
+      "slot": "H4",
+      "name": "연꽃 그늘",
+      "theme": "season-bloom",
+      "category": "반응형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 불굴 8을 얻는다. 여름을 완성한 행동이면 내 공개 카드 1장에 보호 1도 부여한다.",
+      "capabilities": [
+        "endure",
+        "protect"
+      ]
+    },
+    {
+      "id": "SBD4",
+      "slot": "D4",
+      "name": "물수제비",
+      "theme": "season-bloom",
+      "category": "조작형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 다른 두 공개 조합의 내 카드 1장씩을 맞바꿀 수 있다. 양쪽 모두 유효해야 하며, 상대 조합 카드도 내 제어라면 후보가 된다.",
+      "capabilities": [
+        "exchange"
+      ]
+    },
+    {
+      "id": "SBS4",
+      "slot": "S4",
+      "name": "한낮의 매미",
+      "theme": "season-bloom",
+      "category": "반응형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 이번 행동으로 여름을 완성했다면 상대 공개 조합 1개에 균열을 부여한다. 여름이 이미 완성되어 있었다면 대신 장전 6을 얻는다.",
+      "capabilities": [
+        "fracture",
+        "loaded"
+      ]
+    },
+    {
+      "id": "SBS5",
+      "slot": "S5",
+      "name": "불꽃놀이",
+      "theme": "season-bloom",
+      "category": "조작형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "여름이 완성되어 있을 때 사용하면 과열 12를 얻는다. 이번 행동으로 다른 계절에서 여름으로 전환했다면 불굴 6도 얻는다.",
+      "capabilities": [
+        "overheat",
+        "endure"
+      ]
+    },
+    {
+      "id": "SBC7",
+      "slot": "C7",
+      "name": "가을 길잡이",
+      "theme": "season-bloom",
+      "category": "조작형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 순환 1을 한다. 이번 행동으로 가을을 완성하면 내 소모패 1장을 덱 아래로 되돌릴 수 있다.",
+      "capabilities": [
+        "cycle",
+        "spent-recycle"
+      ]
+    },
+    {
+      "id": "SBH7",
+      "slot": "H7",
+      "name": "추수 감사",
+      "theme": "season-bloom",
+      "category": "반응형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "내 가을이 완성되어 있을 때 사용하면 체력 8을 회복한다. 이번 행동으로 가을을 새로 완성했다면 재생 1도 얻는다.",
+      "capabilities": [
+        "heal",
+        "regen"
+      ]
+    },
+    {
+      "id": "SBD7",
+      "slot": "D7",
+      "name": "단풍 편지",
+      "theme": "season-bloom",
+      "category": "괴짜형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "가을이 완성되어 있을 때 이 카드를 버리면 버림패 대신 내 덱 맨 위에 놓을 수 있다. 이번 전투에 한 번만 가능하다.",
+      "capabilities": [
+        "topdeck"
+      ]
+    },
+    {
+      "id": "SBD8",
+      "slot": "D8",
+      "name": "수확 바구니",
+      "theme": "season-bloom",
+      "category": "조작형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "이번 행동으로 가을을 완성하면 내 공개 카드 1장에 귀환을 부여한다. 그 카드가 이미 귀환이면 대신 순환 1을 한다.",
+      "capabilities": [
+        "comeback",
+        "cycle"
+      ]
+    },
+    {
+      "id": "SBS7",
+      "slot": "S7",
+      "name": "가을 달빛",
+      "theme": "season-bloom",
+      "category": "반응형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "가을이 완성되어 있을 때 사용하면 장전 8을 얻는다. 이번 행동으로 가을을 새로 완성했다면 대신 12를 얻는다.",
+      "capabilities": [
+        "loaded"
+      ]
+    },
+    {
+      "id": "SBS8",
+      "slot": "S8",
+      "name": "허수아비",
+      "theme": "season-bloom",
+      "category": "반응형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "공개된 동안 상대가 내 가을 참여 카드를 적대적 간섭 대상으로 삼으면 그 카드에 보호 1을 부여한다. 카드당 전투 1회, 간섭 해결 전에 발동한다.",
+      "capabilities": [
+        "protect"
+      ]
+    },
+    {
+      "id": "SBH10",
+      "slot": "H10",
+      "name": "겨울 길잡이",
+      "theme": "season-bloom",
+      "category": "기본형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 불굴 8을 얻는다. 이번 행동으로 겨울을 완성하면 순환 1도 한다.",
+      "capabilities": [
+        "endure",
+        "cycle"
+      ]
+    },
+    {
+      "id": "SBHJ",
+      "slot": "HJ",
+      "name": "동백",
+      "theme": "season-bloom",
+      "category": "반응형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 내 감쇠를 최대 8 제거한다. 겨울이 완성되어 있다면 제거한 만큼 불굴을 얻는다.",
+      "capabilities": [
+        "cleanse",
+        "endure"
+      ]
+    },
+    {
+      "id": "SBD10",
+      "slot": "D10",
+      "name": "눈길 표지",
+      "theme": "season-bloom",
+      "category": "조작형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "사용 시 내 공개 카드 1장을 합법적으로 재배치할 수 있다. 이 행동으로 겨울을 새로 완성하면 내 손패 1장에 가변을 부여한다.",
+      "capabilities": [
+        "relocate",
+        "flexible"
+      ]
+    },
+    {
+      "id": "SBDJ",
+      "slot": "DJ",
+      "name": "겨울 보관함",
+      "theme": "season-bloom",
+      "category": "괴짜형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "겨울이 완성되어 있을 때 사용하면 누적 위력 최대 8을 불굴로 전환한다. 방향은 유지한다.",
+      "capabilities": [
+        "power-investment"
+      ]
+    },
+    {
+      "id": "SBS10",
+      "slot": "S10",
+      "name": "서리꽃",
+      "theme": "season-bloom",
+      "category": "기본형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "겨울이 완성되어 있을 때 사용하면 상대에게 감쇠 10을 부여한다.",
+      "capabilities": [
+        "damp"
+      ]
+    },
+    {
+      "id": "SBSQ",
+      "slot": "SQ",
+      "name": "긴 밤의 끝",
+      "theme": "season-bloom",
+      "category": "반응형",
+      "decision": "new",
+      "implementation": "planned",
+      "targetEffect": "이번 행동으로 다른 계절에서 겨울로 전환했고 스위치가 나를 향하면 유예를 얻을 수 있다. 폭탄 사이클의 사용권을 이미 썼다면 대신 불굴 8을 얻는다.",
+      "capabilities": [
+        "defer",
+        "endure"
+      ]
+    }
+  ]
+}

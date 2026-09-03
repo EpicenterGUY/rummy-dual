@@ -1,3 +1,4 @@
+import {installStatusRuntime} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
@@ -8,7 +9,7 @@ const themeDoc=fs.readFileSync(new URL('../docs/THEME_GROUPS.md',import.meta.url
 
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 function source(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw new Error(`missing ${name}`);let par=0,brace=-1;for(let i=start+marker.length-1;i<script.length;i++){if(script[i]==='(')par++;else if(script[i]===')')par--;else if(script[i]==='{'&&par===0){brace=i;break}}if(brace<0)throw new Error(`missing body ${name}`);let d=0;for(let i=brace;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)return script.slice(start,i+1)}throw new Error(`unterminated ${name}`)}
-function install(ctx,...names){for(const name of names)vm.runInContext(source(name),ctx)}
+function install(ctx,...names){installStatusRuntime(ctx,script);for(const name of names)vm.runInContext(source(name),ctx)}
 function context(extra={}){return vm.createContext({console,Math,Set,Map,Array,Object,Number,String,Boolean,...extra})}
 
 const RANK_VALUE={A:1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13};

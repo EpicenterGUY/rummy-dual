@@ -1,3 +1,4 @@
+import {installStatusRuntime} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
@@ -7,7 +8,7 @@ const theme=fs.readFileSync(new URL('../docs/THEME_GROUPS.md',import.meta.url),'
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 function source(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw new Error(`missing ${name}`);let par=0,brace=-1;for(let i=start+marker.length-1;i<script.length;i++){if(script[i]==='(')par++;else if(script[i]===')')par--;else if(script[i]==='{'&&par===0){brace=i;break}}let d=0;for(let i=brace;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)return script.slice(start,i+1)}throw new Error(`unterminated ${name}`)}
 function ctx(extra={}){return vm.createContext({console,Set,Map,Array,Object,Number,String,Boolean,Math,...extra})}
-function install(c,...names){for(const n of names)vm.runInContext(source(n),c)}
+function install(c,...names){installStatusRuntime(c,script);for(const n of names)vm.runInContext(source(n),c)}
 
 ok(script.includes('function ensureMeldThemeMeta'),'target metadata helper exists');
 ok(script.includes('function setZeroSightTarget'),'target setter exists');

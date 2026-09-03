@@ -1,3 +1,4 @@
+import {createStatusContext} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
@@ -19,7 +20,7 @@ ok(script.includes("고급 튜토리얼 · 회수/정비/상태/조커/네임드
 {
  const player={hand:[],shield:0,status:{}},enemy={hand:[],shield:0,status:{}};
  const state={turnToken:7,turnNo:1,switchTarget:'neutral'};
- const ctx=vm.createContext({console,Math,Set,Array,Object,state});
+ const ctx=createStatusContext(script,{console,Math,Set,Array,Object,state});
  ctx.sideObj=w=>w==='player'?player:enemy;
  ctx.other=w=>w==='player'?'enemy':'player';
  ctx.consumeOfficialStatus=()=>0;

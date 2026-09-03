@@ -1,3 +1,4 @@
+import {createStatusContext} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
@@ -26,7 +27,7 @@ const rankNames=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRank
 // New meld: base rank is illegal, top side makes the SET. CPU must preserve that exact plan without mutating the hand.
 {
   const state={field:null,turnToken:1,turnNo:1,discard:[],switchTarget:'neutral',switchPower:0};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});install(ctx,'combinations',...rankNames,'bestNewMeld');
+  const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});install(ctx,'combinations',...rankNames,'bestNewMeld');
   const a=card('S','7','3','7'),b=card('H','3'),c=card('D','3'),hand=[a,b,c],before=JSON.stringify(hand);
   ctx.futureBurstRisk=(w,cards,type)=>type==='SET'&&cards[0].rank==='3'?5:0;
   const plan=ctx.bestNewMeld(hand,'enemy');
@@ -40,7 +41,7 @@ const rankNames=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRank
   const a=card('D','3','7','3'),hand=[a];
   const enemy={hand,melds:[],returnedSwitchThisTurn:false},player={hand:[],melds:[{type:'SET',cards:[card('S','7'),card('H','7'),card('C','7')],chain:0,lastAttachToken:null,createdToken:null}],returnedSwitchThisTurn:false};
   const state={enemy,player,field:null,turnToken:2,turnNo:1,switchTarget:'neutral',switchPower:0};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.chainDamage=n=>n===1?10:n===2?15:n===3?20:25;
+  const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.chainDamage=n=>n===1?10:n===2?15:n===3?20:25;
   install(ctx,'combinations',...rankNames,'bestExtensionFromHand');
   const plan=ctx.bestExtensionFromHand('enemy',hand);
   ok(plan?.side==='player'&&plan.score===28,'CPU values selected-rank opponent SET BURST at +24 plus existing opponent-meld fallback bias');
@@ -53,7 +54,7 @@ const rankNames=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRank
   const a=card('S','10','10','7'),b=card('S','Q','Q','8'),hand=[a,b];
   const enemy={hand,melds:[{type:'RUN',cards:[card('S','4'),card('S','5'),card('S','6')],chain:0,lastAttachToken:null,createdToken:null}],returnedSwitchThisTurn:false},player={hand:[],melds:[],returnedSwitchThisTurn:false};
   const state={enemy,player,field:null,turnToken:3,turnNo:1,switchTarget:'neutral',switchPower:0};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.chainDamage=n=>n===1?10:n===2?15:n===3?20:25;
+  const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.chainDamage=n=>n===1?10:n===2?15:n===3?20:25;
   install(ctx,'combinations',...rankNames,'bestExtensionFromHand');
   const plan=ctx.bestExtensionFromHand('enemy',hand);
   ok(plan?.cards.length===2&&plan.score===25,'CPU scores two-card RUN extension with the existing +10 +15 chain curve');
@@ -65,7 +66,7 @@ const rankNames=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRank
   const a=card('S','9','4','8'),hand=[a];
   const enemy={hand,melds:[{type:'RUN',cards:[card('S','5'),card('S','6'),card('S','7')],chain:0,lastAttachToken:null,createdToken:null}],returnedSwitchThisTurn:false},player={hand:[],melds:[],returnedSwitchThisTurn:false};
   const state={enemy,player,field:null,turnToken:4,turnNo:1,switchTarget:'neutral',switchPower:0};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.chainDamage=()=>10;
+  const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.chainDamage=()=>10;
   install(ctx,'combinations',...rankNames,'bestExtensionFromHand');
   const legal=ctx.legalRankChoicePlansForAttach(enemy.melds[0],[a]);
   ok(legal.length===2,'synthetic RUN exposes two equally legal orientations around the existing sequence');
@@ -77,7 +78,7 @@ const rankNames=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRank
 {
   const a=card('D','3','7','3'),enemy={hand:[a],melds:[],returnedSwitchThisTurn:false},player={hand:[],melds:[{type:'SET',cards:[card('S','7'),card('H','7'),card('C','7')],chain:0,lastAttachToken:null,createdToken:null}],returnedSwitchThisTurn:false};
   const state={enemy,player,field:null,turnToken:5,turnNo:1};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;
+  const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;
   install(ctx,'combinations',...rankNames,'anyAttachOption');
   ok(ctx.anyAttachOption('enemy')===true,'stuck-state legality recognizes an attach that exists only through alternate printed rank');
 }

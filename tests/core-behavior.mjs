@@ -1,3 +1,4 @@
+import {installStatusRuntime} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
@@ -45,7 +46,8 @@ function makeContext(extra = {}) {
   });
 }
 
-function install(ctx, ...names) {
+function install(ctx, ...names) {installStatusRuntime(ctx,script);
+  if(names.includes('submitNewMeld')||names.includes('attachCards'))names.unshift('finishMeldAction');
   for (const name of names) vm.runInContext(functionSource(name), ctx);
 }
 

@@ -1,3 +1,4 @@
+import {createStatusContext} from '../tests/helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {fileURLToPath} from 'node:url';
@@ -13,7 +14,7 @@ export const RANK_VALUE={A:1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10
 export const BASE_REGULAR_SLOTS=['S3','S4','S5','S6','S7','S8','S9','H2','H3','H4','H7','H8','H9','D2','D3','D4','D5','D6','D7','D8','C3','C4','C5','C6','C7','C8','C9','S10','H10'];
 export const BASE_DECK=[...BASE_REGULAR_SLOTS,'J1'];
 const state={field:null,turnToken:1};
-const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});
+const ctx=createStatusContext(script,{console,Math,Number,Object,Array,Set,RANK_VALUE,state});
 for(const name of ['isJoker','isSuitFlexible','runSequenceOK','setValid','runValid','meldType'])vm.runInContext(source(name),ctx);
 
 function makeCard(slot,uid){if(slot==='J1')return{uid,suit:'J',rank:'J1',baseRank:null,topRank:null,bottomRank:null,activeRank:null,rankOrientation:null,owner:'player'};const suit=slot[0],base=slot.slice(1);return{uid,suit,rank:base,baseRank:base,topRank:base,bottomRank:base,activeRank:null,rankOrientation:null,owner:'player'}}

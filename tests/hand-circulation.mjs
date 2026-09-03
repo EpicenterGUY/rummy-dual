@@ -1,3 +1,4 @@
+import {createStatusContext} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
@@ -29,7 +30,7 @@ function functionSource(name) {
 }
 
 function context(extra = {}) {
-  return vm.createContext({ console, Math, Set, Map, Array, Object, Number, String, Boolean, ...extra });
+  return createStatusContext(script,{ console, Math, Set, Map, Array, Object, Number, String, Boolean, ...extra });
 }
 
 function install(ctx, ...names) {

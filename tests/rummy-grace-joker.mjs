@@ -1,3 +1,4 @@
+import {installStatusRuntime} from './helpers/status-fixture.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
@@ -37,7 +38,7 @@ function context(extra = {}) {
   return ctx;
 }
 
-function install(ctx, ...names) {
+function install(ctx, ...names) {installStatusRuntime(ctx,script);
   for (const name of names) vm.runInContext(functionSource(name), ctx);
 }
 
@@ -246,7 +247,7 @@ function basicSide() {
   ok(shieldUnits === 4, 'Second Heart grants four shield units = 16 shield while SWITCH points at user');
 }
 
-// Life Support: RUMMY heals 16, grants regen 1, and at power 60+ grants 16 shield.
+// Life Support: RUMMY heals 12, grants regen 1, and at power 60+ grants endure 12.
 {
   const player = basicSide(), enemy = basicSide();
   const state = {
@@ -255,20 +256,20 @@ function basicSide() {
     playerJustRummied: false, enemyJustRummied: false,
     selected: new Set(), boardSelected: new Set(), target: null,
   };
-  let seq = 0, healUnits = 0, shieldUnits = 0, regen = 0;
+  let seq = 0, healUnits = 0, shieldUnits = 0, regen = 0, endure = 0;
   const ctx = context({ state, RECOVERY_UNIT: 4 });
   ctx.sideObj = w => w === 'player' ? player : enemy;
   ctx.drawMany = (w, n) => { for (let i = 0; i < n; i++) ctx.sideObj(w).hand.push({ uid: `h10${++seq}`, age: 0, tag: null }); return n; };
   ctx.heal = (w, n) => { healUnits += n; return n * 4; };
-  ctx.applyStatus = (w, key, n) => { if (key === 'regen') regen += n; };
+  ctx.applyStatus = (w, key, n) => { if (key === 'regen') regen += n; if (key === 'endure') endure += n; };
   ctx.addShield = (w, n) => { shieldUnits += n; return n * 4; };
   ctx.removeFromHand = () => {}; ctx.switchName = () => 'YOU'; ctx.combatBanner = () => {}; ctx.log = () => {}; ctx.endPlayerTurn = () => {};
   install(ctx, 'triggerRummy');
   ctx.triggerRummy('player', [{ uid: 'H10', tag: 'rummyHeal4' }], { returned: false });
   ok(player.hand.length === 6, 'Life Support keeps normal six-card RUMMY refill');
-  ok(healUnits === 4, 'Life Support heals four recovery units = 16 CORE');
+  ok(healUnits === 3, 'Life Support heals three recovery units = 12 CORE');
   ok(regen === 1, 'Life Support applies regen 1');
-  ok(shieldUnits === 4, 'Life Support grants four shield units = 16 shield at accumulated power 60+');
+  ok(endure === 12 && shieldUnits === 0, 'Life Support grants endure 12 at accumulated power 60+');
 }
 
 // Returner: only an unconsumed first-recovery window can arm its free recovery.
