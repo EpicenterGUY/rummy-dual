@@ -1,0 +1,67 @@
+name: One-time SCRAP-SHIFT wave1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-scrap-shift-wave1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  implement:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply SCRAP-SHIFT wave1 patch
+        run: python .github/scripts/scrap-shift-wave1-patch.py
+
+      - name: Syntax gate
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const h=fs.readFileSync('index.html','utf8');
+          const s=[...h.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+          new Function(s);
+          console.log('PASS: combined game script parses');
+          NODE
+
+      - name: Run SCRAP-SHIFT wave1 gates
+        run: |
+          set -euo pipefail
+          node tests/scrap-shift-foundation.mjs
+          node tests/scrap-shift-design-lock.mjs
+          node tests/scrap-shift-wave1.mjs
+          node tests/theme-reaction-order.mjs
+          node tests/l10n-card-style.mjs
+          node tests/theme-mix-simulation.mjs
+
+      - name: Run all regression suites with first-failure diagnostic
+        run: |
+          set -u
+          count=0
+          for test in tests/*.mjs; do
+            if ! node "$test" >/tmp/scrapshift-wave1-test.log 2>&1; then
+              echo "FAILED_TEST=$test"
+              echo '--- FAILURE TAIL ---'
+              tail -n 240 /tmp/scrapshift-wave1-test.log
+              exit 1
+            fi
+            count=$((count+1))
+          done
+          echo "ALL_TESTS_PASSED=$count"
+
+      - name: Commit SCRAP-SHIFT wave1
+        run: |
+          git add index.html ROADMAP.md docs/THEME_GROUPS.md docs/THEME_FULL_POOL_PLAN.md
+          if git diff --cached --quiet; then echo 'No feature changes to commit.'; exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat: add SCRAP-SHIFT wave1 vertical slice'
+          git pull --rebase origin main
+          git push origin HEAD:main
