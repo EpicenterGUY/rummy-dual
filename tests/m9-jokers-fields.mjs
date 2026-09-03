@@ -17,7 +17,7 @@ for (const [id, tag] of [
 }
 
 ok(
-  html.includes("if(c.tag==='jokerKing'){const home=c.originOwner||c.owner;c.owner=home;") &&
+  /if\(c\.tag==='jokerKing'\)\{(?:if\(typeof clearMailRouteCard==='function'\)clearMailRouteCard\(c,'조합 정리·덱 귀환',true\);)?const home=c\.originOwner\|\|c\.owner;c\.owner=home;/.test(html) &&
   html.includes('sideObj(home).deck.unshift(c)') &&
   html.includes("else{if(c.tag==='smuggledSuit')"),
   'Joker King retirement restores origin owner and returns to owner deck instead of spent'

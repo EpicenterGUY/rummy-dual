@@ -12,7 +12,7 @@ const themeIds=['v-signal','zero-sight','point-blank'];
 const cards=Object.entries(ctx.NAMED).filter(([,d])=>themeIds.includes(d?.themeId));
 ok(cards.length===60,'three completed themes expose exactly 60 live card definitions');
 ok(cards.every(([,d])=>d.rewardPool!==false),'all 60 completed theme cards are eligible for ordinary reward ranking once unlocked');
-ok(!script.includes('allowStaged=')&&!script.includes('def.rewardPool===false'),'temporary reward staging filter is removed');
+ok(!script.includes('allowStaged=')&&cards.every(([,d])=>d.rewardPool!==false),'completed theme cards remain unstaged without a scarce-pool bypass');
 ok(script.includes("themeId:'point-blank',live:true"),'POINT-BLANK build profile is live');
 for(const [id,step] of [['v-signal','vsEncore'],['zero-sight','zsObserver'],['point-blank','pbBreach']])ok(script.includes(`themeId:'${id}',startStep:'${step}',live:true`)&&script.includes(`id:'${step}',themeId:'${id}'`),`${id} has a live implemented theme experience`);
 ok(html.includes('id="themeTutorialSelect"')&&script.includes("startThemeTutorial(document.getElementById('themeTutorialSelect')?.value||null)"),'menu exposes a real selector for all live theme experiences');

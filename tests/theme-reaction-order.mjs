@@ -9,9 +9,9 @@ function source(name){const marker=`function ${name}(`,start=script.indexOf(mark
 function context(extra={}){return vm.createContext({console,Set,Map,Array,Object,Number,String,Boolean,Math,...extra})}
 function install(ctx,...names){for(const n of names)vm.runInContext(source(n),ctx)}
 
-ok(script.includes("const THEME_REACTION_ORDER=Object.freeze({attach:Object.freeze(['onAttach','onTargetMeldChange','onClashMeldChange','postReturn'])"),'attach reaction order is explicitly declared');
-ok(script.includes("recover:Object.freeze(['onRecover','onTargetMeldChange','onClashMeldChange'])"),'recovery reaction order is explicitly declared');
-ok(script.includes("move:Object.freeze(['onMeldMove','onTargetMeldChange:source','onTargetMeldChange:target','onClashMeldChange:source','onClashMeldChange:target'])"),'movement source/target ordering is explicitly declared');
+ok(script.includes("const THEME_REACTION_ORDER=Object.freeze({attach:Object.freeze(['onAttach','onTargetMeldChange','onClashMeldChange','onArrival','postReturn'])"),'attach reaction order is explicitly declared');
+ok(script.includes("recover:Object.freeze(['onRecover','onTargetMeldChange','onClashMeldChange','onReturnMail'])"),'recovery reaction order is explicitly declared');
+ok(script.includes("move:Object.freeze(['onMeldMove','onTargetMeldChange:source','onTargetMeldChange:target','onClashMeldChange:source','onClashMeldChange:target','onArrival'])"),'movement source/target ordering is explicitly declared');
 
 // Shared card-bound turn gate: one claim per key per turn token, independent keys coexist.
 {
