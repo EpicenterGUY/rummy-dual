@@ -67,3 +67,5 @@ jobs:
           git commit -m 'feat: add SCRAP-SHIFT wave2 reactions'
           git pull --rebase origin main
           git push origin HEAD:main
+
+      # rerun marker: forward-compatible-wave1
