@@ -66,4 +66,4 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD:main
 
-      # rerun marker: 2026-09-04 KST
+      # rerun marker: reaction-order-doc-sync
