@@ -88,6 +88,6 @@ for(const tag of wave1.map(x=>x[3]))ok(resolver.includes(`case'${tag}'`),`${tag}
 ok(road.includes('1차 수직 슬라이스 4장 — A♦ 부품 라벨 / 2♣ 컨베이어 / 4♥ 수리 키트 / A♠ 분해 드라이버'),'ROADMAP records the four-card vertical slice');
 ok(road.includes('- [ ] 24장 / 수트별 6장 정의 및 실제 효과 구현'),'full 24-card release remains unfinished');
 ok(themeDoc.includes('1차 수직 슬라이스 — A♦ `부품 라벨` / 2♣ `컨베이어` / 4♥ `수리 키트` / A♠ `분해 드라이버`'),'canonical theme doc records wave1 without declaring full live');
-ok(poolDoc.includes('24장 미라이브 · 4장 수직 슬라이스 DEV 구현 완료'),'full-pool policy keeps SCRAP-SHIFT non-live after wave1');
+ok(poolDoc.includes('24장 미라이브')&&!poolDoc.includes('SCRAP-SHIFT 24/24 라이브 완료'),'full-pool policy keeps SCRAP-SHIFT non-live as later DEV waves are added');
 
 console.log('SCRAP-SHIFT wave1 vertical-slice regression passed.');
