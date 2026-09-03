@@ -78,6 +78,7 @@ ok(resolver.includes("case'ssMagnetRetriever':")&&resolver.includes('requestScra
 ok(resolver.includes("case'ssOverheatedPart':if(isReturning&&ctx.meld)"),'overheated part only checks on SWITCH-return resolution');
 ok(road.includes('3차 유틸리티 슬라이스 4장 — 5♦ 표준 규격 / 4♣ 임시 용접 / 2♥ 자석 회수기 / 10♠ 과열 부품'),'ROADMAP records SCRAP-SHIFT wave3');
 ok(themeDoc.includes('3차 유틸리티 슬라이스 — 5♦ `표준 규격` / 4♣ `임시 용접` / 2♥ `자석 회수기` / 10♠ `과열 부품`'),'canonical theme doc records wave3');
-ok(poolDoc.includes('24장 미라이브 · 12장 DEV 구현 완료(행동 4 + 반응 4 + 유틸리티 4)'),'full-pool policy records twelve DEV cards while keeping the theme non-live');
+const devCountMatch=poolDoc.match(/24장 미라이브 · (\d+)장 DEV 구현 완료/);
+ok(!!devCountMatch&&Number(devCountMatch[1])>=12,'full-pool policy keeps at least the wave3 twelve DEV cards while later waves may increase the count');
 ok(road.includes('- [ ] 24장 / 수트별 6장 정의 및 실제 효과 구현'),'full 24-card implementation remains open');
 console.log('SCRAP-SHIFT wave3 utility regression passed.');
