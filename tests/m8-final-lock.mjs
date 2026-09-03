@@ -19,7 +19,7 @@ const requiredChoiceSignatures=[
 ];
 for(const [label,sig] of requiredChoiceSignatures)ok(resolve.includes(sig),`${label} remains routed through shared/resumable choice handling`);
 ok(onDraw.includes("c.tag==='bait'")&&onDraw.includes('requestHandBottomChoice'),'H3 Bait uses exact hand-bottom choice');
-ok(source('requestParasiteReturnCycles').includes('requestEffectChoice'),'C7 Parasite uses exact discard choice');
+ok(source('handleSharedCombatCardEvent').includes("c.tag==='parasite'"),'C7 Parasite uses the shared completed-return reaction');
 ok(triggerRummy.includes("title:'마지막 웃음'")&&triggerRummy.includes('requestHandBottomChoice'),'J2 Last Laugh uses exact post-RUMMY bottom choice');
 ok(source('playerDiscard').includes("c.tag==='topDeckChoice'")&&source('playerDiscard').includes('requestEffectChoice'),'D6 Reserved Shipping uses the shared decision modal');
 

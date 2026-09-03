@@ -1,6 +1,6 @@
 # RUMMY//DUEL Development Roadmap
 
-Updated: 2026-09-02
+Updated: 2026-09-03
 
 ## E3 — 효과/카드 대개편 (2026-09-02 시작)
 - [x] 코어 유지: 공개 3개, 턴 생성 2개, 실제 반환 1회 및 기본 회수 제한
@@ -23,6 +23,18 @@ Updated: 2026-09-02
 - [ ] 신규 상태를 반영한 AI 평가와 인간 실전 밸런스 검증
 
 상세 구현 범위·우선순위·초안 해석은 [효과 시스템 3.0](docs/EFFECT_SYSTEM_3.md)과 [3차 구현 계약](docs/EFFECT_SYSTEM_3_WAVE3.md)을 따른다. **18종 전체와 전 카드 리워크가 완료된 것은 아니다.**
+
+## 현재 대개편 작업 — 효과 시스템 3.0 / PR #35
+
+대개편의 작업 기준은 `effect-system-v3-wave1`이며 main에는 아직 병합하지 않았다. 현재 **기존 카드 48종 개편·53종 유지·21종 구현 대기**, 공용 상태 **13/18종**, SEASON-BLOOM **0/24종 구현(설계 완료)**이다. 4차 묶음의 실제 동작과 검증은 `docs/EFFECT_SYSTEM_3_WAVE4.md`, 전체 설계표는 `docs/CARD_REDESIGN_3.md`를 따른다. 아래 이전 M0~M13 기록의 카드 설명과 충돌하면 현재 개편된 카드에 한해 3.0 명세를 우선한다.
+
+- [x] 공용 상태/예약, 균열·조합 표식, 런 분할·합병과 기존 카드 40종 개편
+- [x] 4차 8종: 수혈·연명·기생충·염상 스트리머·퀵 리로드·응급 후퇴·탄창 비우기·쌍면 조커
+- [ ] 나머지 기존 카드 21종과 침묵·가변·잔향·불안정·반향·카드 표식 범위
+- [ ] SEASON-BLOOM 24종 실제 구현 및 혼합/AI/실전 밸런스
+- [ ] 모바일 브라우저/실기기 화면 확인 및 main 병합·배포
+
+MAIL-ROUTE 복구 초안은 별도 PR #36이다. 기존 대개편의 대체 작업이 아니며 함께 반영하려면 통합 검증이 필요하다. 로그라이크의 상점·이벤트 결제와 실제 노드 연결도 현재 main 미완료로 유지한다.
 
 ## Core direction
 RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITCH bomb through SET/BURST and RUN/CHAIN, including play on the opponent's public melds.

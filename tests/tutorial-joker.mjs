@@ -9,12 +9,12 @@ function install(ctx,...names){for(const n of names)vm.runInContext(functionSour
 new Function(script);
 ok(script.includes("{id:'status'")&&!script.includes("expectVulnerableConsumed:true,expectReset:true,completeOn:'detonate',stopAfter:true"),'official-status lesson now continues into Joker lessons');
 ok(script.includes("{id:'jokerKing'")&&script.includes("expectAttachTag:'jokerKing'")&&script.includes("expectJokerDeckReturn:true"),'Joker King lesson is registered as a real wildcard BURST plus deck-return check');
-ok(script.includes("{id:'jokerDual'")&&script.includes("expectAttachTag:'jokerDual'")&&script.includes("expectShieldGain:20")&&script.includes("stopAfter:true"),'Dual Joker lesson is the advanced segment endpoint and checks its 20 shield effect');
+ok(script.includes("{id:'jokerDual'")&&script.includes("expectAttachTag:'jokerDual'")&&script.includes("expectEndureGain:16")&&script.includes("stopAfter:true"),'Dual Joker lesson is the advanced segment endpoint and checks its endure 16 effect');
 ok(script.includes("function makeTutorialJoker(id,role,owner='player')")&&script.includes("makeCard('J',id,true,owner,id)"),'tutorial Jokers use real NAMED definitions instead of fake pure cards');
 ok(script.includes("makeTutorialJoker('J1','jokerKingCard')")&&script.includes("makeTutorialCard('S','9','board','player')")&&script.includes("makeTutorialCard('D','9','board','player')"),'Joker King scenario fixes a three-suit SET missing one wildcard slot');
 ok(script.includes("makeTutorialJoker('J3','jokerDualCard')")&&script.includes("makeTutorialCard('S','6','board','player')")&&script.includes("makeTutorialCard('D','6','board','player')"),'Dual Joker scenario fixes a separate three-suit SET');
 ok(script.includes("jokerReturnedToDeck:state.player.deck.some(c=>jokerUids.has(c.uid))")&&script.includes("jokerSpent:state.player.spent.some(c=>jokerUids.has(c.uid))"),'real attach completion reports Joker retirement destination to tutorial progress');
-ok(script.includes("expectJokerDeckReturn&&!(context.jokerReturnedToDeck&&!context.jokerSpent)")&&script.includes("expectShieldGain!=null&&context.afterShield-context.beforeShield!==step.expectShieldGain"),'tutorial completion validates actual Joker King return and Dual Joker shield gain');
+ok(script.includes("expectJokerDeckReturn&&!(context.jokerReturnedToDeck&&!context.jokerSpent)")&&script.includes("expectEndureGain!=null&&context.afterEndure-context.beforeEndure!==step.expectEndureGain"),'tutorial completion validates actual Joker King return and Dual Joker endure gain');
 ok(script.includes("step.id==='jokerKing'?")&&script.includes("step.id==='jokerDual'?"),'coach success copy explains both Joker-specific outcomes');
 ok(html.includes("고급 튜토리얼 · 회수/정비/상태/조커"),'start screen advertises the completed advanced Joker section after unlock');
 ok(road.includes('- [x] 조커 고급 튜토리얼'),'UX1 P3 roadmap records Joker tutorial complete');

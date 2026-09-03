@@ -309,7 +309,7 @@
       "theme": "common",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave4",
       "previousEffect": "이번 턴 회복했다면 보호막을 얻을 때 그 회복량의 절반만큼 추가 보호막을 얻는다.",
       "targetEffect": "공개된 동안 내 회복이 실제 발생하면 그 회복량의 절반만큼 불굴을 얻는다. 내 턴당 1회, 최대 8을 얻는다.",
       "capabilities": [
@@ -366,7 +366,7 @@
       "theme": "common",
       "category": "기본형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave4",
       "previousEffect": "이 카드로 러미하면 체력 16을 회복하고 재생 1을 얻는다. 누적 위력이 60 이상이면 보호막 16도 얻는다.",
       "targetEffect": "이 카드로 러미하면 체력 12를 회복하고 재생 1을 얻는다. 누적 위력이 60 이상이면 추가로 불굴 12를 얻는다.",
       "capabilities": [
@@ -722,7 +722,7 @@
       "theme": "common",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave4",
       "previousEffect": "상대 공개 조합에 붙어 있는 동안 상대가 그 조합으로 스위치를 반환할 때마다 나는 1장 뽑고 1장 버린다.",
       "targetEffect": "상대 공개 조합에 공개된 동안 상대가 그 조합으로 실제 반환하면 내 장전 8을 얻는다. 카드당 상대 턴 1회만 발동한다.",
       "capabilities": [
@@ -878,7 +878,7 @@
       "theme": "v-signal",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave4",
       "previousEffect": "스위치 누적 위력이 40 이상일 때 이 카드로 스위치를 반환하면 상대에게 취약 1을 부여한다.",
       "targetEffect": "이 카드로 스위치를 반환할 때 상대에게 감쇠가 있으면 그 감쇠를 전부 제거하고 상대에게 취약 1을 부여한다.",
       "capabilities": [
@@ -1543,7 +1543,7 @@
       "theme": "point-blank",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave4",
       "previousEffect": "접전에서 회수한 이번 턴, 이 카드를 포함해 새 3장 세트/런을 만들면 보호막 8을 얻는다. 이 효과는 카드당 턴당 1회만 발동한다. 새 조합 생성 횟수와 회수 카드의 버스트/체인 반환 제한은 유지한다.",
       "targetEffect": "접전에서 회수한 턴 이 카드로 새 조합을 만들면 불굴 8을 얻는다. 카드당 턴 1회이며 생성·반환 제한은 유지한다.",
       "capabilities": [
@@ -1586,7 +1586,7 @@
       "theme": "point-blank",
       "category": "조작형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave4",
       "previousEffect": "스위치가 나를 향할 때 이 카드를 사용하면 보호막 16을 얻고 내 접전에서 내가 제어하는 카드 1장을 무료 회수할 수 있다. 회수 카드의 같은 턴 반환 제한은 유지한다.",
       "targetEffect": "스위치가 나를 향할 때 사용하면 불굴 12를 얻고 내 접전의 내 카드 1장을 무료 회수할 수 있다. 회수 카드의 당턴 반환 제한은 유지한다.",
       "capabilities": [
@@ -1673,7 +1673,7 @@
       "theme": "point-blank",
       "category": "반응형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave4",
       "previousEffect": "이번 턴 내 접전에 붙이기와 회수를 했고 버리기 또는 정비도 했다면, 이 카드로 내 접전에서 스위치를 반환할 때 누적 위력이 16 증가하고 카드 1장을 뽑는다. 카드당 턴당 1회만 발동한다.",
       "targetEffect": "이번 턴 접전 붙이기·회수와 버리기 또는 정비를 했다면, 접전에서 반환할 때 과열 16과 불굴 8을 얻는다. 카드당 턴 1회만 발동한다.",
       "capabilities": [
@@ -1718,7 +1718,7 @@
       "theme": "joker",
       "category": "조작형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave4",
       "previousEffect": "세트에 붙여 버스트하면 보호막 20을 얻는다. 런에 붙이면 그 런에서 내가 제어하는 카드 1장을 무료로 회수할 수 있다.",
       "targetEffect": "완전 와일드로 취급한다. 세트 버스트에 사용하면 불굴 16을 얻는다. 런에 붙이면 그 런의 내 다른 카드 1장을 무료 회수할 수 있다.",
       "capabilities": [
