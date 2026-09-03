@@ -35,8 +35,8 @@ ok(html.includes("if(meldsOf(w).length>=3)return'full'"), 'full public board blo
 ok(html.includes('function bestNewMeldForTurn(w,hand=sideObj(w).hand)'), 'turn-aware new-meld legality helper exists');
 ok(html.includes("s.melds.length<3&&bestNewMeldForTurn(w)"), 'maintenance/legal-action check respects board cap and current-turn card restrictions');
 ok(html.includes('function acquireDiscardCard(w,indexFromTop=0)'), 'discard acquisition uses a shared helper');
-ok(html.includes("c=acquireDiscardCard('player',0)"), 'player Black Market second-card path uses shared acquisition');
-ok(html.includes("c=acquireDiscardCard('enemy',0)"), 'AI Black Market second-card path uses shared acquisition');
+// Actual player/CPU Black Market choice and ownership behavior is covered by acquisition-reworks-v3.mjs.
+ok(html.includes('function acquireBasicCard(w,fromDiscard=false,choice=null)'), 'player and CPU base acquisition share the same validated choice path');
 ok(html.includes("typeof unlock==='function'&&!!unlock(p)"), 'invalid saved character IDs cannot crash char unlock checks');
 ok(html.includes('같은 종류라면 장전 8을 얻어 이번 반환에 사용한다.'), 'Chain Reaction documents its shared loaded status');
 ok(html.includes('jokerLastDetonateReduction=15'), 'Last Laugh DETONATE reduction is implemented');

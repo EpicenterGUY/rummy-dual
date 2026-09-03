@@ -11,7 +11,7 @@ ok(new Set(defs.map(x=>x.id)).size===defs.length,'named IDs are unique in the lo
 
 const resolve=source('resolveEffects'),onDraw=source('onDiscardDraw'),triggerRummy=source('triggerRummy');
 const requiredChoiceSignatures=[
- ['SJ/H5/C5/CJ/J3 free recovery','requestFreeRecoverChoice'],
+ ['SJ/C5/CJ/J3 free recovery','requestFreeRecoverChoice'],
  ['S9 opponent meld target','requestOpponentMeldChoice'],
  ['D9 spent recycle','requestSpentRecycleChoice'],
  ['DJ exact extortion card','requestExtortChoice'],

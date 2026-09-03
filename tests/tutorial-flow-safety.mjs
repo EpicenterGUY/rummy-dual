@@ -20,7 +20,7 @@ ok(script.includes("if(!state.tutorialExitArmed){state.tutorialExitArmed=true") 
 ok(script.includes("state.sessionMode='menu'")&&source('showStartScreen').includes('state.tutorialStep=null')&&source('showStartScreen').includes('state.tutorialExitArmed=false'), 'returning to menu clears tutorial exit state and invalidates session work');
 ok(script.includes("exit.textContent=state.tutorialExitArmed?'한 번 더 눌러 종료':'튜토리얼 종료'"), 'coach gives explicit Korean exit confirmation feedback');
 
-const drawStart=script.indexOf('function playerDraw('), drawGuard=script.indexOf("if(!tutorialAllows(tutorialAction",drawStart), drawMutation=script.indexOf("c=drawOne('player'",drawStart);
+const drawStart=script.indexOf('function playerDraw('), drawGuard=script.indexOf("if(!tutorialAllows(tutorialAction",drawStart), drawMutation=script.indexOf("acquireBasicCard('player'",drawStart);
 ok(drawStart>=0 && drawGuard>drawStart && drawMutation>drawGuard, 'tutorial draw rejection occurs before draw mutation');
 const playerMeld=source('playerMeld'), delegatedMeld=script.includes('function executePlayerMeld(')?source('executePlayerMeld'):'', meldContract=delegatedMeld||playerMeld;
 const meldGuard=meldContract.indexOf("if(!tutorialAllows('meld'"), meldMutation=meldContract.indexOf("submitNewMeld('player'");
