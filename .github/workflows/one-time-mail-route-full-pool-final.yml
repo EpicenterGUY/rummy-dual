@@ -21,6 +21,9 @@ jobs:
       - name: Apply MAIL-ROUTE full-pool patch
         run: python .github/scripts/mail-route-full-pool-patch.py
 
+      - name: Normalize MAIL-ROUTE release wording
+        run: python .github/scripts/mail-route-release-fixups.py
+
       - name: Refresh integrated regional reward baseline
         run: |
           python - <<'PY'
@@ -57,6 +60,7 @@ jobs:
           node tests/m11-slot-invariant.mjs
           node tests/named-card-audit.mjs
           node tests/m11a-region-rewards.mjs
+          node tests/l10n-card-style.mjs
           node tests/ux2-menu-isolation.mjs
 
       - name: Run all regression suites with first-failure diagnostic
@@ -76,7 +80,7 @@ jobs:
 
       - name: Commit MAIL-ROUTE full pool
         run: |
-          git add index.html ROADMAP.md docs/THEME_GROUPS.md docs/THEME_FULL_POOL_PLAN.md tests/mail-route-full-pool.mjs tests/theme-mix-simulation.mjs tests/named-card-audit.mjs tests/m11a-region-rewards.mjs
+          git add index.html ROADMAP.md docs/THEME_GROUPS.md docs/THEME_FULL_POOL_PLAN.md .github/scripts/mail-route-full-pool-patch.py tests/mail-route-full-pool.mjs tests/theme-mix-simulation.mjs tests/named-card-audit.mjs tests/m11a-region-rewards.mjs
           if git diff --cached --quiet; then echo 'No feature changes to commit.'; exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
