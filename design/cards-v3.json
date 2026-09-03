@@ -351,7 +351,7 @@
       "theme": "common",
       "category": "괴짜형",
       "decision": "change",
-      "implementation": "planned",
+      "implementation": "implemented-wave9",
       "previousEffect": "같은 공개 조합의 내 카드가 절단·탈취될 때 처음 한 번 그 효과를 무효로 하고 이 카드를 소모한다.",
       "targetEffect": "같은 조합의 내 카드가 상대의 절단·탈취 대상이 되면, 이 카드에 귀환이 없을 때 해당 간섭을 1회 무효로 하고 자신에게 불안정 1을 부여한다. 카드당 전투 1회만 발동한다.",
       "capabilities": [

@@ -60,7 +60,7 @@ for(const muteCover of [false,true]){
 for(const silent of [false,true]){
  const g=fresh(),ins=named(g,'H9','enemy'),m=meld(g,'enemy',[plain(g,'H','6','enemy'),plain(g,'H','7','enemy'),plain(g,'H','8','enemy'),ins]),target=m.cards[0];
  if(silent)g.applyOfficialStatus('card',ins,'silence',1,{actor:'enemy'});
- g.applyOfficialStatus('card',target,'silence',1,{actor:'player'});assert.equal(value(g,target),Number(silent));assert.equal(g.state.enemy.spent.includes(ins),!silent,'muted insurance cannot substitute for the targeted card');
+ g.applyOfficialStatus('card',target,'silence',1,{actor:'player'});assert.equal(value(g,target),1);assert.equal(g.state.enemy.spent.includes(ins),false,'insurance only intercepts cut/theft, not a status');assert.equal(ins.insuranceUsedBattleId,null);
 }
 for(const fallback of ['damp','fracture']){
  const g=fresh(),m=run(g,'enemy','S',['4','5','6']),c=m.cards[0];g.applyOfficialStatus('card',c,'silence',1,{actor:'enemy'});m.status.protect=1;

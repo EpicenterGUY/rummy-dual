@@ -86,9 +86,9 @@ ok(!extMove.includes('addSwitchPower')&&!extMove.includes('returnSwitch')&&!extM
 }
 
 const cutSrc=source('cutOppositeEnd');
-ok(extMove.includes('insuranceBlocks(w,foe,om,c)')&&extMove.indexOf('insuranceBlocks(w,foe,om,c)')<extMove.indexOf('om.cards.splice'),'existing Insurance Agent/protect resolution still happens before Extortion movement');
+ok(extMove.includes("insuranceBlocks(w,foe,om,c,'extort')")&&extMove.indexOf("insuranceBlocks(w,foe,om,c,'extort')")<extMove.indexOf('om.cards.splice'),'existing Insurance Agent/protect resolution still happens before Extortion movement');
 ok(extMove.includes('pointBlankCoverSwapTarget')&&extMove.includes('extortionCandidates(w,m).filter'),'Extortion supplies only same-effect legal alternatives to Cover Swap');
-ok(cutSrc.includes('insuranceBlocks(w,targetSide,m,cand)')&&cutSrc.includes('pointBlankCoverSwapTarget(w,m,cand,[])'),'Cut Line preserves protection first and uses shield fallback because its opposite-end target has no alternate legal target');
+ok(cutSrc.includes("insuranceBlocks(w,targetSide,m,cand,'cut')")&&cutSrc.includes('pointBlankCoverSwapTarget(w,m,cand,[])'),'Cut Line preserves protection first and uses shield fallback because its opposite-end target has no alternate legal target');
 
 ok(road.includes('- [x] 이동 효과 전투 중립 원칙 잠금'),'ROADMAP marks movement combat-neutral rule complete');
 ok(road.includes('- [x] 7♥ `엄폐 교대` 적대 대상 교체/fallback 구현'),'ROADMAP marks Cover Swap complete');

@@ -34,6 +34,7 @@ for(const name of ['normalizePrototypeRank','ensureRankPrototype','cardPrintedRa
   ctx.enterHand('player',asym);
   ok(asym.activeRank===null&&asym.rank==='7'&&player.hand.includes(asym),'enterHand centralizes outside-meld rank reset');
   ctx.chooseCardActiveRank(asym,'3','top');
+  vm.runInContext(source('clearInactiveCardStatuses'),ctx);
   vm.runInContext(source('pushDiscard'),ctx);
   ctx.pushDiscard(asym);
   ok(asym.activeRank===null&&asym.rank==='7'&&state.discard.at(-1)===asym,'shared discard centralizes outside-meld rank reset');

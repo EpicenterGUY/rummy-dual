@@ -8,12 +8,13 @@ assert.equal(new Set([...p.existingCards,...p.newThemeCards].map(r=>r.id)).size,
 assert.equal(p.existingCards.filter(r=>r.implementation==='preserved').length,53);
 assert.equal(p.existingCards.filter(r=>r.implementation==='implemented-wave2').length,16);
 assert.equal(p.existingCards.filter(r=>r.implementation==='implemented-wave3').length,17);
-assert.equal(p.existingCards.filter(r=>r.implementation==='planned').length,1);
+assert.equal(p.existingCards.filter(r=>r.implementation==='planned').length,0);
 assert.equal(p.existingCards.filter(r=>r.implementation==='implemented-wave4').length,8);
 assert.equal(p.existingCards.filter(r=>r.implementation==='implemented-wave5').length,10);
 assert.equal(p.existingCards.filter(r=>r.implementation==='implemented-wave6').length,3);
 assert.equal(p.existingCards.filter(r=>r.implementation==='implemented-wave7').length,3);
 assert.equal(p.existingCards.filter(r=>r.implementation==='implemented-wave8').length,4);
+assert.equal(p.existingCards.filter(r=>r.implementation==='implemented-wave9').length,1);
 for(const r of p.existingCards){
  const c=g.NAMED[r.id];assert.equal(r.slot,c.slot||r.id);assert.equal(r.name,c.n);
  if(!['common','joker'].includes(r.theme))assert.equal(c.themeId,r.theme,`${r.id}: preserve theme identity`);

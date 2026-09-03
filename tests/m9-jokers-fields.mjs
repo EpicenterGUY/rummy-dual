@@ -18,12 +18,12 @@ for (const [id, tag] of [
 
 ok(
   html.includes("if(cardHasAbility(c,'jokerKing')){const home=c.originOwner||c.owner;c.owner=home;") &&
-  html.includes('sideObj(home).deck.unshift(c)') &&
+  html.includes('sideObj(home).deck.unshift(clearInactiveCardStatuses(c))') &&
   html.includes("else{if(c.tag==='smuggledSuit')"),
   'Joker King retirement restores origin owner and returns to owner deck instead of spent'
 );
 ok(
-  html.includes('const home=c.originOwner||c.owner') && html.includes('sideObj(home).deck.unshift(c)'),
+  html.includes('const home=c.originOwner||c.owner') && html.includes('sideObj(home).deck.unshift(clearInactiveCardStatuses(c))'),
   'discard-control changes cannot steal Joker King permanently'
 );
 

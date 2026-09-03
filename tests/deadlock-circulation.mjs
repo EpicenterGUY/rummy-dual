@@ -40,7 +40,7 @@ function makeState(){
     if(!m)return;
     for(const c of m.cards)ctx.sideObj(c.owner).spent.push(c);
   };
-  install(ctx,'ownedRecycleCount','hasAcquisitionSource','anyRecoveryOption','circulationReleasePlan','recycleIfNeeded','emergencyReleaseMeld','prepareAcquisitionPhase');
+  install(ctx,'clearInactiveCardStatuses','ownedRecycleCount','hasAcquisitionSource','anyRecoveryOption','circulationReleasePlan','recycleIfNeeded','emergencyReleaseMeld','prepareAcquisitionPhase');
   return{ctx,state,player,enemy,logs,scheduled};
 }
 
@@ -84,7 +84,7 @@ function makeState(){
   const ctx=vm.createContext({console,Math,Set,Map,Array,Object,state});
   ctx.sideObj=w=>w==='player'?player:enemy;
   ctx.hasAnyLegalAction=()=>false;
-  install(ctx,'ownedRecycleCount','maintenanceLimit');
+  install(ctx,'clearInactiveCardStatuses','ownedRecycleCount','maintenanceLimit');
   ok(ctx.maintenanceLimit('player')===2,'maintenance recognizes an owned shared-discard card as recyclable personal supply');
 }
 

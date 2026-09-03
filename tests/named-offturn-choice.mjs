@@ -7,7 +7,7 @@ const onDraw=source('onDiscardDraw'),choice=source('requestHandBottomChoice'),bo
 ok(onDraw.includes("cardHasAbility(c,'bait')&&c.originOwner!==w")&&onDraw.indexOf('drawOne(owner,false)')<onDraw.indexOf('requestHandBottomChoice(owner'),'Bait draws for its original owner before asking which hand card to bottom');
 ok(choice.includes("w==='player'")&&choice.includes('requestEffectChoice')&&choice.includes('candidates.length>1'),'human owner receives shared modal choice when multiple Bait bottom candidates exist');
 ok(!choice.includes('allowSkip:true'),'Bait hand-bottom choice is mandatory rather than skippable');
-ok(bottom.includes('side.deck.unshift(chosen)')&&bottom.includes('chosen.contractActive=false')&&bottom.includes('chosen.age=0'),'chosen Bait cycle card is normalized and sent to deck bottom');
+ok(bottom.includes('side.deck.unshift(clearInactiveCardStatuses(chosen))')&&bottom.includes('chosen.contractActive=false')&&bottom.includes('chosen.age=0'),'chosen Bait cycle card is normalized and sent to deck bottom');
 ok(ai.includes("paused=onDiscardDraw('enemy',c")&&ai.includes('if(paused){render();return}'),'AI acquisition returns immediately while an off-turn Bait choice is pending');
 ok(ai.includes('battleId=state.battleId')&&ai.includes('turnToken=state.turnToken')&&ai.includes("state.turn==='enemy'")&&ai.includes('continueAITurnAfterAcquisition()'),'AI continuation is guarded against stale battle/turn callbacks');
 ok(resume.includes('performMaintenance')&&resume.includes("bestExtension('enemy')")&&resume.includes("turnEnd('enemy')"),'post-acquisition AI continuation owns maintenance, actions, discard and turn end');

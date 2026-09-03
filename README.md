@@ -2,6 +2,8 @@
 
 Single-file mobile-first prototype for GitHub Pages.
 
+The effect-system 3.0 draft (PR #35) implements 69 card redesigns while preserving 53, with 17 of 18 shared statuses. Wave 9 completes Insurance Agent and the recorded-controller Unstable countdown. Reflection, card-scoped marks and the 24 SEASON-BLOOM cards remain pending; this branch has not been merged into main. See `docs/EFFECT_SYSTEM_3_WAVE9.md` and `ROADMAP.md` for the verified scope.
+
 ## Menus and development sessions
 
 The main menu contains **대전 / 로그라이크 / 튜토리얼 / 카드 도감 / 설정**. Battle setup reveals character and deck choices in two steps. Roguelike opens Continue / New game / Records, then shows only the current starter, battle, reward, or region decision. Free practice and advanced/theme lessons live under Tutorial.
