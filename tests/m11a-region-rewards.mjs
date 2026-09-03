@@ -51,14 +51,14 @@ const fresh=()=>{pool=[...allIds];return ctx.prepareRoguelikeRunDraft('pure')};
 
 const regions=vm.runInContext('ROGUELIKE_REGIONS',ctx);
 const starters=['pure','wanderer','collector','salvager','jester'];
-const baselinePicks={pure:['PBH7','PBD4','H3'],wanderer:['VSC4','S4','H3'],collector:['ZSH3','PBD4','H3'],salvager:['ZSC5','PBD4','D7B'],jester:['D3','H9','H3']};
+const baselinePicks={pure:['MRD6','PBD4','H3'],wanderer:['VSC4','S4','H3'],collector:['ZSH3','PBD4','H3'],salvager:['ZSC5','PBD4','D7B'],jester:['D3','H9','H3']};
 const ids=r=>Array.from(r.picks,p=>p.id);
 let offers=0,changed=0;
 const changedByRegion=Object.fromEntries(regions.map(r=>[r.id,0]));
 for(const starterId of starters){
  const draft=ctx.createRoguelikeRunDraft(starterId),input={...ctx.roguelikeRunDeckProfile(draft),poolIds:allIds,seed:'region-baseline'};
  const baseline=ctx.roguelikeRewardCandidates(input);
- assert.deepEqual(ids(baseline),baselinePicks[starterId],starterId+' integrated 60-card common-start ranking stays deterministic');
+ assert.deepEqual(ids(baseline),baselinePicks[starterId],starterId+' integrated live-theme common-start ranking stays deterministic');
  assert.equal(JSON.stringify(ctx.roguelikeRewardCandidates({...input,regionId:'not-a-region'})),JSON.stringify(baseline),'unknown region cannot invent a bias');
  for(const region of regions){
   for(let seed=0;seed<64;seed++){

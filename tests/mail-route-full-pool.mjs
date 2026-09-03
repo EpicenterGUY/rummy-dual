@@ -1,0 +1,36 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+const doc=fs.readFileSync(new URL('../docs/THEME_GROUPS.md',import.meta.url),'utf8');
+const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
+const plan=fs.readFileSync(new URL('../docs/THEME_FULL_POOL_PLAN.md',import.meta.url),'utf8');
+function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
+function source(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw Error(`missing ${name}`);let p=0,b=-1;for(let i=start+marker.length-1;i<script.length;i++){if(script[i]==='(')p++;else if(script[i]===')')p--;else if(script[i]==='{'&&p===0){b=i;break}}let d=0;for(let i=b;i<script.length;i++){if(script[i]==='{')d++;else if(script[i]==='}'&&--d===0)return script.slice(start,i+1)}throw Error(`unterminated ${name}`)}
+function literal(name,next){const a=script.indexOf(`const ${name}=`),b=script.indexOf(next,a);return script.slice(a+`const ${name}=`.length,b).trim().replace(/;$/,'')}
+const ctx=vm.createContext({console,Object,Array,Set,Map,Number,String,Boolean,Math});
+vm.runInContext(`globalThis.NAMED=${literal('NAMED','\nconst CHARACTERS=')}`,ctx);
+const defs=Object.entries(ctx.NAMED).filter(([,d])=>d?.themeId==='mail-route');
+ok(defs.length===28,`MAIL-ROUTE full pool has exactly 28 definitions (${defs.length})`);
+const slots=defs.map(([id,d])=>d.slot||id);ok(new Set(slots).size===28,'MAIL-ROUTE cards occupy 28 distinct physical slots');
+const suits=Object.fromEntries(['S','H','D','C'].map(s=>[s,slots.filter(x=>x[0]===s).length]));for(const s of ['S','H','D','C'])ok(suits[s]===7,`MAIL-ROUTE ${s} suit has exactly seven cards`);
+const ids=['MRDA','MRD2','MRD4','MRD6','MRD8','MRDJ','MRDK','MRCA','MRC3','MRC5','MRC7','MRC9','MRCQ','MRCK','MRHA','MRH3','MRH5','MRH7','MRH9','MRHQ','MRHK','MRSA','MRS3','MRS5','MRS7','MRS9','MRSQ','MRSK'];for(const id of ids)ok(ctx.NAMED[id]?.themeId==='mail-route',`${id} is a live MAIL-ROUTE definition`);
+for(const ev of ['onMailSet','onDestinationSet','onArrival','onReturnMail'])ok(script.includes(`'${ev}'`),`${ev} is registered in the shared event foundation`);
+for(const fn of ['setMailRouteCard','clearMailRouteCard','setMailRouteDestination','mailRouteDestinationMeld','emitMailRouteArrivals','emitMailRouteReturn','requestMailRouteMarkChoice','requestMailRouteDestinationChoice','requestMailRouteTransferChoice','requestMailRouteRecoverChoice','handleMailRouteThemeEvent'])ok(script.includes(`function ${fn}(`),`${fn} is implemented`);
+ok(script.includes("emitMailRouteArrivals(w,cards,m,{source:'meldCreate'")&&script.includes("emitMailRouteArrivals(w,cards,m,{source:'attach'")&&script.includes("emitMailRouteArrivals(actor,[card],targetMeld,{source:'move'"),'create/attach/move derive arrival after common movement');
+ok(script.includes("emitMailRouteReturn(actor,card,meld") ,'recover derives return-mail only through the common recovery event path');
+for(const marker of ["clearMailRouteCard(c,'버림패'","clearMailRouteCard(c,'전체 재순환'","clearMailRouteCard(c,'조합 정리·소모패'","clearMailRouteCard(c,'정비'"])ok(script.includes(marker),`mail lifecycle cleanup contains ${marker}`);
+const resolver=source('resolveEffects');for(const tag of ['mrDispatchDesk','mrRegistered','mrExpress','mrBulkMail','mrAddressLabel','mrRouteChange','mrTransferHub','mrDetour','mrLastMile','mrReplyEnvelope','mrRedelivery','mrReceipt','mrCensorEnvelope','mrDeliveryFailure','mrHazardMail','mrBlackEnvelope','mrFinalNotice'])ok(resolver.includes(`case'${tag}'`),`${tag} has a live resolver branch`);
+for(const tag of ['mrSorter','mrPostmaster','mrCentralOffice','mrCourier','mrNetwork','mrReturnDesk','mrMailbox','mrReplyWait','mrPostalRummy','mrStolenMail','mrInterception'])ok(script.includes(tag)&&source('handleMailRouteThemeEvent').includes(tag),`${tag} is wired through the passive MAIL-ROUTE event handler`);
+ok(script.includes("themeId:'mail-route',live:true")&&script.includes("'mail-route':Object.freeze({themeId:'mail-route',startStep:'mrAddress',live:true})"),'MAIL-ROUTE build profile and tutorial are live');
+ok(html.includes('data-codex-filter="theme:mail-route"'),'card encyclopedia exposes a MAIL-ROUTE tab');
+for(const id of ids)ok(script.includes(`'${id}'`),`${id} is reachable from runtime/unlock data`);
+ok((script.match(/id:'mrf\d'/g)||[]).length===7,'MAIL-ROUTE uses seven staged progression groups without a closed numeric resource');
+ok(!/stampCount|postageCount|mailScore|우표\s*(점수|카운터)|배송\s*점수/.test(script),'MAIL-ROUTE creates no postage/mail numeric resource');
+ok(script.includes("fx.bonus+=10")&&script.includes("fx.bonus+=14"),'only the two intended MAIL-ROUTE finishers add direct return power');
+ok(doc.includes('## 현재 정식 후보 28장')&&doc.includes('MAIL-ROUTE 28/28 풀 카드군 라이브 구현'),'canonical theme doc locks all 28 cards and implementation contract');
+ok(road.includes('M8MR — MAIL-ROUTE 28/28 풀 카드군 · 완료'),'ROADMAP records MAIL-ROUTE completion');
+ok(plan.includes('F4 — MAIL-ROUTE 28/28 · 완료'),'full-pool plan records MAIL-ROUTE completion');
+// Execute core metadata foundation in isolation.
+const emitted=[];const fake={turnToken:7,turnNo:2,player:{melds:[]},enemy:{melds:[]}};Object.assign(ctx,{state:fake,emitEffectEvent:(event,payload)=>{emitted.push({event,...payload});return payload},meldsOf:w=>fake[w].melds,other:w=>w==='player'?'enemy':'player',meldOwnerSide:m=>fake.player.melds.includes(m)?'player':fake.enemy.melds.includes(m)?'enemy':null,log:()=>{}});for(const fn of ['ensureMailRouteMeta','isMailRouteCard','clearMailRouteCard','setMailRouteCard','mailRouteDestinationMeld','isMailRouteDestination','clearMailRouteDestination','setMailRouteDestination','emitMailRouteArrivals','emitMailRouteReturn'])vm.runInContext(source(fn),ctx);const card={uid:1,owner:'player',name:'일반 카드'},m1={type:'SET',cards:[card],themeMeta:{}},m2={type:'RUN',cards:[],themeMeta:{}};fake.player.melds.push(m1);fake.enemy.melds.push(m2);ok(ctx.setMailRouteCard('player',card,{silent:true})===true&&ctx.isMailRouteCard(card,'player'),'ordinary owned card can receive a non-stacking mail mark');ctx.setMailRouteDestination('player',m1,{silent:true});ok(ctx.isMailRouteDestination('player',m1),'player destination is stored on the public meld');ctx.setMailRouteDestination('player',m2,{silent:true});ok(!ctx.isMailRouteDestination('player',m1)&&ctx.isMailRouteDestination('player',m2),'new destination atomically clears the previous one');ctx.emitMailRouteArrivals('player',[card],m2,{targetSide:'enemy'});ok(emitted.some(x=>x.event==='onArrival'&&x.designated===true),'arrival derives designated-arrival from the sender current destination');ctx.emitMailRouteReturn('player',card,m2,{sourceSide:'enemy'});ok(emitted.some(x=>x.event==='onReturnMail'),'actual mail recovery can derive return-mail while preserving the mark');ok(ctx.isMailRouteCard(card,'player'),'return-mail keeps the mail mark for later redelivery');ctx.clearMailRouteCard(card,'test',true);ok(!ctx.isMailRouteCard(card),'route-ending cleanup removes the mail mark');
+console.log('MAIL-ROUTE 28/28 full-pool regression passed.');

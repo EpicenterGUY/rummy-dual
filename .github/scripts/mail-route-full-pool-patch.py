@@ -47,7 +47,7 @@ mail_defs="""
 ,'MRD4':{slot:'D4',themeId:'mail-route',n:'우편 분류기',t:'mrSorter',d:'공개된 동안 이번 턴 처음 내 카드가 우편으로 발송되면 보호막 8을 얻는다.'}
 ,'MRD6':{slot:'D6',themeId:'mail-route',n:'특급 발송',t:'mrExpress',d:'이 카드를 조합에 사용하면 남은 손패의 내 카드 1장을 우편으로 발송할 수 있다. 발송했다면 보호막 8을 얻는다.'}
 ,'MRD8':{slot:'D8',themeId:'mail-route',n:'대량 발송',t:'mrBulkMail',d:'이 카드로 새 3장 세트를 만들면 그 세트의 다른 내 카드들을 모두 우편으로 발송한다.'}
-,'MRDJ':{slot:'DJ',themeId:'mail-route',n:'우체국장',t:'mrPostmaster',d:'공개된 동안 내 우편이 내 목적지에 지정 도착하면 그 목적지의 봉인 1을 제거하고, 봉인이 없으면 고정을 해제하며, 둘 다 없으면 보호 1을 부여한다. 턴당 1회.'}
+,'MRDJ':{slot:'DJ',themeId:'mail-route',n:'우체국장',t:'mrPostmaster',d:'공개된 동안 내 우편이 내 목적지에 지정 도착하면 그 목적지의 봉인 1을 제거하고, 봉인이 없으면 고정을 해제하며, 둘 다 없으면 보호 1을 부여한다. 이 효과는 턴당 1회만 발동한다.'}
 ,'MRDK':{slot:'DK',themeId:'mail-route',n:'중앙 우체국',t:'mrCentralOffice',d:'공개된 동안 내 우편이 내 세트 목적지에 지정 도착하면 턴당 1회 카드 1장을 뽑는다.'}
 ,'MRCA':{slot:'CA',themeId:'mail-route',n:'주소 라벨',t:'mrAddressLabel',d:'이 카드를 조합에 사용하면 자신을 우편으로 발송하고 그 공개 조합을 내 목적지로 지정한다.'}
 ,'MRC3':{slot:'C3',themeId:'mail-route',n:'경로 수정',t:'mrRouteChange',d:'이 카드를 조합에 사용하면 내 목적지를 다른 공개 조합으로 이전할 수 있다. 현재 목적지가 없다면 이 카드가 들어간 조합을 목적지로 지정한다.'}
@@ -59,13 +59,13 @@ mail_defs="""
 ,'MRHA':{slot:'HA',themeId:'mail-route',n:'회신 봉투',t:'mrReplyEnvelope',d:'이 카드를 조합에 사용하면 자신을 우편으로 발송한다. 우편 상태로 반송되면 보호막 8을 얻는다.'}
 ,'MRH3':{slot:'H3',themeId:'mail-route',n:'반송 접수',t:'mrReturnDesk',d:'우편 상태인 이 카드가 반송되면 카드 1장을 뽑고, 이 카드 외 가장 오래 보유한 손패 1장을 덱 아래로 보낸다.'}
 ,'MRH5':{slot:'H5',themeId:'mail-route',n:'재배송',t:'mrRedelivery',d:'이 카드를 조합에 사용하면 자신을 우편으로 발송한다. 반송된 턴 한 번, 반송한 조합과 다른 합법적인 공개 조합의 버스트/체인 반환 재료로 다시 사용할 수 있다.'}
-,'MRH7':{slot:'H7',themeId:'mail-route',n:'수취 확인',t:'mrReceipt',d:'이 카드를 조합에 사용하면 자신을 우편으로 발송한다. 목적지에 지정 도착하면 현재 코어 4 회복 + 보호막 8.'}
+,'MRH7':{slot:'H7',themeId:'mail-route',n:'수취 확인',t:'mrReceipt',d:'이 카드를 조합에 사용하면 자신을 우편으로 발송한다. 목적지에 지정 도착하면 현재 코어를 4 회복하고 보호막 8을 얻는다.'}
 ,'MRH9':{slot:'H9',themeId:'mail-route',n:'보관 우편함',t:'mrMailbox',d:'공개된 동안 내 목적지가 정리되면 다른 공개 조합이 있을 경우 그중 하나를 새 목적지로 지정하고 보호막 8을 얻는다.'}
 ,'MRHQ':{slot:'HQ',themeId:'mail-route',n:'답장 대기',t:'mrReplyWait',d:'공개된 동안 상대 공개 조합에서 내 우편이 반송되면 턴당 1회 카드 1장을 뽑는다.'}
 ,'MRHK':{slot:'HK',themeId:'mail-route',n:'우편 러미',t:'mrPostalRummy',d:'이 카드를 사용해 러미하면 재생 1을 얻고 새 손패의 우편이 아닌 카드 1장을 우편으로 발송한다.'}
 ,'MRSA':{slot:'SA',themeId:'mail-route',n:'검열 봉투',t:'mrCensorEnvelope',d:'이 카드를 조합에 사용하면 자신을 우편으로 발송한다. 상대 공개 조합의 내 목적지에 지정 도착하면 그 조합에 봉인 1을 부여한다.'}
 ,'MRS3':{slot:'S3',themeId:'mail-route',n:'도난 우편',t:'mrStolenMail',d:'공개된 동안 상대가 내 목적지에 카드를 붙이면 턴당 1회 카드 1장을 뽑는다.'}
-,'MRS5':{slot:'S5',themeId:'mail-route',n:'배달 사고',t:'mrDeliveryFailure',d:'이 카드를 조합에 사용하면 자신을 우편으로 발송한다. 상대 공개 조합에 도착했지만 지정 도착이 아니라면 상대에게 취약 1.'}
+,'MRS5':{slot:'S5',themeId:'mail-route',n:'배달 사고',t:'mrDeliveryFailure',d:'이 카드를 조합에 사용하면 자신을 우편으로 발송한다. 상대 공개 조합에 도착했지만 지정 도착이 아니라면 상대에게 취약 1을 부여한다.'}
 ,'MRS7':{slot:'S7',themeId:'mail-route',n:'위험물 우편',t:'mrHazardMail',d:'이 카드를 조합에 사용하면 자신을 우편으로 발송한다. 상대 목적지에 지정 도착하며 스위치를 반환하면 이번 반환의 누적 위력이 10 증가한다.'}
 ,'MRS9':{slot:'S9',themeId:'mail-route',n:'가로채기',t:'mrInterception',d:'공개된 동안 상대가 내 목적지에서 카드를 회수하거나 다른 조합으로 이동하면 턴당 1회 그 목적지를 고정한다.'}
 ,'MRSQ':{slot:'SQ',themeId:'mail-route',n:'검은 봉투',t:'mrBlackEnvelope',d:'이 카드를 조합에 사용하면 자신을 우편으로 발송한다. 상대 목적지에 지정 도착하면 상대에게 취약 1을 부여하고 보호막 8을 얻는다.'}
