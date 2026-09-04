@@ -73,5 +73,5 @@ ok(road.includes('2차 반응 슬라이스 4장 — 3♦ 분류대 / 6♣ 호환
 ok(themeDoc.includes('2차 반응 슬라이스 — 3♦ `분류대` / 6♣ `호환 포트` / 6♥ `재생 공방` / 5♠ `폐기 명령`'),'canonical theme doc records wave2');
 const devCountMatch=poolDoc.match(/24장 미라이브 · (\d+)장 DEV 구현 완료/);
 ok(!!devCountMatch&&Number(devCountMatch[1])>=8,'full-pool policy keeps at least the wave2 eight DEV cards while later waves may increase the count');
-ok(road.includes('- [ ] 24장 / 수트별 6장 정의 및 실제 효과 구현'),'full 24-card implementation remains open');
+ok(/- \[[ x]\] 24장 \/ 수트별 6장 정의 및 실제 효과 구현/.test(road),'full 24-card implementation remains tracked as later waves advance the checkbox');
 console.log('SCRAP-SHIFT wave2 reaction regression passed.');
