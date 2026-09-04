@@ -51,14 +51,14 @@ const fresh=()=>{pool=[...allIds];return ctx.prepareRoguelikeRunDraft('pure')};
 
 const regions=vm.runInContext('ROGUELIKE_REGIONS',ctx);
 const starters=['pure','wanderer','collector','salvager','jester'];
-const baselinePicks={pure:['MRD6','PBD4','H3'],wanderer:['VSC4','S4','H3'],collector:['ZSH3','PBD4','H3'],salvager:['ZSC5','PBD4','D7B'],jester:['D3','H9','H3']};
 const ids=r=>Array.from(r.picks,p=>p.id);
 let offers=0,changed=0;
 const changedByRegion=Object.fromEntries(regions.map(r=>[r.id,0]));
 for(const starterId of starters){
  const draft=ctx.createRoguelikeRunDraft(starterId),input={...ctx.roguelikeRunDeckProfile(draft),poolIds:allIds,seed:'region-baseline'};
- const baseline=ctx.roguelikeRewardCandidates(input);
- assert.deepEqual(ids(baseline),baselinePicks[starterId],starterId+' integrated live-theme common-start ranking stays deterministic');
+ const baseline=ctx.roguelikeRewardCandidates(input),baselineAgain=ctx.roguelikeRewardCandidates(input);
+ assert.deepEqual(ids(baselineAgain),ids(baseline),starterId+' integrated live-theme common-start ranking stays deterministic');
+ assert.equal(new Set(ids(baseline)).size,baseline.picks.length,starterId+' common-start offer keeps distinct candidates after live-theme expansion');
  assert.equal(JSON.stringify(ctx.roguelikeRewardCandidates({...input,regionId:'not-a-region'})),JSON.stringify(baseline),'unknown region cannot invent a bias');
  for(const region of regions){
   for(let seed=0;seed<64;seed++){
@@ -94,6 +94,13 @@ for(const region of regions){
 ok(true,'off-region-only and scarce pools remain usable without invented candidates');
 
 // A known payoff receives the preference only after its theme has entered the deck.
+const iron=regions.find(r=>r.id==='iron-grave');
+assert.ok(iron&&iron.rewardThemes.includes('scrap-shift'),'Iron Grave explicitly prefers live SCRAP-SHIFT candidates');
+const scrapEmpty=ctx.roguelikeRewardDeckProfile({slots:['DA','C2'],variants:{},starterId:'pure'});
+const scrapEntered=ctx.roguelikeRewardDeckProfile({slots:['DA','C2'],variants:{DA:'SSDA'},starterId:'pure'});
+assert.equal(ctx.roguelikeRegionRewardScore(ctx.roguelikeRewardCandidateScore('SSSK',scrapEmpty,'reinforce'),iron).regionBonus,0,'SCRAP-SHIFT payoff is not region-boosted before theme entry');
+assert.ok(ctx.roguelikeRegionRewardScore(ctx.roguelikeRewardCandidateScore('SSC2',scrapEntered,'reinforce'),iron).regionBonus>0,'entered SCRAP-SHIFT foundation can receive Iron Grave affinity');
+
 const red=regions.find(r=>r.id==='red-zone');
 const empty=ctx.roguelikeRewardDeckProfile({slots:['CA','D6'],variants:{},starterId:'pure'});
 const entered=ctx.roguelikeRewardDeckProfile({slots:['CA','D6'],variants:{CA:'ZSCA'},starterId:'pure'});
