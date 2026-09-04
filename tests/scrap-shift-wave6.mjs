@@ -23,7 +23,7 @@ for(const [id,slot,name,tag] of wave6){
  ok(script.includes(`'${id}':{slot:'${slot}',themeId:'scrap-shift',n:'${name}',t:'${tag}'`),`${name} is defined in the final SCRAP-SHIFT DEV wave`);
  ok(resolver.includes(`case'${tag}'`),`${tag} is registered on the named resolver surface`);
 }
-ok(script.includes("themeId:'scrap-shift',live:false"),'24/24 effect completion still keeps SCRAP-SHIFT non-live until integration release');
+ok(script.includes("themeId:'scrap-shift',live:true"),'24/24 SCRAP-SHIFT effect pool is live after integration release');
 
 // Turn action tracking stores only distinct action kinds, not a numeric scrap resource.
 {
@@ -122,7 +122,7 @@ ok(!finalHelpers.includes('grantExtraAttach')&&!finalHelpers.includes('extraAtta
 ok(road.includes('6차 피니셔 슬라이스 4장 — J♦ 메인 프레임 / Q♣ 조립 라인 / K♥ 테세우스 프레임 / K♠ 스크랩 폭주'),'ROADMAP records the final four SCRAP-SHIFT DEV cards');
 ok(road.includes('- [x] 24장 / 수트별 6장 정의 및 실제 효과 구현'),'ROADMAP marks the full 24-card definition/effect implementation complete');
 ok(themeDoc.includes('6차 피니셔 슬라이스 — J♦ `메인 프레임` / Q♣ `조립 라인` / K♥ `테세우스 프레임` / K♠ `스크랩 폭주`'),'canonical theme doc records the final DEV wave');
-ok(poolDoc.includes('24장 미라이브 · 24장 DEV 구현 완료'),'full-pool policy records 24/24 DEV effects while keeping live promotion separate');
+ok(poolDoc.includes('24/24 라이브 구현 완료'),'full-pool policy records the final 24/24 live promotion');
 ok(road.includes('- [ ] 해금·도감·자동 테마 빌드·체험전 연결 후 일반 보상 승격'),'live release integration remains explicitly open');
 
 console.log('SCRAP-SHIFT 24/24 final DEV wave regression passed.');
