@@ -1,0 +1,49 @@
+name: One-time M12 circulation matrix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m12-circulation-matrix.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  cohort:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        cohort: [set, run, mixed, v-signal, zero-sight, point-blank, mail-route, scrap-shift]
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run paired cohort
+        env:
+          M12_SEEDS: 1000
+          M12_MAX_TURNS: 120
+          M12_COHORTS: ${{ matrix.cohort }}
+          M12_OUTPUT: /tmp/m12-${{ matrix.cohort }}.json
+        run: |
+          set -euo pipefail
+          node experiments/m12-hand-circulation.mjs > /tmp/m12-${{ matrix.cohort }}.log
+          node - <<'NODE'
+          const fs=require('fs');
+          const cohort=process.env.M12_COHORTS;
+          const r=JSON.parse(fs.readFileSync('/tmp/m12-'+cohort+'.json','utf8'));
+          const x=r.cohorts[0];
+          const rel=+(((x.candidateA.low13Pct-x.baseline.low13Pct)/x.baseline.low13Pct)*100).toFixed(2);
+          console.log('M12_COHORT_RESULT='+JSON.stringify({cohort,baseRef:r.baseRef,seeds:r.seeds,maxTurns:r.maxTurns,baseline:x.baseline,candidateA:x.candidateA,relativeLow13ChangePct:rel}));
+          NODE
+
+      - name: Upload cohort result
+        uses: actions/upload-artifact@v4
+        with:
+          name: m12-${{ matrix.cohort }}
+          path: /tmp/m12-${{ matrix.cohort }}.json
+          retention-days: 30
