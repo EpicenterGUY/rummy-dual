@@ -63,3 +63,13 @@ for old,new in fixes:
     elif new not in s:raise SystemExit(f'missing M12 attach metric migration anchor: {old[:100]}')
 p.write_text(s,encoding='utf-8')
 print('M12 attach metrics migrated from continuation to extraAttach metadata')
+
+
+p=ROOT/'tests'/'named-card-audit.mjs'
+s=p.read_text(encoding='utf-8')
+old="ok(html.includes(\"'C5':{n:'연결고리',t:'connectionLink',d:'런에 붙일 때\" )&&html.includes('그 런에는 이번 턴 한 번 더 붙일 수 있다.'),'Connection Link documents its extra-attach behavior');"
+new="ok(html.includes(\"'C5':{n:'연결고리',t:'connectionLink',d:'런에 붙일 때\" )&&html.includes('이번 턴 추가 붙이기 1회를 얻는다.')&&html.includes('추가 붙이기는 스위치를 다시 이동시키지 않는다.'),'Connection Link documents the named extra-attach exception and no second SWITCH move');"
+if old in s:s=s.replace(old,new,1)
+elif new not in s:raise SystemExit('missing Connection Link audit migration anchor')
+p.write_text(s,encoding='utf-8')
+print('Connection Link named-card audit migrated to explicit extraAttach contract')
