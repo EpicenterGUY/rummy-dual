@@ -1,4 +1,4 @@
-# rerun: V-SIGNAL mixed attach harness
+# rerun: V-SIGNAL tutorial attach harness
 name: One-time base action simplification
 
 on:
@@ -63,6 +63,7 @@ jobs:
           node tests/safety-hardening.mjs
           node tests/status-engine.mjs
           node tests/vsignal-mixed-regression.mjs
+          node tests/vsignal-tutorial.mjs
           node tests/theme-reaction-order.mjs
           node tests/theme-mix-simulation.mjs
           node tests/l10n-card-style.mjs
