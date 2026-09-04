@@ -22,7 +22,7 @@ for(const [id,slot,name,tag] of wave3){
  ok(script.includes(`'${id}':{slot:'${slot}',themeId:'scrap-shift',n:'${name}',t:'${tag}'`),`${name} is defined in SCRAP-SHIFT wave3`);
  ok(source('resolveEffects').includes(`case'${tag}'`),`${tag} has a live resolver branch`);
 }
-ok(script.includes("themeId:'scrap-shift',live:false"),'wave3 remains DEV-only and does not prematurely release SCRAP-SHIFT');
+ok(script.includes("themeId:'scrap-shift',live:true"),'wave3 behavior remains present after SCRAP-SHIFT live promotion');
 
 {
  const old={uid:1,owner:'enemy',name:'묵은 카드',age:7};
@@ -78,7 +78,6 @@ ok(resolver.includes("case'ssMagnetRetriever':")&&resolver.includes('requestScra
 ok(resolver.includes("case'ssOverheatedPart':if(isReturning&&ctx.meld)"),'overheated part only checks on SWITCH-return resolution');
 ok(road.includes('3차 유틸리티 슬라이스 4장 — 5♦ 표준 규격 / 4♣ 임시 용접 / 2♥ 자석 회수기 / 10♠ 과열 부품'),'ROADMAP records SCRAP-SHIFT wave3');
 ok(themeDoc.includes('3차 유틸리티 슬라이스 — 5♦ `표준 규격` / 4♣ `임시 용접` / 2♥ `자석 회수기` / 10♠ `과열 부품`'),'canonical theme doc records wave3');
-const devCountMatch=poolDoc.match(/24장 미라이브 · (\d+)장 DEV 구현 완료/);
-ok(!!devCountMatch&&Number(devCountMatch[1])>=12,'full-pool policy keeps at least the wave3 twelve DEV cards while later waves may increase the count');
+ok(poolDoc.includes('24/24 라이브 구현 완료'),'full-pool policy keeps the completed live SCRAP-SHIFT state');
 ok(/- \[[ x]\] 24장 \/ 수트별 6장 정의 및 실제 효과 구현/.test(road),'full 24-card implementation remains tracked as later waves advance the checkbox');
 console.log('SCRAP-SHIFT wave3 utility regression passed.');
