@@ -1,4 +1,4 @@
-# rerun: M12 attach metrics
+# rerun: Connection Link named audit
 name: One-time base action simplification
 
 on:
@@ -56,6 +56,7 @@ jobs:
           node tests/m11b-action-commit.mjs tests/m11b-ai-rank-plans.mjs
           node tests/m11b-ai-rank-plans.mjs
           node tests/m12-battle-metrics.mjs
+          node tests/named-card-audit.mjs
           node tests/theme-reaction-order.mjs
           node tests/theme-mix-simulation.mjs
           node tests/l10n-card-style.mjs
