@@ -90,6 +90,7 @@ console.log('PASS turn-aware AI and live wording; M0R executable expansion regre
 // replay a previously placed card's use effect or silently return the SWITCH.
 let audited=0;
 for(const [id,def] of Object.entries(makeGame().NAMED)){
+ if(def.themeId==='twelve-bloom')continue; // staged NON-LIVE pool has dedicated effect regressions
  const g=fresh(),w='enemy',s=g.state[w],slot=def.slot||id;
  const c=slot[0]==='J'?g.makeCard('J',id,true,w,id):g.makeCard(slot[0],slot.slice(1),true,w,id);
  const companions=c.suit==='J'?cards(g,w,['S8','S9']):cards(g,w,['S','H','D','C'].filter(suit=>suit!==c.suit).slice(0,2).map(suit=>suit+c.rank));
