@@ -23,7 +23,7 @@ for(const [id,slot,name,tag] of wave4){
  ok(script.includes(`'${id}':{slot:'${slot}',themeId:'scrap-shift',n:'${name}',t:'${tag}'`),`${name} is defined in SCRAP-SHIFT wave4`);
  ok(resolver.includes(`case'${tag}'`),`${tag} is registered in the live resolver surface`);
 }
-ok(script.includes("themeId:'scrap-shift',live:false"),'wave4 remains DEV-only and does not prematurely release SCRAP-SHIFT');
+ok(script.includes("themeId:'scrap-shift',live:true"),'wave4 behavior remains present after SCRAP-SHIFT live promotion');
 ok(script.includes('scrapShiftOpponentSpentStart:null'),'new cards initialize delayed opponent-spent bookkeeping');
 ok(source('clearScrapShiftPart').includes('c.scrapShiftOpponentSpentStart=null'),'clearing a part also clears stale delayed chassis bookkeeping');
 
@@ -104,7 +104,6 @@ for(const [name,needle] of [
 ok(road.includes('4차 수명주기 슬라이스 4장 — 7♦ 예비 나사 / 8♣ 분기 레일 / 8♥ 예비 섀시 / 7♠ 파쇄기'),'ROADMAP records SCRAP-SHIFT wave4');
 ok(road.includes('과열 부품의 같은 턴 취약 중복 적용'),'ROADMAP records the overheated-part duplicate gate fix');
 ok(themeDoc.includes('4차 수명주기 슬라이스 — 7♦ `예비 나사` / 8♣ `분기 레일` / 8♥ `예비 섀시` / 7♠ `파쇄기`'),'canonical theme doc records wave4');
-const devCountMatch=poolDoc.match(/24장 미라이브 · (\d+)장 DEV 구현 완료/);
-ok(!!devCountMatch&&Number(devCountMatch[1])>=16,'full-pool policy keeps at least the wave4 sixteen DEV cards while later waves may increase the count');
+ok(poolDoc.includes('24/24 라이브 구현 완료'),'full-pool policy keeps the completed live SCRAP-SHIFT state');
 ok(/- \[[ x]\] 24장 \/ 수트별 6장 정의 및 실제 효과 구현/.test(road),'full 24-card implementation remains tracked as later waves advance the checkbox');
 console.log('SCRAP-SHIFT wave4 lifecycle regression passed.');
