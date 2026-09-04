@@ -1,4 +1,4 @@
-# rerun: fixed cleanup wording
+# rerun: V-SIGNAL mixed attach harness
 name: One-time base action simplification
 
 on:
@@ -62,6 +62,7 @@ jobs:
           node tests/point-blank-recovery-access.mjs
           node tests/safety-hardening.mjs
           node tests/status-engine.mjs
+          node tests/vsignal-mixed-regression.mjs
           node tests/theme-reaction-order.mjs
           node tests/theme-mix-simulation.mjs
           node tests/l10n-card-style.mjs
