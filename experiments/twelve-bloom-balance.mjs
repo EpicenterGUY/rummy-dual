@@ -3,7 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {makeGameFactory,html} from '../tests/helpers/live-game.mjs';
 
-export const COHORTS=['baseline-mixed','tb-set','tb-run','tb-mixed','tb-v-signal','tb-zero-sight','tb-point-blank','tb-mail-route','tb-scrap-shift'];
+export const COHORTS=['baseline-mixed','baseline-set','baseline-run','tb-set','tb-run','tb-mixed','tb-v-signal','tb-zero-sight','tb-point-blank','tb-mail-route','tb-scrap-shift'];
 const PARTNER={'tb-v-signal':'v-signal','tb-zero-sight':'zero-sight','tb-point-blank':'point-blank','tb-mail-route':'mail-route','tb-scrap-shift':'scrap-shift'};
 
 function instrumentSource(source){
@@ -24,7 +24,7 @@ function sampleUnique(g,pool,n,rr,used=new Set()){
 function cohortNamed(g,cohort,seed){
  const rr=seeded(seed*613+29),ids=Object.keys(g.NAMED).filter(id=>id[0]!=='J'),used=new Set(),out=[];
  const ordinary=ids.filter(id=>!g.NAMED[id]?.themeId);
- if(cohort==='baseline-mixed')return sampleUnique(g,ordinary,9,rr,used);
+ if(cohort.startsWith('baseline-'))return sampleUnique(g,ordinary,9,rr,used);
  const tb=ids.filter(id=>g.NAMED[id]?.themeId==='twelve-bloom');
  out.push(...sampleUnique(g,tb,4,rr,used));
  const partner=PARTNER[cohort];
@@ -34,7 +34,7 @@ function cohortNamed(g,cohort,seed){
 }
 function makeCohortDeck(g,w,cohort,seed){
  const rr=seeded(seed*997+(w==='player'?17:53));
- const structure=cohort==='tb-set'?'set':cohort==='tb-run'?'run':'mixed';
+ const structure=(cohort==='tb-set'||cohort==='baseline-set')?'set':(cohort==='tb-run'||cohort==='baseline-run')?'run':'mixed';
  const chosen=cohortNamed(g,cohort,seed+(w==='player'?0:100000));
  const variants=new Map(chosen.map(id=>[g.namedSlot(id),id]));
  const slots=new Set(chosen.map(id=>g.namedSlot(id)));
@@ -47,7 +47,7 @@ function makeCohortDeck(g,w,cohort,seed){
 }
 function setup(g,cohort,seed){
  g.state.tbBalanceStats={tbSunset:0,tbLightTrio:0,recycles:0,emergency:0,returns:0};
- g.progress.totalClears=100;g.progress.selectedStructure=cohort==='tb-set'?'set':cohort==='tb-run'?'run':'mixed';
+ g.progress.totalClears=100;g.progress.selectedStructure=(cohort==='tb-set'||cohort==='baseline-set')?'set':(cohort==='tb-run'||cohort==='baseline-run')?'run':'mixed';
  for(const w of['player','enemy']){const s=g.state[w];s.hand=[];s.deck=makeCohortDeck(g,w,cohort,seed);s.spent=[];s.melds=[];g.drawMany(w,8,false)}
  Object.assign(g.state,{turnNo:1,turnToken:1,switchTarget:'neutral',switchPower:0,gameOver:false,field:null});
 }
