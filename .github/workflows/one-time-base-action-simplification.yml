@@ -1,4 +1,4 @@
-# rerun: Tuner attach harness
+# rerun: Rebel Joker final semantics
 name: One-time base action simplification
 
 on:
@@ -58,6 +58,7 @@ jobs:
           node tests/m12-battle-metrics.mjs
           node tests/named-card-audit.mjs
           node tests/named-card-behavior-2.mjs
+          node tests/named-final-semantics.mjs
           node tests/theme-reaction-order.mjs
           node tests/theme-mix-simulation.mjs
           node tests/l10n-card-style.mjs
