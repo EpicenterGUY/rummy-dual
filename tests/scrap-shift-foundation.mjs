@@ -78,7 +78,7 @@ ok(!/scrap(?:Point|Count|Resource|Gauge)|고철 (?:포인트|점수)/i.test(sour
 
 ok(road.includes('## M8SS — SCRAP-SHIFT 24/24 풀 카드군 · 완료'),'ROADMAP tracks SCRAP-SHIFT as a completed live theme');
 ok(road.includes('- [x] 24장 / 수트별 6장 정의 및 실제 효과 구현')&&road.includes('- [ ] 해금·도감·자동 테마 빌드·체험전 연결 후 일반 보상 승격'),'24-card effects are complete while live release integration remains explicitly unfinished');
-ok(themeDoc.includes('공용 엔진 기반 구현을 시작했지만, 24장 카드는 아직 라이브 카드군이 아니다'),'canonical theme doc distinguishes foundation from live card pool');
+ok(themeDoc.includes('정식 라이브 테마')&&themeDoc.includes('24장 / 수트별 6장 전체 효과와 해금·도감·자동 빌드·체험전·로그라이크 일반 보상 연결까지 완료'),'canonical theme doc records the completed live pool while preserving the foundation contract');
 ok(themeDoc.includes('`onDismantle → 표적 변화 → 접전 변화`'),'canonical cross-theme order includes dismantle');
 ok(poolDoc.includes('24/24 라이브 구현 완료'),'full-pool policy records the completed live SCRAP-SHIFT pool');
 ok(poolDoc.includes('28/28 라이브 구현 완료'),'full-pool policy no longer calls completed MAIL-ROUTE non-live');
