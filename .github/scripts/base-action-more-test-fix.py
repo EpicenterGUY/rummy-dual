@@ -88,3 +88,17 @@ for old,new in fixes:
     elif new not in s:raise SystemExit(f'missing named behavior attach migration anchor: {old[:100]}')
 p.write_text(s,encoding='utf-8')
 print('named-card Tuner harness migrated to global attach contract')
+
+
+p=ROOT/'tests'/'named-final-semantics.mjs'
+s=p.read_text(encoding='utf-8')
+fixes=[
+("const insurance=source('insuranceBlocks'),detonate=source('detonate'),replace=source('replaceRedundantJokers'),continuation=source('canContinueReturnedRun');","const insurance=source('insuranceBlocks'),detonate=source('detonate'),replace=source('replaceRedundantJokers');"),
+("ok(replace.includes('m.rebelReturnBlockedToken=state.turnToken')&&replace.includes('m.lastAttachToken=state.turnToken'),'Rebel replacement records both generic attach lock and explicit return-continuation lock');","ok(replace.includes('sideObj(attacher).extraAttachRemaining=0'),'Rebel replacement removes the replacing player\\'s named extra-attach allowance');"),
+("ok(continuation.includes('m.rebelReturnBlockedToken!==state.turnToken'),'same-RUN continuation cannot bypass a Rebel replacement lock');","ok(!script.includes('function canContinueReturnedRun(')&&!replace.includes('rebelReturnBlockedToken')&&!replace.includes('lastAttachToken'),'Rebel semantics no longer depend on removed same-RUN continuation state');")
+]
+for old,new in fixes:
+    if old in s:s=s.replace(old,new,1)
+    elif new not in s:raise SystemExit(f'missing named-final semantics migration anchor: {old[:110]}')
+p.write_text(s,encoding='utf-8')
+print('Rebel Joker final semantics migrated to extraAttach suppression')
