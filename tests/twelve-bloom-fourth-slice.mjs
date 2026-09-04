@@ -83,15 +83,15 @@ for(const[id,slot,name,tag]of cards)ok(script.includes(`'${id}':{slot:'${slot}',
 
 {
  const foeMeld={type:'SET',cards:[{uid:9}],status:{seal:1}};
- let protected=0;
+ let protectedCount=0;
  const ctx=vm.createContext({
   console,officialStatusValue:()=>1,twelveBloomOpponentMeldUsedByAction:()=>foeMeld,
-  requestTwelveBloomPublicProtectChoice:()=>{protected++;return false},
+  requestTwelveBloomPublicProtectChoice:()=>{protectedCount++;return false},
   applyOfficialStatus:()=>1,log:()=>{}
  });
  vm.runInContext(source('requestTwelveBloomGleamingGap'),ctx);
  ctx.requestTwelveBloomGleamingGap('player',{name:'비치는 틈'},{});
- ok(protected===1,'비치는 틈 uses card protect instead when the used opponent meld is already sealed');
+ ok(protectedCount===1,'비치는 틈 uses card protect instead when the used opponent meld is already sealed');
 }
 
 {
