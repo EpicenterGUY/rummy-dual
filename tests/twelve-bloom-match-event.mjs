@@ -26,7 +26,9 @@ function makeCtx(){
   'twelveBloomMatchGateState','twelveBloomMatchGateUsed','claimTwelveBloomMatchGate',
   'beginTwelveBloomAction','endTwelveBloomAction','cancelTwelveBloomAction'
  ])vm.runInContext(source(name),ctx);
- return{ctx,state,events}
+ const matchEvents=()=>events.filter(e=>e.event==='onBloomMatchChange');
+ const actionEvents=()=>events.filter(e=>e.event==='onBloomActionEnd');
+ return{ctx,state,events,matchEvents,actionEvents}
 }
 
 new Function(script);
@@ -35,21 +37,22 @@ ok(source('endTwelveBloomAction').includes("claimTwelveBloomMatchGate(owner,key,
 ok(source('endTwelveBloomAction').includes("combatNeutral:true,powerDelta:0,returnsSwitch:false"),'match-change event is explicitly combat neutral');
 
 {
- const {ctx,state,events}=makeCtx();
+ const {ctx,state,events,matchEvents,actionEvents}=makeCtx();
  const a=card(1,'C','A'),two=card(2,'D','2'),three=card(3,'S','3');
  state.player.melds=[meld([a,two])];
  const tx=ctx.beginTwelveBloomAction('player','attach',{test:'normal'});
  state.player.melds[0].cards.push(three);
  const result=ctx.endTwelveBloomAction(tx,{done:true});
- ok(events.length===1,'normal final completion emits exactly one derived match event');
- ok(events[0].event==='onBloomMatchChange'&&events[0].owner==='player','derived event identifies match owner independently from board controller');
- ok(events[0].newlyCompleted.includes('season:spring'),'normal A/2/3 completion reports spring newly completed');
+ ok(matchEvents().length===1,'normal final completion emits exactly one derived match event');
+ ok(actionEvents().length===1,'normal public action also emits exactly one final action-settled event');
+ ok(matchEvents()[0].owner==='player','derived event identifies match owner independently from board controller');
+ ok(matchEvents()[0].newlyCompleted.includes('season:spring'),'normal A/2/3 completion reports spring newly completed');
  ok(result.changes.find(x=>x.owner==='player').newlyCompleted.includes('season:spring'),'transaction summary preserves eligible completion');
- ok(events[0].powerDelta===0&&events[0].returnsSwitch===false,'normal completion cannot add power or move SWITCH by itself');
+ ok(matchEvents()[0].powerDelta===0&&matchEvents()[0].returnsSwitch===false,'normal completion cannot add power or move SWITCH by itself');
 }
 
 {
- const {ctx,state,events}=makeCtx();
+ const {ctx,state,events,matchEvents,actionEvents}=makeCtx();
  const a=card(10,'C','A'),two=card(11,'D','2'),three=card(12,'S','3');
  state.player.melds=[meld([a,two])];
  const outer=ctx.beginTwelveBloomAction('player','attach',{test:'transient'});
@@ -59,12 +62,13 @@ ok(source('endTwelveBloomAction').includes("combatNeutral:true,powerDelta:0,retu
  const pending=ctx.endTwelveBloomAction(nested,{retired:true});
  ok(pending.pending===true&&events.length===0,'nested retirement cannot emit before the outer action finishes');
  const final=ctx.endTwelveBloomAction(outer,{done:true});
- ok(events.length===0,'transient completion that disappears before final action state emits no completion event');
+ ok(matchEvents().length===0,'transient completion that disappears before final action state emits no completion event');
+ ok(actionEvents().length===1,'transient action still emits one final action-settled event');
  ok(final.changes.every(x=>!x.newlyCompleted.length),'final diff contains no false completion after transient BURST state');
 }
 
 {
- const {ctx,state,events}=makeCtx();
+ const {ctx,state,events,matchEvents,actionEvents}=makeCtx();
  const a=card(20,'C','A'),two=card(21,'D','2'),three=card(22,'S','3');
  state.player.melds=[meld([a,two])];
  const outer=ctx.beginTwelveBloomAction('player','attach');
@@ -73,27 +77,28 @@ ok(source('endTwelveBloomAction').includes("combatNeutral:true,powerDelta:0,retu
  ctx.endTwelveBloomAction(nested);
  ok(events.length===0,'nested public movement defers matching until outer action completion');
  ctx.endTwelveBloomAction(outer);
- ok(events.length===1&&events[0].newlyCompleted.includes('season:spring'),'outer action emits one consolidated completion after nested movement');
+ ok(matchEvents().length===1&&matchEvents()[0].newlyCompleted.includes('season:spring'),'outer action emits one consolidated completion after nested movement');
+ ok(actionEvents().length===1,'outer action emits one consolidated action-settled event after nested movement');
 }
 
 {
- const {ctx,state,events}=makeCtx();
+ const {ctx,state,events,matchEvents,actionEvents}=makeCtx();
  const a=card(30,'C','A'),two=card(31,'D','2'),three=card(32,'S','3');
  state.player.melds=[meld([a,two])];
  let tx=ctx.beginTwelveBloomAction('player','attach');
  state.player.melds[0].cards.push(three);
  ctx.endTwelveBloomAction(tx);
- ok(events.length===1,'first completion of the turn emits');
+ ok(matchEvents().length===1,'first completion of the turn emits');
 
  tx=ctx.beginTwelveBloomAction('player','recover');
  state.player.melds[0].cards=state.player.melds[0].cards.filter(c=>c.uid!==three.uid);
  ctx.endTwelveBloomAction(tx);
- ok(events.length===2&&events.at(-1).broken.includes('season:spring'),'breaking the completed match is still observable');
+ ok(matchEvents().length===2&&matchEvents().at(-1).broken.includes('season:spring'),'breaking the completed match is still observable');
 
  tx=ctx.beginTwelveBloomAction('player','attach');
  state.player.melds[0].cards.push(three);
  const suppressed=ctx.endTwelveBloomAction(tx);
- ok(events.length===2,'same-turn rebuild does not emit a second completion reward event');
+ ok(matchEvents().length===2,'same-turn rebuild does not emit a second completion reward event');
  const playerChange=suppressed.changes.find(x=>x.owner==='player');
  ok(playerChange.rawNewlyCompleted.includes('season:spring')&&playerChange.suppressedNewlyCompleted.includes('season:spring'),'same-turn rebuild remains visible in diagnostics while reward completion is suppressed');
 
@@ -104,7 +109,7 @@ ok(source('endTwelveBloomAction').includes("combatNeutral:true,powerDelta:0,retu
  tx=ctx.beginTwelveBloomAction('player','attach');
  state.player.melds[0].cards.push(three);
  ctx.endTwelveBloomAction(tx);
- ok(events.at(-1).newlyCompleted.includes('season:spring'),'the same match becomes eligible again on a later turn token');
+ ok(matchEvents().at(-1).newlyCompleted.includes('season:spring'),'the same match becomes eligible again on a later turn token');
 }
 
 for(const [fnName,needle] of [
