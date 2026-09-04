@@ -80,5 +80,5 @@ ok(road.includes('3차 유틸리티 슬라이스 4장 — 5♦ 표준 규격 / 4
 ok(themeDoc.includes('3차 유틸리티 슬라이스 — 5♦ `표준 규격` / 4♣ `임시 용접` / 2♥ `자석 회수기` / 10♠ `과열 부품`'),'canonical theme doc records wave3');
 const devCountMatch=poolDoc.match(/24장 미라이브 · (\d+)장 DEV 구현 완료/);
 ok(!!devCountMatch&&Number(devCountMatch[1])>=12,'full-pool policy keeps at least the wave3 twelve DEV cards while later waves may increase the count');
-ok(road.includes('- [ ] 24장 / 수트별 6장 정의 및 실제 효과 구현'),'full 24-card implementation remains open');
+ok(/- \[[ x]\] 24장 \/ 수트별 6장 정의 및 실제 효과 구현/.test(road),'full 24-card implementation remains tracked as later waves advance the checkbox');
 console.log('SCRAP-SHIFT wave3 utility regression passed.');
