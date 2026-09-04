@@ -33,7 +33,7 @@ ok(doc.includes('Breaking and rebuilding the same named match in the same turn c
 ok(doc.includes('Match completion itself adds 0 power and never moves SWITCH'),'matching itself is combat neutral');
 ok(doc.includes('Match completion grants no extra basic new-meld or attach count'),'matching cannot bypass the simplified base-action budget');
 
-const cardLines=[...doc.matchAll(/^\d+\. \*\*([^*]+)\*\* — (.+)$/gm)].map(m=>({name:m[1],effect:m[2]}));
+const cardLines=[...doc.matchAll(/^\d+\. (.+?) — (.+)$/gm)].map(m=>({name:m[1],effect:m[2]}));
 ok(cardLines.length===24,`candidate pool has exactly 24 cards (${cardLines.length})`);
 const suitCount={C:0,H:0,D:0,S:0};
 for(const c of cardLines){
