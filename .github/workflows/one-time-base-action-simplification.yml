@@ -1,4 +1,4 @@
-# rerun: safety global attach contract
+# rerun: fixed cleanup wording
 name: One-time base action simplification
 
 on:
@@ -61,6 +61,7 @@ jobs:
           node tests/named-final-semantics.mjs
           node tests/point-blank-recovery-access.mjs
           node tests/safety-hardening.mjs
+          node tests/status-engine.mjs
           node tests/theme-reaction-order.mjs
           node tests/theme-mix-simulation.mjs
           node tests/l10n-card-style.mjs
