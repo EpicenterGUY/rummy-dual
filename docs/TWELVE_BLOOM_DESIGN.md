@@ -238,7 +238,7 @@ Before TWELVE-BLOOM can become live:
 - [x] No extra base new-meld/attach actions and no numeric theme resource.
 - [x] Match evaluator + before/after snapshots implemented — public material is read across both boards by card ownership, with season/picture snapshots and newly-completed/broken diffs.
 - [x] Leap-month metadata lifecycle implemented — one owned public K per player, 1–12 assignment, atomic reassignment, and automatic clearing on hand/deck/discard/spent/public-retire exits.
-- [ ] Contextual match preview UI implemented.
+- [x] Contextual match preview UI implemented — hidden unless TWELVE-BLOOM-relevant material exists; selected new-meld/attach/recovery projections show only affected completion, break, or 2/3 missing-piece information.
 - [ ] 24 card effects implemented.
 - [ ] Unlock/codex/build/tutorial/roguelike integration implemented.
 - [ ] Single-theme / every two-theme / mixed / long-RUN UI regression completed.
