@@ -1,4 +1,4 @@
-# rerun: ZERO-SIGHT mixed attach harness
+# rerun: final clean staging
 name: One-time base action simplification
 
 on:
@@ -53,7 +53,7 @@ jobs:
           node tests/hand-circulation.mjs
           node tests/korean-terms.mjs
           node tests/m10-multiattach-search.mjs
-          node tests/m11b-action-commit.mjs tests/m11b-ai-rank-plans.mjs
+          node tests/m11b-action-commit.mjs
           node tests/m11b-ai-rank-plans.mjs
           node tests/m12-battle-metrics.mjs
           node tests/named-card-audit.mjs
@@ -87,7 +87,8 @@ jobs:
 
       - name: Commit base action simplification
         run: |
-          git add index.html README.md ROADMAP.md docs/M0R_MELD_EXPANSION.md docs/NEW_USER_UX_TERMS.md tests/base-action-simplification.mjs tests/m0r-meld-expansion.mjs tests/final-rule-audit.mjs tests/core-behavior.mjs tests/hand-circulation.mjs tests/korean-terms.mjs tests/m10-multiattach-search.mjs tests/m11b-action-commit.mjs
+          git add index.html README.md ROADMAP.md docs/M0R_MELD_EXPANSION.md docs/NEW_USER_UX_TERMS.md tests/*.mjs
+          git status --short
           if git diff --cached --quiet; then echo 'No feature changes to commit.'; exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
