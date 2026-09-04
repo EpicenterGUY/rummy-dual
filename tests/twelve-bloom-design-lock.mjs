@@ -10,7 +10,10 @@ function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 ok(doc.includes('TWELVE-BLOOM is the renamed successor to the former HWA-TU candidate'),'TWELVE-BLOOM explicitly replaces the old HWA-TU candidate');
 ok(themes.includes('CYCLE-WORKS, TWELVE-BLOOM')&&!themes.includes('CYCLE-WORKS, HWA-TU'),'canonical displayed theme-name list uses TWELVE-BLOOM');
 ok(plan.includes('TWELVE-BLOOM / CYCLE-WORKS 및 이후 후보'),'full-pool plan names TWELVE-BLOOM as the next non-live candidate');
-ok(!html.includes("themeId:'twelve-bloom'")&&!html.includes("'twelve-bloom':Object.freeze"),'design lock does not prematurely expose TWELVE-BLOOM as a runtime theme');
+ok(html.includes("themeId:'twelve-bloom'")&&html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom'"),'design lock now permits staged non-live runtime definitions');
+ok(!html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom',name:'TWELVE-BLOOM',displayName:'TWELVE-BLOOM',concept:'달 · 계절맞춤 · 그림맞춤 · 윤달',live:true"),'staged theme is not marked live');
+ok(!html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom',displayName:'TWELVE-BLOOM'"),'no selectable TWELVE-BLOOM build profile is exposed before the 24/24 gate');
+ok(!/items:\[[^\]]*TB(?:CA|C3|C5|C7|HA|H7|HK|D2|D4|D8|S6|S10)/.test(html),'staged TWELVE-BLOOM cards are absent from normal unlock groups');
 
 for(const row of [
  ['A','1'],['2','2'],['3','3'],['4','4'],['5','5'],['6','6'],['7','7'],['8','8'],['9','9'],['10','10'],['J','11'],['Q','12']
