@@ -1,6 +1,6 @@
 # TWELVE-BLOOM — Design Lock
 
-Updated: 2026-09-04
+Updated: 2026-09-05
 
 ## 0. Status
 
@@ -15,7 +15,7 @@ It keeps the twelve-month / seasonal-card visual inspiration, but it does not as
 - 빛 셋
 - 윤달
 
-This document is a design lock, not a live implementation. Until the matching engine, UI preview, AI weighting, unlocks, tutorial, and full regression are implemented, TWELVE-BLOOM must not appear as a normal selectable/live theme or normal roguelike reward theme.
+This document remains the design lock for the now-live theme. After the matching engine, UI preview, AI weighting, 24/24 effects, tutorial, mixed-theme regression, and 5,500-battle pre-live balance gate passed, TWELVE-BLOOM was promoted to normal play on 2026-09-05. Its six-tier normal unlock schedule opens four cards per total clear from 1 through 6; unlocked cards use the same ordinary deck-builder and roguelike reward paths as other live themes.
 
 ---
 
@@ -224,7 +224,7 @@ Direct return-power cards are limited to 10♠ 낙조 and Q♠ 빛 셋 in the fi
 
 ## 10. Implementation gate
 
-Before TWELVE-BLOOM can become live:
+Live gate status:
 
 - [x] Name and player-facing vocabulary locked.
 - [x] A–Q month mapping locked.
@@ -244,6 +244,6 @@ Before TWELVE-BLOOM can become live:
 - [x] Third sustain/rewind slice implemented (18/24) — 10♣ 겨울 채집 / Q♣ 한 해 넘기기 / 3♥ 봄매듭 / 5♥ 풀빛 띠 / 10♥ 계절 되감기 / 10♦ 새 셋. Sequential reaction-choice draining, post-refill RUMMY maintenance, action-card protection, exact-picture healing/cycling, and rewind-specific same-turn suppression are covered by `tests/twelve-bloom-third-slice.mjs`.
 - [x] Final light/movement slice implemented (24/24) — 6♦ 날갯짓 / Q♦ 철새 길 / A♠ 첫빛 / 3♠ 비치는 틈 / 8♠ 큰빛 / Q♠ 빛 셋. Cross-board movement maintenance, opponent-entry protection, optional first-season seal, used-opponent-meld seal/protect fallback, exact light-trio defense, and pre-action light-trio +14 return timing are covered by `tests/twelve-bloom-fourth-slice.mjs`.
 - [x] Pre-live integration harness implemented — explicit `live:false` theme/build/tutorial metadata, six-tier staging unlock plan outside normal unlocks, DEV-only codex/build access, all 24 AI/reward tendency tags, roguelike entry/payoff classification, and a real `onBloomMatchChange` season tutorial are covered by `tests/twelve-bloom-staging-integration.mjs`.
-- [ ] Normal unlock/reward exposure approved and enabled.
+- [x] Normal unlock/reward exposure approved and enabled. Six normal unlock tiers expose 4 / 8 / 12 / 16 / 20 / 24 cards at total clears 1–6; the build profile, codex tab, theme tutorial, automatic deck builder, and ordinary unlocked-card roguelike reward path are live.
 - [x] Single-theme / every two-theme / mixed / long-RUN UI regression completed — composition matrix includes TWELVE-BLOOM and all five live-theme pairings; long RUN keeps local card scrolling with wrapped match-preview chips.
 - [x] Match looseness and direct-power ratio simulation completed — 5,500 actual-engine battles plus static ratio checks are recorded in `docs/TWELVE_BLOOM_BALANCE_RESULTS.md`. No numeric effect change is required before live exposure.

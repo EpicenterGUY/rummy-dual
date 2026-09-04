@@ -607,15 +607,15 @@ const TWELVE_BLOOM_PICTURE_DEFS=Object.freeze({
  birdTrio:Object.freeze({id:'birdTrio',name:'새 셋',slots:Object.freeze(['D2','D4','D8'])}),
  lightTrio:Object.freeze({id:'lightTrio',name:'빛 셋',slots:Object.freeze(['SA','S8','SQ'])})
 });
-const THEME_GROUPS=Object.freeze({'v-signal':Object.freeze({id:'v-signal',name:'V-SIGNAL',displayName:'V-SIGNAL',concept:'방송 · 합방 · RAID · 회수 · 러미'}),'zero-sight':Object.freeze({id:'zero-sight',name:'ZERO-SIGHT',displayName:'ZERO-SIGHT',concept:'표적 · 관측 · 준비 · 정밀 타격'}),'point-blank':Object.freeze({id:'point-blank',name:'POINT-BLANK',displayName:'POINT-BLANK',concept:'접전 · 돌입 · 회수 · 교대'}),'mail-route':Object.freeze({id:'mail-route',name:'MAIL-ROUTE',displayName:'MAIL-ROUTE',concept:'우편 · 목적지 · 도착 · 반송 · 재배송'}),'scrap-shift':Object.freeze({id:'scrap-shift',name:'SCRAP-SHIFT',displayName:'SCRAP-SHIFT',concept:'부품 · 해체 · 이식 · 재조립',live:true}),'twelve-bloom':Object.freeze({id:'twelve-bloom',name:'TWELVE-BLOOM',displayName:'TWELVE-BLOOM',concept:'달 · 계절맞춤 · 그림맞춤 · 윤달',live:false})});
-const THEME_TUTORIALS=Object.freeze({'v-signal':Object.freeze({themeId:'v-signal',startStep:'vsEncore',live:true}),'zero-sight':Object.freeze({themeId:'zero-sight',startStep:'zsObserver',live:true}),'point-blank':Object.freeze({themeId:'point-blank',startStep:'pbBreach',live:true}),'mail-route':Object.freeze({themeId:'mail-route',startStep:'mrAddress',live:true}),'scrap-shift':Object.freeze({themeId:'scrap-shift',startStep:'ssPartLabel',live:true}),'twelve-bloom':Object.freeze({themeId:'twelve-bloom',startStep:'tbSeasonMatch',live:false})});
+const THEME_GROUPS=Object.freeze({'v-signal':Object.freeze({id:'v-signal',name:'V-SIGNAL',displayName:'V-SIGNAL',concept:'방송 · 합방 · RAID · 회수 · 러미'}),'zero-sight':Object.freeze({id:'zero-sight',name:'ZERO-SIGHT',displayName:'ZERO-SIGHT',concept:'표적 · 관측 · 준비 · 정밀 타격'}),'point-blank':Object.freeze({id:'point-blank',name:'POINT-BLANK',displayName:'POINT-BLANK',concept:'접전 · 돌입 · 회수 · 교대'}),'mail-route':Object.freeze({id:'mail-route',name:'MAIL-ROUTE',displayName:'MAIL-ROUTE',concept:'우편 · 목적지 · 도착 · 반송 · 재배송'}),'scrap-shift':Object.freeze({id:'scrap-shift',name:'SCRAP-SHIFT',displayName:'SCRAP-SHIFT',concept:'부품 · 해체 · 이식 · 재조립',live:true}),'twelve-bloom':Object.freeze({id:'twelve-bloom',name:'TWELVE-BLOOM',displayName:'TWELVE-BLOOM',concept:'달 · 계절맞춤 · 그림맞춤 · 윤달',live:true})});
+const THEME_TUTORIALS=Object.freeze({'v-signal':Object.freeze({themeId:'v-signal',startStep:'vsEncore',live:true}),'zero-sight':Object.freeze({themeId:'zero-sight',startStep:'zsObserver',live:true}),'point-blank':Object.freeze({themeId:'point-blank',startStep:'pbBreach',live:true}),'mail-route':Object.freeze({themeId:'mail-route',startStep:'mrAddress',live:true}),'scrap-shift':Object.freeze({themeId:'scrap-shift',startStep:'ssPartLabel',live:true}),'twelve-bloom':Object.freeze({themeId:'twelve-bloom',startStep:'tbSeasonMatch',live:true})});
 const THEME_BUILD_PROFILES=Object.freeze({mixed:Object.freeze({id:'mixed',displayName:'혼합',short:'자유 혼합',desc:'해금된 모든 네임드가 캐릭터 경향에 따라 섞입니다.',themeId:null,live:true}),
  'v-signal':Object.freeze({id:'v-signal',displayName:'V-SIGNAL',short:'방송 콤보',desc:'방송·회수·세트/런 연결 카드를 우선 편성합니다. 일반 카드도 함께 섞입니다.',themeId:'v-signal',live:true}),
  'zero-sight':Object.freeze({id:'zero-sight',displayName:'ZERO-SIGHT',short:'정밀 표적',desc:'표적 생성·이전과 패순환을 중심으로 정밀한 반환을 준비합니다. 일반 카드도 함께 섞입니다.',themeId:'zero-sight',live:true}),
  'point-blank':Object.freeze({id:'point-blank',displayName:'POINT-BLANK',short:'근접 교대',desc:'접전·돌입·회수·교대를 엮어 상대 공개 조합 안에서 압박합니다. 일반 카드도 함께 섞입니다.',themeId:'point-blank',live:true}),
  'mail-route':Object.freeze({id:'mail-route',displayName:'MAIL-ROUTE',short:'배송 경로',desc:'일반 카드에도 우편 표식을 붙이고 목적지·도착·반송·재배송으로 공개 조합 사이를 순환합니다.',themeId:'mail-route',live:true}),
  'scrap-shift':Object.freeze({id:'scrap-shift',displayName:'SCRAP-SHIFT',short:'부품 순환',desc:'일반 카드에도 부품 표식을 붙여 해체·이식·재조립으로 순환시키고 다시 사용합니다.',themeId:'scrap-shift',live:true}),
- 'twelve-bloom':Object.freeze({id:'twelve-bloom',displayName:'TWELVE-BLOOM',short:'계절 맞춤',desc:'양쪽 공개 조합의 내 소유 카드를 달로 읽어 계절맞춤·그림맞춤을 만들고, 윤달·이동·회수로 완성을 재구성합니다. 일반 카드도 맞춤 재료가 됩니다.',themeId:'twelve-bloom',live:false})});
+ 'twelve-bloom':Object.freeze({id:'twelve-bloom',displayName:'TWELVE-BLOOM',short:'계절 맞춤',desc:'양쪽 공개 조합의 내 소유 카드를 달로 읽어 계절맞춤·그림맞춤을 만들고, 윤달·이동·회수로 완성을 재구성합니다. 일반 카드도 맞춤 재료가 됩니다.',themeId:'twelve-bloom',live:true})});
 const DECK_STRUCTURE_PROFILES=Object.freeze({
  set:Object.freeze({id:'set',displayName:'세트형',short:'같은 숫자 집중',desc:'7개 중심 숫자를 여러 무늬로 겹쳐 세트 생성과 버스트 재료 순환을 우선합니다.'}),
  run:Object.freeze({id:'run',displayName:'런형',short:'같은 무늬 연속',desc:'두 무늬의 긴 연속 구간을 중심으로 런 생성과 체인 연장을 우선합니다.'}),
@@ -1620,6 +1620,12 @@ const UNLOCK_GROUPS=[
  {id:'ssf4',label:'전체 4클리어 · SCRAP-SHIFT',kind:'theme',when:p=>p.totalClears>=4,items:['SSD7','SSC8','SSH8','SSS7'],fields:[]},
  {id:'ssf5',label:'전체 5클리어 · SCRAP-SHIFT',kind:'theme',when:p=>p.totalClears>=5,items:['SSD9','SSC10','SSH10','SSS3'],fields:[]},
  {id:'ssf6',label:'전체 6클리어 · SCRAP-SHIFT',kind:'theme',when:p=>p.totalClears>=6,items:['SSDJ','SSCQ','SSHK','SSSK'],fields:[]},
+ {id:'tbf1',label:'전체 1클리어 · TWELVE-BLOOM',kind:'theme',when:p=>p.totalClears>=1,items:['TBC5','TBHA','TBD2','TBSA'],fields:[]},
+ {id:'tbf2',label:'전체 2클리어 · TWELVE-BLOOM',kind:'theme',when:p=>p.totalClears>=2,items:['TBCA','TBH3','TBD4','TBS3'],fields:[]},
+ {id:'tbf3',label:'전체 3클리어 · TWELVE-BLOOM',kind:'theme',when:p=>p.totalClears>=3,items:['TBC3','TBH5','TBD6','TBS6'],fields:[]},
+ {id:'tbf4',label:'전체 4클리어 · TWELVE-BLOOM',kind:'theme',when:p=>p.totalClears>=4,items:['TBC7','TBH7','TBD8','TBS8'],fields:[]},
+ {id:'tbf5',label:'전체 5클리어 · TWELVE-BLOOM',kind:'theme',when:p=>p.totalClears>=5,items:['TBC10','TBH10','TBD10','TBS10'],fields:[]},
+ {id:'tbf6',label:'전체 6클리어 · TWELVE-BLOOM',kind:'theme',when:p=>p.totalClears>=6,items:['TBCQ','TBHK','TBDQ','TBSQ'],fields:[]},
  {id:'g1',label:'전체 1클리어',kind:'mixed',when:p=>p.totalClears>=1,items:['S6','H7','D8','C2','ZSCA','ZSC2','DA','D3'],fields:['F1']},
  {id:'zsf1',label:'전체 1클리어 · ZERO-SIGHT 증원',kind:'theme',when:p=>p.totalClears>=1,items:['ZSD2','ZSH3','ZSH4'],fields:[]},
  {id:'g2',label:'전체 2클리어',kind:'mixed',when:p=>p.totalClears>=2,items:['S8','H5','VSH5','D9','C8','D10','C3'],fields:['F2']},
@@ -1648,12 +1654,12 @@ const UNLOCK_GROUPS=[
  {id:'jl3',label:'광대 Lv.3',kind:'mastery',when:p=>charLevel(p,'jester')>=3,items:['J3'],fields:[]}
 ];
 const TWELVE_BLOOM_STAGING_UNLOCKS=Object.freeze([
- Object.freeze({id:'tbf1',label:'라이브 전 해금안 · 전체 1클리어',threshold:1,items:Object.freeze(['TBC5','TBHA','TBD2','TBSA'])}),
- Object.freeze({id:'tbf2',label:'라이브 전 해금안 · 전체 2클리어',threshold:2,items:Object.freeze(['TBCA','TBH3','TBD4','TBS3'])}),
- Object.freeze({id:'tbf3',label:'라이브 전 해금안 · 전체 3클리어',threshold:3,items:Object.freeze(['TBC3','TBH5','TBD6','TBS6'])}),
- Object.freeze({id:'tbf4',label:'라이브 전 해금안 · 전체 4클리어',threshold:4,items:Object.freeze(['TBC7','TBH7','TBD8','TBS8'])}),
- Object.freeze({id:'tbf5',label:'라이브 전 해금안 · 전체 5클리어',threshold:5,items:Object.freeze(['TBC10','TBH10','TBD10','TBS10'])}),
- Object.freeze({id:'tbf6',label:'라이브 전 해금안 · 전체 6클리어',threshold:6,items:Object.freeze(['TBCQ','TBHK','TBDQ','TBSQ'])})
+ Object.freeze({id:'tbf1',label:'전체 1클리어 · TWELVE-BLOOM',threshold:1,items:Object.freeze(['TBC5','TBHA','TBD2','TBSA'])}),
+ Object.freeze({id:'tbf2',label:'전체 2클리어 · TWELVE-BLOOM',threshold:2,items:Object.freeze(['TBCA','TBH3','TBD4','TBS3'])}),
+ Object.freeze({id:'tbf3',label:'전체 3클리어 · TWELVE-BLOOM',threshold:3,items:Object.freeze(['TBC3','TBH5','TBD6','TBS6'])}),
+ Object.freeze({id:'tbf4',label:'전체 4클리어 · TWELVE-BLOOM',threshold:4,items:Object.freeze(['TBC7','TBH7','TBD8','TBS8'])}),
+ Object.freeze({id:'tbf5',label:'전체 5클리어 · TWELVE-BLOOM',threshold:5,items:Object.freeze(['TBC10','TBH10','TBD10','TBS10'])}),
+ Object.freeze({id:'tbf6',label:'전체 6클리어 · TWELVE-BLOOM',threshold:6,items:Object.freeze(['TBCQ','TBHK','TBDQ','TBSQ'])})
 ]);
 const CHARACTER_UNLOCK={wanderer:p=>true,collector:p=>p.totalClears>=1,salvager:p=>p.totalClears>=2,jester:p=>p.totalClears>=4};
 const ALL_REGULAR=[];for(const s of['S','H','D','C'])for(const r of['A','2','3','4','5','6','7','8','9','10','J','Q','K'])ALL_REGULAR.push(s+r);
@@ -1694,7 +1700,7 @@ function openDeveloperPanel(){document.getElementById('settingsOverlay')?.classL
 function charLevel(p,id){const c=p.chars?.[id]||0;let lv=1;for(let i=1;i<LEVEL_THRESHOLDS.length;i++)if(c>=LEVEL_THRESHOLDS[i])lv=i+1;return lv}
 function charUnlocked(id,p=progress){if(typeof developerModeActive==='function'&&developerModeActive())return Object.prototype.hasOwnProperty.call(CHARACTERS,id);const unlock=CHARACTER_UNLOCK[id];return typeof unlock==='function'&&!!unlock(p)}
 function themeBuildUnlocked(id,p=progress){const profile=THEME_BUILD_PROFILES[id];if(!profile)return false;if(typeof developerModeActive==='function'&&developerModeActive())return true;if(id==='mixed')return true;if(!profile.live)return false;const open=unlockedNamed(p);for(const cardId of open)if(NAMED[cardId]?.themeId===profile.themeId)return true;return false}
-function themeBuildLockText(id){if(id==='v-signal')return'테마 카드 해금 필요 · 전체 2클리어부터';if(id==='zero-sight')return'테마 카드 해금 필요 · 전체 1클리어부터';if(id==='point-blank')return'테마 카드 해금 필요 · 전체 1클리어부터';if(id==='mail-route')return'테마 카드 해금 필요 · 전체 1클리어부터';if(id==='scrap-shift')return'테마 카드 해금 필요 · 전체 1클리어부터';if(id==='twelve-bloom')return'라이브 전 검증 중 · DEV 전용';return'사용할 수 없음'}
+function themeBuildLockText(id){if(id==='v-signal')return'테마 카드 해금 필요 · 전체 2클리어부터';if(id==='zero-sight')return'테마 카드 해금 필요 · 전체 1클리어부터';if(id==='point-blank')return'테마 카드 해금 필요 · 전체 1클리어부터';if(id==='mail-route')return'테마 카드 해금 필요 · 전체 1클리어부터';if(id==='scrap-shift')return'테마 카드 해금 필요 · 전체 1클리어부터';if(id==='twelve-bloom')return'테마 카드 해금 필요 · 전체 1클리어부터';return'사용할 수 없음'}
 function baseUnlockedNamed(p=progress){const a=new Set(STARTER_NAMED.concat(['J1']));for(const g of UNLOCK_GROUPS)if(g.when(p))for(const id of g.items||[])a.add(id);return a}
 function unlockedNamed(p=progress){if(typeof developerModeActive==='function'&&developerModeActive())return new Set(Object.keys(NAMED));return baseUnlockedNamed(p)}
 function baseUnlockedFields(p=progress){const a=[];for(const g of UNLOCK_GROUPS)if(g.when(p))for(const id of g.fields||[])a.push(id);return [...new Set(a)]}

@@ -35,7 +35,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 실행 회귀 — 전체 `tests/*.mjs` 125개 파일 통과. 생성 1·2 허용/3 거부, 슬롯 3 허용/4 거부, 당턴 확장 금지, 기존 확장·회수·러미·버스트·체인·반환·런 완주·퀵 리로드 포함
 - [x] TWELVE-BLOOM 영향 1차 검토 — 당시 HWA-TU 후보의 계절맞춤을 일반/테마 혼합 공개 카드에서 관측; 추가 생성 보너스 금지. 이후 TWELVE-BLOOM으로 이름과 규칙을 재잠금
 - [ ] Android/iOS/Fold 실기기 터치·안전영역 확인
-- [ ] 인간 실전/M12 및 실제 TWELVE-BLOOM 효과 구현 후 최종 밸런스 잠금 판단 — 초기 시뮬레이션만으로 확정하지 않음
+- [ ] 인간 실전/M12로 최종 체감 밸런스 잠금 판단 — TWELVE-BLOOM 실제 효과 구현과 5,500전 프리라이브 엔진 검증은 완료했지만 인간 플레이 표본은 별도 수집
 
 ## M0S — 기본 행동 단순화 / 3슬롯 필드 정리 — 2026-09-04
 - [x] 기존 M0R의 공개 조합 3칸 / 새 조합 2회 / 신규 자기 조합 당턴 확장 금지 / 시작 손패 8장을 유지
@@ -45,7 +45,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 자기 공개 조합 3칸이 모두 찼을 때만 턴당 1회 가능한 `조합 정리` 구현 — 당턴 생성/고정 조합 제외, 보호는 방해하지 않음, 일반 `onRetire`/`retireMeld` 경로 사용, 위력 +0 / SWITCH 이동 없음
 - [x] AI가 기본 붙이기 1회와 다중 붙이기를 공유하고, 만원 상태에서 새 조합 후보가 있을 때 낮은 가치의 CHAIN 0 런을 우선 정리하되 버스트 준비 세트·성장 RUN은 보존하도록 평가
 - [x] 전투 버튼/규칙·용어/튜토리얼/연습전 문구를 「새 조합 두 번 · 붙이기 한 번 · 내 필드 세 칸」으로 동기화
-- [x] V-SIGNAL / ZERO-SIGHT / POINT-BLANK / MAIL-ROUTE / SCRAP-SHIFT의 회수·이동·추가 행동 경로가 전역 붙이기 횟수를 우회하지 않도록 감사; CYCLE-WORKS / TWELVE-BLOOM 후보는 추가 기본 생성 보너스를 요구하지 않는 정책 유지
+- [x] V-SIGNAL / ZERO-SIGHT / POINT-BLANK / MAIL-ROUTE / SCRAP-SHIFT의 회수·이동·추가 행동 경로가 전역 붙이기 횟수를 우회하지 않도록 감사; CYCLE-WORKS 후보와 당시 후보 단계의 TWELVE-BLOOM도 추가 기본 생성 보너스를 요구하지 않는 정책 유지
 - [ ] Android/iOS/Fold 실기기 터치·안전영역 재확인 — 소스/브라우저 회귀와 별개인 실기기 검증
 
 ## M1 — Final rules ↔ live code sync
@@ -210,12 +210,13 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] 계절맞춤 / 그림맞춤 구조 잠금 — 봄 1·2·3 / 여름 4·5·6 / 가을 7·8·9 / 겨울 10·J·Q를 넓은 엔진 조건으로 사용. 그림맞춤은 A♥·2♥·3♥ / 4♥·5♥·6♥ / 7♥·8♥·9♥ / 2♦·4♦·8♦ / A♠·8♠·Q♠의 정확 슬롯 5종만 사용
 - [x] TWELVE-BLOOM 혼합덱 규칙 잠금 — 카드군과 무관하게 양측 공개 조합의 `내 소유 카드`를 달/그림 재료로 사용. 손패/덱/버림패/소모패/상대 소유 카드는 제외하고, 지속 완성은 재발동하지 않으며 같은 맞춤은 한 턴 재완성 보상 1회로 제한
 - [x] TWELVE-BLOOM 24장 정식 후보 풀 재설계 — 수트별 6장. ♣ 탐색/패순환/윤달, ♥ 띠/생존/회수, ♦ 새/이동/상대 조합, ♠ 빛/압박/반환. 직접 누적 위력은 10♠ 낙조 +10 / Q♠ 빛 셋 +14 두 장만 사용
-- [x] TWELVE-BLOOM 1차 엔진 기반 — A~Q 달 매핑, 양측 공개 조합의 내 소유 카드 수집, 4계절/5그림 evaluator, 전후 snapshot diff, owner+match 턴 게이트, 공개 K 1장 윤달 지정/재지정 및 손패·덱·버림패·소모패·정리 이탈 시 자동 해제. 아직 카드군은 비라이브
+- [x] TWELVE-BLOOM 1차 엔진 기반 — A~Q 달 매핑, 양측 공개 조합의 내 소유 카드 수집, 4계절/5그림 evaluator, 전후 snapshot diff, owner+match 턴 게이트, 공개 K 1장 윤달 지정/재지정 및 손패·덱·버림패·소모패·정리 이탈 시 자동 해제. 이 기반 단계에서는 비라이브로 유지
 - [x] TWELVE-BLOOM 상황형 미리보기 기반 — 비채용 전투에서는 항상 숨김. 향후 관련 카드가 존재할 때 선택 중 새 조합/붙이기/회수의 최종 공개판을 투영해 `완성`, `해제`, `2/3 + 빠진 달/정확 슬롯`만 얇은 보조줄로 표시하며 긴 조합 폭을 늘리지 않음
-- [x] TWELVE-BLOOM 24/24 효과 구현 — 4개 수트 각 6장 전부를 비라이브 NAMED 변형·공용 효과 엔진에 연결하고, 교차 이동 정비 / 상대 조합 진입 보호 / 봉인·보호 분기 / 빛 셋 방어 / 행동 전 빛 셋 반환 +14까지 `tests/twelve-bloom-fourth-slice.mjs`로 잠금. 일반 해금·보상 전까지는 비라이브 유지
-- [x] TWELVE-BLOOM 라이브 전 DEV 통합 — `live:false` 자동 빌드 프로필 / 6단계 staging 해금안 / DEV 도감·덱빌더 / 24장 AI·로그라이크 행동 태그 / entry-payoff 분류 / 실제 `onBloomMatchChange` 봄맞춤 체험전을 연결. `tests/twelve-bloom-staging-integration.mjs`로 일반 모드 0장 노출과 DEV 경로를 함께 잠금
+- [x] TWELVE-BLOOM 24/24 효과 구현 — 4개 수트 각 6장 전부를 당시 비라이브 NAMED 변형·공용 효과 엔진에 연결하고, 교차 이동 정비 / 상대 조합 진입 보호 / 봉인·보호 분기 / 빛 셋 방어 / 행동 전 빛 셋 반환 +14까지 `tests/twelve-bloom-fourth-slice.mjs`로 잠금. 라이브 승격 전까지 일반 해금·보상은 차단
+- [x] TWELVE-BLOOM 라이브 전 DEV 통합 — 당시 `live:false` 자동 빌드 프로필 / 6단계 staging 해금안 / DEV 도감·덱빌더 / 24장 AI·로그라이크 행동 태그 / entry-payoff 분류 / 실제 `onBloomMatchChange` 봄맞춤 체험전을 연결. `tests/twelve-bloom-staging-integration.mjs`로 프리라이브 일반 모드 0장 노출과 DEV 경로를 잠금
 - [x] TWELVE-BLOOM UI/UX 구현 검증 — 비채용 덱은 달/그림 정보를 숨기고, 관련 선택에서만 완성/해제/2·3 힌트를 표시. 긴 공개 런은 `.meldCardRow` 로컬 가로 스크롤을 유지하고 preview chip은 별도 wrap. `tests/twelve-bloom-preview.mjs`
 - [x] TWELVE-BLOOM 밸런스/회귀 검증 — TWELVE 포함 6테마 최대밀도/모든 2테마 구성 회귀와 실제 엔진 5,500전 완료. mixed 전투 길이 52.49→52.55로 사실상 동일, RUN의 장기 순환은 일반 RUN 기준선에서도 확인되어 TWELVE 고유 문제가 아니며, 10♠/Q♠ 직접 보너스는 전체 반환의 0.06~0.37회/100반환 수준. full recirculation 0. `docs/TWELVE_BLOOM_BALANCE_RESULTS.md`
+- [x] TWELVE-BLOOM 일반 라이브 승격 — 2026-09-05 프리라이브 PASS 뒤 theme/build/tutorial을 `live:true`로 전환하고 기존 6단계 해금안을 정식 `UNLOCK_GROUPS`에 편입. 전체 1~6클리어에서 4장씩 누적 24장을 해금하며, 일반 자동 덱·커스텀 덱·도감·테마 체험전과 `unlockedNamed()` 기반 로그라이크 보상에 별도 예외 없이 연결. 카드 수치와 기본 RUMMY//DUEL 규칙은 변경하지 않음. `tests/twelve-bloom-staging-integration.mjs`
 - [x] 향후 신규 테마는 카드군부터 만들기보다 지역의 문화/직업/갈등에서 파생시키는 방식 우선 검토 — `docs/THEME_GROUPS.md`에 지역/생활권 → 문화·직업 앵커 3+ → 갈등 1+ → 핵심 동사 4+ → 공용 러미 행동 3+ → 기존 테마 중복 검사 → 전용 개념 최소화 → 마지막 네이밍/비주얼 순서의 기획 게이트를 잠금. 실존 지역을 장식적 고정관념으로 소비하지 않고 행동 구조의 근거로 사용
 
 ### 구현 전 공통 검증

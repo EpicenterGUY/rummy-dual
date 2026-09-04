@@ -12,7 +12,7 @@ function source(name){
 }
 
 new Function(script);
-ok(script.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom'")&&!script.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom',name:'TWELVE-BLOOM',displayName:'TWELVE-BLOOM',concept:'달 · 계절맞춤 · 그림맞춤 · 윤달',live:true"),'TWELVE-BLOOM is registered but remains non-live');
+ok(script.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom',name:'TWELVE-BLOOM',displayName:'TWELVE-BLOOM',concept:'달 · 계절맞춤 · 그림맞춤 · 윤달',live:true"),'TWELVE-BLOOM first effect slice remains registered in the live theme');
 
 const cards=[
  ['TBC5','C5','계절 표본','tbSeasonSample'],

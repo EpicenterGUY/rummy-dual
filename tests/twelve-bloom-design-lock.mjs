@@ -10,12 +10,12 @@ function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 ok(doc.includes('TWELVE-BLOOM is the renamed successor to the former HWA-TU candidate'),'TWELVE-BLOOM explicitly replaces the old HWA-TU candidate');
 ok(themes.includes('CYCLE-WORKS, TWELVE-BLOOM')&&!themes.includes('CYCLE-WORKS, HWA-TU'),'canonical displayed theme-name list uses TWELVE-BLOOM');
 ok(plan.includes('TWELVE-BLOOM / CYCLE-WORKS 및 이후 후보'),'full-pool plan names TWELVE-BLOOM as the next non-live candidate');
-ok(html.includes("themeId:'twelve-bloom'")&&html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom'"),'design lock now permits staged non-live runtime definitions');
-ok(!html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom',name:'TWELVE-BLOOM',displayName:'TWELVE-BLOOM',concept:'달 · 계절맞춤 · 그림맞춤 · 윤달',live:true"),'staged theme is not marked live');
-ok(html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom',displayName:'TWELVE-BLOOM',short:'계절 맞춤'")&&html.includes("themeId:'twelve-bloom',live:false"),'24/24 permits a DEV-only non-live build profile');
+ok(html.includes("themeId:'twelve-bloom'")&&html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom'"),'TWELVE-BLOOM runtime definitions remain registered');
+ok(html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom',name:'TWELVE-BLOOM',displayName:'TWELVE-BLOOM',concept:'달 · 계절맞춤 · 그림맞춤 · 윤달',live:true"),'theme registry is live');
+ok(html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom',displayName:'TWELVE-BLOOM',short:'계절 맞춤'")&&html.includes("themeId:'twelve-bloom',live:true"),'24/24 build profile is live');
 const normalUnlockBlock=html.slice(html.indexOf('const UNLOCK_GROUPS=['),html.indexOf('const TWELVE_BLOOM_STAGING_UNLOCKS='));
-ok(!/items:\[[^\]]*TB(?:CA|C3|C5|C7|C10|CQ|HA|H3|H5|H7|H10|HK|D2|D4|D6|D8|D10|DQ|SA|S3|S6|S8|S10|SQ)/.test(normalUnlockBlock),'staged TWELVE-BLOOM cards are absent from normal unlock groups');
-ok(html.includes('const TWELVE_BLOOM_STAGING_UNLOCKS=Object.freeze(['),'pre-live unlock schedule exists outside normal unlocks');
+for(const id of ['TBC5','TBHA','TBD2','TBSA','TBCA','TBH3','TBD4','TBS3','TBC3','TBH5','TBD6','TBS6','TBC7','TBH7','TBD8','TBS8','TBC10','TBH10','TBD10','TBS10','TBCQ','TBHK','TBDQ','TBSQ'])ok(normalUnlockBlock.includes(id),id+' is present in normal unlock groups');
+ok(html.includes('const TWELVE_BLOOM_STAGING_UNLOCKS=Object.freeze(['),'six-tier compatibility schedule remains available for migration/regression');
 
 for(const row of [
  ['A','1'],['2','2'],['3','3'],['4','4'],['5','5'],['6','6'],['7','7'],['8','8'],['9','9'],['10','10'],['J','11'],['Q','12']
@@ -58,6 +58,7 @@ ok(road.includes('- [x] 계절맞춤 / 그림맞춤 구조 잠금'),'ROADMAP clo
 ok(road.includes('- [x] TWELVE-BLOOM 혼합덱 규칙 잠금'),'ROADMAP closes the mixed-deck material task');
 ok(road.includes('- [x] TWELVE-BLOOM 24장 정식 후보 풀 재설계'),'ROADMAP closes the 24-card candidate design task');
 ok(road.includes('- [x] TWELVE-BLOOM UI/UX 구현 검증')&&road.includes('- [x] TWELVE-BLOOM 밸런스/회귀 검증'),'pre-live UI and balance gates are closed');
-ok(doc.includes('Normal unlock/reward exposure approved and enabled.')&&doc.includes('- [ ] Normal unlock/reward exposure approved and enabled.'),'normal user exposure remains the final open gate');
+ok(doc.includes('Normal unlock/reward exposure approved and enabled.')&&doc.includes('- [x] Normal unlock/reward exposure approved and enabled.'),'normal user exposure gate is closed');
+ok(road.includes('- [x] TWELVE-BLOOM 일반 라이브 승격'),'ROADMAP records the live promotion');
 
 console.log('TWELVE-BLOOM design-lock regression passed.');

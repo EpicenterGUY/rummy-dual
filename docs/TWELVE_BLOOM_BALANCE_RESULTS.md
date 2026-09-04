@@ -11,6 +11,12 @@ TWELVE-BLOOM passes the pre-live balance/UI gate without numeric card-effect cha
 - The next gate is the explicit live-exposure change: normal unlock groups, normal reward pool, build/tutorial visibility, and release-facing copy.
 - No base RUMMY//DUEL rule was changed by this study.
 
+## Post-gate activation — 2026-09-05
+
+Following this PASS, TWELVE-BLOOM was promoted to normal play. The six pre-live unlock tiers became the normal 1–6-clear unlock schedule, and the live build/tutorial/codex/reward paths were enabled without changing card-effect numbers or base RUMMY//DUEL rules.
+
+The results below remain the frozen pre-live study snapshot; statements about zero normal exposure describe the state during that study, not the post-activation runtime.
+
 ## Coverage
 
 Static/executable regression:
