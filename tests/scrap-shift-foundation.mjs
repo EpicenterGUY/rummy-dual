@@ -80,7 +80,7 @@ ok(road.includes('## M8SS — SCRAP-SHIFT 24/24 풀 카드군 · 개발 중'),'R
 ok(road.includes('- [ ] 24장 / 수트별 6장 정의 및 실제 효과 구현'),'24-card live release remains explicitly unfinished');
 ok(themeDoc.includes('공용 엔진 기반 구현을 시작했지만, 24장 카드는 아직 라이브 카드군이 아니다'),'canonical theme doc distinguishes foundation from live card pool');
 ok(themeDoc.includes('`onDismantle → 표적 변화 → 접전 변화`'),'canonical cross-theme order includes dismantle');
-ok(poolDoc.includes('공용 엔진 1차 기반 구현 중, 24장 미라이브'),'full-pool policy records current SCRAP-SHIFT phase');
+ok(/24장 미라이브 · (\d+)장 DEV 구현 완료/.test(poolDoc)&&Number(poolDoc.match(/24장 미라이브 · (\d+)장 DEV 구현 완료/)?.[1]||0)>=4,'full-pool policy records a non-live SCRAP-SHIFT phase with at least the foundation slice implemented');
 ok(poolDoc.includes('28/28 라이브 구현 완료'),'full-pool policy no longer calls completed MAIL-ROUTE non-live');
 
 console.log('SCRAP-SHIFT engine foundation regression passed.');
