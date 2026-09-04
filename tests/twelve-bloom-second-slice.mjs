@@ -64,7 +64,8 @@ ok(source('attachCards').includes('whenEffectChoicesDrained'),'attach waits for 
   twelveBloomActionMovedCardTo:()=>false,
   twelveBloomActionCardByTag:(packet,w,tag)=>tag==='tbCrossBird'?cross:null,
   twelveBloomActionHasMoveReason:(packet,reason,uid)=>reason==='twelveBloomCrossBird'&&uid===cross.uid,
-  requestTwelveBloomFreeRecoverChoice:()=>{events.recover++;return true}
+  requestTwelveBloomFreeRecoverChoice:()=>{events.recover++;return true},
+  twelveBloomQueueReaction:fn=>{fn();return false}
  });
  vm.runInContext(source('handleTwelveBloomThemeEvent'),ctx);
  ctx.handleTwelveBloomThemeEvent({event:'onBloomMatchChange',actor:'player',owner:'player',turnToken:12,newlyCompleted:['season:summer'],steps:[]});
@@ -85,6 +86,7 @@ ok(source('attachCards').includes('whenEffectChoicesDrained'),'attach waits for 
   claimThemeTurnGate:()=>true,
   requestScrapShiftDrawBottom:()=>{events.bottom++;return false},
   requestTwelveBloomMoveChoice:()=>{events.move++;return true},
+  twelveBloomQueueReaction:fn=>{fn();return false},
   other:w=>w==='player'?'enemy':'player'
  });
  vm.runInContext(source('handleTwelveBloomThemeEvent'),ctx);
