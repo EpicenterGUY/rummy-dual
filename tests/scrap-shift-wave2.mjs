@@ -22,7 +22,7 @@ for(const [id,slot,name,tag] of wave2){
  ok(script.includes(`'${id}':{slot:'${slot}',themeId:'scrap-shift',n:'${name}',t:'${tag}'`),`${name} is defined in SCRAP-SHIFT wave2`);
  ok(source('resolveEffects').includes(`case'${tag}'`),`${tag} has a resolver/passive registration branch`);
 }
-ok(script.includes("themeId:'scrap-shift',live:false"),'wave2 remains DEV-only and does not prematurely release SCRAP-SHIFT');
+ok(script.includes("themeId:'scrap-shift',live:true"),'wave2 behavior remains present after SCRAP-SHIFT live promotion');
 ok(script.includes("clearScrapShiftPart(chosen,'패순환·개인 덱',true)"),'free cycle now clears the part marker before personal-deck entry');
 
 {
@@ -71,7 +71,6 @@ ok(handler.includes("packet.reason==='scrapShiftTransplant'"),'compat port only 
 ok(handler.includes("claimThemeTurnGate"),'wave2 reactions use the shared once-per-turn gate');
 ok(road.includes('2차 반응 슬라이스 4장 — 3♦ 분류대 / 6♣ 호환 포트 / 6♥ 재생 공방 / 5♠ 폐기 명령'),'ROADMAP records SCRAP-SHIFT wave2');
 ok(themeDoc.includes('2차 반응 슬라이스 — 3♦ `분류대` / 6♣ `호환 포트` / 6♥ `재생 공방` / 5♠ `폐기 명령`'),'canonical theme doc records wave2');
-const devCountMatch=poolDoc.match(/24장 미라이브 · (\d+)장 DEV 구현 완료/);
-ok(!!devCountMatch&&Number(devCountMatch[1])>=8,'full-pool policy keeps at least the wave2 eight DEV cards while later waves may increase the count');
+ok(poolDoc.includes('24/24 라이브 구현 완료'),'full-pool policy keeps the completed live SCRAP-SHIFT state');
 ok(/- \[[ x]\] 24장 \/ 수트별 6장 정의 및 실제 효과 구현/.test(road),'full 24-card implementation remains tracked as later waves advance the checkbox');
 console.log('SCRAP-SHIFT wave2 reaction regression passed.');
