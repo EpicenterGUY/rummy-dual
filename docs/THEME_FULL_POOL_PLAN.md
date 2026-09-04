@@ -175,7 +175,7 @@ Status: ACTIVE IMPLEMENTATION POLICY
 
 ### TWELVE-BLOOM / CYCLE-WORKS 및 이후 후보
 
-TWELVE-BLOOM은 구 HWA-TU를 대체하는 이름으로 기본 판정과 24장 후보 풀을 잠갔고, match evaluator·전후 snapshot diff·윤달 수명주기까지 비라이브 공용 기반으로 구현했다. 다음 게이트는 상황형 UI preview와 실제 24장 효과이며, 이를 구현하고 회귀를 통과하기 전에는 카드군 선택/해금/일반 보상에 넣지 않는다. CYCLE-WORKS 및 그 이후 후보도 같은 원칙을 따른다.
+TWELVE-BLOOM은 구 HWA-TU를 대체하는 이름으로 기본 판정과 24장 후보 풀을 잠갔고, match evaluator·전후 snapshot diff·윤달 수명주기까지 비라이브 공용 기반으로 구현했다. 상황형 UI preview 기반까지 구현했다. 다음 게이트는 행동 최종 맞춤 변화 이벤트와 실제 24장 효과이며, 이를 구현하고 회귀를 통과하기 전에는 카드군 선택/해금/일반 보상에 넣지 않는다. CYCLE-WORKS 및 그 이후 후보도 같은 원칙을 따른다.
 
 ---
 
