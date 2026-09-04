@@ -185,3 +185,19 @@ for old,new in fixes:
     elif new not in s:raise SystemExit(f'missing V-SIGNAL tutorial attach migration anchor: {old[:110]}')
 p.write_text(s,encoding='utf-8')
 print('V-SIGNAL tutorial harness migrated to global attach contract')
+
+
+p=ROOT/'tests'/'zero-sight-mixed-regression.mjs'
+s=p.read_text(encoding='utf-8')
+fixes=[
+("  const sourceRun={type:'RUN',cards:[encore,card('H','6'),card('H','7'),card('H','8')],chain:1,createdToken:null,lastAttachToken:null};","  const sourceRun={type:'RUN',cards:[encore,card('H','6'),card('H','7'),card('H','8')],chain:1,createdToken:null};"),
+("  const targetSet={type:'SET',cards:[card('S','5'),card('D','5'),card('C','5')],chain:0,createdToken:null,lastAttachToken:null};","  const targetSet={type:'SET',cards:[card('S','5'),card('D','5'),card('C','5')],chain:0,createdToken:null};"),
+("  const player={melds:[sourceRun],returnedSwitchThisTurn:false};","  const player={melds:[sourceRun],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};"),
+("  const enemy={melds:[targetSet],returnedSwitchThisTurn:false};","  const enemy={melds:[targetSet],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};"),
+("  install(ctx,'isJoker','isSuitFlexible','setValid','runSequenceOK','runValid','meldType','meldOwnerSide','ensureMeldThemeMeta','isZeroSightTarget','zeroSightTargetActors','zeroSightTargetMeld','emitZeroSightTargetChange','clearZeroSightTarget','setZeroSightTarget','emitRecoveryEvent','legalRecoveryReturnTargets','grantRecoveryReturnOverride','handleVSignalThemeEvent','recoveredCardCanReturn');","  install(ctx,'isJoker','isSuitFlexible','setValid','runSequenceOK','runValid','meldType','attachAccess','meldOwnerSide','ensureMeldThemeMeta','isZeroSightTarget','zeroSightTargetActors','zeroSightTargetMeld','emitZeroSightTargetChange','clearZeroSightTarget','setZeroSightTarget','emitRecoveryEvent','legalRecoveryReturnTargets','grantRecoveryReturnOverride','handleVSignalThemeEvent','recoveredCardCanReturn');")
+]
+for old,new in fixes:
+    if old in s:s=s.replace(old,new,1)
+    elif new not in s:raise SystemExit(f'missing ZERO-SIGHT mixed attach migration anchor: {old[:110]}')
+p.write_text(s,encoding='utf-8')
+print('ZERO-SIGHT mixed Encore harness migrated to global attach contract')
