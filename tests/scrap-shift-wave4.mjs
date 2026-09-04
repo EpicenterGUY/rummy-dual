@@ -104,6 +104,6 @@ for(const [name,needle] of [
 ok(road.includes('4차 수명주기 슬라이스 4장 — 7♦ 예비 나사 / 8♣ 분기 레일 / 8♥ 예비 섀시 / 7♠ 파쇄기'),'ROADMAP records SCRAP-SHIFT wave4');
 ok(road.includes('과열 부품의 같은 턴 취약 중복 적용'),'ROADMAP records the overheated-part duplicate gate fix');
 ok(themeDoc.includes('4차 수명주기 슬라이스 — 7♦ `예비 나사` / 8♣ `분기 레일` / 8♥ `예비 섀시` / 7♠ `파쇄기`'),'canonical theme doc records wave4');
-ok(poolDoc.includes('24장 미라이브 · 16장 DEV 구현 완료(행동 4 + 반응 4 + 유틸리티 4 + 수명주기 4)'),'full-pool policy records sixteen DEV cards while keeping SCRAP-SHIFT non-live');
+const devCountMatch=poolDoc.match(/24장 미라이브 · (\d+)장 DEV 구현 완료/);\nok(!!devCountMatch&&Number(devCountMatch[1])>=16,'full-pool policy keeps at least the wave4 sixteen DEV cards while later waves may increase the count');
 ok(road.includes('- [ ] 24장 / 수트별 6장 정의 및 실제 효과 구현'),'full 24-card implementation remains open after wave4');
 console.log('SCRAP-SHIFT wave4 lifecycle regression passed.');
