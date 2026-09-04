@@ -214,8 +214,8 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] TWELVE-BLOOM 상황형 미리보기 기반 — 비채용 전투에서는 항상 숨김. 향후 관련 카드가 존재할 때 선택 중 새 조합/붙이기/회수의 최종 공개판을 투영해 `완성`, `해제`, `2/3 + 빠진 달/정확 슬롯`만 얇은 보조줄로 표시하며 긴 조합 폭을 늘리지 않음
 - [x] TWELVE-BLOOM 24/24 효과 구현 — 4개 수트 각 6장 전부를 비라이브 NAMED 변형·공용 효과 엔진에 연결하고, 교차 이동 정비 / 상대 조합 진입 보호 / 봉인·보호 분기 / 빛 셋 방어 / 행동 전 빛 셋 반환 +14까지 `tests/twelve-bloom-fourth-slice.mjs`로 잠금. 일반 해금·보상 전까지는 비라이브 유지
 - [x] TWELVE-BLOOM 라이브 전 DEV 통합 — `live:false` 자동 빌드 프로필 / 6단계 staging 해금안 / DEV 도감·덱빌더 / 24장 AI·로그라이크 행동 태그 / entry-payoff 분류 / 실제 `onBloomMatchChange` 봄맞춤 체험전을 연결. `tests/twelve-bloom-staging-integration.mjs`로 일반 모드 0장 노출과 DEV 경로를 함께 잠금
-- [ ] TWELVE-BLOOM UI/UX 구현 검증 — 비채용 덱에는 달/그림 정보를 상시 노출하지 않고, 관련 행동 선택 시 2/3 미리보기와 새 완성/완성 가능 그림만 은은하게 안내. 긴 공개 런은 기존 로컬 스크롤을 유지
-- [ ] TWELVE-BLOOM 밸런스/회귀 검증 — 윤달로 계절 조건이 지나치게 느슨해지는지, 회수/이동 재완성 루프, 기본 SET/RUN 가치 잠식, 모든 라이브 테마와의 혼합 밀도 및 직접 위력 비율을 실행 테스트로 검증
+- [x] TWELVE-BLOOM UI/UX 구현 검증 — 비채용 덱은 달/그림 정보를 숨기고, 관련 선택에서만 완성/해제/2·3 힌트를 표시. 긴 공개 런은 `.meldCardRow` 로컬 가로 스크롤을 유지하고 preview chip은 별도 wrap. `tests/twelve-bloom-preview.mjs`
+- [x] TWELVE-BLOOM 밸런스/회귀 검증 — TWELVE 포함 6테마 최대밀도/모든 2테마 구성 회귀와 실제 엔진 5,500전 완료. mixed 전투 길이 52.49→52.55로 사실상 동일, RUN의 장기 순환은 일반 RUN 기준선에서도 확인되어 TWELVE 고유 문제가 아니며, 10♠/Q♠ 직접 보너스는 전체 반환의 0.06~0.37회/100반환 수준. full recirculation 0. `docs/TWELVE_BLOOM_BALANCE_RESULTS.md`
 - [x] 향후 신규 테마는 카드군부터 만들기보다 지역의 문화/직업/갈등에서 파생시키는 방식 우선 검토 — `docs/THEME_GROUPS.md`에 지역/생활권 → 문화·직업 앵커 3+ → 갈등 1+ → 핵심 동사 4+ → 공용 러미 행동 3+ → 기존 테마 중복 검사 → 전용 개념 최소화 → 마지막 네이밍/비주얼 순서의 기획 게이트를 잠금. 실존 지역을 장식적 고정관념으로 소비하지 않고 행동 구조의 근거로 사용
 
 ### 구현 전 공통 검증
