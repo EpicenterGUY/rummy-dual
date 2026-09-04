@@ -57,6 +57,7 @@ ok(road.includes('- [x] TWELVE-BLOOM 기본 판정 잠금'),'ROADMAP closes the 
 ok(road.includes('- [x] 계절맞춤 / 그림맞춤 구조 잠금'),'ROADMAP closes the matching-pattern task');
 ok(road.includes('- [x] TWELVE-BLOOM 혼합덱 규칙 잠금'),'ROADMAP closes the mixed-deck material task');
 ok(road.includes('- [x] TWELVE-BLOOM 24장 정식 후보 풀 재설계'),'ROADMAP closes the 24-card candidate design task');
-ok(road.includes('- [ ] TWELVE-BLOOM UI/UX 구현 검증')&&road.includes('- [ ] TWELVE-BLOOM 밸런스/회귀 검증'),'implementation/UI/balance remain explicitly open');
+ok(road.includes('- [x] TWELVE-BLOOM UI/UX 구현 검증')&&road.includes('- [x] TWELVE-BLOOM 밸런스/회귀 검증'),'pre-live UI and balance gates are closed');
+ok(doc.includes('Normal unlock/reward exposure approved and enabled.')&&doc.includes('- [ ] Normal unlock/reward exposure approved and enabled.'),'normal user exposure remains the final open gate');
 
 console.log('TWELVE-BLOOM design-lock regression passed.');
