@@ -123,6 +123,6 @@ ok(road.includes('6차 피니셔 슬라이스 4장 — J♦ 메인 프레임 / Q
 ok(road.includes('- [x] 24장 / 수트별 6장 정의 및 실제 효과 구현'),'ROADMAP marks the full 24-card definition/effect implementation complete');
 ok(themeDoc.includes('6차 피니셔 슬라이스 — J♦ `메인 프레임` / Q♣ `조립 라인` / K♥ `테세우스 프레임` / K♠ `스크랩 폭주`'),'canonical theme doc records the final DEV wave');
 ok(poolDoc.includes('24/24 라이브 구현 완료'),'full-pool policy records the final 24/24 live promotion');
-ok(road.includes('- [ ] 해금·도감·자동 테마 빌드·체험전 연결 후 일반 보상 승격'),'live release integration remains explicitly open');
+ok(road.includes('- [x] 해금·도감·자동 테마 빌드·체험전 연결 후 일반 보상 승격'),'live release integration is complete after the final DEV wave');
 
-console.log('SCRAP-SHIFT 24/24 final DEV wave regression passed.');
+console.log('SCRAP-SHIFT 24/24 final wave regression passed.');
