@@ -22,3 +22,17 @@ for old,new in fixes:
     elif new not in s:raise SystemExit(f'missing M10 migration anchor: {old[:80]}')
 p.write_text(s,encoding='utf-8')
 print('localized preview and M10 multi-attach harness migrated')
+
+
+p=ROOT/'tests'/'m11b-action-commit.mjs'
+s=p.read_text(encoding='utf-8')
+fixes=[
+("  const player={hand:[...handCards,card('C','2')],melds:[],returnedSwitchThisTurn:false,actedThisTurn:false,turnStarts:1};","  const player={hand:[...handCards,card('C','2')],melds:[],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0,actedThisTurn:false,turnStarts:1};"),
+("  const enemy={hand:[],melds:[{type,cards:[...baseCards],chain,lastAttachToken:null,createdToken:null,lastTouchedOwnerStart:0,status:{}}],returnedSwitchThisTurn:false,turnStarts:1};","  const enemy={hand:[],melds:[{type,cards:[...baseCards],chain,createdToken:null,lastTouchedOwnerStart:0,status:{}}],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0,turnStarts:1};"),
+("  install(ctx,...rankCore,'recoveredCardCanReturn','recoveredCardsCanReturn','chainDamage','canContinueReturnedRun','attachCards');","  install(ctx,...rankCore,'recoveredCardCanReturn','recoveredCardsCanReturn','chainDamage','attachAccess','consumeAttachUse','attachCards');")
+]
+for old,new in fixes:
+    if old in s:s=s.replace(old,new,1)
+    elif new not in s:raise SystemExit(f'missing M11B attach migration anchor: {old[:90]}')
+p.write_text(s,encoding='utf-8')
+print('M11B attach action harness migrated to global attach contract')
