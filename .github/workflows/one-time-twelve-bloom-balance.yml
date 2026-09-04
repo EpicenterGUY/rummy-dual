@@ -1,0 +1,43 @@
+name: One-time TWELVE-BLOOM balance matrix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-twelve-bloom-balance.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  cohort:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        cohort: [baseline-mixed, tb-set, tb-run, tb-mixed, tb-v-signal, tb-zero-sight, tb-point-blank, tb-mail-route, tb-scrap-shift]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Syntax gate
+        run: node --check experiments/twelve-bloom-balance.mjs
+
+      - name: Run actual-engine cohort
+        env:
+          TB_SEEDS: 500
+          TB_MAX_TURNS: 120
+          TB_COHORTS: ${{ matrix.cohort }}
+          TB_OUTPUT: /tmp/tb-${{ matrix.cohort }}.json
+        run: |
+          set -euo pipefail
+          node experiments/twelve-bloom-balance.mjs > /tmp/tb-${{ matrix.cohort }}.log
+          cat /tmp/tb-${{ matrix.cohort }}.log
+
+      - name: Upload cohort result
+        uses: actions/upload-artifact@v4
+        with:
+          name: twelve-bloom-${{ matrix.cohort }}
+          path: /tmp/tb-${{ matrix.cohort }}.json
+          retention-days: 30
