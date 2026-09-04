@@ -112,3 +112,34 @@ if old in s:s=s.replace(old,new,1)
 elif new not in s:raise SystemExit('missing POINT-BLANK recovery UI migration anchor')
 p.write_text(s,encoding='utf-8')
 print('POINT-BLANK recovery UI regression migrated to compact label')
+
+
+p=ROOT/'tests'/'safety-hardening.mjs'
+s=p.read_text(encoding='utf-8')
+old="""{
+ const card={uid:'8',suit:'H',rank:'8',owner:'player',blockedUntilTurn:null,recoveredToken:null,recoverReturnOverrideToken:null};
+ const player={hand:[card],deck:[c('d')],spent:[],melds:[],newMeldCount:0,returnedSwitchThisTurn:true,maintenanceUsed:false};
+ const enemy={hand:[],deck:[],spent:[],melds:[],newMeldCount:0,returnedSwitchThisTurn:false};
+ const m={type:'RUN',cards:[{suit:'H',rank:'5'},{suit:'H',rank:'6'},{suit:'H',rank:'7'}],chain:1,lastAttachToken:9,returnAttachToken:9,createdToken:null};enemy.melds=[m];
+ const state={player,enemy,discard:[],turnNo:2,turnToken:9,switchTarget:'enemy',gameOver:false,turn:'player',phase:'action'};
+ const ctx=vm.createContext({console,Set,Map,Array,Math,state});ctx.sideObj=w=>w==='player'?player:enemy;ctx.other=w=>w==='player'?'enemy':'player';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=w=>state.switchTarget==='neutral'||state.switchTarget===w;ctx.canContinueReturnedRun=(w,x)=>w==='player'&&x===m;ctx.meldType=cards=>cards.every(x=>x.suit==='H')&&new Set(cards.map(x=>Number(x.rank))).size===cards.length?'RUN':null;ctx.meldFixedActive=()=>false;ctx.cardFixedActive=()=>false;install(ctx,'combinations','bestNewMeld','bestNewMeldForTurn','recoveredCardCanReturn','recoveredCardsCanReturn','anyAttachOption','canFinishRun','hasAnyLegalAction','ownedRecycleCount','maintenanceLimit');
+ ok(ctx.anyAttachOption('player'),'same returned RUN continuation counts as a legal attach after physical SWITCH return');
+ ok(ctx.maintenanceLimit('player')===1,'legal same-RUN continuation prevents false two-card stuck maintenance');
+}"""
+new="""{
+ const card={uid:'8',suit:'H',rank:'8',owner:'player',blockedUntilTurn:null,recoveredToken:null,recoverReturnOverrideToken:null};
+ const player={hand:[card],deck:[c('d')],spent:[],melds:[],newMeldCount:0,attachCount:1,extraAttachRemaining:0,returnedSwitchThisTurn:true,maintenanceUsed:false};
+ const enemy={hand:[],deck:[],spent:[],melds:[],newMeldCount:0,attachCount:0,extraAttachRemaining:0,returnedSwitchThisTurn:false};
+ const m={type:'RUN',cards:[{suit:'H',rank:'5'},{suit:'H',rank:'6'},{suit:'H',rank:'7'}],chain:1,createdToken:null};enemy.melds=[m];
+ const state={player,enemy,discard:[],turnNo:2,turnToken:9,switchTarget:'enemy',gameOver:false,turn:'player',phase:'action'};
+ const ctx=vm.createContext({console,Set,Map,Array,Math,state});ctx.sideObj=w=>w==='player'?player:enemy;ctx.other=w=>w==='player'?'enemy':'player';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=w=>state.switchTarget==='neutral'||state.switchTarget===w;ctx.meldType=cards=>cards.every(x=>x.suit==='H')&&new Set(cards.map(x=>Number(x.rank))).size===cards.length?'RUN':null;ctx.meldFixedActive=()=>false;ctx.cardFixedActive=()=>false;ctx.anyCleanupOption=()=>false;install(ctx,'combinations','bestNewMeld','bestNewMeldForTurn','recoveredCardCanReturn','recoveredCardsCanReturn','attachAccess','anyAttachOption','canFinishRun','hasAnyLegalAction','ownedRecycleCount','maintenanceLimit');
+ ok(!ctx.anyAttachOption('player'),'spent base attach does not regain a hidden same-RUN continuation after SWITCH return');
+ ok(ctx.maintenanceLimit('player')===2,'without a named exception, spent attach correctly qualifies for stuck maintenance');
+ player.extraAttachRemaining=1;
+ ok(ctx.anyAttachOption('player'),'explicit named extra-attach allowance restores a legal attach without a second SWITCH move');
+ ok(ctx.maintenanceLimit('player')===1,'named extra-attach allowance prevents false stuck maintenance');
+}"""
+if old in s:s=s.replace(old,new,1)
+elif new not in s:raise SystemExit('missing safety-hardening same-RUN migration anchor')
+p.write_text(s,encoding='utf-8')
+print('safety hardening migrated from same-RUN continuation to named extraAttach contract')
