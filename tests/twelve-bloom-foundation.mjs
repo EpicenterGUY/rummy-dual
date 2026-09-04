@@ -21,7 +21,8 @@ function makeCtx(){
 
 new Function(script);
 ok(script.includes('twelveBloomLeapMonth:null,twelveBloomLeapOwner:null'),'new card state initializes leap-month metadata');
-ok(!script.includes("themeId:'twelve-bloom'")&&!script.includes("'twelve-bloom':Object.freeze"),'foundation remains non-live and absent from runtime theme registries');
+ok(script.includes("themeId:'twelve-bloom'")&&script.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom'"),'staged TWELVE-BLOOM card definitions and runtime matching registry are present');
+ok(!script.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom',name:'TWELVE-BLOOM',displayName:'TWELVE-BLOOM',concept:'달 · 계절맞춤 · 그림맞춤 · 윤달',live:true"),'TWELVE-BLOOM runtime registry remains explicitly non-live');
 
 {
  const {ctx,state}=makeCtx();
