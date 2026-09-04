@@ -15,7 +15,7 @@ function makeCtx(){
  vm.runInContext(declaration('TWELVE_BLOOM_MONTH_BY_RANK','\nconst TWELVE_BLOOM_SEASON_DEFS='),ctx);
  vm.runInContext(declaration('TWELVE_BLOOM_SEASON_DEFS','\nconst TWELVE_BLOOM_PICTURE_DEFS='),ctx);
  vm.runInContext(declaration('TWELVE_BLOOM_PICTURE_DEFS','\nconst THEME_GROUPS='),ctx);
- for(const name of ['sideObj','other','meldsOf','twelveBloomAllKnownCards','twelveBloomPublicEntries','twelveBloomPublicCards','twelveBloomIsPublicCard','twelveBloomCardMonth','twelveBloomExactSlot','twelveBloomMatchSnapshot','twelveBloomMatchDiff','captureTwelveBloomSnapshots','diffTwelveBloomSnapshots','twelveBloomMatchGateState','twelveBloomMatchGateUsed','claimTwelveBloomMatchGate','clearTwelveBloomLeapMonth','setTwelveBloomLeapMonth','ensureHandPreparation','resetHandPreparation','enterHand'])vm.runInContext(source(name),ctx);
+ for(const name of ['sideObj','other','meldsOf','twelveBloomAllKnownCards','twelveBloomPublicEntries','twelveBloomPublicCards','twelveBloomIsPublicCard','twelveBloomCardMonth','twelveBloomExactSlot','twelveBloomMatchSnapshotFromCards','twelveBloomMatchSnapshot','twelveBloomMatchDiff','captureTwelveBloomSnapshots','diffTwelveBloomSnapshots','twelveBloomMatchGateState','twelveBloomMatchGateUsed','claimTwelveBloomMatchGate','clearTwelveBloomLeapMonth','setTwelveBloomLeapMonth','ensureHandPreparation','resetHandPreparation','enterHand'])vm.runInContext(source(name),ctx);
  return{ctx,state,logs}
 }
 
