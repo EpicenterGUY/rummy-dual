@@ -243,6 +243,7 @@ Before TWELVE-BLOOM can become live:
 - [x] Second movement/recovery slice implemented (12/24) — A♣ 달력 펼치기 / 3♣ 빈달 찾기 / 7♣ 윤달 표식 / 7♥ 푸른 띠 / 4♦ 건너는 새 / 8♦ 돌아오는 새. Final action-settled reactions, queued effect-choice draining before RUMMY, public-card neutral movement, opponent-board recovery source tracking, and non-shield leap reassignment are covered by `tests/twelve-bloom-second-slice.mjs`.
 - [x] Third sustain/rewind slice implemented (18/24) — 10♣ 겨울 채집 / Q♣ 한 해 넘기기 / 3♥ 봄매듭 / 5♥ 풀빛 띠 / 10♥ 계절 되감기 / 10♦ 새 셋. Sequential reaction-choice draining, post-refill RUMMY maintenance, action-card protection, exact-picture healing/cycling, and rewind-specific same-turn suppression are covered by `tests/twelve-bloom-third-slice.mjs`.
 - [x] Final light/movement slice implemented (24/24) — 6♦ 날갯짓 / Q♦ 철새 길 / A♠ 첫빛 / 3♠ 비치는 틈 / 8♠ 큰빛 / Q♠ 빛 셋. Cross-board movement maintenance, opponent-entry protection, optional first-season seal, used-opponent-meld seal/protect fallback, exact light-trio defense, and pre-action light-trio +14 return timing are covered by `tests/twelve-bloom-fourth-slice.mjs`.
-- [ ] Unlock/codex/build/tutorial/roguelike integration implemented.
+- [x] Pre-live integration harness implemented — explicit `live:false` theme/build/tutorial metadata, six-tier staging unlock plan outside normal unlocks, DEV-only codex/build access, all 24 AI/reward tendency tags, roguelike entry/payoff classification, and a real `onBloomMatchChange` season tutorial are covered by `tests/twelve-bloom-staging-integration.mjs`.
+- [ ] Normal unlock/reward exposure approved and enabled.
 - [ ] Single-theme / every two-theme / mixed / long-RUN UI regression completed.
 - [ ] Match looseness and direct-power ratio simulation completed.
