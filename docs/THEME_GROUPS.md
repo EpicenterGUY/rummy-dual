@@ -532,7 +532,8 @@ Updated: 2026-09-04
 - [x] 4계절맞춤 / 정확 그림맞춤 5종 잠금
 - [x] 혼합덱 공개 재료 규칙 / 재완성 루프 방지 잠금
 - [x] 24장 후보 풀 잠금
-- [ ] match evaluator / 윤달 메타데이터 / UI preview 구현
+- [x] match evaluator / 윤달 메타데이터 기반 구현 — 양측 공개판의 내 소유 카드 snapshot, 4계절/5그림 exact 판정, 신규 완성/해제 diff, owner+match 턴 게이트, 공개 K 1장 윤달 수명주기
+- [ ] 상황형 UI preview 구현
 - [ ] 24장 효과 / 해금 / 도감 / 빌드 / 체험전 / 보상 연결
 - [ ] 단일 / 모든 2테마 / mixed / 긴 RUN / 직접 위력 비율 회귀
 
