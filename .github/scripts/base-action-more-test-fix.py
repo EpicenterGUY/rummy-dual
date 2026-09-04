@@ -102,3 +102,13 @@ for old,new in fixes:
     elif new not in s:raise SystemExit(f'missing named-final semantics migration anchor: {old[:110]}')
 p.write_text(s,encoding='utf-8')
 print('Rebel Joker final semantics migrated to extraAttach suppression')
+
+
+p=ROOT/'tests'/'point-blank-recovery-access.mjs'
+s=p.read_text(encoding='utf-8')
+old="ok(ui.includes(\"recoverAccess?.free?'무료 회수':'회수'\")&&ui.includes(\"'기본 회수 사용함'\"),'player UI visibly distinguishes free recovery from an already-used basic recovery');"
+new="ok(ui.includes(\"recoverAccess?.free?'무료 회수':'회수'\")&&ui.includes(\"'회수 사용함'\")&&ui.includes(\":state.player.recoveredThisTurn?'회수 사용함':'회수'\"),'player UI visibly distinguishes free recovery from an already-used basic recovery with the compact action label');"
+if old in s:s=s.replace(old,new,1)
+elif new not in s:raise SystemExit('missing POINT-BLANK recovery UI migration anchor')
+p.write_text(s,encoding='utf-8')
+print('POINT-BLANK recovery UI regression migrated to compact label')
