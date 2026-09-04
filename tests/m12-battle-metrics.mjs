@@ -2,18 +2,23 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
+const circulationExperiment=fs.readFileSync(new URL('../experiments/m12-hand-circulation.mjs',import.meta.url),'utf8');
 const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
 function functionSource(name){const marker=`function ${name}(`,start=script.indexOf(marker);if(start<0)throw new Error(`missing ${name}`);const body=script.indexOf('){',start);let depth=0,end=-1;for(let i=body+1;i<script.length;i++){if(script[i]==='{')depth++;else if(script[i]==='}'){depth--;if(depth===0){end=i+1;break}}}if(end<0)throw new Error(`unterminated ${name}`);return script.slice(start,end)}
 new Function(script);
 
 ok(html.includes("const BATTLE_METRICS_KEY='rummyDuelBattleMetricsV1'"),'M12 uses a versioned local battle-metrics history key');
-for(const name of ['getBattleMetrics','battleMetricTurn','recordBattleTurn','recordMeldActionMetric','recordDetonateMetric','recordRummyMetric','recordMaintenanceMetric','recordIntentionalBombAcceptance','battleMetricsSummaryText','battleMetricsSnapshot','battleMetricsHistory','saveBattleMetrics'])ok(script.includes(`function ${name}(`),`M12 helper exists: ${name}`);
+for(const name of ['blankCirculationSide','blankCirculationStats','getCirculationStats','circulationSideStats','recordCirculationCounter','recordCirculationTurn','circulationStatsSnapshot','getBattleMetrics','battleMetricTurn','recordBattleTurn','recordMeldActionMetric','recordDetonateMetric','recordRummyMetric','recordMaintenanceMetric','recordIntentionalBombAcceptance','battleMetricsSummaryText','battleMetricsSnapshot','battleMetricsHistory','saveBattleMetrics'])ok(script.includes(`function ${name}(`),`M12 helper exists: ${name}`);
 
 {
-  const state={switchPower:12,turnToken:7,sessionMode:'battle'};
-  const ctx=vm.createContext({console,Math,JSON,Array,Object,state,other:w=>w==='player'?'enemy':'player'});
-  for(const name of ['getBattleMetrics','battleMetricTurn','recordBattleTurn','recordMeldActionMetric','recordDetonateMetric','recordRummyMetric','recordMaintenanceMetric','recordIntentionalBombAcceptance','battleMetricTurns','battleMetricsSummaryText','battleMetricsSnapshot'])vm.runInContext(functionSource(name),ctx);
+  const state={switchPower:12,turnToken:7,sessionMode:'battle',player:{charId:'wanderer',themeId:'mixed',hand:[{},{},{}]},enemy:{charId:'wanderer',themeId:'mixed',hand:[{},{}]}};
+  const progress={selectedStructure:'run',deckBuild:{enabled:false}};
+  const ctx=vm.createContext({console,Math,JSON,Array,Object,Number,state,progress,other:w=>w==='player'?'enemy':'player',sideObj:w=>state[w]});
+  for(const name of ['blankCirculationSide','blankCirculationStats','getCirculationStats','circulationSideStats','recordCirculationCounter','recordCirculationTurn','circulationStatsSnapshot','getBattleMetrics','battleMetricTurn','recordBattleTurn','recordMeldActionMetric','recordDetonateMetric','recordRummyMetric','recordMaintenanceMetric','recordIntentionalBombAcceptance','battleMetricTurns','battleMetricsSummaryText','battleMetricsSnapshot'])vm.runInContext(functionSource(name),ctx);
+  ctx.recordCirculationTurn('player');ctx.recordCirculationTurn('enemy');ctx.recordCirculationCounter('player','lowSkips');ctx.recordCirculationCounter('player','rummys');ctx.recordCirculationCounter('enemy','maintenance');
+  ok(ctx.getCirculationStats().turns===2&&ctx.circulationSideStats('player').turns===1,'circulation telemetry keeps total and per-side turn samples');
+  ok(ctx.circulationSideStats('player').lowSkips===1&&ctx.circulationSideStats('player').rummys===1&&ctx.circulationSideStats('enemy').maintenance===1,'circulation counters retain actor identity');
   let st=ctx.getBattleMetrics();
   ok(st.maxPower===12&&st.turns===0,'metric state starts from the live switch power and zero completed turns');
   ctx.recordMeldActionMetric('player','RUN',3,'enemy',{extraAttach:false});
@@ -32,6 +37,8 @@ for(const name of ['getBattleMetrics','battleMetricTurn','recordBattleTurn','rec
   ok(st.turns===1&&st.intentionalBombAccepts[1].turn===2,'completed turn count advances later event timing');
   const snap=ctx.battleMetricsSnapshot('win');
   ok(snap.outcome==='win'&&snap.mode==='battle'&&snap.chains.length===1&&snap.maxPower===12,'snapshot is structured and tagged with mode/outcome');
+  ok(snap.version===2&&snap.playerStructure==='run'&&snap.customDeck===false,'snapshot v2 retains the selected deck-structure cohort');
+  ok(snap.circulation?.player?.turns===1&&snap.circulation.player.lowSkips===1&&snap.circulation.enemy.maintenance===1,'snapshot persists per-side circulation counters');
   ok(ctx.battleMetricsSummaryText().includes('버스트 1회@1')&&ctx.battleMetricsSummaryText().includes('체인 1회@1')&&ctx.battleMetricsSummaryText().includes('폭발 1회@1'),'result summary exposes action timing compactly');
 }
 
@@ -49,6 +56,8 @@ ok(saveSource.includes("state.sessionMode==='tutorial'")&&saveSource.includes('i
 ok(saveSource.includes('if(state.m11bExperimentBattle)')&&saveSource.includes('saveM11BExperimentMetrics(outcome)')&&saveSource.indexOf('if(state.m11bExperimentBattle)')<saveSource.indexOf('if(state.developerBattle)return false'),'M11B DEV sandbox may route to its isolated history before generic DEV suppression');
 ok(functionSource('newGame').includes('state.battleMetrics=null'),'each new combat resets the per-battle M12 metrics object');
 ok(html.includes("history.slice(-50)"),'local metric history is bounded to the most recent 50 samples');
+ok(circulationExperiment.includes("'twelve-bloom'")&&circulationExperiment.includes("export const COHORTS="),'M12 circulation matrix includes newly live TWELVE-BLOOM');
 ok(road.includes('- [x] Track turn count, BURST/CHAIN/DETONATE timing'),'ROADMAP marks M12 tracking complete');
+ok(road.includes('- [x] Structure / circulation cohort telemetry'),'ROADMAP marks structure-aware M12 sampling ready');
 ok(road.includes('M12: collect real playtest samples from the new per-battle metrics history'),'Current next work now points to real metric-driven balance instead of completed UX/L10N work');
 console.log('M12 battle metrics regression passed.');

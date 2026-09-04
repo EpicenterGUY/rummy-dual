@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url';
 import {makeGameFactory,html} from '../tests/helpers/live-game.mjs';
 
 export const BASE_REF='002bc9bcfdce86b4690ff71782cadd8fe86e510d';
-export const COHORTS=['set','run','mixed','v-signal','zero-sight','point-blank','mail-route','scrap-shift'];
+export const COHORTS=['set','run','mixed','v-signal','zero-sight','point-blank','mail-route','scrap-shift','twelve-bloom'];
 
 function instrumentSource(source){
  return source
