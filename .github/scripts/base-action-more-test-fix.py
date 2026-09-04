@@ -73,3 +73,18 @@ if old in s:s=s.replace(old,new,1)
 elif new not in s:raise SystemExit('missing Connection Link audit migration anchor')
 p.write_text(s,encoding='utf-8')
 print('Connection Link named-card audit migrated to explicit extraAttach contract')
+
+
+p=ROOT/'tests'/'named-card-behavior-2.mjs'
+s=p.read_text(encoding='utf-8')
+fixes=[
+("  const source={type:'RUN',cards:[card('C',6),card('C',7),card('C',8),moving],createdToken:1,lastAttachToken:null};","  const source={type:'RUN',cards:[card('C',6),card('C',7),card('C',8),moving],createdToken:1};"),
+("  const target={type:'SET',cards:[Object.assign(card('S',9),{_meldType:'SET'}),card('H',9),tuner],createdToken:1,lastAttachToken:null};","  const target={type:'SET',cards:[Object.assign(card('S',9),{_meldType:'SET'}),card('H',9),tuner],createdToken:1};"),
+("  const side={flags:{tuner:false,roundabout:false},returnedSwitchThisTurn:false,turnStarts:1,freeRecoverAfterRummy:false};","  const side={flags:{tuner:false,roundabout:false},returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0,turnStarts:1,freeRecoverAfterRummy:false};"),
+("  install(ctx,'tunerReadyForRecovery','recoveryFreeReason');","  install(ctx,'attachAccess','tunerReadyForRecovery','recoveryFreeReason');")
+]
+for old,new in fixes:
+    if old in s:s=s.replace(old,new,1)
+    elif new not in s:raise SystemExit(f'missing named behavior attach migration anchor: {old[:100]}')
+p.write_text(s,encoding='utf-8')
+print('named-card Tuner harness migrated to global attach contract')
