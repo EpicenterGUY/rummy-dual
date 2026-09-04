@@ -1,0 +1,66 @@
+name: Full regression
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'tests/**'
+      - 'docs/**'
+      - 'ROADMAP.md'
+      - 'README.md'
+      - '.github/workflows/regression.yml'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'tests/**'
+      - 'docs/**'
+      - 'ROADMAP.md'
+      - 'README.md'
+      - '.github/workflows/regression.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse and rule-source gates
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs=require('fs');
+          const html=fs.readFileSync('index.html','utf8');
+          const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+          new Function(script);
+          const legacy=[
+            'function canContinueReturnedRun(',
+            'lastAttachToken',
+            'returnAttachToken',
+            'extraAttachGrantedToken',
+            'rebelReturnBlockedToken'
+          ];
+          for(const token of legacy){
+            if(html.includes(token))throw new Error('obsolete base attach exception remains: '+token);
+          }
+          for(const required of ['function attachAccess(','function canCleanupMeld(','id="cleanupBtn"']){
+            if(!html.includes(required))throw new Error('missing simplified base-action contract: '+required);
+          }
+          console.log('PASS: game script parses and simplified base-action source contract is intact');
+          NODE
+
+      - name: Run full regression suite
+        run: |
+          set -euo pipefail
+          count=0
+          for test in tests/*.mjs; do
+            echo "RUN $test"
+            node "$test"
+            count=$((count+1))
+          done
+          echo "ALL_TESTS_PASSED=$count"
