@@ -6,7 +6,7 @@ function compiledGameRunner(sourceHtml=html,options={}){
   code=code.slice(0,code.indexOf("document.getElementById('developerBtn').onclick"));
   const names=[...code.matchAll(/function (\w+)\(/g)].map(m=>m[1]);
   const exports=[...new Set(names)].filter(n=>!['rec','walk','visit','finish','resume','next','apply','done'].includes(n));
-  code+=`\ndeveloperMode=${!!options.developer};\nrender=()=>{};combatBanner=()=>{};flashPile=()=>{};log=()=>{};renderEffectChoiceModal=()=>{};\nObject.assign(globalThis,{state,NAMED,CORE_IDS,progress,getProgress:()=>progress,getPlayerSettings:()=>playerSettings,replaceProgress:value=>progress=normalizeProgress(value),testSetDeveloperField:value=>developerField=value,${exports.map(n=>`${n}:typeof ${n}==='function'?${n}:undefined`).join(',')}});})();`;
+  code+=`\ndeveloperMode=${!!options.developer};\nrender=()=>{};combatBanner=()=>{};flashPile=()=>{};log=()=>{};renderEffectChoiceModal=()=>{};\nObject.assign(globalThis,{state,NAMED,CORE_IDS,THEME_GROUPS,THEME_TUTORIALS,THEME_BUILD_PROFILES,TENDENCY_BY_TAG,ROGUELIKE_THEME_ENTRY_TAGS,TWELVE_BLOOM_STAGING_UNLOCKS,progress,getProgress:()=>progress,getPlayerSettings:()=>playerSettings,replaceProgress:value=>progress=normalizeProgress(value),testSetDeveloperField:value=>developerField=value,${exports.map(n=>`${n}:typeof ${n}==='function'?${n}:undefined`).join(',')}});})();`;
   const compiled=new vm.Script(code,{filename:'rummy-duel-live-engine.js'});
   return function instantiate(seed=1,instanceOptions={}){
     let value=seed>>>0;
