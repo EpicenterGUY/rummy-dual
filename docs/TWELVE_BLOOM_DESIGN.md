@@ -236,8 +236,8 @@ Before TWELVE-BLOOM can become live:
 - [x] New-completion / same-turn anti-loop contract locked.
 - [x] 24-card / six-per-suit candidate pool locked.
 - [x] No extra base new-meld/attach actions and no numeric theme resource.
-- [ ] Match evaluator + before/after snapshots implemented.
-- [ ] Leap-month metadata lifecycle implemented.
+- [x] Match evaluator + before/after snapshots implemented — public material is read across both boards by card ownership, with season/picture snapshots and newly-completed/broken diffs.
+- [x] Leap-month metadata lifecycle implemented — one owned public K per player, 1–12 assignment, atomic reassignment, and automatic clearing on hand/deck/discard/spent/public-retire exits.
 - [ ] Contextual match preview UI implemented.
 - [ ] 24 card effects implemented.
 - [ ] Unlock/codex/build/tutorial/roguelike integration implemented.
