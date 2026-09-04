@@ -124,6 +124,7 @@ for(const [fnName,needle] of [
 ])ok(source(fnName).includes(needle),`${fnName} participates in the final-state TWELVE-BLOOM transaction`);
 
 const attach=source('attachCards');
-ok(attach.indexOf('endTwelveBloomAction(bloomTx')>attach.indexOf("retireMeld(targetSide,currentIndex,'버스트 후 4장 세트 자동 정리"),'BURST attach finalizes bloom matching only after automatic SET retirement');
+ok(attach.includes("const result=afterRetire()")&&attach.includes("retireMeld(targetSide,currentIndex,'버스트 후 4장 세트 자동 정리"),'BURST completion calls the post-retirement continuation only after automatic SET retirement');
+ok(attach.includes("const afterRetire=()=>{const bloomSummary=typeof endTwelveBloomAction==='function'?endTwelveBloomAction(bloomTx"),'the post-retirement continuation is the single TWELVE-BLOOM finalization point');
 
 console.log('TWELVE-BLOOM final match-change event regression passed.');
