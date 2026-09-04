@@ -2,7 +2,7 @@ import fs from 'node:fs';
 const doc=fs.readFileSync(new URL('../docs/THEME_GROUPS.md',import.meta.url),'utf8');
 const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
-ok(doc.includes('# MAIL-ROUTE')&&doc.includes('후속 정식 테마 후보'),'MAIL-ROUTE is recorded as design-locked but not falsely live');
+ok(doc.includes('# MAIL-ROUTE')&&doc.includes('정식 라이브 테마')&&doc.includes('28/28 풀 구현 완료'),'MAIL-ROUTE design lock remains valid in its completed live state');
 ok(doc.includes('28장, 수트별 7장'),'candidate pool is locked to 28 cards with seven per suit');
 ok(doc.includes('일반/다른 테마 카드에도 붙일 수 있다'),'mail marker stays theme-agnostic for mixed decks');
 ok(doc.includes('손패 ↔ 공개 조합')&&doc.includes('공개 조합 ↔ 공개 조합')&&doc.includes('공용 버림패 또는 소모패'),'mail lifecycle preserves active route zones and clears on discard/spent');
