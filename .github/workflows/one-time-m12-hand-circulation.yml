@@ -1,0 +1,83 @@
+name: One-time M12 hand circulation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-m12-hand-circulation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  m12:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Syntax gate
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs=require('fs');
+          const html=fs.readFileSync('index.html','utf8');
+          const script=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
+          new Function(script);
+          console.log('PASS: game script parses');
+          NODE
+
+      - name: Run paired M12 circulation experiment
+        env:
+          M12_SEEDS: 1000
+          M12_MAX_TURNS: 120
+          M12_OUTPUT: /tmp/m12-hand-circulation.json
+        run: |
+          set -euo pipefail
+          node experiments/m12-hand-circulation.mjs > /tmp/m12-hand-circulation.log
+          echo 'M12_EXPERIMENT_COMPLETE'
+          node - <<'NODE'
+          const fs=require('fs');
+          const r=JSON.parse(fs.readFileSync('/tmp/m12-hand-circulation.json','utf8'));
+          const pct=(a,b)=>b===0?null:+(((a-b)/b)*100).toFixed(2);
+          const rows=r.cohorts.map(x=>({
+            cohort:x.cohort,
+            baseline:{
+              avgHand:x.baseline.avgHand, low13Pct:x.baseline.low13Pct,
+              rummyPer100:x.baseline.rummyPer100, maintenancePer100:x.baseline.maintenancePer100,
+              recycles:x.baseline.recycles, full:x.baseline.fullRecirculations,
+              emergency:x.baseline.emergencyReleases, avgBattleTurns:x.baseline.avgBattleTurns
+            },
+            candidateA:{
+              avgHand:x.candidateA.avgHand, low13Pct:x.candidateA.low13Pct,
+              rummyPer100:x.candidateA.rummyPer100, maintenancePer100:x.candidateA.maintenancePer100,
+              recycles:x.candidateA.recycles, full:x.candidateA.fullRecirculations,
+              emergency:x.candidateA.emergencyReleases, avgBattleTurns:x.candidateA.avgBattleTurns
+            },
+            relativeLow13ChangePct:pct(x.candidateA.low13Pct,x.baseline.low13Pct)
+          }));
+          console.log('M12_SUMMARY_JSON='+JSON.stringify({baseRef:r.baseRef,seeds:r.seeds,maxTurns:r.maxTurns,rows}));
+          NODE
+
+      - name: Run full regression suite
+        run: |
+          set -euo pipefail
+          count=0
+          for test in tests/*.mjs; do
+            echo "RUN $test"
+            node "$test"
+            count=$((count+1))
+          done
+          echo "ALL_TESTS_PASSED=$count" | tee /tmp/m12-tests.txt
+
+      - name: Upload M12 results
+        uses: actions/upload-artifact@v4
+        with:
+          name: m12-hand-circulation-results
+          path: |
+            /tmp/m12-hand-circulation.json
+            /tmp/m12-tests.txt
+          retention-days: 30
