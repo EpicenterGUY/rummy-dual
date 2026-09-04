@@ -1,4 +1,4 @@
-# rerun: M11B AI global attach harness
+# rerun: M12 attach metrics
 name: One-time base action simplification
 
 on:
@@ -55,6 +55,7 @@ jobs:
           node tests/m10-multiattach-search.mjs
           node tests/m11b-action-commit.mjs tests/m11b-ai-rank-plans.mjs
           node tests/m11b-ai-rank-plans.mjs
+          node tests/m12-battle-metrics.mjs
           node tests/theme-reaction-order.mjs
           node tests/theme-mix-simulation.mjs
           node tests/l10n-card-style.mjs
