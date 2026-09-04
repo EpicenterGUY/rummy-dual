@@ -2,7 +2,7 @@ import fs from 'node:fs';
 const doc=fs.readFileSync(new URL('../docs/THEME_GROUPS.md',import.meta.url),'utf8');
 const road=fs.readFileSync(new URL('../ROADMAP.md',import.meta.url),'utf8');
 function ok(v,m){if(!v)throw new Error(m);console.log(`PASS: ${m}`)}
-ok(doc.includes('# SCRAP-SHIFT')&&doc.includes('24장 카드')&&doc.includes('아직 라이브 카드군이 아니다'),'SCRAP-SHIFT is design-locked without pretending its 24-card pool is live');
+ok(doc.includes('# SCRAP-SHIFT')&&doc.includes('24장')&&doc.includes('정식 라이브 테마'),'SCRAP-SHIFT design lock is preserved after 24-card live promotion');
 ok(doc.includes('24장, 수트별 6장'),'candidate pool is locked to 24 cards with six per suit');
 ok(doc.includes('내가 소유한 일반/다른 테마 카드에도 `부품` 표식'),'parts remain mixed-deck compatible');
 ok(doc.includes('숫자·무늬·네임드·테마 ID·소유권·현재 조합 판정을 바꾸지 않는다'),'part marker never rewrites card identity or meld legality');
