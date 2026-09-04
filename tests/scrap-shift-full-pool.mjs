@@ -55,7 +55,9 @@ for(const tag of ['ssPartLabel','ssConveyor','ssRepairKit','ssDismantleDriver','
 
 const resolver=source('resolveEffects');
 for(const tag of ['ssPartLabel','ssConveyor','ssRepairKit','ssDismantleDriver','ssStandardSpec','ssTempWeld','ssMagnetRetriever','ssOverheatedPart','ssSpareScrew','ssExchangeSpec','ssAssemblyLine','ssScrapRampage'])ok(resolver.includes(`case'${tag}'`),`${tag} has a live resolver path`);
-for(const tag of ['ssSortingBench','ssCompatPort','ssRegenWorkshop','ssDisposalOrder','ssBranchRail','ssModuleBus','ssMainFrame'])ok(source('handleScrapShiftThemeEvent').includes(tag),`${tag} remains wired through the shared SCRAP-SHIFT event handler`);
+for(const tag of ['ssSortingBench','ssCompatPort','ssRegenWorkshop','ssDisposalOrder','ssBranchRail'])ok(source('handleScrapShiftThemeEvent').includes(tag),`${tag} remains wired directly through the shared SCRAP-SHIFT event handler`);
+ok(source('handleScrapShiftThemeEvent').includes('applyScrapShiftModuleBus')&&source('applyScrapShiftModuleBus').includes("'ssModuleBus'"),'Module Bus remains wired through its shared event helper');
+ok(source('handleScrapShiftThemeEvent').includes('scrapShiftMainFrameProtect')&&source('scrapShiftMainFrameProtect').includes("tag==='ssMainFrame'"),'Main Frame remains wired through its BURST-retirement helper');
 ok(source('resolveScrapShiftTurnStart').includes('ssSpareChassis'),'Spare Chassis remains wired through the owner turn-start lifecycle');
 ok(source('noteScrapShiftPartSpent').includes('ssShredder'),'Shredder remains wired through the shared part-to-spent lifecycle hook');
 ok(source('turnEnd').includes('resolveScrapShiftTheseus(w)'),'Theseus Frame remains in the shared end-turn path');
