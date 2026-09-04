@@ -106,5 +106,5 @@ ok(road.includes('과열 부품의 같은 턴 취약 중복 적용'),'ROADMAP re
 ok(themeDoc.includes('4차 수명주기 슬라이스 — 7♦ `예비 나사` / 8♣ `분기 레일` / 8♥ `예비 섀시` / 7♠ `파쇄기`'),'canonical theme doc records wave4');
 const devCountMatch=poolDoc.match(/24장 미라이브 · (\d+)장 DEV 구현 완료/);
 ok(!!devCountMatch&&Number(devCountMatch[1])>=16,'full-pool policy keeps at least the wave4 sixteen DEV cards while later waves may increase the count');
-ok(road.includes('- [ ] 24장 / 수트별 6장 정의 및 실제 효과 구현'),'full 24-card implementation remains open after wave4');
+ok(/- \[[ x]\] 24장 \/ 수트별 6장 정의 및 실제 효과 구현/.test(road),'full 24-card implementation remains tracked as later waves advance the checkbox');
 console.log('SCRAP-SHIFT wave4 lifecycle regression passed.');
