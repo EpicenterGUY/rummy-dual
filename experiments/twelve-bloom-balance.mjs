@@ -12,7 +12,8 @@ function instrumentSource(source){
    "function claimThemeTurnGate(c,key,turnToken=state.turnToken){const bag=ensureThemeTurnGates(c);if(!bag||bag[key]===turnToken)return false;bag[key]=turnToken;if(state.tbBalanceStats&&(key==='tbSunset'||key==='tbLightTrio'))state.tbBalanceStats[key]=(state.tbBalanceStats[key]||0)+1;return true}")
   .replace("s.deck=shuffle(pool);log(", "s.deck=shuffle(pool);if(state.tbBalanceStats)state.tbBalanceStats.recycles=(state.tbBalanceStats.recycles||0)+1;log(")
   .replace("function emergencyReleaseMeld(w,reason='순환 정체'){const plan=circulationReleasePlan(w);if(!plan)return false;",
-   "function emergencyReleaseMeld(w,reason='순환 정체'){const plan=circulationReleasePlan(w);if(!plan)return false;if(state.tbBalanceStats)state.tbBalanceStats.emergency=(state.tbBalanceStats.emergency||0)+1;");
+   "function emergencyReleaseMeld(w,reason='순환 정체'){const plan=circulationReleasePlan(w);if(!plan)return false;if(state.tbBalanceStats)state.tbBalanceStats.emergency=(state.tbBalanceStats.emergency||0)+1;")
+  .replace("sw.returnedSwitchThisTurn=true;sw.rummyReturnPending=false;", "sw.returnedSwitchThisTurn=true;if(state.tbBalanceStats)state.tbBalanceStats.returns=(state.tbBalanceStats.returns||0)+1;sw.rummyReturnPending=false;");
 }
 function seeded(seed){let v=seed>>>0||1;return()=>{v=(Math.imul(v,1664525)+1013904223)>>>0;return v/4294967296}}
 function sampleUnique(g,pool,n,rr,used=new Set()){
@@ -45,7 +46,7 @@ function makeCohortDeck(g,w,cohort,seed){
  return g.shuffle(cards);
 }
 function setup(g,cohort,seed){
- g.state.tbBalanceStats={tbSunset:0,tbLightTrio:0,recycles:0,emergency:0};
+ g.state.tbBalanceStats={tbSunset:0,tbLightTrio:0,recycles:0,emergency:0,returns:0};
  g.progress.totalClears=100;g.progress.selectedStructure=cohort==='tb-set'?'set':cohort==='tb-run'?'run':'mixed';
  for(const w of['player','enemy']){const s=g.state[w];s.hand=[];s.deck=makeCohortDeck(g,w,cohort,seed);s.spent=[];s.melds=[];g.drawMany(w,8,false)}
  Object.assign(g.state,{turnNo:1,turnToken:1,switchTarget:'neutral',switchPower:0,gameOver:false,field:null});
@@ -68,7 +69,6 @@ function playSide(g,w,acc,turnIndex){
  const unsub=g.subscribeEffectEvent(e=>{
   if(e.event==='onRummy'){rummied=true;acc.rummys++;if(acc.firstRummyTurn==null)acc.firstRummyTurn=turnIndex+1}
   if(e.event==='onBloomMatchChange'){const keys=e.newlyCompleted||[];if(keys.length){acc.bloomActions++;acc.seasons+=keys.filter(k=>k.startsWith('season:')).length;acc.pictures+=keys.filter(k=>k.startsWith('picture:')).length;if(keys.length>=2)acc.multiBloom++}acc.broken+=e.broken?.length||0}
-  if(e.event==='onReturnSwitch')acc.returns++;
  });
  const urgent=st.switchTarget===w&&st.switchPower>0,lowRummy=typeof g.aiLowHandRummyOpportunity==='function'&&g.aiLowHandRummyOpportunity(w);
  if(urgent&&!g.bestExtension(w)&&g.maintenanceLimit(w)>0){const cs=maintenanceCards(g,w,g.maintenanceLimit(w));if(cs.length)g.performMaintenance(w,cs)}
@@ -95,12 +95,12 @@ function runCohort(factory,cohort,seeds=500,maxTurns=120){
  const total={battles:seeds,turns:0,hands:[],rummys:0,noRummy:0,firstRummy:[],bloomActions:0,seasons:0,pictures:0,multiBloom:0,broken:0,returns:0,sunset:0,light:0,recycles:0,emergency:0,full:0,maintenance:0,bursts:0,chains:0,detonates:0,maxPower:[],battleTurns:[],capped:0,acqSkips:0,acqPasses:0};
  for(let seed=1;seed<=seeds;seed++){
   const g=factory(seed*101+cohort.length),st=g.state;setup(g,cohort,seed);
-  const acc={rummys:0,firstRummyTurn:null,bloomActions:0,seasons:0,pictures:0,multiBloom:0,broken:0,returns:0,hands:[],acqSkips:0,acqPasses:0};
+  const acc={rummys:0,firstRummyTurn:null,bloomActions:0,seasons:0,pictures:0,multiBloom:0,broken:0,hands:[],acqSkips:0,acqPasses:0};
   let t=0;for(;t<maxTurns&&!st.gameOver;t++)playSide(g,t%2?'enemy':'player',acc,t);
   if(!st.gameOver&&t>=maxTurns)total.capped++;
   const bm=g.getBattleMetrics(),cs=g.getCirculationStats(),tb=st.tbBalanceStats;
   total.turns+=t;total.hands.push(...acc.hands);total.rummys+=acc.rummys;if(acc.firstRummyTurn==null)total.noRummy++;else total.firstRummy.push(acc.firstRummyTurn);
-  total.bloomActions+=acc.bloomActions;total.seasons+=acc.seasons;total.pictures+=acc.pictures;total.multiBloom+=acc.multiBloom;total.broken+=acc.broken;total.returns+=acc.returns;
+  total.bloomActions+=acc.bloomActions;total.seasons+=acc.seasons;total.pictures+=acc.pictures;total.multiBloom+=acc.multiBloom;total.broken+=acc.broken;total.returns+=tb.returns||0;
   total.sunset+=tb.tbSunset||0;total.light+=tb.tbLightTrio||0;total.recycles+=tb.recycles||0;total.emergency+=tb.emergency||0;total.full+=cs.fullRecirculations||0;
   total.maintenance+=bm.maintenance.length;total.bursts+=bm.bursts.length;total.chains+=bm.chains.length;total.detonates+=bm.detonates.length;total.maxPower.push(bm.maxPower||0);total.battleTurns.push(t);total.acqSkips+=acc.acqSkips;total.acqPasses+=acc.acqPasses;
  }
