@@ -1,4 +1,4 @@
-# rerun: M10 multi-attach harness
+# rerun: M11B global attach harness
 name: One-time base action simplification
 
 on:
@@ -53,6 +53,7 @@ jobs:
           node tests/hand-circulation.mjs
           node tests/korean-terms.mjs
           node tests/m10-multiattach-search.mjs
+          node tests/m11b-action-commit.mjs
           node tests/theme-reaction-order.mjs
           node tests/theme-mix-simulation.mjs
           node tests/l10n-card-style.mjs
@@ -75,7 +76,7 @@ jobs:
 
       - name: Commit base action simplification
         run: |
-          git add index.html README.md ROADMAP.md docs/M0R_MELD_EXPANSION.md docs/NEW_USER_UX_TERMS.md tests/base-action-simplification.mjs tests/m0r-meld-expansion.mjs tests/final-rule-audit.mjs tests/core-behavior.mjs tests/hand-circulation.mjs tests/korean-terms.mjs tests/m10-multiattach-search.mjs
+          git add index.html README.md ROADMAP.md docs/M0R_MELD_EXPANSION.md docs/NEW_USER_UX_TERMS.md tests/base-action-simplification.mjs tests/m0r-meld-expansion.mjs tests/final-rule-audit.mjs tests/core-behavior.mjs tests/hand-circulation.mjs tests/korean-terms.mjs tests/m10-multiattach-search.mjs tests/m11b-action-commit.mjs
           if git diff --cached --quiet; then echo 'No feature changes to commit.'; exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
