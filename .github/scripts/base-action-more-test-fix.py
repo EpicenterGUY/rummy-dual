@@ -143,3 +143,13 @@ if old in s:s=s.replace(old,new,1)
 elif new not in s:raise SystemExit('missing safety-hardening same-RUN migration anchor')
 p.write_text(s,encoding='utf-8')
 print('safety hardening migrated from same-RUN continuation to named extraAttach contract')
+
+
+p=ROOT/'tests'/'status-engine.mjs'
+s=p.read_text(encoding='utf-8')
+old="ok(html.includes('고정 · 조합/카드 · 다음 소유자 턴 종료까지 회수·강탈·절단 등 이동 불가'),'rules modal documents fixed scope/lifecycle');"
+new="ok(html.includes('고정 · 조합/카드 · 다음 소유자 턴 종료까지 회수·강탈·절단·자발적 정리 등 이동 불가'),'rules modal documents fixed scope/lifecycle including voluntary cleanup lock');"
+if old in s:s=s.replace(old,new,1)
+elif new not in s:raise SystemExit('missing fixed-status cleanup wording migration anchor')
+p.write_text(s,encoding='utf-8')
+print('status-engine fixed wording migrated for voluntary cleanup')
