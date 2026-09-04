@@ -111,14 +111,16 @@ function runCohort(factory,cohort,seeds=1000,maxTurns=120){
  const turns=total.battleTurns.reduce((a,b)=>a+b,0),c=[0,1,2,3].map(k=>total.hands.filter(x=>x===k).length);
  return {battles:seeds,sideTurns:turns,avgHand:+mean(total.hands).toFixed(3),medianHand:median(total.hands),hand0Events:total.handZeroEvents,hand1Pct:+rate(c[1],total.hands.length).toFixed(2),hand2Pct:+rate(c[2],total.hands.length).toFixed(2),hand3Pct:+rate(c[3],total.hands.length).toFixed(2),low13Pct:+rate(c[1]+c[2]+c[3],total.hands.length).toFixed(2),maxLowStreak:total.maxLow,rummyPer100:+rate(total.rummys,turns).toFixed(2),avgRummyPerBattle:+(total.rummys/seeds).toFixed(3),avgFirstRummyTurn:total.firstRummyTurns.length?+mean(total.firstRummyTurns).toFixed(2):null,noRummyPct:+rate(total.noRummy,seeds).toFixed(2),maintenancePer100:+rate(total.maintenance,turns).toFixed(2),avgMaintenanceCards:total.maintenance?+(total.maintenanceCards/total.maintenance).toFixed(3):0,recycles:total.recycles,fullRecirculations:total.full,emergencyReleases:total.emergency,acquisitionSkips:total.acqSkips,acquisitionPasses:total.acqPasses,avgBattleTurns:+mean(total.battleTurns).toFixed(2),medianBattleTurns:median(total.battleTurns),burstPer100:+rate(total.bursts,turns).toFixed(2),chainPer100:+rate(total.chains,turns).toFixed(2),detonatePer100:+rate(total.detonates,turns).toFixed(2),avgMaxSwitch:+mean(total.maxPowers).toFixed(2),cappedBattles:total.capped};
 }
-export function runExperiment(seeds=1000,maxTurns=120){
+export function runExperiment(seeds=1000,maxTurns=120,cohorts=COHORTS){
  const baseline=execFileSync('git',['show',`${BASE_REF}:index.html`],{cwd:new URL('..',import.meta.url),encoding:'utf8',maxBuffer:12e6});
  const baselineFactory=makeGameFactory(instrumentSource(baseline),{developer:false});
  const candidateFactory=makeGameFactory(instrumentSource(html),{developer:false});
- return {baseRef:BASE_REF,seeds,maxTurns,policy:'paired seeds; complete shipped engine via tests/helpers/live-game; source compiled once per variant and instantiated into isolated seeded contexts; no mulligan; real acquisition/discard/maintenance/meld/attach/recover/RUMMY/recycle/SWITCH/DETONATE paths; optional effect choices skipped consistently',cohorts:COHORTS.map(cohort=>({cohort,baseline:runCohort(baselineFactory,cohort,seeds,maxTurns),candidateA:runCohort(candidateFactory,cohort,seeds,maxTurns)}))};
+ const selected=(cohorts||COHORTS).filter(id=>COHORTS.includes(id));
+ return {baseRef:BASE_REF,seeds,maxTurns,policy:'paired seeds; complete shipped engine via tests/helpers/live-game; source compiled once per variant and instantiated into isolated seeded contexts; no mulligan; real acquisition/discard/maintenance/meld/attach/recover/RUMMY/recycle/SWITCH/DETONATE paths; optional effect choices skipped consistently',cohorts:selected.map(cohort=>({cohort,baseline:runCohort(baselineFactory,cohort,seeds,maxTurns),candidateA:runCohort(candidateFactory,cohort,seeds,maxTurns)}))};
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){
- const result=runExperiment(Number(process.env.M12_SEEDS)||1000,Number(process.env.M12_MAX_TURNS)||120);
+ const selected=(process.env.M12_COHORTS||'').split(',').map(x=>x.trim()).filter(Boolean);
+ const result=runExperiment(Number(process.env.M12_SEEDS)||1000,Number(process.env.M12_MAX_TURNS)||120,selected.length?selected:COHORTS);
  console.log(JSON.stringify(result,null,2));
  if(process.env.M12_OUTPUT)fs.writeFileSync(path.resolve(process.env.M12_OUTPUT),JSON.stringify(result,null,2)+'\n');
 }
