@@ -28,12 +28,12 @@ for(const[id,slot,name,tag]of cards){
 }
 
 const resolver=source('resolveEffects');
-ok(resolver.includes("case'tbLeapKnot'")&&resolver.includes('requestTwelveBloomLeapMonthChoice(w,c,resume)'),'윤달 매듭 uses resumable month selection');
+ok(resolver.includes("case'tbLeapKnot'")&&resolver.includes('requestTwelveBloomLeapMonthChoice(w,c,resume,{label:c.name,shieldOnSeason:true})'),'윤달 매듭 uses resumable month selection');
 ok(resolver.includes("case'tbSunset'")&&resolver.includes("twelveBloomCurrentEligibleMatchKeys(w,'season:')")&&resolver.includes("fx.bonus+=10"),'낙조 adds return power only from an eligible newly completed season');
 ok(resolver.includes("claimThemeTurnGate(c,'tbSunset',state.turnToken)"),'낙조 is card-gated once per turn');
 
 const move=source('moveCardBetweenMelds');
-ok(move.includes("beginTwelveBloomAction(actor,'meldMove',{card:card.uid,reason:opts.reason||'move',sourceSide,targetSide})"),'meld-move transaction step preserves source/target side metadata');
+ok(move.includes("beginTwelveBloomAction(actor,'meldMove',{card:card.uid,reason:opts.reason||'move',sourceSide,targetSide,effectSourceUid:opts.effectSourceUid||null})"),'meld-move transaction step preserves source/target side metadata');
 
 {
  const events={draw:0,shield:0,vulnerable:0,logs:[]};
@@ -55,7 +55,9 @@ ok(move.includes("beginTwelveBloomAction(actor,'meldMove',{card:card.uid,reason:
   sideObj:w=>({id:w}),
   applyOfficialStatus:(scope,target,key,n)=>{if(scope==='player'&&key==='vulnerable')events.vulnerable+=n;return n},
   log:(msg)=>events.logs.push(msg),
-  twelveBloomActionMovedCardTo:(packet,c,target)=>c.uid===3&&target==='enemy'
+  twelveBloomActionMovedCardTo:(packet,c,target)=>c.uid===3&&target==='enemy',
+  twelveBloomActionCardByTag:()=>null,
+  twelveBloomActionHasMoveReason:()=>false
  });
  vm.runInContext(source('handleTwelveBloomThemeEvent'),ctx);
  const packet={event:'onBloomMatchChange',actor:'player',owner:'player',turnToken:9,newlyCompleted:['season:spring','picture:redRibbon'],action:'attach',actionMeta:{targetSide:'enemy',cards:[3]},steps:[]};
