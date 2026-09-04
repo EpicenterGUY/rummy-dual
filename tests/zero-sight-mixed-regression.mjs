@@ -44,10 +44,10 @@ new Function(script);
 // 2) V-SIGNAL Encore recovery and ZERO-SIGHT target reactions coexist on the same mixed public meld.
 {
   const encore=card('H','5',{named:true,name:'앙코르',tag:'vEncore',themeId:'v-signal',recoveredToken:210,encoreGrantToken:null,encoreReturnUsedToken:null});
-  const sourceRun={type:'RUN',cards:[encore,card('H','6'),card('H','7'),card('H','8')],chain:1,createdToken:null,lastAttachToken:null};
-  const targetSet={type:'SET',cards:[card('S','5'),card('D','5'),card('C','5')],chain:0,createdToken:null,lastAttachToken:null};
-  const player={melds:[sourceRun],returnedSwitchThisTurn:false};
-  const enemy={melds:[targetSet],returnedSwitchThisTurn:false};
+  const sourceRun={type:'RUN',cards:[encore,card('H','6'),card('H','7'),card('H','8')],chain:1,createdToken:null};
+  const targetSet={type:'SET',cards:[card('S','5'),card('D','5'),card('C','5')],chain:0,createdToken:null};
+  const player={melds:[sourceRun],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};
+  const enemy={melds:[targetSet],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};
   const state={turnNo:21,turnToken:210,player,enemy};
   const events=[];
   const ctx=context({state,RANK_VALUE});
@@ -57,7 +57,7 @@ new Function(script);
   ctx.canSideReturn=()=>true;
   ctx.log=()=>{};
   ctx.emitEffectEvent=(event,payload={})=>{const packet={event,turnNo:state.turnNo,turnToken:state.turnToken,...payload};events.push(packet);return packet};
-  install(ctx,'isJoker','isSuitFlexible','setValid','runSequenceOK','runValid','meldType','meldOwnerSide','ensureMeldThemeMeta','isZeroSightTarget','zeroSightTargetActors','zeroSightTargetMeld','emitZeroSightTargetChange','clearZeroSightTarget','setZeroSightTarget','emitRecoveryEvent','legalRecoveryReturnTargets','grantRecoveryReturnOverride','handleVSignalThemeEvent','recoveredCardCanReturn');
+  install(ctx,'isJoker','isSuitFlexible','setValid','runSequenceOK','runValid','meldType','attachAccess','meldOwnerSide','ensureMeldThemeMeta','isZeroSightTarget','zeroSightTargetActors','zeroSightTargetMeld','emitZeroSightTargetChange','clearZeroSightTarget','setZeroSightTarget','emitRecoveryEvent','legalRecoveryReturnTargets','grantRecoveryReturnOverride','handleVSignalThemeEvent','recoveredCardCanReturn');
   ok(ctx.runValid(sourceRun.cards)&&ctx.setValid(targetSet.cards),'mixed Encore scenario uses legal ordinary RUN/SET geometry');
   ctx.setZeroSightTarget('player',sourceRun);
   events.length=0;

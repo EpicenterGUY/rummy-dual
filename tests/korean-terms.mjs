@@ -31,7 +31,7 @@ ok(html.includes('<span>나 <span id="pCores"'), 'player combat label is 나');
 ok(html.includes('<span>상대 <span id="eCores"'), 'opponent combat label is 상대');
 ok(html.includes('버스트 준비 · 4번째 카드 +24 · 스위치 반환'), 'SET/BURST battle readout is localized');
 ok(html.includes('체인 ${m.chain||0} · 다음 +${chainDamage((m.chain||0)+1)} · 스위치 반환'), 'RUN/CHAIN battle readout is localized');
-ok(html.includes('합계 +${p.total} · 스위치 → 상대'), 'multi-attach preview is localized');
+ok(html.includes("extra?'추가 붙이기 · 스위치 이동 없음':'스위치 → 상대'") && html.includes('합계 +${p.total}'), 'multi-attach preview localizes both normal return and named extra-attach no-move states');
 ok(html.includes('내 턴 종료 시 폭발 ${state.switchPower} · 반환 필요'), 'DETONATE warning uses 폭발');
 ok(html.includes("state.switchPower>=100?'과부하':'',isLethal?'코어 파괴 가능':''"), 'OVERLOAD and CORE LETHAL display labels are localized');
 ok(html.includes('초과 피해 ${overkill} 소멸 · 관통 없음'), 'CORE BREAK overkill feedback is localized');

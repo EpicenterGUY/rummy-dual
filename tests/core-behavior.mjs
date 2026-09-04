@@ -120,6 +120,8 @@ function makeAttachContext({ type, baseCards, handCards, chain = 0, token = 7 })
     melds: [],
     returnedSwitchThisTurn: false,
     actedThisTurn: false,
+    attachCount: 0,
+    extraAttachRemaining: 0,
     turnStarts: 1,
   };
   const enemy = {
@@ -128,7 +130,6 @@ function makeAttachContext({ type, baseCards, handCards, chain = 0, token = 7 })
       type,
       cards: [...baseCards],
       chain,
-      lastAttachToken: null,
       createdToken: null,
       lastTouchedOwnerStart: 0,
       status: { protected: 0, sealNamed: 0 },
@@ -206,7 +207,7 @@ function makeAttachContext({ type, baseCards, handCards, chain = 0, token = 7 })
     for (let i = 1; i < vals.length; i++) if (vals[i] !== vals[i - 1] + 1) return null;
     return 'RUN';
   };
-  install(ctx, 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'chainDamage', 'canContinueReturnedRun', 'attachCards');
+  install(ctx, 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'chainDamage', 'attachAccess', 'consumeAttachUse', 'grantExtraAttach', 'attachCards');
   return { ctx, state, player, enemy, capture };
 }
 
@@ -242,7 +243,7 @@ function makeAttachContext({ type, baseCards, handCards, chain = 0, token = 7 })
 }
 
 
-// Sequential same-RUN extension: split 8 then 9 is equivalent to one multi-attach for SWITCH movement.
+// Base attach is one action: split extension is rejected; multi-attach above is the normal way to add several cards.
 {
   const c8 = card('H',8);
   const c9 = card('H',9);
@@ -252,12 +253,12 @@ function makeAttachContext({ type, baseCards, handCards, chain = 0, token = 7 })
     handCards: [c8, c9],
     chain: 0,
   });
-  ok(setup.ctx.attachCards('player', [c8], 'enemy', 0) === true, 'first RUN extension returns SWITCH normally');
-  ok(setup.ctx.attachCards('player', [c9], 'enemy', 0) === true, 'same RUN can be extended again later in the same turn');
-  ok(setup.capture.attacks.length === 1, 'split same-RUN extension moves SWITCH only once');
-  ok(setup.capture.powerAdds.length === 1 && setup.capture.powerAdds[0].amount === 15, 'second split extension adds next CHAIN power without another return');
-  ok(setup.state.switchPower === 25, 'split 8 then 9 produces total +10 +15 power');
-  ok(setup.enemy.melds[0].chain === 2 && setup.enemy.melds[0].cards.length === 5, 'split extension advances the same RUN to CHAIN 2');
+  ok(setup.ctx.attachCards('player', [c8], 'enemy', 0) === true, 'first RUN extension consumes the base attach and returns SWITCH normally');
+  ok(setup.ctx.attachCards('player', [c9], 'enemy', 0) === false, 'second base attach is rejected even on the same RUN');
+  ok(setup.capture.attacks.length === 1, 'one base attach produces one SWITCH-returning attack');
+  ok(setup.capture.powerAdds.length === 0, 'base rules do not add a hidden continuation power path');
+  ok(setup.state.switchPower === 10, 'split attempt keeps only the first +10 CHAIN power');
+  ok(setup.enemy.melds[0].chain === 1 && setup.enemy.melds[0].cards.length === 4, 'rejected second attach leaves the RUN at CHAIN 1');
 }
 
 // Recovery guard in the actual attach path, with named override token exception.

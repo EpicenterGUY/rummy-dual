@@ -24,7 +24,7 @@ function set3(g,w,rank='7'){
   const a=cards(g,'enemy',['S3','H3','D3']),b=cards(g,'enemy',['C4','C5','C6']),c=cards(g,'enemy',['S8','H8','D8']);s.hand=[...a,...b,...c];
   assert.equal(g.submitNewMeld('enemy',a),true);assert.equal(g.submitNewMeld('enemy',b),true);assert.equal(s.melds.length,2);assert.equal(s.newMeldCount,2);
   assert.equal(g.submitNewMeld('enemy',c),false,'third new meld in one turn is rejected');
-  g.turnStart('enemy');s.hand.push(...c);assert.equal(g.submitNewMeld('enemy',c),true);assert.equal(s.melds.length,3);
+  g.turnStart('enemy');s.hand.push(...cards(g,'enemy',['DK']));assert.equal(g.submitNewMeld('enemy',c),true);assert.equal(s.melds.length,3);
   const d=cards(g,'enemy',['S9','H9','D9']);s.hand.push(...d);assert.equal(g.submitNewMeld('enemy',d),'full','fourth own public meld is rejected');
 }
 console.log('PASS public meld cap 3 and new exact-three meld cap 2');
@@ -33,17 +33,17 @@ console.log('PASS public meld cap 3 and new exact-three meld cap 2');
 {
   const g=fresh(),s=g.state.enemy,base=cards(g,'enemy',['S2','S3','S4']),s5=cards(g,'enemy',['S5'])[0];s.hand=[...base,s5];
   assert.equal(g.submitNewMeld('enemy',base),true);assert.equal(g.attachCards('enemy',[s5],'enemy',0),false,'same-turn new own meld cannot be attached');
-  g.turnStart('enemy');assert.equal(g.attachCards('enemy',[s5],'enemy',0),true,'older own meld can be attached');
+  g.turnStart('enemy');s.hand.push(...cards(g,'enemy',['DK']));assert.equal(g.attachCards('enemy',[s5],'enemy',0),true,'older own meld can be attached');
 }
 {
-  const g=fresh(),s=g.state.enemy;s.melds=[];g.state.player.melds=[run(g,'player','H',2,3,0)];const h5=g.makeCard('H','5',false,'enemy');s.hand=[h5];
+  const g=fresh(),s=g.state.enemy;s.melds=[];g.state.player.melds=[run(g,'player','H',2,3,0)];const h5=g.makeCard('H','5',false,'enemy');s.hand=[h5,...cards(g,'enemy',['DK'])];
   assert.equal(g.attachCards('enemy',[h5],'player',0),true,'opponent public meld can be used by attach');
 }
 console.log('PASS new-own-meld protection and existing own/opponent attach targets');
 
 // One attach action may contain multiple cards, sums each CHAIN step, and moves SWITCH once.
 {
-  const g=fresh(),s=g.state.enemy;s.melds=[run(g,'enemy','S',2,3,0)];const more=cards(g,'enemy',['S5','S6','S7']);s.hand=[...more];
+  const g=fresh(),s=g.state.enemy;s.melds=[run(g,'enemy','S',2,3,0)];const more=cards(g,'enemy',['S5','S6','S7']);s.hand=[...more,...cards(g,'enemy',['DK'])];
   let returns=0;g.subscribeEffectEvent(e=>{if(e.event==='onSwitchReturn'&&e.actor==='enemy')returns++});
   assert.equal(g.attachCards('enemy',more,'enemy',0),true);
   assert.equal(g.state.switchPower,45,'10+15+20 are accumulated in the one multi-attach');
@@ -70,7 +70,7 @@ console.log('PASS Connection Link is a clear named extra-attach exception');
 
 // SET fourth suit is still +24, one return, immediate retire to current card owners' spent piles.
 {
-  const g=fresh(),s=g.state.enemy;s.melds=[set3(g,'enemy','7')];const c7=g.makeCard('C','7',false,'enemy');s.hand=[c7];const before=s.spent.length;
+  const g=fresh(),s=g.state.enemy;s.melds=[set3(g,'enemy','7')];const c7=g.makeCard('C','7',false,'enemy');s.hand=[c7,...cards(g,'enemy',['DK'])];const before=s.spent.length;
   assert.equal(g.attachCards('enemy',[c7],'enemy',0),true);assert.equal(g.state.switchPower,24);assert.equal(g.state.switchTarget,'player');assert.equal(s.melds.length,0);assert.equal(s.spent.length,before+4);
 }
 console.log('PASS SET fourth suit BURST +24 returns and retires immediately');

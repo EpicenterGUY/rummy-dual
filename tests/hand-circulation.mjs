@@ -73,7 +73,7 @@ function meldType(cards) {
 function makeLegalityContext() {
   const player = {
     hand: [], deck: [card('C', 13)], spent: [], melds: [],
-    newMeldCount:0, returnedSwitchThisTurn: false, maintenanceUsed: false,
+    newMeldCount:0, attachCount:0, extraAttachRemaining:0, meldCleanupUsed:false, returnedSwitchThisTurn: false, maintenanceUsed: false,
   };
   const enemy = {
     hand: [], deck: [], spent: [], melds: [],
@@ -88,7 +88,7 @@ function makeLegalityContext() {
   ctx.meldType = meldType;
   ctx.meldFixedActive = () => false;
   ctx.cardFixedActive = () => false;
-  install(ctx, 'combinations', 'bestNewMeld', 'bestNewMeldForTurn', 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'anyAttachOption', 'canFinishRun', 'hasAnyLegalAction', 'ownedRecycleCount', 'maintenanceLimit');
+  install(ctx, 'combinations', 'bestNewMeld', 'bestNewMeldForTurn', 'recoveredCardCanReturn', 'recoveredCardsCanReturn', 'attachAccess', 'anyAttachOption', 'canFinishRun', 'canCleanupMeld', 'hasAnyLegalAction', 'ownedRecycleCount', 'maintenanceLimit');
   return { ctx, state, player, enemy };
 }
 
@@ -100,7 +100,7 @@ function makeLegalityContext() {
   ok(ctx.maintenanceLimit('player') === 1, 'legal basic action keeps maintenance at one card');
 }
 
-// A full three-meld board blocks a new meld, so a hand with no attach is genuinely stuck.
+// A full three-meld board now exposes the conditional cleanup base action, so it is not a stuck state.
 {
   const { ctx, player } = makeLegalityContext();
   player.hand = [card('S', 7), card('H', 7), card('D', 7), card('C', 2)];
@@ -109,8 +109,8 @@ function makeLegalityContext() {
     { type: 'SET', cards: [card('S', 4), card('H', 4), card('D', 4)], lastAttachToken: null, createdToken: null },
     { type: 'SET', cards: [card('S', 5), card('H', 5), card('D', 5)], lastAttachToken: null, createdToken: null },
   ];
-  ok(!ctx.hasAnyLegalAction('player'), 'new meld in hand does not count when public board is already 3/3 and no attach exists');
-  ok(ctx.maintenanceLimit('player') === 2, 'full-board dead hand receives two-card stuck maintenance');
+  ok(ctx.hasAnyLegalAction('player'), 'full 3/3 board still has the conditional cleanup base action');
+  ok(ctx.maintenanceLimit('player') === 1, 'legal full-board cleanup keeps maintenance at the normal one-card limit');
 }
 
 // A card blocked for the current turn cannot falsely prevent stuck compensation.

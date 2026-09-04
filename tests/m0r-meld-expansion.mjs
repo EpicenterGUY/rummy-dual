@@ -32,14 +32,13 @@ console.log('PASS two SETs, mixed SET/RUN, two RUNs; both sides; third base use 
  assert.equal(g.bestExtension('enemy'),null);
  assert.equal(g.anyAttachOption('enemy'),false);
  assert.equal(g.state.switchPower,0);
- g.turnStart('enemy');assert.equal(g.attachCards('enemy',[next[0]],'enemy',0),true);
- assert.equal(g.state.switchPower,10);assert.equal(g.state.switchTarget,'player');
- assert.equal(g.attachCards('enemy',next.slice(1),'enemy',0),true);assert.equal(g.state.switchPower,45);
+ g.turnStart('enemy');assert.equal(g.attachCards('enemy',next,'enemy',0),true);
+ assert.equal(g.state.switchPower,45);assert.equal(g.state.switchTarget,'player');assert.equal(s.attachCount,1);
  assert.equal(s.returnedSwitchThisTurn,true);
  const otherRun=run(g,'enemy','H');s.melds.push(otherRun);const h4=cards(g,'enemy',['H4']);s.hand.push(...h4);
- assert.equal(g.attachCards('enemy',h4,'enemy',1),false,'different return blocked after first return');
+ assert.equal(g.attachCards('enemy',h4,'enemy',1),false,'base second attach blocked after the one attach action');
 }
-console.log('PASS same-turn own extension denied; next-turn CHAIN and same-RUN continuation preserve single return');
+console.log('PASS same-turn own extension denied; next-turn multi-attach sums CHAIN and base second attach is rejected');
 for(const exhausted of [false,true]){
  const g=fresh(),s=g.state.enemy;s.melds=[run(g,'enemy','S',7),run(g,'enemy','H'),run(g,'enemy','C')];
  const hand=cards(g,'enemy',['D8','D9','D10','DK']);s.hand=hand;s.newMeldCount=exhausted?2:0;g.state.switchPower=85;g.state.switchTarget='player';

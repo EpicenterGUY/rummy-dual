@@ -38,10 +38,10 @@ const rankNames=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRank
 // Attach: CPU finds an immediate opponent SET BURST only through the alternate value.
 {
   const a=card('D','3','7','3'),hand=[a];
-  const enemy={hand,melds:[],returnedSwitchThisTurn:false},player={hand:[],melds:[{type:'SET',cards:[card('S','7'),card('H','7'),card('C','7')],chain:0,lastAttachToken:null,createdToken:null}],returnedSwitchThisTurn:false};
+  const enemy={hand,melds:[],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0},player={hand:[],melds:[{type:'SET',cards:[card('S','7'),card('H','7'),card('C','7')],chain:0,createdToken:null}],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};
   const state={enemy,player,field:null,turnToken:2,turnNo:1,switchTarget:'neutral',switchPower:0};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.chainDamage=n=>n===1?10:n===2?15:n===3?20:25;
-  install(ctx,'combinations',...rankNames,'bestExtensionFromHand');
+  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.chainDamage=n=>n===1?10:n===2?15:n===3?20:25;
+  install(ctx,'combinations',...rankNames,'attachAccess','bestExtensionFromHand');
   const plan=ctx.bestExtensionFromHand('enemy',hand);
   ok(plan?.side==='player'&&plan.score===28,'CPU values selected-rank opponent SET BURST at +24 plus existing opponent-meld fallback bias');
   ok(plan.rankPlan?.[0]?.rank==='7'&&plan.rankPlan?.[0]?.orientation==='top','CPU preserves the top-7 plan required for the BURST');
@@ -51,10 +51,10 @@ const rankNames=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRank
 // Multi-attach: four printed combinations collapse to one legal 7->8 RUN plan and CPU keeps both choices in order.
 {
   const a=card('S','10','10','7'),b=card('S','Q','Q','8'),hand=[a,b];
-  const enemy={hand,melds:[{type:'RUN',cards:[card('S','4'),card('S','5'),card('S','6')],chain:0,lastAttachToken:null,createdToken:null}],returnedSwitchThisTurn:false},player={hand:[],melds:[],returnedSwitchThisTurn:false};
+  const enemy={hand,melds:[{type:'RUN',cards:[card('S','4'),card('S','5'),card('S','6')],chain:0,createdToken:null}],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0},player={hand:[],melds:[],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};
   const state={enemy,player,field:null,turnToken:3,turnNo:1,switchTarget:'neutral',switchPower:0};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.chainDamage=n=>n===1?10:n===2?15:n===3?20:25;
-  install(ctx,'combinations',...rankNames,'bestExtensionFromHand');
+  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.chainDamage=n=>n===1?10:n===2?15:n===3?20:25;
+  install(ctx,'combinations',...rankNames,'attachAccess','bestExtensionFromHand');
   const plan=ctx.bestExtensionFromHand('enemy',hand);
   ok(plan?.cards.length===2&&plan.score===25,'CPU scores two-card RUN extension with the existing +10 +15 chain curve');
   ok(plan.rankPlan?.map(x=>`${x.orientation}:${x.rank}`).join('|')==='bottom:7|bottom:8','CPU multi-attach preserves selected-card order and the only legal bottom/bottom plan');
@@ -63,10 +63,10 @@ const rankNames=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRank
 // Equal-value legal orientations remain deterministic top-first rather than random.
 {
   const a=card('S','9','4','8'),hand=[a];
-  const enemy={hand,melds:[{type:'RUN',cards:[card('S','5'),card('S','6'),card('S','7')],chain:0,lastAttachToken:null,createdToken:null}],returnedSwitchThisTurn:false},player={hand:[],melds:[],returnedSwitchThisTurn:false};
+  const enemy={hand,melds:[{type:'RUN',cards:[card('S','5'),card('S','6'),card('S','7')],chain:0,createdToken:null}],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0},player={hand:[],melds:[],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};
   const state={enemy,player,field:null,turnToken:4,turnNo:1,switchTarget:'neutral',switchPower:0};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.chainDamage=()=>10;
-  install(ctx,'combinations',...rankNames,'bestExtensionFromHand');
+  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.chainDamage=()=>10;
+  install(ctx,'combinations',...rankNames,'attachAccess','bestExtensionFromHand');
   const legal=ctx.legalRankChoicePlansForAttach(enemy.melds[0],[a]);
   ok(legal.length===2,'synthetic RUN exposes two equally legal orientations around the existing sequence');
   const plan=ctx.bestExtensionFromHand('enemy',hand);
@@ -75,10 +75,10 @@ const rankNames=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRank
 
 // Stuck-state logic must not maintenance-cycle a card whose alternate printed value can attach.
 {
-  const a=card('D','3','7','3'),enemy={hand:[a],melds:[],returnedSwitchThisTurn:false},player={hand:[],melds:[{type:'SET',cards:[card('S','7'),card('H','7'),card('C','7')],chain:0,lastAttachToken:null,createdToken:null}],returnedSwitchThisTurn:false};
+  const a=card('D','3','7','3'),enemy={hand:[a],melds:[],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0},player={hand:[],melds:[{type:'SET',cards:[card('S','7'),card('H','7'),card('C','7')],chain:0,createdToken:null}],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};
   const state={enemy,player,field:null,turnToken:5,turnNo:1};
-  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;ctx.canContinueReturnedRun=()=>false;
-  install(ctx,'combinations',...rankNames,'anyAttachOption');
+  const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});ctx.sideObj=w=>w==='enemy'?enemy:player;ctx.other=w=>w==='enemy'?'player':'enemy';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.recoveredCardsCanReturn=()=>true;
+  install(ctx,'combinations',...rankNames,'attachAccess','anyAttachOption');
   ok(ctx.anyAttachOption('enemy')===true,'stuck-state legality recognizes an attach that exists only through alternate printed rank');
 }
 

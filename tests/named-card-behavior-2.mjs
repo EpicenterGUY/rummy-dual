@@ -54,12 +54,12 @@ function card(suit,rank,extra={}){return{uid:`${suit}${rank}-${Math.random()}`,s
 // Tuner: must be public, requires both own meld types, legal opposite-type landing, and is once per turn.
 {
   const moving=card('C',9),tuner=card('C','K',{tag:'alternateBonus'});
-  const source={type:'RUN',cards:[card('C',6),card('C',7),card('C',8),moving],createdToken:1,lastAttachToken:null};
-  const target={type:'SET',cards:[Object.assign(card('S',9),{_meldType:'SET'}),card('H',9),tuner],createdToken:1,lastAttachToken:null};
-  const side={flags:{tuner:false,roundabout:false},returnedSwitchThisTurn:false,turnStarts:1,freeRecoverAfterRummy:false};
+  const source={type:'RUN',cards:[card('C',6),card('C',7),card('C',8),moving],createdToken:1};
+  const target={type:'SET',cards:[Object.assign(card('S',9),{_meldType:'SET'}),card('H',9),tuner],createdToken:1};
+  const side={flags:{tuner:false,roundabout:false},returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0,turnStarts:1,freeRecoverAfterRummy:false};
   const state={turnToken:7,field:null};
   const ctx=context({state,sideObj:()=>side,meldsOf:()=>[source,target],meldType:cards=>cards[0]?._meldType||null,canSideReturn:()=>true});
-  install(ctx,'tunerReadyForRecovery','recoveryFreeReason');
+  install(ctx,'attachAccess','tunerReadyForRecovery','recoveryFreeReason');
   ok(ctx.tunerReadyForRecovery('player','player',source,moving),'Tuner recognizes a legal RUN-to-SET transfer recovery');
   ok(ctx.recoveryFreeReason('player','player',source,moving)==='tuner','Tuner takes the free-recovery reason for its transfer');
   side.flags.tuner=true;

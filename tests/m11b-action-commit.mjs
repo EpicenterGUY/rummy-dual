@@ -83,8 +83,8 @@ const rankCore=['normalizePrototypeRank','ensureRankPrototype','cardPrintedRanks
 }
 
 function makeAttachContext(type,baseCards,handCards,chain=0){
-  const player={hand:[...handCards,card('C','2')],melds:[],returnedSwitchThisTurn:false,actedThisTurn:false,turnStarts:1};
-  const enemy={hand:[],melds:[{type,cards:[...baseCards],chain,lastAttachToken:null,createdToken:null,lastTouchedOwnerStart:0,status:{}}],returnedSwitchThisTurn:false,turnStarts:1};
+  const player={hand:[...handCards,card('C','2')],melds:[],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0,actedThisTurn:false,turnStarts:1};
+  const enemy={hand:[],melds:[{type,cards:[...baseCards],chain,createdToken:null,lastTouchedOwnerStart:0,status:{}}],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0,turnStarts:1};
   const state={player,enemy,field:null,turnNo:1,turnToken:21,gameOver:false,switchTarget:'neutral',switchPower:0,pendingTrapReduction:0,lastPlayerReturnType:null,lastEnemyReturnType:null};
   const capture={attacks:[],retired:[],effectRanks:[]};
   const ctx=vm.createContext({console,Math,Number,Object,Array,Set,RANK_VALUE,state});
@@ -95,7 +95,7 @@ function makeAttachContext(type,baseCards,handCards,chain=0){
   ctx.attackEvent=(w,hits,opts)=>{capture.attacks.push({w,hits,opts,ranks:handCards.map(x=>x.rank)});state.switchPower+=hits.reduce((n,h)=>n+h.amount,0)+(opts.bonus||0);state.switchTarget=ctx.other(w);player.returnedSwitchThisTurn=true;return{total:state.switchPower}};
   ctx.addSwitchPower=(w,n)=>{state.switchPower+=n;return n};ctx.combatBanner=()=>{};ctx.fxNode=()=>{};ctx.drawOne=()=>null;ctx.pushDiscard=()=>{};ctx.log=()=>{};ctx.freeRecoverFromMeld=()=>null;ctx.cutOppositeEnd=()=>false;ctx.recoverRedundantGapRun=()=>null;ctx.middleManagerReturnPlaceholder=()=>null;ctx.replaceRedundantJokers=()=>{};ctx.triggerRummy=()=>{};
   ctx.retireMeld=(owner,index,reason)=>{const m=ctx.meldsOf(owner)[index];capture.retired.push({owner,reason,ranks:m.cards.map(x=>x.rank),active:m.cards.map(x=>x.activeRank)});ctx.meldsOf(owner).splice(index,1)};
-  install(ctx,...rankCore,'recoveredCardCanReturn','recoveredCardsCanReturn','chainDamage','canContinueReturnedRun','attachCards');
+  install(ctx,...rankCore,'recoveredCardCanReturn','recoveredCardsCanReturn','chainDamage','attachAccess','consumeAttachUse','attachCards');
   return{ctx,state,player,enemy,capture};
 }
 

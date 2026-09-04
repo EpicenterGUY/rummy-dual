@@ -19,13 +19,13 @@ ok(script.includes('V-SIGNAL 체험 완료! 전용 자원 없이 회수 → 다�
  const rank={A:1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,J:11,Q:12,K:13};
  let uid=0;const card=(suit,r,extra={})=>({uid:`vs-${++uid}`,suit,rank:String(r),owner:'player',named:false,themeId:null,tag:null,recoveredToken:null,recoverReturnOverrideToken:null,recoverReturnTargets:null,...extra});
  const encore=card('H','5',{named:true,themeId:'v-signal',tag:'vEncore',name:'앙코르',recoveredToken:41,encoreGrantToken:null});
- const sourceRun={type:'RUN',cards:[encore,card('H','6'),card('H','7'),card('H','8')],chain:1,createdToken:null,lastAttachToken:null};
- const destSet={type:'SET',cards:[card('S','5',{owner:'enemy'}),card('D','5',{owner:'enemy'}),card('C','5',{owner:'enemy'})],chain:0,createdToken:null,lastAttachToken:null};
- const player={melds:[sourceRun],returnedSwitchThisTurn:false},enemy={melds:[destSet],returnedSwitchThisTurn:false};
+ const sourceRun={type:'RUN',cards:[encore,card('H','6'),card('H','7'),card('H','8')],chain:1,createdToken:null};
+ const destSet={type:'SET',cards:[card('S','5',{owner:'enemy'}),card('D','5',{owner:'enemy'}),card('C','5',{owner:'enemy'})],chain:0,createdToken:null};
+ const player={melds:[sourceRun],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0},enemy={melds:[destSet],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};
  const state={turnNo:5,turnToken:41,switchTarget:'neutral',player,enemy,field:null};
  const ctx=vm.createContext({console,Math,Set,Map,Array,Object,Number,state,RANK_VALUE:rank});
- ctx.sideObj=w=>w==='player'?player:enemy;ctx.other=w=>w==='player'?'enemy':'player';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.log=()=>{};
- install(ctx,'isJoker','isSuitFlexible','setValid','runSequenceOK','runValid','meldType','legalRecoveryReturnTargets','grantRecoveryReturnOverride','handleVSignalThemeEvent','recoveredCardCanReturn');
+ ctx.sideObj=w=>w==='player'?player:enemy;ctx.other=w=>w==='player'?'enemy':'player';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.log=()=>{};
+ install(ctx,'isJoker','isSuitFlexible','setValid','runSequenceOK','runValid','meldType','attachAccess','legalRecoveryReturnTargets','grantRecoveryReturnOverride','handleVSignalThemeEvent','recoveredCardCanReturn');
  ok(ctx.runValid(sourceRun.cards)&&ctx.setValid(destSet.cards),'tutorial source RUN and ordinary destination SET are both real legal melds');
  const ordinary={...encore,uid:'ordinary',themeId:null,tag:null,recoveredToken:41,recoverReturnOverrideToken:null,recoverReturnTargets:null};
  ok(ctx.recoveredCardCanReturn(ordinary,41,destSet)===false,'base recovery rule blocks ordinary same-turn BURST/CHAIN return reuse');

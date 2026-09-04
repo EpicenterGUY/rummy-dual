@@ -19,10 +19,10 @@ Settings provides reduced motion and larger explanatory text. **설정 → 개�
 - 3 CORE × 60 HP; DETONATE overkill never penetrates to the next CORE.
 - 3-card SET → BURST READY; 4th suit → BURST +24 and the 4SET retires immediately.
 - RUN extensions use CHAIN +10 / +15 / +20 / +25. At CHAIN 4+, the meld controller may voluntarily **complete the RUN** on their own turn to free that public-meld slot; if kept, later extensions remain +25. Completing a RUN adds no power and does not move SWITCH.
-- Each player may keep up to 3 public melds. A full board blocks creating another meld until normal play or a card effect changes the board; there is no free base meld disposal action.
+- Each player may keep up to 3 own public melds. When all 3 are full, once per own turn the player may clean up one older, non-fixed own meld for +0 power and no SWITCH movement; a meld created that turn cannot be cleaned up. Opponent melds containing your cards do not consume your slots.
 - Each player may create at most two new exact 3-card melds (SET or RUN combined) per turn.
 - Cards may be attached to the opponent's public melds, and the player who actually completes BURST/CHAIN performs the SWITCH return.
-- SWITCH physically moves at most once per player turn. After a RUN returns SWITCH, that **same RUN may still be extended again during the same turn**; each later extension adds its next CHAIN power but does not move SWITCH a second time. A different RUN/SET cannot create another return that turn. This makes split play such as 9♠ then 10♠ equivalent in core power flow to selecting both for one multi-attach.
+- Base attach is one action per player turn. One attach action may add multiple legal cards to a RUN, resolving CHAIN +10 / +15 / +20 / +25 in order while SWITCH moves only once. Repeating attach in the same turn requires a named card that explicitly grants an extra attach; that extra attach may add power but does not move SWITCH a second time.
 - A card recovered this turn may still be used for a new 3-card meld, maintenance, discard, or other non-return play, but it cannot be reused that same turn as material for a BURST/CHAIN/SWITCH-returning attach unless a named effect explicitly allows it, and that exception is bound to the destination meld(s) allowed by that effect.
 - One central SWITCH and uncapped accumulated power; 100+ is OVERLOAD, not an automatic explosion.
 - No default grace turn. DETONATE deferral exists only through named card effects such as Safety Pin.

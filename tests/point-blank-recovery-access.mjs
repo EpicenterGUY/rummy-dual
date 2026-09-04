@@ -59,7 +59,7 @@ const playerRecover=source('playerRecover'),aiRecover=source('executeRecoverAI')
 ok(playerRecover.includes("recovery=recoveryAccess('player'")&&playerRecover.includes('recovery.consumesBasic')&&playerRecover.includes('consumesBasic:recovery.consumesBasic'),'player recovery uses the shared recoveryAccess contract end-to-end');
 ok(aiRecover.includes('recovery=recoveryAccess(w')&&aiRecover.includes('recovery.consumesBasic')&&aiRecover.includes('consumesBasic:recovery.consumesBasic'),'AI recovery uses the same recoveryAccess contract end-to-end');
 ok(canRecover.includes('access.consumesBasic'),'recovery legality consumes only the basic allowance when required');
-ok(ui.includes("recoverAccess?.free?'무료 회수':'회수'")&&ui.includes("'기본 회수 사용함'"),'player UI visibly distinguishes free recovery from an already-used basic recovery');
+ok(ui.includes("recoverAccess?.free?'무료 회수':'회수'")&&ui.includes("'회수 사용함'")&&ui.includes(":state.player.recoveredThisTurn?'회수 사용함':'회수'"),'player UI visibly distinguishes free recovery from an already-used basic recovery with the compact action label');
 
 ok(road.includes('- [x] 무료 회수와 기본 회수 횟수를 명확히 구분'),'ROADMAP marks recovery distinction complete');
 ok(themeDoc.includes('- [x] 무료 회수와 기본 회수 횟수의 구분을 데이터로 명확화'),'canonical POINT-BLANK document marks the recovery data contract complete');

@@ -16,7 +16,9 @@ ok(!html.includes('function staleRunAge('), 'legacy stale-RUN age rule is remove
 ok(!html.includes('function canRetireStaleRun('), 'legacy stale-RUN retire eligibility is removed');
 ok(!html.includes('function playerRetireStaleRun('), 'legacy player RUN-retire action is removed');
 ok(!html.includes('function retireStaleRunAI('), 'legacy AI RUN-retire action is removed');
-ok(!html.includes('function playerRetireMeld('), 'legacy free meld-retire action stub is removed');
+ok(!html.includes('function playerRetireMeld('), 'legacy unrestricted free meld-retire action stub is removed');
+ok(html.includes('function canCleanupMeld(') && html.includes("s.melds.length!==3") && html.includes('m.createdToken===state.turnToken'), 'new cleanup is conditional on full board and excludes same-turn melds');
+ok(html.includes('function attachAccess(') && !html.includes('function canContinueReturnedRun(') && !html.includes('returnAttachToken'), 'base attach is global once-per-turn with no same-RUN continuation state');
 ok(!html.includes('data-stale-retire'), 'legacy RUN-retire UI hook is removed');
 ok(!html.includes('data-retire-index'), 'legacy free meld-retire UI hook is removed');
 ok(!html.includes('pendingDrawChoices') && !html.includes('pendingDrawLook'), 'legacy multi-card deck-look state is removed');

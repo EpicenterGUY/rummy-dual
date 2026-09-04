@@ -56,5 +56,5 @@ ok(script.includes("if(meldFixedActive(om))continue"),'extortion respects fixed 
 ok(script.includes("m.cards.length<4||meldFixedActive(m)"),'RUN cutting respects fixed melds');
 ok(script.includes("targetCard&&consumeOfficialStatus('card',targetCard,'protect')"),'card protect can absorb targeted interference');
 ok(!html.includes('별도 수치이며 최대 40입니다'),'rules modal no longer claims obsolete shield-40 cap');
-ok(html.includes('고정 · 조합/카드 · 다음 소유자 턴 종료까지 회수·강탈·절단 등 이동 불가'),'rules modal documents fixed scope/lifecycle');
+ok(html.includes('고정 · 조합/카드 · 다음 소유자 턴 종료까지 회수·강탈·절단·자발적 정리 등 이동 불가'),'rules modal documents fixed scope/lifecycle including voluntary cleanup lock');
 console.log('STATUS ENGINE PASS');

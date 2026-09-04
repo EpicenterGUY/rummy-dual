@@ -12,7 +12,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] One central uncapped SWITCH; 100+ is display-only OVERLOAD
 - [x] One normal SWITCH return per turn
 - [x] Base new-meld limit: SET/RUN combined, at most two new exact 3-card melds per turn; retirement does not refund this allowance
-- [x] Public meld cap 3 per player; no free base meld/RUN disposal
+- [x] Public meld cap 3 per player; when all 3 own slots are full, one older non-fixed own meld may be voluntarily cleaned up once per own turn for +0 power / no SWITCH movement; same-turn-created melds are excluded
 - [x] Shared discard has no size cap; base take is top only
 - [x] When a personal deck empties, recycle that player’s spent pile plus cards in the shared discard currently owned by that player; opponent-owned discard and public meld cards stay in place
 - [x] Zero-source circulation safety: one-sided stalls skip acquisition / use legal recovery / release one owned public meld as needed; simultaneous two-sided stalls perform one full current-owner recirculation while preserving CORE and SWITCH state, with a second stall resolved by CORE → current HP → draw
@@ -37,6 +37,17 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [ ] Android/iOS/Fold 실기기 터치·안전영역 확인
 - [ ] 인간 실전/M12 및 실제 HWA-TU 효과 구현 후 최종 밸런스 잠금 판단 — 초기 시뮬레이션만으로 확정하지 않음
 
+## M0S — 기본 행동 단순화 / 3슬롯 필드 정리 — 2026-09-04
+- [x] 기존 M0R의 공개 조합 3칸 / 새 조합 2회 / 신규 자기 조합 당턴 확장 금지 / 시작 손패 8장을 유지
+- [x] 기본 붙이기를 전역 턴당 1회로 단순화하고, 한 행동의 다중 카드 런 확장에 체인 위력을 순서대로 합산
+- [x] `canContinueReturnedRun` / `returnAttachToken` / 조합별 `lastAttachToken` 기반 같은 RUN 연속 붙이기 기본 예외 제거
+- [x] 5♣ `연결고리`를 명시적인 「추가 붙이기 1회」 네임드로 재설계하고, 반역자 조커는 추가 붙이기 허용을 제거하는 카운터로 재설계
+- [x] 자기 공개 조합 3칸이 모두 찼을 때만 턴당 1회 가능한 `조합 정리` 구현 — 당턴 생성/고정 조합 제외, 보호는 방해하지 않음, 일반 `onRetire`/`retireMeld` 경로 사용, 위력 +0 / SWITCH 이동 없음
+- [x] AI가 기본 붙이기 1회와 다중 붙이기를 공유하고, 만원 상태에서 새 조합 후보가 있을 때 낮은 가치의 CHAIN 0 런을 우선 정리하되 버스트 준비 세트·성장 RUN은 보존하도록 평가
+- [x] 전투 버튼/규칙·용어/튜토리얼/연습전 문구를 「새 조합 두 번 · 붙이기 한 번 · 내 필드 세 칸」으로 동기화
+- [x] V-SIGNAL / ZERO-SIGHT / POINT-BLANK / MAIL-ROUTE / SCRAP-SHIFT의 회수·이동·추가 행동 경로가 전역 붙이기 횟수를 우회하지 않도록 감사; CYCLE-WORKS / TWELVE-BLOOM 후보는 추가 기본 생성 보너스를 요구하지 않는 정책 유지
+- [ ] Android/iOS/Fold 실기기 터치·안전영역 재확인 — 소스/브라우저 회귀와 별개인 실기기 검증
+
 ## M1 — Final rules ↔ live code sync
 - [x] Remove free RUN retirement
 - [x] Remove free public-meld disposal
@@ -47,7 +58,7 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 
 ## M2 — Confirmed bug fixes
 - [x] Close Vacancy/Rebel Joker self-recovery loops: a Joker added by the current attach cannot auto-replace itself, and any later auto-return is marked recovered for the turn
-- [x] Make stuck-state legality include same-RUN continuation after the one physical SWITCH return
+- [x] Make stuck-state legality use the global base attach count; repeated attach exists only when a named effect explicitly grants an extra attach
 - [x] Bind same-turn recovered-card return exceptions to the destination melds authorized by the granting effect
 - [x] Harden invalid/legacy selected character progress data
 - [x] Unify Black Market discard acquisition path for player/CPU

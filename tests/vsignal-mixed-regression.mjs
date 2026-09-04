@@ -19,10 +19,10 @@ ok(script.includes("'VSCK':{slot:'CK',themeId:'v-signal',n:'24시간 내구방�
 // 1) Encore recovered from an ordinary RUN can legally re-enter a completely non-theme 3SET.
 {
   const encore=card('H','5',{named:true,name:'앙코르',tag:'vEncore',themeId:'v-signal',recoveredToken:91,encoreGrantToken:null,encoreReturnUsedToken:null});
-  const sourceRun={type:'RUN',cards:[encore,card('H','6'),card('H','7'),card('H','8')],chain:1,createdToken:null,lastAttachToken:null};
-  const targetSet={type:'SET',cards:[card('S','5'),card('D','5'),card('C','5')],chain:0,createdToken:null,lastAttachToken:null};
-  const player={melds:[sourceRun],returnedSwitchThisTurn:false};
-  const enemy={melds:[targetSet],returnedSwitchThisTurn:false};
+  const sourceRun={type:'RUN',cards:[encore,card('H','6'),card('H','7'),card('H','8')],chain:1,createdToken:null};
+  const targetSet={type:'SET',cards:[card('S','5'),card('D','5'),card('C','5')],chain:0,createdToken:null};
+  const player={melds:[sourceRun],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};
+  const enemy={melds:[targetSet],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};
   const state={turnNo:9,turnToken:91,player,enemy,field:null};
   const ctx=context({state,RANK_VALUE});
   ctx.sideObj=w=>w==='player'?player:enemy;
@@ -30,7 +30,7 @@ ok(script.includes("'VSCK':{slot:'CK',themeId:'v-signal',n:'24시간 내구방�
   ctx.meldsOf=w=>ctx.sideObj(w).melds;
   ctx.canSideReturn=()=>true;
   ctx.log=()=>{};
-  install(ctx,'isJoker','isSuitFlexible','setValid','runSequenceOK','runValid','meldType','legalRecoveryReturnTargets','grantRecoveryReturnOverride','handleVSignalThemeEvent','recoveredCardCanReturn','consumeEncoreReturnPermission');
+  install(ctx,'isJoker','isSuitFlexible','setValid','runSequenceOK','runValid','meldType','attachAccess','legalRecoveryReturnTargets','grantRecoveryReturnOverride','handleVSignalThemeEvent','recoveredCardCanReturn','consumeEncoreReturnPermission');
   ok(ctx.runValid(sourceRun.cards),'mixed Encore source is a real ordinary-heart RUN');
   ok(ctx.setValid(targetSet.cards),'Encore destination starts as a real non-theme 3SET');
   ok(targetSet.cards.every(c=>!c.themeId),'Encore destination requires no V-SIGNAL partner');

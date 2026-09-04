@@ -16,7 +16,7 @@ for(const name of ['getBattleMetrics','battleMetricTurn','recordBattleTurn','rec
   for(const name of ['getBattleMetrics','battleMetricTurn','recordBattleTurn','recordMeldActionMetric','recordDetonateMetric','recordRummyMetric','recordMaintenanceMetric','recordIntentionalBombAcceptance','battleMetricTurns','battleMetricsSummaryText','battleMetricsSnapshot'])vm.runInContext(functionSource(name),ctx);
   let st=ctx.getBattleMetrics();
   ok(st.maxPower===12&&st.turns===0,'metric state starts from the live switch power and zero completed turns');
-  ctx.recordMeldActionMetric('player','RUN',3,'enemy',{continuation:false});
+  ctx.recordMeldActionMetric('player','RUN',3,'enemy',{extraAttach:false});
   ok(st.chains.length===1&&st.chains[0].turn===1,'CHAIN action records the current side-turn timing');
   ok(st.opponentMeldUses===1&&st.opponentMeldCards===3,'opponent public-meld use records action and card volume');
   ok(st.multiAttachActions===1&&st.multiAttachMax===3,'multi-attach tracks action count and maximum size');
@@ -36,7 +36,7 @@ for(const name of ['getBattleMetrics','battleMetricTurn','recordBattleTurn','rec
 }
 
 ok(html.includes("state.switchPower+=amount;if(typeof getBattleMetrics==='function'){const bm=getBattleMetrics();bm.maxPower=Math.max(bm.maxPower,state.switchPower)}"),'max accumulated SWITCH power is sampled at the central power mutation');
-ok(html.includes("recordMeldActionMetric(w,type,cards.length,targetSide,{continuation})"),'successful attach path records BURST/CHAIN, opponent-meld use and multi-attach size');
+ok(html.includes("recordMeldActionMetric(w,type,cards.length,targetSide,{extraAttach:access.extra})"),'successful attach path records BURST/CHAIN, opponent-meld use, multi-attach size and named extra-attach metadata');
 ok(html.includes("recordDetonateMetric(w,total,dealt)"),'DETONATE path records timing and damage');
 ok(html.includes("recordRummyMetric(w)"),'RUMMY path records event timing');
 ok(html.includes("recordMaintenanceMetric(w,valid.length)"),'maintenance path records exchanged-card count');

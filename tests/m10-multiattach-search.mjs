@@ -35,8 +35,8 @@ function install(ctx, ...names) {
 
 function searchContext(requiredK) {
   const hand = Array.from({length: requiredK}, (_, i) => ({uid:`h${i}`, blockedUntilTurn:null, tag:null}));
-  const meld = {type:'RUN', cards:[{uid:'m1'},{uid:'m2'},{uid:'m3'}], chain:0, lastAttachToken:null, createdToken:null};
-  const side = {hand, returnedSwitchThisTurn:false};
+  const meld = {type:'RUN', cards:[{uid:'m1'},{uid:'m2'},{uid:'m3'}], chain:0, createdToken:null};
+  const side = {hand, returnedSwitchThisTurn:false, attachCount:0, extraAttachRemaining:0};
   const ctx = vm.createContext({console, Math, Array, Object, Set, Map});
   Object.assign(ctx, {
     state:{turnToken:9,turnNo:3},
@@ -45,10 +45,9 @@ function searchContext(requiredK) {
     meldsOf:s=>s==='enemy'?[meld]:[],
     meldType:cards=>cards.length===3+requiredK?'RUN':null,
     recoveredCardsCanReturn:()=>true,
-    canSideReturn:()=>true,
-    canContinueReturnedRun:()=>false
+    canSideReturn:()=>true
   });
-  install(ctx, 'chainDamage', 'combinations', 'bestExtensionFromHand', 'anyAttachOption');
+  install(ctx, 'chainDamage', 'combinations', 'attachAccess', 'bestExtensionFromHand', 'anyAttachOption');
   return {ctx, hand};
 }
 
