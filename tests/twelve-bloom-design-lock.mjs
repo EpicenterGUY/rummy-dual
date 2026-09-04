@@ -13,7 +13,7 @@ ok(plan.includes('TWELVE-BLOOM / CYCLE-WORKS 및 이후 후보'),'full-pool plan
 ok(html.includes("themeId:'twelve-bloom'")&&html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom'"),'design lock now permits staged non-live runtime definitions');
 ok(!html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom',name:'TWELVE-BLOOM',displayName:'TWELVE-BLOOM',concept:'달 · 계절맞춤 · 그림맞춤 · 윤달',live:true"),'staged theme is not marked live');
 ok(!html.includes("'twelve-bloom':Object.freeze({id:'twelve-bloom',displayName:'TWELVE-BLOOM'"),'no selectable TWELVE-BLOOM build profile is exposed before the 24/24 gate');
-ok(!/items:\[[^\]]*TB(?:CA|C3|C5|C7|C10|CQ|HA|H3|H5|H7|H10|HK|D2|D4|D8|D10|S6|S10)/.test(html),'staged TWELVE-BLOOM cards are absent from normal unlock groups');
+ok(!/items:\[[^\]]*TB(?:CA|C3|C5|C7|C10|CQ|HA|H3|H5|H7|H10|HK|D2|D4|D6|D8|D10|DQ|SA|S3|S6|S8|S10|SQ)/.test(html),'staged TWELVE-BLOOM cards are absent from normal unlock groups');
 
 for(const row of [
  ['A','1'],['2','2'],['3','3'],['4','4'],['5','5'],['6','6'],['7','7'],['8','8'],['9','9'],['10','10'],['J','11'],['Q','12']
