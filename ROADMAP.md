@@ -378,10 +378,10 @@ V-SIGNAL 24장 + ZERO-SIGHT 18장 + POINT-BLANK 18장의 개별 구현 뒤, 실�
 - [x] 일반 로그라이크 보상 해금 후 허용, 기존 고정 지역 적 덱은 유지
 - [x] MAIL-ROUTE 단일/2테마/일반 혼합 + 전체 회귀
 
-## M8SS — SCRAP-SHIFT 24/24 풀 카드군 · 개발 중
-부품 표식을 일반/다른 테마의 내 소유 카드에도 붙여 해체·이식·재조립하는 순환형 오픈 테마. 24장 전체가 끝날 때까지 일반 카드군 선택/보상에는 노출하지 않는다.
+## M8SS — SCRAP-SHIFT 24/24 풀 카드군 · 완료
+부품 표식을 일반/다른 테마의 내 소유 카드에도 붙여 해체·이식·재조립하는 순환형 오픈 테마. 24장 전체 효과·해금·도감·자동 빌드·체험전·일반 보상까지 라이브 통합했다.
 
-- [x] `SCRAP-SHIFT` 테마 레지스트리 추가 — 아직 `live:false`
+- [x] `SCRAP-SHIFT` 테마 레지스트리 추가 및 최종 `live:true` 승격
 - [x] `부품` 비중첩 카드 표식 + 손패/공개 조합/소모패 유지 + 버림패/개인 덱 진입 시 정리 기반 구현
 - [x] 공용 파생 이벤트 `onPartSet` / `onDismantle` / `onReassemble` 추가
 - [x] 해체 공용 헬퍼 — 조합 유효성 유지, RUN 체인 -1, 회수와 분리, 전투 중립, 표적→접전 갱신
@@ -398,8 +398,8 @@ V-SIGNAL 24장 + ZERO-SIGHT 18장 + POINT-BLANK 18장의 개별 구현 뒤, 실�
 - [x] 과열 부품의 같은 턴 취약 중복 적용을 공용 테마 턴 게이트로 차단
 - [x] 24장 / 수트별 6장 정의 및 실제 효과 구현
 - [x] 이식 카드군 효과를 기존 `onMeldMove` 공용 이동과 연결
-- [ ] 해금·도감·자동 테마 빌드·체험전 연결 후 일반 보상 승격
-- [ ] SCRAP-SHIFT 단일/모든 2테마/일반 mixed + 전체 회귀
+- [x] 해금·도감·자동 테마 빌드·체험전 연결 후 일반 보상 승격 — 전체 1~6클리어 4장씩 단계 해금, 부품 라벨 체험전, 아이언그레이브 보상 가중치 연결
+- [x] SCRAP-SHIFT 단일/모든 2테마/일반 mixed + 전체 회귀 — 자동 빌드 4장 상한/9장 혼합/물리 슬롯 배타성 유지
 
 ## M9 — Jokers and fields
 - [x] Finalize distinct Joker identities — J1~J5 keep separate wildcard identities for owner-deck return, RUMMY/DETONATE timing, SET/RUN split payoff, vacancy replacement, and opponent-meld rebellion
