@@ -23,7 +23,7 @@ const wave1=[
 for(const [id,slot,name,tag] of wave1){
  ok(script.includes(`'${id}':{slot:'${slot}',themeId:'scrap-shift',n:'${name}',t:'${tag}'`),`${name} is defined as a SCRAP-SHIFT development card`);
 }
-ok(script.includes("'scrap-shift':Object.freeze({id:'scrap-shift',displayName:'SCRAP-SHIFT',short:'부품 순환'")&&script.includes("themeId:'scrap-shift',live:false"),'SCRAP-SHIFT has a non-live DEV build profile');
+ok(script.includes("'scrap-shift':Object.freeze({id:'scrap-shift',displayName:'SCRAP-SHIFT',short:'부품 순환'")&&script.includes("themeId:'scrap-shift',live:true"),'SCRAP-SHIFT has a live build profile');
 ok(html.includes('data-codex-filter="theme:scrap-shift">SCRAP-SHIFT</button>'),'SCRAP-SHIFT codex tab exists for DEV visibility');
 const resolver=source('resolveEffects');
 for(const tag of wave1.map(x=>x[3]))ok(resolver.includes(`case'${tag}'`),`${tag} has a live resolver branch`);
@@ -88,6 +88,6 @@ for(const tag of wave1.map(x=>x[3]))ok(resolver.includes(`case'${tag}'`),`${tag}
 ok(road.includes('1차 수직 슬라이스 4장 — A♦ 부품 라벨 / 2♣ 컨베이어 / 4♥ 수리 키트 / A♠ 분해 드라이버'),'ROADMAP records the four-card vertical slice');
 ok(/- \[[ x]\] 24장 \/ 수트별 6장 정의 및 실제 효과 구현/.test(road),'full 24-card implementation remains tracked as later waves advance the checkbox');
 ok(themeDoc.includes('1차 수직 슬라이스 — A♦ `부품 라벨` / 2♣ `컨베이어` / 4♥ `수리 키트` / A♠ `분해 드라이버`'),'canonical theme doc records wave1 without declaring full live');
-ok(poolDoc.includes('24장 미라이브')&&!poolDoc.includes('SCRAP-SHIFT 24/24 라이브 완료'),'full-pool policy keeps SCRAP-SHIFT non-live as later DEV waves are added');
+ok(poolDoc.includes('24/24 라이브 구현 완료'),'full-pool policy records SCRAP-SHIFT live promotion after all waves');
 
 console.log('SCRAP-SHIFT wave1 vertical-slice regression passed.');
