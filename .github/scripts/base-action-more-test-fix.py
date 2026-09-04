@@ -36,3 +36,17 @@ for old,new in fixes:
     elif new not in s:raise SystemExit(f'missing M11B attach migration anchor: {old[:90]}')
 p.write_text(s,encoding='utf-8')
 print('M11B attach action harness migrated to global attach contract')
+
+
+p=ROOT/'tests'/'m11b-ai-rank-plans.mjs'
+s=p.read_text(encoding='utf-8')
+before=s
+s=s.replace(",lastAttachToken:null","")
+s=s.replace("returnedSwitchThisTurn:false}","returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0}")
+s=s.replace("ctx.canContinueReturnedRun=()=>false;","")
+s=s.replace("install(ctx,'combinations',...rankNames,'bestExtensionFromHand');","install(ctx,'combinations',...rankNames,'attachAccess','bestExtensionFromHand');")
+s=s.replace("install(ctx,'combinations',...rankNames,'anyAttachOption');","install(ctx,'combinations',...rankNames,'attachAccess','anyAttachOption');")
+if s==before and "attachAccess','bestExtensionFromHand" not in s:
+    raise SystemExit('missing M11B AI attach migration anchors')
+p.write_text(s,encoding='utf-8')
+print('M11B AI rank-plan harness migrated to global attach contract')
