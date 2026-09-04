@@ -50,3 +50,16 @@ if s==before and "attachAccess','bestExtensionFromHand" not in s:
     raise SystemExit('missing M11B AI attach migration anchors')
 p.write_text(s,encoding='utf-8')
 print('M11B AI rank-plan harness migrated to global attach contract')
+
+
+p=ROOT/'tests'/'m12-battle-metrics.mjs'
+s=p.read_text(encoding='utf-8')
+fixes=[
+("  ctx.recordMeldActionMetric('player','RUN',3,'enemy',{continuation:false});","  ctx.recordMeldActionMetric('player','RUN',3,'enemy',{extraAttach:false});"),
+("ok(html.includes(\"recordMeldActionMetric(w,type,cards.length,targetSide,{continuation})\"),'successful attach path records BURST/CHAIN, opponent-meld use and multi-attach size');","ok(html.includes(\"recordMeldActionMetric(w,type,cards.length,targetSide,{extraAttach:access.extra})\"),'successful attach path records BURST/CHAIN, opponent-meld use, multi-attach size and named extra-attach metadata');")
+]
+for old,new in fixes:
+    if old in s:s=s.replace(old,new,1)
+    elif new not in s:raise SystemExit(f'missing M12 attach metric migration anchor: {old[:100]}')
+p.write_text(s,encoding='utf-8')
+print('M12 attach metrics migrated from continuation to extraAttach metadata')
