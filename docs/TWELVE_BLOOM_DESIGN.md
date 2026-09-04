@@ -245,5 +245,5 @@ Before TWELVE-BLOOM can become live:
 - [x] Final light/movement slice implemented (24/24) — 6♦ 날갯짓 / Q♦ 철새 길 / A♠ 첫빛 / 3♠ 비치는 틈 / 8♠ 큰빛 / Q♠ 빛 셋. Cross-board movement maintenance, opponent-entry protection, optional first-season seal, used-opponent-meld seal/protect fallback, exact light-trio defense, and pre-action light-trio +14 return timing are covered by `tests/twelve-bloom-fourth-slice.mjs`.
 - [x] Pre-live integration harness implemented — explicit `live:false` theme/build/tutorial metadata, six-tier staging unlock plan outside normal unlocks, DEV-only codex/build access, all 24 AI/reward tendency tags, roguelike entry/payoff classification, and a real `onBloomMatchChange` season tutorial are covered by `tests/twelve-bloom-staging-integration.mjs`.
 - [ ] Normal unlock/reward exposure approved and enabled.
-- [ ] Single-theme / every two-theme / mixed / long-RUN UI regression completed.
-- [ ] Match looseness and direct-power ratio simulation completed.
+- [x] Single-theme / every two-theme / mixed / long-RUN UI regression completed — composition matrix includes TWELVE-BLOOM and all five live-theme pairings; long RUN keeps local card scrolling with wrapped match-preview chips.
+- [x] Match looseness and direct-power ratio simulation completed — 5,500 actual-engine battles plus static ratio checks are recorded in `docs/TWELVE_BLOOM_BALANCE_RESULTS.md`. No numeric effect change is required before live exposure.
