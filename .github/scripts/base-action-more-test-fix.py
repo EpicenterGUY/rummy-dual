@@ -169,3 +169,19 @@ for old,new in fixes:
     elif new not in s:raise SystemExit(f'missing V-SIGNAL mixed attach migration anchor: {old[:110]}')
 p.write_text(s,encoding='utf-8')
 print('V-SIGNAL mixed recovery-return harness migrated to global attach contract')
+
+
+p=ROOT/'tests'/'vsignal-tutorial.mjs'
+s=p.read_text(encoding='utf-8')
+fixes=[
+(" const sourceRun={type:'RUN',cards:[encore,card('H','6'),card('H','7'),card('H','8')],chain:1,createdToken:null,lastAttachToken:null};"," const sourceRun={type:'RUN',cards:[encore,card('H','6'),card('H','7'),card('H','8')],chain:1,createdToken:null};"),
+(" const destSet={type:'SET',cards:[card('S','5',{owner:'enemy'}),card('D','5',{owner:'enemy'}),card('C','5',{owner:'enemy'})],chain:0,createdToken:null,lastAttachToken:null};"," const destSet={type:'SET',cards:[card('S','5',{owner:'enemy'}),card('D','5',{owner:'enemy'}),card('C','5',{owner:'enemy'})],chain:0,createdToken:null};"),
+(" const player={melds:[sourceRun],returnedSwitchThisTurn:false},enemy={melds:[destSet],returnedSwitchThisTurn:false};"," const player={melds:[sourceRun],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0},enemy={melds:[destSet],returnedSwitchThisTurn:false,attachCount:0,extraAttachRemaining:0};"),
+(" ctx.sideObj=w=>w==='player'?player:enemy;ctx.other=w=>w==='player'?'enemy':'player';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.canContinueReturnedRun=()=>false;ctx.log=()=>{};"," ctx.sideObj=w=>w==='player'?player:enemy;ctx.other=w=>w==='player'?'enemy':'player';ctx.meldsOf=w=>ctx.sideObj(w).melds;ctx.canSideReturn=()=>true;ctx.log=()=>{};"),
+(" install(ctx,'isJoker','isSuitFlexible','setValid','runSequenceOK','runValid','meldType','legalRecoveryReturnTargets','grantRecoveryReturnOverride','handleVSignalThemeEvent','recoveredCardCanReturn');"," install(ctx,'isJoker','isSuitFlexible','setValid','runSequenceOK','runValid','meldType','attachAccess','legalRecoveryReturnTargets','grantRecoveryReturnOverride','handleVSignalThemeEvent','recoveredCardCanReturn');")
+]
+for old,new in fixes:
+    if old in s:s=s.replace(old,new,1)
+    elif new not in s:raise SystemExit(f'missing V-SIGNAL tutorial attach migration anchor: {old[:110]}')
+p.write_text(s,encoding='utf-8')
+print('V-SIGNAL tutorial harness migrated to global attach contract')
