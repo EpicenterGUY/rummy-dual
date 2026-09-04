@@ -1,4 +1,4 @@
-# rerun: M11B global attach harness
+# rerun: M11B AI global attach harness
 name: One-time base action simplification
 
 on:
@@ -53,7 +53,8 @@ jobs:
           node tests/hand-circulation.mjs
           node tests/korean-terms.mjs
           node tests/m10-multiattach-search.mjs
-          node tests/m11b-action-commit.mjs
+          node tests/m11b-action-commit.mjs tests/m11b-ai-rank-plans.mjs
+          node tests/m11b-ai-rank-plans.mjs
           node tests/theme-reaction-order.mjs
           node tests/theme-mix-simulation.mjs
           node tests/l10n-card-style.mjs
