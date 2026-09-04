@@ -12,7 +12,7 @@ function makeCtx(seed=1){const math=Object.create(Math);math.random=rng(seed);co
 
 const base=makeCtx(1),NAMED=base.NAMED;
 const regularIds=Object.keys(NAMED).filter(id=>id[0]!=='J');
-const themeIds=['v-signal','zero-sight','point-blank','mail-route','scrap-shift'];
+const themeIds=['v-signal','zero-sight','point-blank','mail-route','scrap-shift','twelve-bloom'];
 const themeCards=id=>regularIds.filter(cid=>NAMED[cid]?.themeId===id);
 const slotOf=id=>base.namedSlot(id);
 function uniqueSlots(ids){return new Set(ids.map(slotOf))}
@@ -59,7 +59,7 @@ for(let seed=1;seed<=128;seed++){
 ok(mixedThemeSeen>0&&mixedOrdinarySeen>0,'general mixed simulation samples both theme and ordinary named cards');
 
 // 4) Direct-power cards remain a minority globally and among the currently implemented theme cards.
-const directTags=new Set(['finalUltimatum','blackBullet','fuseRound','vBroadcastAccident','vBadClip','vReverseViral','vBanSoon','mrHazardMail','mrFinalNotice','zsBallistics','zsOneShot','ssScrapRampage']);
+const directTags=new Set(['finalUltimatum','blackBullet','fuseRound','vBroadcastAccident','vBadClip','vReverseViral','vBanSoon','mrHazardMail','mrFinalNotice','zsBallistics','zsOneShot','ssScrapRampage','tbSunset','tbLightTrio']);
 const allDefs=Object.values(NAMED),directAll=allDefs.filter(c=>directTags.has(c.t));
 const allTheme=allDefs.filter(c=>c.themeId),directTheme=allTheme.filter(c=>directTags.has(c.t));
 ok(directAll.length/allDefs.length<0.20,`direct-power tags stay below 20% of all named definitions (${directAll.length}/${allDefs.length})`);
