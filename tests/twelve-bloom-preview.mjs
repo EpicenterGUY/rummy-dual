@@ -85,4 +85,17 @@ ok(!source('cardHTML').includes('twelveBloom')&&!source('renderMelds').includes(
  ok(near?.progress==='2/3'&&near?.missing==='3♥ 필요','exact picture near-match names the missing printed slot');
 }
 
+
+{
+ const longRun=Array.from({length:10},(_,i)=>card(100+i,'C',i===0?'A':String(i+1)));
+ const {ctx}=ctxFor({publicCards:longRun,knownTheme:true});
+ const snap=ctx.twelveBloomMatchSnapshot('player');
+ const complete=[...Object.values(snap.seasons),...Object.values(snap.pictures)].filter(x=>x.complete);
+ ok(complete.length<=9,'long RUN snapshot remains match-aggregated instead of creating per-card UI rows');
+ ok(html.includes('.meldCardRow{gap:4px;overflow-x:auto;overflow-y:hidden'),'long public RUN keeps local horizontal scrolling');
+ ok(html.includes('.twelveBloomPreviewChips{display:flex;gap:4px;flex-wrap:wrap}'),'TWELVE-BLOOM preview chips wrap independently of long RUN width');
+ const affected=ctx.twelveBloomAffectedMatchKeys(snap,snap);
+ ok(affected.length===0,'unchanged long RUN produces no redundant preview-change chips');
+}
+
 console.log('TWELVE-BLOOM contextual preview regression passed.');
