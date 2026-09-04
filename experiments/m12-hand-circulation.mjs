@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {makeGame,html} from '../tests/helpers/live-game.mjs';
+import {makeGameFactory,html} from '../tests/helpers/live-game.mjs';
 
 export const BASE_REF='002bc9bcfdce86b4690ff71782cadd8fe86e510d';
 export const COHORTS=['set','run','mixed','v-signal','zero-sight','point-blank','mail-route','scrap-shift'];
@@ -94,10 +94,10 @@ function playSide(g,w,acc,turnIndex){
 const mean=a=>a.reduce((x,y)=>x+y,0)/(a.length||1);
 const median=a=>{const x=[...a].sort((a,b)=>a-b),n=x.length;return n?(n%2?x[(n-1)/2]:(x[n/2-1]+x[n/2])/2):0};
 const rate=(n,d)=>100*n/(d||1);
-function runCohort(source,cohort,seeds=1000,maxTurns=120){
+function runCohort(factory,cohort,seeds=1000,maxTurns=120){
  const total={battles:seeds,hands:[],rummys:0,handZeroEvents:0,firstRummyTurns:[],noRummy:0,acqSkips:0,acqPasses:0,recycles:0,full:0,emergency:0,maintenance:0,maintenanceCards:0,bursts:0,chains:0,detonates:0,maxPowers:[],battleTurns:[],maxLow:0,capped:0};
  for(let seed=1;seed<=seeds;seed++){
-  const g=makeGame(instrumentSource(source),seed*97,{developer:false}),st=g.state;setup(g,cohort,seed);
+  const g=factory(seed*97),st=g.state;setup(g,cohort,seed);
   const acc={hands:[],rummys:0,handZeroEvents:0,firstRummyTurn:null,acqSkips:0,acqPasses:0,streak:{player:0,enemy:0},maxLow:0};
   let t=0;for(;t<maxTurns&&!st.gameOver;t++)playSide(g,t%2?'enemy':'player',acc,t);
   if(!st.gameOver&&t>=maxTurns)total.capped++;
@@ -113,7 +113,9 @@ function runCohort(source,cohort,seeds=1000,maxTurns=120){
 }
 export function runExperiment(seeds=1000,maxTurns=120){
  const baseline=execFileSync('git',['show',`${BASE_REF}:index.html`],{cwd:new URL('..',import.meta.url),encoding:'utf8',maxBuffer:12e6});
- return {baseRef:BASE_REF,seeds,maxTurns,policy:'paired seeds; complete shipped engine via tests/helpers/live-game; no mulligan; real acquisition/discard/maintenance/meld/attach/recover/RUMMY/recycle/SWITCH/DETONATE paths; optional effect choices skipped consistently',cohorts:COHORTS.map(cohort=>({cohort,baseline:runCohort(baseline,cohort,seeds,maxTurns),candidateA:runCohort(html,cohort,seeds,maxTurns)}))};
+ const baselineFactory=makeGameFactory(instrumentSource(baseline),{developer:false});
+ const candidateFactory=makeGameFactory(instrumentSource(html),{developer:false});
+ return {baseRef:BASE_REF,seeds,maxTurns,policy:'paired seeds; complete shipped engine via tests/helpers/live-game; source compiled once per variant and instantiated into isolated seeded contexts; no mulligan; real acquisition/discard/maintenance/meld/attach/recover/RUMMY/recycle/SWITCH/DETONATE paths; optional effect choices skipped consistently',cohorts:COHORTS.map(cohort=>({cohort,baseline:runCohort(baselineFactory,cohort,seeds,maxTurns),candidateA:runCohort(candidateFactory,cohort,seeds,maxTurns)}))};
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){
  const result=runExperiment(Number(process.env.M12_SEEDS)||1000,Number(process.env.M12_MAX_TURNS)||120);
