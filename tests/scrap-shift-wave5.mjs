@@ -130,7 +130,8 @@ ok(!wave5Sources.includes('grantExtraAttach')&&!wave5Sources.includes('extraAtta
 
 ok(road.includes('5차 교차행동 슬라이스 4장 — 9♦ 교환 규격 / 10♣ 모듈 버스 / 10♥ 리퍼비시 / 3♠ 볼트 커터'),'ROADMAP records SCRAP-SHIFT wave5');
 ok(themeDoc.includes('5차 교차행동 슬라이스 — 9♦ `교환 규격` / 10♣ `모듈 버스` / 10♥ `리퍼비시` / 3♠ `볼트 커터`'),'canonical theme doc records wave5');
-ok(poolDoc.includes('24장 미라이브 · 20장 DEV 구현 완료(행동 4 + 반응 4 + 유틸리티 4 + 수명주기 4 + 교차행동 4)'),'full-pool policy records twenty DEV cards while keeping SCRAP-SHIFT non-live');
+const devCountMatch=poolDoc.match(/24장 미라이브 · (\d+)장 DEV 구현 완료/);
+ok(!!devCountMatch&&Number(devCountMatch[1])>=20,'full-pool policy keeps at least the wave5 twenty DEV cards while the final wave may increase the count');
 ok(road.includes('- [ ] 24장 / 수트별 6장 정의 및 실제 효과 구현'),'final 24-card implementation remains open after wave5');
 
 console.log('SCRAP-SHIFT wave5 cross-action regression passed.');
