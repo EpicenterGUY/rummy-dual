@@ -239,7 +239,8 @@ Before TWELVE-BLOOM can become live:
 - [x] Match evaluator + before/after snapshots implemented — public material is read across both boards by card ownership, with season/picture snapshots and newly-completed/broken diffs.
 - [x] Leap-month metadata lifecycle implemented — one owned public K per player, 1–12 assignment, atomic reassignment, and automatic clearing on hand/deck/discard/spent/public-retire exits.
 - [x] Contextual match preview UI implemented — hidden unless TWELVE-BLOOM-relevant material exists; selected new-meld/attach/recovery projections show only affected completion, break, or 2/3 missing-piece information.
-- [ ] 24 card effects implemented.
+- [x] First effect vertical slice implemented (6/24) — 5♣ 계절 표본 / A♥ 붉은 띠 / K♥ 윤달 매듭 / 2♦ 봄새 / 6♠ 겹빛 / 10♠ 낙조. Match-change passives, leap-month choice, opponent-board entry detection, simultaneous season+picture reaction, and pre-return season bonus timing are covered by `tests/twelve-bloom-first-slice.mjs`.
+- [ ] Remaining 18 card effects implemented.
 - [ ] Unlock/codex/build/tutorial/roguelike integration implemented.
 - [ ] Single-theme / every two-theme / mixed / long-RUN UI regression completed.
 - [ ] Match looseness and direct-power ratio simulation completed.
