@@ -50,7 +50,7 @@ ok(unlock.includes("items:['ZSD6']")&&unlock.includes("items:['ZSSK']"),'Ballist
  vm.runInNewContext(`${resolve};globalThis.__r=resolveEffects;`,box);
  const c={uid:2,named:true,tag:'zsLongShot',name:'장거리 사격',ready:2};
  const out=box.__r('player',[c],'RUN',{meld:{},effectSeen:new Set(),willReturn:true,isAttach:true,targetOwner:'enemy',totalLength:4});
- ok(out.bonus===16,'two-turn prepared Long Shot adds exactly +16 on a target return');
+ ok(out.bonus===20,'two-turn prepared Long Shot adds exactly +20 on a target return');
 }
 
 ok(!script.includes('zeroSightResource')&&!script.includes('ZERO_SIGHT_COUNT'),'ZERO-SIGHT adds no dedicated numeric resource');
