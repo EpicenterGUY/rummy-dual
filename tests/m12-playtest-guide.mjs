@@ -11,7 +11,8 @@ for(const id of ['battleMetricsPlaytestGuide','battleMetricsPlaytestApplyBtn','b
 for(const name of ['battleMetricsPlaytestRecommendation','battleMetricsPlaytestGuideText','applyBattleMetricsPlaytestRecommendation'])ok(script.includes(`function ${name}(`),`M12 playtest collector helper exists: ${name}`);
 
 {
- const ctx=vm.createContext({console,Math,Number,Array,Object});
+ const progress={selectedChar:'wanderer',selectedTheme:'mixed'};
+ const ctx=vm.createContext({console,Math,Number,Array,Object,progress});
  vm.runInContext("const M12_STRUCTURE_MIN_SAMPLES=10;const M12_STRUCTURE_STABLE_SAMPLES=20;const M12_STRUCTURE_IDS=Object.freeze(['set','run','mixed']);",ctx);
  vm.runInContext(source('battleMetricsPlaytestRecommendation'),ctx);
  const row=(id,extra={})=>({mode:'battle',playerStructure:id,customDeck:false,circulation:{player:{turns:1}},...extra});
@@ -21,6 +22,15 @@ for(const name of ['battleMetricsPlaytestRecommendation','battleMetricsPlaytestG
  ok(r.id==='run','after one SET sample the least-sampled RUN structure is recommended');
  r=ctx.battleMetricsPlaytestRecommendation([row('set'),row('run')]);
  ok(r.id==='mixed','balanced round-robin reaches MIXED after SET and RUN');
+ const contextBiased=[
+  row('set',{playerChar:'wanderer',playerTheme:'mixed'}),
+  row('run',{playerChar:'wanderer',playerTheme:'mixed'}),
+  row('mixed',{playerChar:'wanderer',playerTheme:'mixed'}),
+  row('set',{playerChar:'collector',playerTheme:'mixed'}),
+  row('run',{playerChar:'collector',playerTheme:'mixed'})
+ ];
+ r=ctx.battleMetricsPlaytestRecommendation(contextBiased);
+ ok(r.id==='mixed'&&r.contextCounts.mixed===1,'global least-sampled tie is broken toward the structure least represented in the current character+theme context');
  const nine=id=>Array.from({length:9},()=>row(id));
  r=ctx.battleMetricsPlaytestRecommendation([...nine('set'),...nine('run'),...nine('mixed')]);
  ok(r.target===10&&r.remaining===1,'first comparison phase guides each structure to 10 regular battles');

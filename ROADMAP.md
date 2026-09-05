@@ -571,13 +571,14 @@ V-SIGNAL 24장 + ZERO-SIGHT 18장 + POINT-BLANK 18장의 개별 구현 뒤, 실�
 - [ ] 프로토타입 결과가 좋으면 M0/M11의 정식 카드 규칙으로 승격하고, 좋지 않으면 소수 카드의 개별 효과 또는 특정 테마 기믹으로 축소
 
 ## M12 — Metrics and balance
-- [x] Track turn count, BURST/CHAIN/DETONATE timing, max power, opponent-meld use, multi-attach size, RUMMY, maintenance and intentional bomb acceptance — 전투별 구조화 이벤트를 수집해 결과 요약에 표시하고 일반/연습 전투 최근 50판을 `rummyDuelBattleMetricsV1` 로컬 기록으로 보존. 튜토리얼/DEV 전투는 밸런스 표본에서 제외
-- [x] Review/export local playtest metrics — 개발자 패널에서 최근 50판의 일반/연습 표본 수, 일반전 승률, 평균 턴·최대 위력·버스트·체인·폭발·상대 조합 사용·러미·정비와 다중붙이기/소폭탄 수용을 즉시 요약하고 최근 8판 상세·JSON 복사·기록 초기화를 지원
+- [x] Track turn count, BURST/CHAIN/DETONATE timing, max power, opponent-meld use, multi-attach size, RUMMY, maintenance and intentional bomb acceptance — 전투별 구조화 이벤트를 수집해 결과 요약에 표시하고 일반/연습 전투 최근 240판을 `rummyDuelBattleMetricsV1` 로컬 기록으로 보존. 튜토리얼/DEV 전투는 밸런스 표본에서 제외
+- [x] Review/export local playtest metrics — 개발자 패널에서 최근 240판의 일반/연습 표본 수, 일반전 승률, 평균 턴·최대 위력·버스트·체인·폭발·상대 조합 사용·러미·정비와 다중붙이기/소폭탄 수용을 즉시 요약하고 최근 8판 상세·JSON 복사·기록 초기화를 지원
 - [x] Structure / circulation cohort telemetry — 전투 샘플을 v2로 확장해 `playerStructure`/커스텀 덱 여부와 플레이어·상대별 손패 합계·2/3장 이하 턴·저손패 보호·러미·정비를 원시 카운트로 저장. 개발자 패널은 세트형/런형/혼합형/커스텀을 분리해 일반전 승률·평균 턴·평균 손패·2장 이하 비율·러미/정비 100턴당 빈도를 비교하며 기존 v1 표본은 구조 미기록으로 보존·비교 제외. M12 순환 실험 코호트에도 라이브 TWELVE-BLOOM을 추가
 - [x] Structure cohort readiness / observation gate — 세트형/런형/혼합형의 순환 지표 포함 일반전 v2 표본을 각 10판 `1차 비교 가능`, 20판 `안정권`으로 표시하고 연습전은 승률 게이트에서 제외. 세 구조가 모두 10판을 넘은 뒤 승률 범위 20%p, 평균 턴 8, 2장 이하 10%p, 러미/정비 2회/100턴 또는 전체 재순환 발생을 `추가 확인 신호`로만 표시하며 자동 수치 조정·통계적 유의성·합격/실패 판정은 하지 않음
 - [x] Guided M12 structure playtest collector — 개발자 M12 패널이 구조별 일반전 v2 표본 수에서 가장 적은 세트형/런형/혼합형을 다음 추천으로 제시하고, 동률은 직전 구조 다음 순서로 순환. 한 번의 버튼으로 DEV를 종료하고 추천 구조를 일반 진행도에 적용하며 커스텀 덱을 해제한 뒤 정상 대전 준비의 덱 단계로 이동. 캐릭터/테마는 유지해 같은 조합의 3구조 묶음 플레이를 권장하고, 10판 게이트 후에는 20판 안정권까지 같은 방식으로 안내
 - [x] M12 retention fix + theme×structure matrix — 기존 최근 50판 제한으로는 구조별 20/20/20 안정권(최소 60판)에 동시에 도달할 수 없던 모순을 수정해 `rummyDuelBattleMetricsV1` 보존 한도를 240판으로 확대. 일반전 v2·자동 구조 덱만 테마별 세트/런/혼합 셀로 분리해 승률·2장 이하·러미를 표시하고, 같은 테마의 세 셀이 각 3판 이상이면 테마 내부 구조 범위를 별도 표시해 전체 구조 차이가 특정 테마 편중 때문인지 확인. 3판은 관찰 시작점일 뿐 유의성/합격 기준이 아님
 - [x] M12 character×structure correction matrix — 일반전 v2·자동 구조 덱을 유랑자/수집가/회수꾼/광대별 세트/런/혼합 셀로 분리해 승률·2장 이하·러미를 표시. 같은 캐릭터의 세 셀이 각 3판 이상이면 캐릭터 내부 승률·평균 턴·저손패·러미 범위를 관찰값으로 표시. 캐릭터는 전투 패시브가 아니라 자동 덱 네임드 가중치만 바꾸므로, 이 교차표는 전체 구조 통계가 특정 캐릭터의 구성 편향에 끌렸는지 확인하는 보정 용도로만 사용
+- [x] M12 character+theme matched-context correction — 일반전 v2·자동 구조 덱을 `playerChar + playerTheme` 컨텍스트로 묶고, 각 컨텍스트에서 세트/런/혼합 중 최소 셀 수만큼 최근 표본을 동일 수로 잘라 구조별 균형 표본을 합산. 원시 전체 승률과 매칭 후 승률의 이동 및 승률·평균 턴·2장 이하·러미 범위를 별도 표시해 캐릭터/테마 구성 편중을 동시에 보정. 3개 매칭 블록부터 관찰 참고로 표시하며 유의성/합격 기준은 아님. 구조 추천은 전체 부족 구조 우선 원칙을 유지하면서 동률일 때 현재 캐릭터+테마에서 덜 쌓인 구조를 우선
 - [ ] Balance from playtest data before large content expansion
 
 ## M13 — Static code split
