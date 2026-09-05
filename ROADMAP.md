@@ -574,6 +574,7 @@ V-SIGNAL 24장 + ZERO-SIGHT 18장 + POINT-BLANK 18장의 개별 구현 뒤, 실�
 - [x] Track turn count, BURST/CHAIN/DETONATE timing, max power, opponent-meld use, multi-attach size, RUMMY, maintenance and intentional bomb acceptance — 전투별 구조화 이벤트를 수집해 결과 요약에 표시하고 일반/연습 전투 최근 50판을 `rummyDuelBattleMetricsV1` 로컬 기록으로 보존. 튜토리얼/DEV 전투는 밸런스 표본에서 제외
 - [x] Review/export local playtest metrics — 개발자 패널에서 최근 50판의 일반/연습 표본 수, 일반전 승률, 평균 턴·최대 위력·버스트·체인·폭발·상대 조합 사용·러미·정비와 다중붙이기/소폭탄 수용을 즉시 요약하고 최근 8판 상세·JSON 복사·기록 초기화를 지원
 - [x] Structure / circulation cohort telemetry — 전투 샘플을 v2로 확장해 `playerStructure`/커스텀 덱 여부와 플레이어·상대별 손패 합계·2/3장 이하 턴·저손패 보호·러미·정비를 원시 카운트로 저장. 개발자 패널은 세트형/런형/혼합형/커스텀을 분리해 일반전 승률·평균 턴·평균 손패·2장 이하 비율·러미/정비 100턴당 빈도를 비교하며 기존 v1 표본은 구조 미기록으로 보존·비교 제외. M12 순환 실험 코호트에도 라이브 TWELVE-BLOOM을 추가
+- [x] Structure cohort readiness / observation gate — 세트형/런형/혼합형의 순환 지표 포함 일반전 v2 표본을 각 10판 `1차 비교 가능`, 20판 `안정권`으로 표시하고 연습전은 승률 게이트에서 제외. 세 구조가 모두 10판을 넘은 뒤 승률 범위 20%p, 평균 턴 8, 2장 이하 10%p, 러미/정비 2회/100턴 또는 전체 재순환 발생을 `추가 확인 신호`로만 표시하며 자동 수치 조정·통계적 유의성·합격/실패 판정은 하지 않음
 - [ ] Balance from playtest data before large content expansion
 
 ## M13 — Static code split
