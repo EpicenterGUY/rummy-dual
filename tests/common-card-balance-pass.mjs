@@ -46,6 +46,7 @@ console.log('PASS common DA Fence has a real discard-acquisition cycle');
   const hq=g.makeCard('H','Q',false,'enemy'),dq=g.makeCard('D','Q',false,'enemy');
   s.melds=[{type:'SET',cards:[sentence,hq,dq],chain:0,createdTurn:0,createdToken:0,lastTouchedOwnerStart:0,status:g.blankMeldStatus(),themeMeta:{}}];
   const cq=g.makeCard('C','Q',false,'player');
+  s.hand=[g.makeCard('D','2',false,'enemy')];
   g.state.discard=[cq];
   const got=g.acquireDiscardCard('enemy',0);
   g.onDiscardDraw('enemy',got);
