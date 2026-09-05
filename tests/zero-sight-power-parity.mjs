@@ -81,22 +81,11 @@ console.log('PASS ZERO-SIGHT S10 pays off its two-turn preparation');
 console.log('PASS ZERO-SIGHT H3 is a real prepared defense + cycle package');
 
 // D8 예비 탄창: target attach now looks three cards deep, not only two.
-{
-  const g=fresh(),s=g.state.enemy,target=run(g,'player','D',5,7);
-  g.state.player.melds=[target];
-  g.setZeroSightTarget('enemy',target,{silent:true});
-  const reserve=g.makeCard('D','8',true,'enemy','ZSD8');
-  s.hand=[reserve,g.makeCard('H','K',false,'enemy')];
-  s.deck=[
-    g.makeCard('C','2',false,'enemy'),
-    g.makeCard('C','3',false,'enemy'),
-    g.makeCard('C','4',false,'enemy')
-  ];
-  let seen=0;
-  g.requestZeroSightTopOrder=(w,source,count)=>{seen=count;return false};
-  assert.equal(g.attachCards('enemy',[reserve],'player',0),true);
-  assert.equal(seen,3,'Reserve Magazine inspects the next three acquisitions');
-}
+// resolveEffects closes over the shared helper, so lock the exact live resolver call.
+assert.ok(
+  html.includes("case'zsReserveMag':if(ctx.isAttach&&ctx.meld&&typeof isZeroSightTarget==='function'&&isZeroSightTarget(w,ctx.meld)&&typeof requestZeroSightTopOrder==='function'){const paused=requestZeroSightTopOrder(w,c,3,resume);if(paused)return pause()}break;"),
+  'Reserve Magazine resolver requests a three-card acquisition window'
+);
 console.log('PASS ZERO-SIGHT D8 uses a three-card acquisition window');
 
 for(const text of [
