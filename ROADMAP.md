@@ -145,6 +145,23 @@ RUMMY//DUEL is a 1v1 rummy battle game where both players grow one central SWITC
 - [x] Finish remaining choice/copy/timing audit and per-card regressions; first ~50 named-card behavior is now locked by executable final-audit coverage
 - [x] Favor meld mutation, recovery, movement, discard, defense, RUMMY and timing interactions
 
+## M8B — 공용/테마 카드 파워 기준선 재감사 — 2026-09-05
+M0S의 3슬롯 / 새 조합 2회 / 기본 붙이기 1회 이후 기존 네임드의 상대 가치가 달라졌으므로, 새 카드군 추가 전에 같은 물리 슬롯의 공용 카드와 테마 변형을 다시 비교한다. 구조적 사전 등급과 기준선은 `docs/CARD_POWER_BASELINES.md`를 따른다. M12 인간 표본이 충분해지기 전까지 S/A/B/C/D는 최종 승률 등급이 아니라 우선 감사 표식이다.
+
+- [x] 공용 네임드 1차 구조 감사 및 기준 앵커 잠금 — S7 검은 탄환 +10, H7 12/24, H8 20/32, C5 추가 붙이기, CJ/CK 회수-재사용 예외 등을 같은 슬롯 비교 기준으로 문서화
+- [x] 명백한 무효/저효율 공용 1차 교정 — DA 장물아비를 중복 정보 확인에서 1드로우→다른 1장 덱 아래 순환으로 변경, SQ 사형선고를 정확한 버림패 목표 확보→당턴 버스트 +6으로 변경, S9 잠복자 준비를 2턴→1턴으로 단축
+- [x] 공용 기준선 실행 회귀 추가 — 장물아비 순환, 사형선고 정확한 SET/턴 결속 +6, 잠복자 1턴 준비, 핵심 기준 앵커를 `tests/common-card-balance-pass.mjs`로 잠금
+- [ ] V-SIGNAL 동일 슬롯 공용 대비 감사 — 더 어려운 조건 + 더 작은 보상인 사실상 하위호환 제거
+- [ ] ZERO-SIGHT 동일 슬롯 공용 대비 감사 — 표적/준비 비용이 있는 카드의 성공 보상 재검토
+- [ ] POINT-BLANK 동일 슬롯 공용 대비 감사 — 붙이기 1회 환경에서 접전/무료 회수/재진입 가치 재평가
+- [ ] MAIL-ROUTE 동일 슬롯 공용 대비 감사 — 반복 보호막 8을 목적지/경로/순환의 질적 보상과 비교
+- [ ] SCRAP-SHIFT 동일 슬롯 공용 대비 감사 — 기본 조합 정리와 해체/이식/재조립의 차별 가치 확인
+- [ ] TWELVE-BLOOM 동일 슬롯 공용 대비 감사 — 계절/그림맞춤 준비 비용에 비해 패순환·보호막 보상이 낮은 카드 확인
+- [ ] 공용 C급 감시군 D7B 감정사 / D10 매입왕 / DQ 시장 조작자 / C5B 분기점 / C6 중간관리자 / H6 수혈의 독립 가치 재검토
+- [ ] 공용 S급 감시군 C5 연결고리 / CJ 갈아끼우기 / CK 조율자의 M0S 행동 제한 우회 가치가 과도한지 M12 표본으로 확인
+- [ ] 모든 라이브 테마 감사 후 CYCLE-WORKS / FATE-SCRIPT 후보를 같은 기준으로 설계
+- [ ] M12 인간 실전 표본과 교차해 최종 수치 튜닝. 구조적 하위호환 수정은 선행하되 대규모 숫자 너프/버프는 데이터 없이 확정하지 않음
+
 ## M8A — 정식 테마군 콘텐츠 설계
 정식 테마군은 폐쇄형 전용 덱이 아니라 공용 러미 행동과 연결되는 모듈형 카드군으로 설계한다. 현재 최종 설계 기준과 카드 후보 전체는 `docs/THEME_GROUPS.md`를 Source of Truth로 사용한다. 아직 라이브 코드 구현 완료를 의미하지 않는다.
 
