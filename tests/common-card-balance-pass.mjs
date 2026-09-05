@@ -64,7 +64,7 @@ console.log('PASS common SQ Death Sentence turns tracking into +6 same-turn BURS
   g.state.player.melds=[target];
   const sleeper=g.makeCard('S','9',true,'enemy','S9');sleeper.age=1;
   const h9=g.makeCard('H','9',false,'enemy'),d9=g.makeCard('D','9',false,'enemy');
-  s.hand=[sleeper,h9,d9];
+  s.hand=[sleeper,h9,d9,g.makeCard('C','2',false,'enemy')];
   assert.equal(g.submitNewMeld('enemy',[sleeper,h9,d9]),true);
   assert.equal(g.meldFixedActive(target),true,'one-turn prepared Sleeper fixes a chosen opponent meld');
 }
