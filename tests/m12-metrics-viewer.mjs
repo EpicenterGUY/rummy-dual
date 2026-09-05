@@ -8,9 +8,9 @@ function source(name){const marker=`function ${name}(`,start=script.indexOf(mark
 new Function(script);
 
 ok(html.includes('/* M12 · battle metrics review panel */'),'M12 metrics review panel styling exists');
-for(const id of ['battleMetricsCount','battleMetricsReadiness','battleMetricsOverview','battleMetricsCohorts','battleMetricsSignals','battleMetricsList','battleMetricsCopyBtn','battleMetricsClearBtn'])ok(html.includes(`id="${id}"`),`developer panel exposes ${id}`);
+for(const id of ['battleMetricsCount','battleMetricsReadiness','battleMetricsOverview','battleMetricsCohorts','battleMetricsThemeMatrix','battleMetricsSignals','battleMetricsList','battleMetricsCopyBtn','battleMetricsClearBtn'])ok(html.includes(`id="${id}"`),`developer panel exposes ${id}`);
 ok(html.includes('.metricsList{display:flex;flex-direction:column')&&html.includes('max-height:150px;overflow:auto'),'recent sample list is bounded and scrollable');
-for(const name of ['battleMetricCirculationAggregate','battleMetricsAggregate','metricAvg','metricPct','battleMetricStructureLabel','battleMetricsStructureCohorts','battleMetricsStructureReadiness','battleMetricsStructureReadinessText','battleMetricsStructureRange','battleMetricsStructureSignals','battleMetricsStructureSignalsText','battleMetricsStructureText','battleMetricsAggregateText','battleMetricRowText','renderBattleMetricsHistory','copyBattleMetricsHistory','clearBattleMetricsHistory'])ok(script.includes(`function ${name}(`),`viewer helper exists: ${name}`);
+for(const name of ['battleMetricCirculationAggregate','battleMetricsAggregate','metricAvg','metricPct','battleMetricStructureLabel','battleMetricsStructureCohorts','battleMetricsStructureReadiness','battleMetricsStructureReadinessText','battleMetricsStructureRange','battleMetricsStructureSignals','battleMetricsStructureSignalsText','battleMetricsThemeIds','battleMetricsThemeLabel','battleMetricsThemeStructureMatrix','battleMetricsThemeStructureText','battleMetricsStructureText','battleMetricsAggregateText','battleMetricRowText','renderBattleMetricsHistory','copyBattleMetricsHistory','clearBattleMetricsHistory'])ok(script.includes(`function ${name}(`),`viewer helper exists: ${name}`);
 
 {
   const ctx=vm.createContext({console,Math,Number,Array,Object});
@@ -61,6 +61,7 @@ ok(snap.includes('fieldTag:state.field?.tag||null')&&snap.includes('fieldName:st
 ok(source('renderDeveloperPanel').includes("typeof renderBattleMetricsHistory==='function'"),'opening/refreshing developer panel refreshes metrics history');
 ok(source('renderBattleMetricsHistory').includes("document.getElementById('battleMetricsReadiness')")&&source('renderBattleMetricsHistory').includes('battleMetricsStructureReadinessText(history)'),'viewer renders structure readiness from saved history');
 ok(source('renderBattleMetricsHistory').includes("document.getElementById('battleMetricsCohorts')")&&source('renderBattleMetricsHistory').includes('battleMetricsStructureText(history)'),'viewer renders structure cohort comparison from saved history');
+ok(source('renderBattleMetricsHistory').includes("document.getElementById('battleMetricsThemeMatrix')")&&source('renderBattleMetricsHistory').includes('battleMetricsThemeStructureText(history)'),'viewer renders theme-by-structure matrix from saved history');
 ok(source('renderBattleMetricsHistory').includes("document.getElementById('battleMetricsSignals')")&&source('renderBattleMetricsHistory').includes('battleMetricsStructureSignalsText(history)'),'viewer renders heuristic structure signals from saved history');
 ok(script.includes("document.getElementById('battleMetricsCopyBtn').onclick"),'JSON copy action is wired');
 ok(script.includes("document.getElementById('battleMetricsClearBtn').onclick"),'history clear action is wired');
